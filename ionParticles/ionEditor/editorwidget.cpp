@@ -1,11 +1,17 @@
-#include "iontexteditorwidget.h"
+#include "editorwidget.h"
 #include "linenumberarea.h"
 #include <QPainter>
 #include <QTextBlock>
+#include <QPaintEvent>
 
-IonTextEditorWidget::IonTextEditorWidget(QWidget *parent) : QPlainTextEdit(parent)
+
+namespace IonEditor {
+
+
+EditorWidget::EditorWidget(QWidget *parent) : QPlainTextEdit(parent)
 {
     lineNumberArea = new LineNumberArea(this);
+    highlighter    = new IonHighlighter(this->document());
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(updateLineNumberArea(const QRect &, int)));
@@ -15,8 +21,14 @@ IonTextEditorWidget::IonTextEditorWidget(QWidget *parent) : QPlainTextEdit(paren
     highlightCurrentLine();
 }
 
+EditorWidget::~EditorWidget()
+{
+    if (highlighter) {
+        delete highlighter;
+    }
+}
 
-int IonTextEditorWidget::lineNumberAreaWidth()
+int EditorWidget::lineNumberAreaWidth()
 {
     int digits = 1;
     int max = qMax(1, blockCount());
@@ -33,14 +45,14 @@ int IonTextEditorWidget::lineNumberAreaWidth()
 
 
 
-void IonTextEditorWidget::updateLineNumberAreaWidth(int /* newBlockCount */)
+void EditorWidget::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
 
 
-void IonTextEditorWidget::updateLineNumberArea(const QRect &rect, int dy)
+void EditorWidget::updateLineNumberArea(const QRect &rect, int dy)
 {
     if (dy)
         lineNumberArea->scroll(0, dy);
@@ -54,7 +66,7 @@ void IonTextEditorWidget::updateLineNumberArea(const QRect &rect, int dy)
 
 
 
-void IonTextEditorWidget::resizeEvent(QResizeEvent *e)
+void EditorWidget::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);
 
@@ -65,7 +77,7 @@ void IonTextEditorWidget::resizeEvent(QResizeEvent *e)
 
 
 
-void IonTextEditorWidget::highlightCurrentLine()
+void EditorWidget::highlightCurrentLine()
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
 
@@ -85,7 +97,7 @@ void IonTextEditorWidget::highlightCurrentLine()
 }
 
 
-void IonTextEditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event)
+void EditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
     QPainter painter(lineNumberArea);
     painter.fillRect(event->rect(), Qt::lightGray);
@@ -108,4 +120,7 @@ void IonTextEditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event)
         bottom = top + (int) blockBoundingRect(block).height();
         ++blockNumber;
     }
+}
+
+
 }

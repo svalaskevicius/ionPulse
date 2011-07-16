@@ -2,27 +2,32 @@
 #define LINENUMBERAREA_H
 
 #include <QWidget>
-#include "iontexteditorwidget.h"
+#include "editorwidget.h"
+
+namespace IonEditor {
+
 
 class LineNumberArea : public QWidget
 {
     Q_OBJECT
 public:
-    explicit LineNumberArea(IonTextEditorWidget *parent = 0);
+    explicit LineNumberArea(EditorWidget *parent = 0);
     QSize sizeHint() const {
         return QSize(ionText->lineNumberAreaWidth(), 0);
     }
 protected:
-     void paintEvent(QPaintEvent *event) {
-         ionText->lineNumberAreaPaintEvent(event);
-     }
+    void paintEvent(QPaintEvent *event) {
+        ionText->lineNumberAreaPaintEvent(event);
+    }
 
 signals:
 
 public slots:
 
 private:
-    IonTextEditorWidget *ionText;
+    EditorWidget *ionText;
 };
+
+}
 
 #endif // LINENUMBERAREA_H

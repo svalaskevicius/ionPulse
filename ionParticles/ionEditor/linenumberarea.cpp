@@ -1,8 +1,11 @@
 #include "linenumberarea.h"
 
-LineNumberArea::LineNumberArea(IonTextEditorWidget *parent) :
+namespace IonEditor {
+
+LineNumberArea::LineNumberArea(EditorWidget *parent) :
     QWidget(parent),
     ionText(parent)
 {
 }
 
+}

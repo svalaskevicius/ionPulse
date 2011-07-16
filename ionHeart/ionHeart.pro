@@ -12,8 +12,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp
 
-HEADERS  += mainwindow.h \
-    ionPlugin.h \
-    ionshared.h
+HEADERS  += mainwindow.h
 
 FORMS    +=

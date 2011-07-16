@@ -1,22 +1,26 @@
 #include "mainwindow.h"
 #include <QPluginLoader>
 #include <QApplication>
-#include <ionshared.h>
-#include "ionPlugin.h"
+#include <ionPulse/shared.h>
+#include "ionPulse/plugin.h"
+
+
+namespace IonHeart {
 
 
 
-IonHeartWindow::IonHeartWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    setWindowTitle(QObject::tr("ionPulse"));
     _loadPlugins();
 }
 
-IonHeartWindow::~IonHeartWindow()
+MainWindow::~MainWindow()
 {
 }
 
-QDir IonHeartWindow::_getPluginsDir()
+QDir MainWindow::_getPluginsDir()
 {
     QDir pluginsDir = QDir(qApp->applicationDirPath());
 /*
@@ -45,7 +49,7 @@ QDir IonHeartWindow::_getPluginsDir()
 }
 
 
-void IonHeartWindow::_loadPlugins()
+void MainWindow::_loadPlugins()
 {
     foreach (QObject *plugin, QPluginLoader::staticInstances()) {
         _initializePlugin(plugin);
@@ -63,11 +67,12 @@ void IonHeartWindow::_loadPlugins()
     }
 }
 
-void IonHeartWindow::_initializePlugin(QObject *plugin)
+void MainWindow::_initializePlugin(QObject *plugin)
 {
     IonPlugin *plg = qobject_cast<IonPlugin *>(plugin);
     if (plg) {
-        DEBUG_MSG("go");
         plg->initialize(this);
     }
+}
+
 }

@@ -2,12 +2,17 @@
 #define IONTEXTEDITORWIDGET_H
 
 #include <QPlainTextEdit>
+#include "highlighter.h"
 
-class IonTextEditorWidget : public QPlainTextEdit
+namespace IonEditor {
+
+
+class EditorWidget : public QPlainTextEdit
 {
     Q_OBJECT
 public:
-    explicit IonTextEditorWidget(QWidget *parent = 0);
+    explicit EditorWidget(QWidget *parent = 0);
+    virtual ~EditorWidget();
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
@@ -22,11 +27,16 @@ private slots:
 
 private:
     QWidget *lineNumberArea;
+    IonHighlighter *highlighter;
 
 signals:
 
 public slots:
 
 };
+
+
+}
+
 
 #endif // IONTEXTEDITORWIDGET_H

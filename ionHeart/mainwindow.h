@@ -4,19 +4,23 @@
 #include <QMainWindow>
 #include <QDir>
 
+namespace IonHeart {
 
-class IonHeartWindow : public QMainWindow
+
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit IonHeartWindow(QWidget *parent = 0);
-    ~IonHeartWindow();
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 
 private:
     QDir _getPluginsDir();
     void _loadPlugins();
     void _initializePlugin(QObject *plugin);
 };
+
+}
 
 #endif // MAINWINDOW_H

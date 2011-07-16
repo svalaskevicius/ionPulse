@@ -12,11 +12,13 @@ QT       += core gui
 TARGET = ionEditor
 INCLUDEPATH +=  ../../ionHeart/
 HEADERS += \
-    ioneditor.h \
-    iontexteditorwidget.h \
-    linenumberarea.h
+    linenumberarea.h \
+    plugin.h \
+    editorwidget.h \
+    highlighter.h
 
 SOURCES += \
-    ioneditor.cpp \
-    iontexteditorwidget.cpp \
-    linenumberarea.cpp
+    linenumberarea.cpp \
+    plugin.cpp \
+    editorwidget.cpp \
+    highlighter.cpp
