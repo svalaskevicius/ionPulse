@@ -27,9 +27,10 @@ public slots:
 private slots:
     void editorUpdateRequest(const QRect &, int);
     void editorBlockCountChanged(int /* newBlockCount */);
-
+    void editorCursorPositionChanged();
 private:
     EditorWidget *ionText;
+    uint currentLine;
 };
 
 }

@@ -14,8 +14,7 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::initialize(IonHeart::MainWindow *mainWindow)
 {
-    //mainWindow
-    QMessageBox(QMessageBox::Information, "hi", "i am a plugin!").exec();
+    //QMessageBox(QMessageBox::Information, "hi", "i am a plugin!").exec();
     mainWindow->setCentralWidget(new EditorWidget(mainWindow));
 }
 
