@@ -28,8 +28,9 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
     int top = (int) this->blockBoundingGeometry(block).translated(this->contentOffset()).top();
     int bottom = top + (int) this->blockBoundingRect(block).height();
 
-    QFont font;
-    font.setStyleHint(QFont::Monospace, QFont::PreferAntialias);
+    QFont font("Monaco");
+    font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
+    font.setPixelSize(12);
     painter.setFont(font);
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
@@ -38,9 +39,17 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
             } else {
                 painter.setPen(QColor(0xb0, 0xb0, 0xb0));
             }
-            QString number = QString::number(blockNumber + 1);
-            painter.drawText(0, top, this->width()-2, fontMetrics().height(),
-                             Qt::AlignRight, number);
+
+            painter.drawText(
+                        QRectF(
+                            3,
+                            top,
+                            this->width()-5,
+                            this->blockBoundingRect(block).height()
+                            ),
+                        Qt::AlignRight | Qt::AlignVCenter,
+                        QString::number(blockNumber + 1)
+                        );
         }
 
         block = block.next();

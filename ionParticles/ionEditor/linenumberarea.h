@@ -30,7 +30,7 @@ private slots:
     void editorCursorPositionChanged();
 private:
     EditorWidget *ionText;
-    uint currentLine;
+    int currentLine;
 };
 
 }

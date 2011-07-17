@@ -13,10 +13,11 @@ EditorWidget::EditorWidget(QWidget *parent) : QPlainTextEdit(parent)
 
     highlighter = new Highlighter(this);
 
-    QFont font;
-    font.setStyleHint(QFont::Monospace, QFont::PreferAntialias);
-    font.setFamily("courier");
+    QFont font("Monaco");
+    font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);
+
+    updateViewportMargins();
 }
 
 EditorWidget::~EditorWidget()
@@ -39,6 +40,7 @@ void EditorWidget::updateViewportMargins()
     foreach (Component *component, components) {
         margins.setLeft(margins.left()+component->getWidth());
     }
+
     setViewportMargins(margins);
 }
 
