@@ -7,7 +7,7 @@
 namespace IonEditor {
 
 
-class LineNumberArea : public QWidget, protected EditorWidget::Component
+class LineNumberArea : public QWidget, public EditorWidget::Component
 {
     Q_OBJECT
 public:

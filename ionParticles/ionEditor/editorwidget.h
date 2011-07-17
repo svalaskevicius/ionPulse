@@ -2,13 +2,14 @@
 #define IONTEXTEDITORWIDGET_H
 
 #include <QPlainTextEdit>
-#include "highlighter.h"
 #include <QEvent>
 #include <QMap>
+#include <QTextBlock>
 
 namespace IonEditor {
 
-
+class LineNumberArea;
+class Highlighter;
 class EditorWidget : public QPlainTextEdit
 {
     Q_OBJECT
@@ -20,7 +21,7 @@ public:
     class Component {
     public:
         EditorWidget *widget;
-        Component(EditorWidget *widget): widget(widget) {widget->addComponent(this);}
+        Component(EditorWidget *widget): widget(widget) {}
         virtual void editorEvent(QEvent * ) = 0;
         virtual int getWidth() {return 0;}
     protected:
@@ -56,7 +57,7 @@ protected:
 private slots:
 
 private:
-    QWidget *lineNumberArea;
+    LineNumberArea *lineNumberArea;
     Highlighter *highlighter;
     QList<Component *> components;
     QMap<QEvent::Type, QList<Component *> > eventListeners;

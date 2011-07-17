@@ -1,6 +1,7 @@
 #include "editorwidget.h"
 #include <ionPulse/shared.h>
 #include "linenumberarea.h"
+#include "highlighter.h"
 
 namespace IonEditor {
 
@@ -8,13 +9,23 @@ namespace IonEditor {
 EditorWidget::EditorWidget(QWidget *parent) : QPlainTextEdit(parent)
 {
     lineNumberArea = new LineNumberArea(this);
-    highlighter    = new Highlighter(this);
+    addComponent(lineNumberArea);
+
+    highlighter = new Highlighter(this);
+
+    QFont font;
+    font.setStyleHint(QFont::Monospace, QFont::PreferAntialias);
+    font.setFamily("courier");
+    document()->setDefaultFont(font);
 }
 
 EditorWidget::~EditorWidget()
 {
     if (highlighter) {
         delete highlighter;
+    }
+    if (lineNumberArea) {
+        delete lineNumberArea;
     }
 }
 
