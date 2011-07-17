@@ -20,5 +20,15 @@ handles key presses, such as tab, enter etc
 === search & replace in files ===
 should be possible to delete some results after reviewing
 
+=== multiple files opened, tabbed gui ===
 
+
+=== config loader for colors, fonts etc ===
+
+
+=== preference dialog to manage config ===
+
+=== auto indent on new line ===
+
+=== syntax formatter ===
 
