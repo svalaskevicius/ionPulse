@@ -1,0 +1,24 @@
+
+=== editor handler ===
+handles key presses, such as tab, enter etc
+
+=== syntax highlight ===
+
+
+=== semantic parser ===
+
+=== semantic hightlight ===
+
+=== autocomplete ===
+
+=== class view ===
+
+=== files view ===
+
+=== search & replace ===
+
+=== search & replace in files ===
+should be possible to delete some results after reviewing
+
+
+
