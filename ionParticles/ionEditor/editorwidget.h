@@ -3,6 +3,8 @@
 
 #include <QPlainTextEdit>
 #include "highlighter.h"
+#include <QEvent>
+#include <QMap>
 
 namespace IonEditor {
 
@@ -11,28 +13,57 @@ class EditorWidget : public QPlainTextEdit
 {
     Q_OBJECT
 public:
+    /**
+     * a class for defining separate components, used to
+     * open some of the protected functionality
+     */
+    class Component {
+    public:
+        EditorWidget *widget;
+        Component(EditorWidget *widget): widget(widget) {widget->addComponent(this);}
+        virtual void editorEvent(QEvent * ) = 0;
+        virtual int getWidth() {return 0;}
+    protected:
+        inline QTextBlock firstVisibleBlock() const
+        {
+            return widget->firstVisibleBlock();
+        }
+        inline QRectF blockBoundingGeometry(const QTextBlock &block) const
+        {
+            return widget->blockBoundingGeometry(block);
+        }
+        inline QPointF contentOffset() const
+        {
+            return widget->contentOffset();
+        }
+        inline QRectF blockBoundingRect(const QTextBlock &block) const
+        {
+            return widget->blockBoundingRect(block);
+        }
+    };
     explicit EditorWidget(QWidget *parent = 0);
     virtual ~EditorWidget();
-
-    void lineNumberAreaPaintEvent(QPaintEvent *event);
-    int lineNumberAreaWidth();
-
+    void addEventListener(QEvent::Type type, Component *component) {
+        eventListeners[type].append(component);
+    }
+    void updateViewportMargins();
 protected:
-    void resizeEvent(QResizeEvent *event);
+    bool event ( QEvent * event );
+    void addComponent(Component *component) {
+        components.append(component);
+    }
 
 private slots:
-    void updateLineNumberAreaWidth(int newBlockCount);
-    void highlightCurrentLine();
-    void updateLineNumberArea(const QRect &, int);
 
 private:
     QWidget *lineNumberArea;
-    IonHighlighter *highlighter;
+    Highlighter *highlighter;
+    QList<Component *> components;
+    QMap<QEvent::Type, QList<Component *> > eventListeners;
 
 signals:
 
 public slots:
-
 };
 
 

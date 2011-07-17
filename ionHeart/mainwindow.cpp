@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <ionPulse/shared.h>
 #include "ionPulse/plugin.h"
+#include <QStatusBar>
 
 
 namespace IonHeart {
@@ -13,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     setWindowTitle(QObject::tr("ionPulse"));
+    setStatusBar(new QStatusBar(this));
     _loadPlugins();
 }
 

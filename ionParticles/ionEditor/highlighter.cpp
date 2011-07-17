@@ -1,11 +1,16 @@
 #include "highlighter.h"
 #include <ionPulse/shared.h>
+#include "editorwidget.h"
 
 namespace IonEditor {
 
-IonHighlighter::IonHighlighter(QTextDocument *parent) :
-    QSyntaxHighlighter(parent)
+Highlighter::Highlighter(EditorWidget *parent) :
+    QSyntaxHighlighter(parent->document()), ionText(parent)
 {
+
+    connect(ionText, SIGNAL(cursorPositionChanged()), this, SLOT(editorCursorPositionChanged()));
+    editorCursorPositionChanged();
+
     HighlightingRule rule;
 
     keywordFormat.setForeground(Qt::darkBlue);
@@ -55,7 +60,7 @@ IonHighlighter::IonHighlighter(QTextDocument *parent) :
     commentEndExpression = QRegExp("\\*/");
 }
 
-void IonHighlighter::highlightBlock(const QString &text)
+void Highlighter::highlightBlock(const QString &text)
 {
     DEBUG_MSG(text.toStdString());
     foreach (const HighlightingRule &rule, highlightingRules) {
@@ -87,5 +92,28 @@ void IonHighlighter::highlightBlock(const QString &text)
         startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
     }
 }
+
+
+
+
+void Highlighter::editorCursorPositionChanged()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    if (!ionText->isReadOnly()) {
+        QTextEdit::ExtraSelection selection;
+
+        QColor lineColor = QColor(Qt::yellow).lighter(160);
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = ionText->textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+    }
+
+    ionText->setExtraSelections(extraSelections);
+}
+
 
 }

@@ -5,12 +5,13 @@
 
 namespace IonEditor {
 
+class EditorWidget;
 
-class IonHighlighter : public QSyntaxHighlighter
+class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    explicit IonHighlighter(QTextDocument *parent = 0);
+    explicit Highlighter(EditorWidget *parent = 0);
 
 protected:
     void highlightBlock(const QString &text);
@@ -33,6 +34,11 @@ private:
     QTextCharFormat quotationFormat;
     QTextCharFormat functionFormat;
 
+
+private:
+    EditorWidget *ionText;
+private slots:
+    void editorCursorPositionChanged();
 };
 
 }

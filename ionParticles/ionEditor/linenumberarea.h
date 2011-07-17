@@ -7,22 +7,26 @@
 namespace IonEditor {
 
 
-class LineNumberArea : public QWidget
+class LineNumberArea : public QWidget, protected EditorWidget::Component
 {
     Q_OBJECT
 public:
     explicit LineNumberArea(EditorWidget *parent = 0);
-    QSize sizeHint() const {
-        return QSize(ionText->lineNumberAreaWidth(), 0);
+    QSize sizeHint() {
+        return QSize(getWidth(), 0);
     }
+    int getWidth();
+    void editorEvent(QEvent * event);
 protected:
-    void paintEvent(QPaintEvent *event) {
-        ionText->lineNumberAreaPaintEvent(event);
-    }
+    void paintEvent(QPaintEvent *event);
 
 signals:
 
 public slots:
+
+private slots:
+    void editorUpdateRequest(const QRect &, int);
+    void editorBlockCountChanged(int /* newBlockCount */);
 
 private:
     EditorWidget *ionText;
