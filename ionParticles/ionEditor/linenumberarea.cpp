@@ -32,22 +32,25 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     font.setPixelSize(12);
     painter.setFont(font);
+    bool resetColor = true;
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             if (blockNumber == currentLine) {
                 painter.setPen(QColor(0x70, 0x70, 0x70));
-            } else {
+                resetColor = true;
+            } else if (resetColor) {
                 painter.setPen(QColor(0xb0, 0xb0, 0xb0));
+                resetColor = false;
             }
 
             painter.drawText(
                         QRectF(
                             3,
-                            top,
+                            top + 1,
                             this->width()-5,
                             this->blockBoundingRect(block).height()
                             ),
-                        Qt::AlignRight | Qt::AlignVCenter,
+                        Qt::AlignRight,
                         QString::number(blockNumber + 1)
                         );
         }

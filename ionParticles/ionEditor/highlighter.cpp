@@ -101,6 +101,7 @@ void Highlighter::editorCursorPositionChanged()
     QList<QTextEdit::ExtraSelection> extraSelections;
 
     if (!ionText->isReadOnly()) {
+
         QTextEdit::ExtraSelection selection;
 
         QColor lineColor = QColor(Qt::yellow).lighter(160);
