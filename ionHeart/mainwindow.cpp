@@ -25,8 +25,7 @@ MainWindow::~MainWindow()
 QDir MainWindow::_getPluginsDir()
 {
     QDir pluginsDir = QDir(qApp->applicationDirPath());
-/*
-#ifndef false
+
     #if defined(Q_OS_WIN)
         if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
             pluginsDir.cdUp();
@@ -37,15 +36,8 @@ QDir MainWindow::_getPluginsDir()
             pluginsDir.cdUp();
         }
     #endif
-        pluginsDir.cd("plugins");
-#else*/
-    pluginsDir.cdUp();
-    pluginsDir.cdUp();
-    pluginsDir.cdUp();
-    pluginsDir.cdUp();
-    pluginsDir.cd("ionParticles");
-    pluginsDir.cd("ionEditor");
-//#endif
+    pluginsDir.cd("plugins");
+
     DEBUG_MSG(pluginsDir.path().toStdString());
     return pluginsDir;
 }
