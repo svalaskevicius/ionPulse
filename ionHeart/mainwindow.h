@@ -2,7 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMap>
 #include <QDir>
+
+
+class IonPlugin;
 
 namespace IonHeart {
 
@@ -16,9 +20,11 @@ public:
     ~MainWindow();
 
 private:
+    QMap<QString, IonPlugin *> _includedPlugins;
     QDir _getPluginsDir();
     void _loadPlugins();
-    void _initializePlugin(QObject *plugin);
+    bool _arePluginsIncluded(QStringList pluginNames);
+    void _initializePlugin(IonPlugin *plugin);
 };
 
 }

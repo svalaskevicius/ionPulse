@@ -4,7 +4,7 @@
 #include <QObject>
 #include <ionPulse/plugin.h>
 
-namespace IonEditor {
+namespace IonPhp {
 
 
 class Plugin : public QObject, public IonPlugin
@@ -13,10 +13,16 @@ class Plugin : public QObject, public IonPlugin
     Q_INTERFACES(IonPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
-    void initialize(IonHeart::MainWindow *mainWindow);
+    void initialize(IonHeart::MainWindow * /* mainWindow */);
     QString getName() {
-        return "ionEditor";
+        return "ionPhp";
     }
+    virtual QList<QString> getDependencies() {
+        QList<QString> ret;
+        ret.append("ionEditor");
+        return ret;
+    }
+    virtual void addParent(IonPlugin *parent);
 
 signals:
 

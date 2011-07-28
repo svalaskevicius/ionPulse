@@ -1,5 +1,5 @@
 
 TEMPLATE  = subdirs
 
-SUBDIRS = ionEditor
+SUBDIRS = ionEditor ionPhp
 
