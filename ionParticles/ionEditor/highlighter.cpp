@@ -100,21 +100,25 @@ void Highlighter::editorCursorPositionChanged()
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
 
-    if (!ionText->isReadOnly()) {
+    addCurrentLineExtraSelection(extraSelections);
 
+    ionText->setExtraSelections(extraSelections);
+}
+
+void Highlighter::addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections)
+{
+    if (!ionText->isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(Qt::yellow).lighter(160);
+        QColor lineColor = QColor(QColor::fromHsl(90, 70, 220));
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = ionText->textCursor();
         selection.cursor.clearSelection();
+
         extraSelections.append(selection);
     }
-
-    ionText->setExtraSelections(extraSelections);
 }
-
 
 }

@@ -2,6 +2,7 @@
 #define IONHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
+#include <QPlainTextEdit>
 
 namespace IonEditor {
 
@@ -39,6 +40,8 @@ private:
     EditorWidget *ionText;
 private slots:
     void editorCursorPositionChanged();
+protected:
+    void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
 };
 
 }
