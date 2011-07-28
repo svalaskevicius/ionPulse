@@ -67,7 +67,7 @@ void MainWindow::_loadPlugins()
         QList<IonPlugin *> pluginsToLoadLater;
         foreach (IonPlugin *plg, pluginsToLoad) {
             if (_arePluginsIncluded(plg->getDependencies())) {
-                _initializePlugin(plg);
+                _includePlugin(plg);
                 madeChanges = true;
             } else {
                 pluginsToLoadLater.append(plg);
@@ -75,6 +75,10 @@ void MainWindow::_loadPlugins()
         }
         pluginsToLoad = pluginsToLoadLater;
     } while (madeChanges);
+
+    foreach (IonPlugin *plugin, _includedPlugins.values()) {
+        plugin->initialize(this);
+    }
 }
 
 bool  MainWindow::_arePluginsIncluded(QStringList pluginNames)
@@ -88,9 +92,8 @@ bool  MainWindow::_arePluginsIncluded(QStringList pluginNames)
 }
 
 
-void MainWindow::_initializePlugin(IonPlugin *plugin)
+void MainWindow::_includePlugin(IonPlugin *plugin)
 {
-    plugin->initialize(this);
     foreach (QString dep, plugin->getDependencies()) {
         plugin->addParent(_includedPlugins[dep]);
     }

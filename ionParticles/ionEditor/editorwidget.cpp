@@ -2,16 +2,18 @@
 #include <ionPulse/shared.h>
 #include "linenumberarea.h"
 #include "highlighter.h"
+#include "editorwidgetfactory.h"
+
 
 namespace IonEditor {
 
 
-EditorWidget::EditorWidget(QWidget *parent) : QPlainTextEdit(parent)
+EditorWidget::EditorWidget(EditorWidgetFactory *widgetFactory, QWidget *parent) : QPlainTextEdit(parent), widgetFactory(widgetFactory)
 {
-    lineNumberArea = new LineNumberArea(this);
+    lineNumberArea = widgetFactory->createLineNumerArea(this);
     addComponent(lineNumberArea);
 
-    highlighter = new Highlighter(this);
+    highlighter = widgetFactory->createHighlighter(this);
 
     QFont font("Monaco");
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);

@@ -17,13 +17,15 @@ HEADERS += \
     linenumberarea.h \
     plugin.h \
     editorwidget.h \
-    highlighter.h
+    highlighter.h \
+    editorwidgetfactory.h
 
 SOURCES += \
     linenumberarea.cpp \
     plugin.cpp \
     editorwidget.cpp \
-    highlighter.cpp
+    highlighter.cpp \
+    editorwidgetfactory.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target

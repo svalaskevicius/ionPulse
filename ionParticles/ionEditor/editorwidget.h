@@ -8,8 +8,11 @@
 
 namespace IonEditor {
 
+class EditorWidgetFactory;
 class LineNumberArea;
 class Highlighter;
+
+
 class EditorWidget : public QPlainTextEdit
 {
     Q_OBJECT
@@ -42,13 +45,14 @@ public:
             return widget->blockBoundingRect(block);
         }
     };
-    explicit EditorWidget(QWidget *parent = 0);
+    explicit EditorWidget(EditorWidgetFactory *widgetFactory, QWidget *parent = 0);
     virtual ~EditorWidget();
     void addEventListener(QEvent::Type type, Component *component) {
         eventListeners[type].append(component);
     }
     void updateViewportMargins();
 protected:
+    EditorWidgetFactory *widgetFactory;
     bool event ( QEvent * event );
     void addComponent(Component *component) {
         components.append(component);

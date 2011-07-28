@@ -2,6 +2,7 @@
 
 #include <QtPlugin>
 #include "editorwidget.h"
+#include "editorwidgetfactory.h"
 #include <QMessageBox>
 
 namespace IonEditor {
@@ -15,7 +16,7 @@ Plugin::Plugin(QObject *parent) :
 void Plugin::initialize(IonHeart::MainWindow *mainWindow)
 {
     //QMessageBox(QMessageBox::Information, "hi", "i am a plugin!").exec();
-    mainWindow->setCentralWidget(new EditorWidget(mainWindow));
+    mainWindow->setCentralWidget(new EditorWidget(new EditorWidgetFactory(), mainWindow));
 }
 
 }

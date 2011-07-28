@@ -24,7 +24,7 @@ private:
     QDir _getPluginsDir();
     void _loadPlugins();
     bool _arePluginsIncluded(QStringList pluginNames);
-    void _initializePlugin(IonPlugin *plugin);
+    void _includePlugin(IonPlugin *plugin);
 };
 
 }
