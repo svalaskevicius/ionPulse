@@ -3,6 +3,7 @@
 # Project created by QtCreator 2011-07-15T20:56:55
 #
 #-------------------------------------------------
+include (../ionPulse.pri)
 
 QT       += core gui
 
@@ -15,3 +16,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    +=
+
+target.path += "$${INSTALL_DIR}"
+INSTALLS += target
