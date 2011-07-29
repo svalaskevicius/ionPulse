@@ -1,9 +1,11 @@
 #include "plugin.h"
 
 #include <QtPlugin>
-#include "editorwidget.h"
+#include <ionParticles/ionEditor/editorwidget.h>
 #include <QMessageBox>
-#include "ionPulse/shared.h"
+#include "ionHeart/ionPulse/shared.h"
+
+#include <ionParticles/ionEditor/plugin.h>
 
 namespace IonPhp {
 

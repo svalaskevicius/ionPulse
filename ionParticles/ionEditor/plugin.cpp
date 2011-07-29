@@ -4,6 +4,7 @@
 #include "editorwidget.h"
 #include "editorwidgetfactory.h"
 #include <QMessageBox>
+#include "editorwidgetfactory.h"
 
 namespace IonEditor {
 

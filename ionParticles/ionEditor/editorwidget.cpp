@@ -1,5 +1,5 @@
 #include "editorwidget.h"
-#include <ionPulse/shared.h>
+#include <ionHeart/ionPulse/shared.h>
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include "editorwidgetfactory.h"

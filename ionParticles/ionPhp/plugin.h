@@ -1,8 +1,8 @@
-#ifndef IONEDITOR_H
-#define IONEDITOR_H
+#ifndef IONEDITORPHP_H
+#define IONEDITORPHP_H
 
 #include <QObject>
-#include <ionPulse/plugin.h>
+#include <ionHeart/ionPulse/plugin.h>
 
 namespace IonPhp {
 
@@ -32,7 +32,7 @@ public slots:
 
 }
 
-#endif // IONEDITOR_H
+#endif // IONEDITORPHP_H
 
 
 

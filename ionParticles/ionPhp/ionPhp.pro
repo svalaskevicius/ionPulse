@@ -12,7 +12,10 @@ VERSION = 0.1.0
 
 QT       += core
 TARGET = ionPhp
-INCLUDEPATH +=  ../../ionHeart/ ../ionEditor
+INCLUDEPATH +=  ../..
+LIBS += -L../ionEditor \
+            -lionEditor
+
 HEADERS += \
     plugin.h \
 

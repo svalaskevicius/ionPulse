@@ -1,7 +1,7 @@
 #ifndef INTERFACES_H
 #define INTERFACES_H
 
-#include "mainwindow.h"
+#include "../mainwindow.h"
 
 class IonPlugin {
 public:

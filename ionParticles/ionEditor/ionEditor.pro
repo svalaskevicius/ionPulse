@@ -12,7 +12,7 @@ VERSION = 0.1.0
 
 QT       += core gui
 TARGET = ionEditor
-INCLUDEPATH +=  ../../ionHeart/
+INCLUDEPATH +=  ../../
 HEADERS += \
     linenumberarea.h \
     plugin.h \

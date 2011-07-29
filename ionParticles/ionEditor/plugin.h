@@ -2,10 +2,12 @@
 #define IONEDITOR_H
 
 #include <QObject>
-#include <ionPulse/plugin.h>
+#include <ionHeart/ionPulse/plugin.h>
+#include <QScopedPointer>
 
 namespace IonEditor {
 
+class EditorWidgetFactory;
 
 class Plugin : public QObject, public IonPlugin
 {

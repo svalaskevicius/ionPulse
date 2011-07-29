@@ -1,5 +1,5 @@
 #include "highlighter.h"
-#include <ionPulse/shared.h>
+#include <ionHeart/ionPulse/shared.h>
 #include "editorwidget.h"
 
 namespace IonEditor {
