@@ -7,14 +7,14 @@ EditorWidgetFactory::EditorWidgetFactory()
 {
 }
 
-LineNumberArea *EditorWidgetFactory::createLineNumerArea(EditorWidget *widget)
+LineNumberArea *EditorWidgetFactory::LineNumberArea::operator ()(EditorWidget *widget)
 {
-    return new LineNumberArea(widget);
+    return new IonEditor::LineNumberArea(widget);
 }
 
-Highlighter *EditorWidgetFactory::createHighlighter(EditorWidget *widget)
+Highlighter *EditorWidgetFactory::Highlighter::operator ()(EditorWidget *widget)
 {
-    return new Highlighter(widget);
+    return new IonEditor::Highlighter(widget);
 }
 
 }

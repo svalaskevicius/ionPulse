@@ -13,8 +13,14 @@ class EditorWidgetFactory
 {
 public:
     EditorWidgetFactory();
-    LineNumberArea *createLineNumerArea(EditorWidget *);
-    Highlighter *createHighlighter(EditorWidget *);
+    struct LineNumberArea {
+        IonEditor::LineNumberArea *operator()(EditorWidget *);
+    };
+    struct Highlighter {
+        IonEditor::Highlighter *operator()(EditorWidget *);
+    };
+    Highlighter createHighlighter;
+    LineNumberArea createLineNumerArea;
 };
 
 }

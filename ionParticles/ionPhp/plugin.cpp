@@ -20,7 +20,8 @@ void Plugin::initialize(IonHeart::MainWindow * /* mainWindow */)
 
 void Plugin::addParent(IonPlugin *parent) {
     if ("ionEditor" == parent->getName()) {
-        DEBUG_MSG("ohoho");
+        IonEditor::Plugin *editorPlugin = dynamic_cast<IonEditor::Plugin *>(parent);
+        Q_ASSERT(editorPlugin);
     }
 }
 

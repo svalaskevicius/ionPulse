@@ -14,10 +14,24 @@ Plugin::Plugin(QObject *parent) :
 {
 }
 
+Plugin::~Plugin()
+{
+    // needs to be here as per
+    // http://doc.qt.nokia.com/latest/qscopedpointer.html#forward-declared-pointers
+}
+
+
 void Plugin::initialize(IonHeart::MainWindow *mainWindow)
 {
-    //QMessageBox(QMessageBox::Information, "hi", "i am a plugin!").exec();
-    mainWindow->setCentralWidget(new EditorWidget(new EditorWidgetFactory(), mainWindow));
+    mainWindow->setCentralWidget(new EditorWidget(getEditorWidgetFactory(), mainWindow));
+}
+
+EditorWidgetFactory *Plugin::getEditorWidgetFactory()
+{
+    if (!_editorWidgetFactory) {
+        _editorWidgetFactory.reset(new EditorWidgetFactory());
+    }
+    return _editorWidgetFactory.data();
 }
 
 }
