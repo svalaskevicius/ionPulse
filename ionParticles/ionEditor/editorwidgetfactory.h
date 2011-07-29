@@ -3,24 +3,27 @@
 
 #include "linenumberarea.h"
 #include "highlighter.h"
+#include <QScopedPointer>
 
 
 namespace IonEditor {
 
 class EditorWidget;
 
-class EditorWidgetFactory
+struct EditorWidgetFactory
 {
-public:
-    EditorWidgetFactory();
+protected:
     struct LineNumberArea {
-        IonEditor::LineNumberArea *operator()(EditorWidget *);
+        virtual IonEditor::LineNumberArea *operator()(EditorWidget *);
     };
     struct Highlighter {
-        IonEditor::Highlighter *operator()(EditorWidget *);
+        virtual IonEditor::Highlighter *operator()(EditorWidget *);
     };
-    Highlighter createHighlighter;
-    LineNumberArea createLineNumerArea;
+public:
+    IonEditor::Highlighter *createHighlighter(EditorWidget *widge);
+    IonEditor::LineNumberArea *createLineNumberArea(EditorWidget *widge);
+    QScopedPointer<Highlighter> m_createHighlighter;
+    QScopedPointer<LineNumberArea> m_createLineNumberArea;
 };
 
 }

@@ -18,10 +18,11 @@ LIBS += -L../ionEditor \
 
 HEADERS += \
     plugin.h \
+    editorwidgetfactory.h
 
 SOURCES += \
     plugin.cpp \
+    editorwidgetfactory.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
-

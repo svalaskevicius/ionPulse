@@ -10,7 +10,7 @@ namespace IonEditor {
 
 EditorWidget::EditorWidget(EditorWidgetFactory *widgetFactory, QWidget *parent) : QPlainTextEdit(parent), widgetFactory(widgetFactory)
 {
-    lineNumberArea = widgetFactory->createLineNumerArea(this);
+    lineNumberArea = widgetFactory->createLineNumberArea(this);
     addComponent(lineNumberArea);
 
     highlighter = widgetFactory->createHighlighter(this);

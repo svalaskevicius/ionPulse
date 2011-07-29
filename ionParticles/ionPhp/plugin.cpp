@@ -7,6 +7,8 @@
 
 #include <ionParticles/ionEditor/plugin.h>
 
+#include "editorwidgetfactory.h"
+
 namespace IonPhp {
 
 Plugin::Plugin(QObject *parent) :
@@ -22,6 +24,7 @@ void Plugin::addParent(IonPlugin *parent) {
     if ("ionEditor" == parent->getName()) {
         IonEditor::Plugin *editorPlugin = dynamic_cast<IonEditor::Plugin *>(parent);
         Q_ASSERT(editorPlugin);
+        editorPlugin->getEditorWidgetFactory()->m_createHighlighter.reset(new EditorWidgetFactory::Highlighter());
     }
 }
 
