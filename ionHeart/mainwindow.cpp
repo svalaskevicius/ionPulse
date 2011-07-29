@@ -42,7 +42,10 @@ QDir MainWindow::_getPluginsDir()
 
 void MainWindow::_loadPlugins()
 {
+    QString oldPwd = QDir::currentPath();
     QDir pluginsDir = _getPluginsDir();
+    QDir::setCurrent(pluginsDir.absolutePath());
+
 
     QList<IonPlugin *> pluginsToLoad;
     foreach (QObject *plugin, QPluginLoader::staticInstances()) {
@@ -75,6 +78,8 @@ void MainWindow::_loadPlugins()
         }
         pluginsToLoad = pluginsToLoadLater;
     } while (madeChanges);
+
+    QDir::setCurrent(oldPwd);
 
     foreach (IonPlugin *plugin, _includedPlugins.values()) {
         plugin->initialize(this);
