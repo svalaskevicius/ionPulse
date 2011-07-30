@@ -19,14 +19,41 @@ Highlighter::Highlighter(IonEditor::EditorWidget *parent) :
             << "final" << "for" << "foreach" << "function" << "global" << "goto"
             << "if" << "implements" << "interface" << "instanceof" << "namespace"
             << "new" << "or" << "private" << "protected" << "public" << "static"
-            << "switch" << "throw" << "try" << "use" << "var" << "while" << "xor"
-            << "return";
+            << "switch" << "throw" << "try" << "use" << "var" << "while" << "xor";
 
     foreach (const QString &pattern, keywords) {
         rule.pattern = QRegExp("\\b"+pattern+"\\b");
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
+
+    QTextCharFormat compileConstantsFormat;
+    compileConstantsFormat.setForeground(Qt::blue);
+    compileConstantsFormat.setFontWeight(QFont::DemiBold);
+    compileConstantsFormat.setFontItalic(true);
+    QStringList compileConstants;
+    compileConstants << "__CLASS__" << "__DIR__" << "__FILE__" << "__LINE__"
+                     << "__FUNCTION__" << "__METHOD__" << "__NAMESPACE__";
+    foreach (const QString &pattern, compileConstants) {
+        rule.pattern = QRegExp("\\b"+pattern+"\\b");
+        rule.format = compileConstantsFormat;
+        highlightingRules.append(rule);
+    }
+
+    QTextCharFormat languageConstructsFormat;
+    languageConstructsFormat.setForeground(Qt::darkBlue);
+    languageConstructsFormat.setFontWeight(QFont::Bold);
+    QStringList languageConstructs;
+    languageConstructs << "die" << "echo" << "empty" << "exit" << "eval"
+                       << "include" << "include_once" << "isset" << "list"
+                       << "require" << "require_once" << "return" << "print"
+                       << "unset";
+    foreach (const QString &pattern, languageConstructs) {
+        rule.pattern = QRegExp("\\b"+pattern+"\\b");
+        rule.format = languageConstructsFormat;
+        highlightingRules.append(rule);
+    }
+
 
     QTextCharFormat varialeFormat;
     varialeFormat.setFontWeight(QFont::Bold);
