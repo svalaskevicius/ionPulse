@@ -1,4 +1,7 @@
 
+=== match parentheses ===
+    == animate ==
+
 === editor handler ===
 handles key presses, such as tab, enter etc
 
@@ -32,7 +35,4 @@ should be possible to delete some results after reviewing
 
 === syntax formatter ===
 
-=== match parentheses ===
-    == animate ==
-    
 

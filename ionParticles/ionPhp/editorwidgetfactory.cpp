@@ -1,12 +1,12 @@
 #include "editorwidgetfactory.h"
 #include <ionHeart/ionPulse/shared.h>
+#include "highlighter.h"
 
 namespace IonPhp {
 
-IonEditor::Highlighter *EditorWidgetFactory::Highlighter::operator()(IonEditor::EditorWidget *)
+IonEditor::Highlighter *EditorWidgetFactory::Highlighter::operator()(IonEditor::EditorWidget *parent)
 {
-    DEBUG_MSG("TRALALA");
-    return 0;
+    return new IonPhp::Highlighter(parent);
 }
 
 
