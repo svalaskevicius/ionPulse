@@ -21,12 +21,7 @@ private:
     QRegExp commentStartExpression;
     QRegExp commentEndExpression;
 
-    QTextCharFormat keywordFormat;
-    QTextCharFormat classFormat;
-    QTextCharFormat singleLineCommentFormat;
     QTextCharFormat multiLineCommentFormat;
-    QTextCharFormat quotationFormat;
-    QTextCharFormat functionFormat;
 
 protected:
     void highlightBlock(const QString &text);
