@@ -1,16 +1,12 @@
+=== semantic parser ===
+
+=== semantic hightlight ===
 
 === match parentheses ===
     == animate ==
 
 === editor handler ===
 handles key presses, such as tab, enter etc
-
-=== syntax highlight ===
-
-
-=== semantic parser ===
-
-=== semantic hightlight ===
 
 === autocomplete ===
 
@@ -34,5 +30,17 @@ should be possible to delete some results after reviewing
 === auto indent on new line ===
 
 === syntax formatter ===
+
+=== remember window size and position ===
+
+=== checkstyle ===
+
+
+
+
+====== DONE =====
+=== syntax highlight ===
+
+
 
 
