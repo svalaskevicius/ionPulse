@@ -3,7 +3,7 @@
 #include <QtPlugin>
 #include <ionParticles/ionEditor/editorwidget.h>
 #include <QMessageBox>
-#include "ionHeart/ionPulse/shared.h"
+#include "ionHeart/shared.h"
 
 #include <ionParticles/ionEditor/plugin.h>
 

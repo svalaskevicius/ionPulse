@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QTextBlock>
 #include <QPaintEvent>
-#include <ionHeart/ionPulse/shared.h>
+#include <ionHeart/shared.h>
 
 namespace IonEditor {
 

@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include <QPluginLoader>
 #include <QApplication>
-#include <ionPulse/shared.h>
-#include "ionPulse/plugin.h"
+#include <shared.h>
+#include "plugin.h"
 #include <QStatusBar>
 
 

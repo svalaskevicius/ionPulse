@@ -2,7 +2,7 @@
 #define IONEDITORPHP_H
 
 #include <QObject>
-#include <ionHeart/ionPulse/plugin.h>
+#include <ionHeart/plugin.h>
 
 namespace IonPhp {
 

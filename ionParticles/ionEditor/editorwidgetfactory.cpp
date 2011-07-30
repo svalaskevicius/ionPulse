@@ -1,5 +1,5 @@
 #include "editorwidgetfactory.h"
-#include "ionHeart/ionPulse/shared.h"
+#include "ionHeart/shared.h"
 
 
 namespace IonEditor {

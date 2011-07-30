@@ -2,7 +2,7 @@
 #define IONEDITOR_H
 
 #include <QObject>
-#include <ionHeart/ionPulse/plugin.h>
+#include <ionHeart/plugin.h>
 #include <QScopedPointer>
 
 namespace IonEditor {

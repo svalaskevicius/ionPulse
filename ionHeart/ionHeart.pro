@@ -15,9 +15,12 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     ionPulse/shared.h \
-    ionPulse/plugin.h
+    ionPulse/plugin.h \
+    shared.h \
+    plugin.h
 
 FORMS    +=
 
 target.path += "$${INSTALL_DIR}"
 INSTALLS += target
+

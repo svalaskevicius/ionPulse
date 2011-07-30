@@ -1,5 +1,5 @@
 #include "highlighter.h"
-#include <ionHeart/ionPulse/shared.h>
+#include <ionHeart/shared.h>
 
 namespace IonPhp {
 
