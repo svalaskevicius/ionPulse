@@ -14,24 +14,27 @@ QT       += core
 TARGET = ionPhp
 INCLUDEPATH +=  ../..
 LIBS += -L../ionEditor \
-            -lionEditor
+            -lionEditor \
+            -ldparse
 
 HEADERS += \
     plugin.h \
     editorwidgetfactory.h \
     highlighter.h \
-    phpParser/ionPhp.g
+    phpParser/ionPhp.g \
+    phpparser.h
 
 
 SOURCES += \
     plugin.cpp \
     editorwidgetfactory.cpp \
     highlighter.cpp \
-    ionPhp.g.d_parser.cpp
+    ionPhp.g.d_parser.cpp \
+    phpparser.cpp
 
 
 ionPhp_d_parser.target = $${PWD}/phpParser/ionPhp.g.d_parser.cpp
-ionPhp_d_parser.commands =  /usr/local/bin/make_dparser -o $${PWD}/phpParser/ionPhp.g.d_parser.cpp  $${PWD}/phpParser/ionPhp.g
+ionPhp_d_parser.commands =  cd "$${PWD}/phpParser/" && /usr/local/bin/make_dparser -I -o ionPhp.g.d_parser.cpp ionPhp.g
 ionPhp_d_parser.depends =  $${PWD}/phpParser/ionPhp.g
 QMAKE_EXTRA_TARGETS += ionPhp_d_parser
 
@@ -43,6 +46,9 @@ QMAKE_EXTRA_TARGETS += ionPhp_d_parser_dep
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
+
 
 
 

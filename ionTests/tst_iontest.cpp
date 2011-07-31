@@ -1,6 +1,8 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
+#include <ionParticles/ionPhp/phpparser.h>
+
 class IonTest : public QObject
 {
     Q_OBJECT
@@ -9,16 +11,17 @@ public:
     IonTest();
 
 private Q_SLOTS:
-    void testCase1();
+    void testPhpParser();
 };
 
 IonTest::IonTest()
 {
 }
 
-void IonTest::testCase1()
+void IonTest::testPhpParser()
 {
-    QVERIFY2(true, "Failure");
+    IonPhp::phpParser p;
+    QVERIFY2(p.parse("xxx <?php class boo {}"), "Failure");
 }
 
 QTEST_APPLESS_MAIN(IonTest);

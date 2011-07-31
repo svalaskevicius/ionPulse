@@ -1,103 +1,27 @@
-{
-#include <stdio.h>
-#include <string>
-
-std::string reserved_words[] = { "auto", "break", "case", "char", "const",
-  "continue", "default", "do", "double", "else", "enum", "extern", "float",
-  "for", "goto", "if", "int", "long", "register", "return", "short", "signed",
-  "sizeof", "static", "struct", "typedef", "union", "unsigned", "void",
-  "volatile", "while", NULL};
-
-static int is_one_of(char *s, char *e, char **list) {
-  while (*list) {
-    if (strlen(*list) == e-s && !strncmp(s, *list, e-s)) return 1;
-    list++;
-  }
-  return 0;
-}
-}
-
-program: statements ;
+program: ".(?!<\?php)*<\?php" statements ;
 
 statements: statement*;
 statements_expr: statements expression?;
-statement: function_definition
-           | declaration ';'
+statement:   namespace_definition
+           | class_definition
+           | function_definition
            | expression ';'
            | '{' statements_expr '}';
 
-function_definition
-  : declaration_specifiers declarator '{' statements_expr '}' ;
+namespace_definition: "NAMESPACE";
 
-declaration : declaration_specifiers init_declarator_list? ;
+class_definition: ('abstract' | 'final')? 'class' identifier class_specification? '{' class_contents '}';
+class_specification: ':' (('extends' identifier) | ('implements' identifier_list))+ ;
+class_contents: ;
 
-init_declarator_list :	init_declarator (',' init_declarator)* ;
-init_declarator : declarator ('=' initializer)? ;
+function_definition:
+    ('public' | 'protected' | 'private' | 'static' | 'final' | 'abstract')*
+    'function' identifier '(' function_variable_def (',' function_variable_def)* ')' '{' statements_expr '}'
+    ;
 
-declaration_specifiers
-  : (storage_class_specifier | type_specifier | type_qualifier)+ ;
+function_variable_def: variable ('=' (constant | string | array))? ;
 
-storage_class_specifier: 'auto' | 'register' | 'static' | 'extern' | 'typedef';
-
-type_specifier: 'void' | 'char' | 'short' | 'int' | 'long' | 'float'
-  | 'double' | 'signed' | 'unsigned' | struct_or_union_specifier
-  | enum_specifier | typeID;
-
-type_qualifier: 'const' | 'volatile';
-
-typeID: identifier [
-/*
-  D_Sym *s = find_sym(${scope}, $n0.start, $n0.end);
-  if (!s) ${reject};
-  if (!s->user.is_typename) ${reject};
-*/
-];
-
-struct_or_union_specifier: ('struct' | 'union')
-  ( identifier | identifier? '{' struct_declaration+ '}') ;
-
-struct_declaration : specifier_qualifier_list struct_declarator_list ';' ;
-
-specifier_qualifier_list : (type_specifier | type_qualifier)+ ;
-
-struct_declarator_list : struct_declarator (',' struct_declarator)* ;
-
-struct_declarator : declarator | declarator? ':' constant;
-
-enum_specifier : 'enum'
-  ( identifier ('{' enumerator_list '}')?
-  | '{' enumerator_list '}') ;
-enumerator_list : enumerator (',' enumerator)* ;
-enumerator : identifier ('=' expression)?;
-
-declarator : '*' type_qualifier* declarator | direct_declarator ;
-
-direct_declarator : identifier declarator_suffix*
-                  | '(' declarator ')' declarator_suffix* ;
-
-declarator_suffix : '[' expression? ']' | '(' parameter_list? ')';
-
-parameter_list : parameter_declaration_list ( "," "..." )? ;
-
-parameter_declaration
-  : declaration_specifiers (declarator? | abstract_declarator) ;
-
-initializer : expr | '{' initializer (',' initializer)* '}' ;
-
-type_name : specifier_qualifier_list abstract_declarator ;
-
-abstract_declarator
-  : '*' type_qualifier* abstract_declarator
-  | '(' abstract_declarator ')' abstract_declarator_suffix+
-  | ('[' expression? ']')+
-  | ;
-
-abstract_declarator_suffix
-  : '[' expression? ']'
-  | '('  parameter_declaration_list? ')' ;
-
-parameter_declaration_list
-  : parameter_declaration ( ',' parameter_declaration )* ;
+array:;
 
 expression
   : expr
@@ -149,7 +73,7 @@ expr
   | '&' expr $right 9800
   | '--' expr $right 9800
   | '++' expr $right 9800
-  | '(' type_name ')' expr $right 9800
+  | '(' identifier ')' expr $right 9800
   /* binary operators */
   | expr '->' expr $left 9900
   | expr '.' expr $left 9900
@@ -196,7 +120,8 @@ hexint: "(0x|0X)[0-9a-fA-F]+[uUlL]?" $term -2;
 octalint: "0[0-7]*[uUlL]?" $term -3;
 float1: "([0-9]+.[0-9]*|[0-9]*.[0-9]+)([eE][\-\+]?[0-9]+)?[fFlL]?" $term -4;
 float2: "[0-9]+[eE][\-\+]?[0-9]+[fFlL]?" $term -5;
-identifier: "[a-zA-Z_][a-zA-Z0-9_]*" $term -6 [
-  if (is_one_of($n0.start_loc.s, $n0.end, reserved_words))
-    ${reject};
-];
+identifier: "[a-zA-Z_][a-zA-Z0-9_]*" $term -6;
+variable: "\$[a-zA-Z_][a-zA-Z0-9_]*"  $term -5;
+
+identifier_list: identifier (',' identifier)*;
+
