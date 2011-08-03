@@ -3,6 +3,7 @@
 
 #include <ionParticles/ionPhp/phpparser.h>
 
+
 class IonTest : public QObject
 {
     Q_OBJECT
@@ -21,7 +22,9 @@ IonTest::IonTest()
 void IonTest::testPhpParser()
 {
     IonPhp::phpParser p;
-    QVERIFY2(p.parse("xxx <?php class boo {}"), "Failure");
+    QVERIFY2(p.parse("<?php?><?php?><?php", "test"), "Failure");
+    QVERIFY2(p.parse("<?php?><?php?><?php?>", "test"), "Failure");
+    QVERIFY2(p.parse("<?php?>asd<?php?>asd", "test"), "Failure");
 }
 
 QTEST_APPLESS_MAIN(IonTest);
