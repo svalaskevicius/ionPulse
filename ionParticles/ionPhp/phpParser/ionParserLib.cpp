@@ -1,3 +1,3 @@
 #include "ionParserLib.h"
 
-IonPhpParserOptions ionPhpParserOptions;
+void zend_do_end_compilation() {}

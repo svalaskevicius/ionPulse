@@ -28,20 +28,11 @@
  */
 
 
-#include "zend_compile.h"
-#include "zend.h"
-#include "zend_list.h"
-#include "zend_globals.h"
-#include "zend_API.h"
-#include "zend_constants.h"
+#include "phpParser/ionParserLib.h"
 
 
 #define YYERROR_VERBOSE
-#define YYSTYPE znode
-#ifdef ZTS
-# define YYPARSE_PARAM tsrm_ls
-# define YYLEX_PARAM tsrm_ls
-#endif
+#define YYSTYPE ASTNode
 
 
 %}
@@ -152,31 +143,31 @@
 %% /* Rules */
 
 start:
-        top_statement_list	{ zend_do_end_compilation(TSRMLS_C); }
+        top_statement_list
 ;
 
 top_statement_list:
-                top_statement_list  { zend_do_extended_info(TSRMLS_C); } top_statement { HANDLE_INTERACTIVE(); }
+                top_statement_list top_statement
         |	/* empty */
 ;
 
 namespace_name:
-                T_STRING { $$ = $1; }
-        |	namespace_name T_NS_SEPARATOR T_STRING { zend_do_build_namespace_name(&$$, &$1, &$3 TSRMLS_CC); }
+                T_STRING { $$ = new_ASTNode("namespace_name")->addChild($1); }
+        |	namespace_name T_NS_SEPARATOR T_STRING { $$ = new_ASTNode("namespace_name")->addChild($3); }
 ;
 
 top_statement:
-                statement						{ zend_verify_namespace(TSRMLS_C); }
-        |	function_declaration_statement	{ zend_verify_namespace(TSRMLS_C); zend_do_early_binding(TSRMLS_C); }
-        |	class_declaration_statement		{ zend_verify_namespace(TSRMLS_C); zend_do_early_binding(TSRMLS_C); }
-        |	T_HALT_COMPILER '(' ')' ';'		{ zend_do_halt_compiler_register(TSRMLS_C); YYACCEPT; }
-        |	T_NAMESPACE namespace_name ';'	{ zend_do_begin_namespace(&$2, 0 TSRMLS_CC); }
-        |	T_NAMESPACE namespace_name '{'	{ zend_do_begin_namespace(&$2, 1 TSRMLS_CC); }
-                top_statement_list '}'		    { zend_do_end_namespace(TSRMLS_C); }
-        |	T_NAMESPACE '{'					{ zend_do_begin_namespace(NULL, 1 TSRMLS_CC); }
-                top_statement_list '}'			{ zend_do_end_namespace(TSRMLS_C); }
-        |	T_USE use_declarations ';'      { zend_verify_namespace(TSRMLS_C); }
-        |	constant_declaration ';'		{ zend_verify_namespace(TSRMLS_C); }
+                statement
+        |	function_declaration_statement
+        |	class_declaration_statement
+        |	T_HALT_COMPILER '(' ')' ';'      { $$ = $1; YYACCEPT; }
+        |	T_NAMESPACE namespace_name ';'	{ $$ = new_ASTNode("namespace")->addChild($2); }
+        |	T_NAMESPACE namespace_name '{'
+                top_statement_list '}'		{ $$ = new_ASTNode("namespace")->addChild($2)->addChild($4); }
+        |	T_NAMESPACE '{'
+                top_statement_list '}'		{ $$ = new_ASTNode("namespace")->addChild($3); }
+        |	T_USE use_declarations ';'       { $$ = new_ASTNode("use")->addChild($2); }
+        |	constant_declaration ';'
 ;
 
 use_declarations:
@@ -185,10 +176,10 @@ use_declarations:
 ;
 
 use_declaration:
-                namespace_name 			{ zend_do_use(&$1, NULL, 0 TSRMLS_CC); }
-        |	namespace_name T_AS T_STRING	{ zend_do_use(&$1, &$3, 0 TSRMLS_CC); }
-        |	T_NS_SEPARATOR namespace_name { zend_do_use(&$2, NULL, 1 TSRMLS_CC); }
-        |	T_NS_SEPARATOR namespace_name T_AS T_STRING { zend_do_use(&$2, &$4, 1 TSRMLS_CC); }
+                namespace_name
+        |	namespace_name T_AS T_STRING	{ $$ = new_ASTNode("as")->addChild($1)->addChild($3); }
+        |	T_NS_SEPARATOR namespace_name    { $$ = new_ASTNode("namespaceroot")->addChild($2); }
+        |	T_NS_SEPARATOR namespace_name T_AS T_STRING { $$ = new_ASTNode("as")->addChild(new_ASTNode("namespaceroot")->addChild($2))->addChild($4); }
 ;
 
 constant_declaration:
