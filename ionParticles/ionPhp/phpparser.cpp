@@ -1,6 +1,4 @@
 #include "phpparser.h"
-#include "phpParser/output/ionPhpLexer.h"
-#include "phpParser/output/ionPhpParser.h"
 
 #include <iostream>
 #include <QVector>
@@ -12,7 +10,7 @@ phpParser::phpParser()
 {
 }
 
-void print_tree (pANTLR3_BASE_TREE node, int level = 0) {
+/*void print_tree (pANTLR3_BASE_TREE node, int level = 0) {
     if (!node) {
         return;
     }
@@ -30,7 +28,7 @@ void print_tree (pANTLR3_BASE_TREE node, int level = 0) {
         std::cout << " ) ";
     }
 }
-
+*/
 bool phpParser::parse(QString doc, QString name)
 {
     return false;
