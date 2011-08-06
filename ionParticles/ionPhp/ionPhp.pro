@@ -22,9 +22,7 @@ HEADERS += \
     editorwidgetfactory.h \
     highlighter.h \
     phpparser.h \
-    phpParser/ionParserLib.h \
-    phpParser/output/ionPhpParser.h \
-    phpParser/output/ionPhpLexer.h
+    phpParser/ionParserLib.h
 
 
 SOURCES += \
@@ -32,13 +30,15 @@ SOURCES += \
     editorwidgetfactory.cpp \
     highlighter.cpp \
     phpparser.cpp \
-    phpParser/ionParserLib.cpp \
-    phpParser/output/ionPhpParser.c \
-    phpParser/output/ionPhpLexer.c
+    phpParser/ionParserLib.cpp
 
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
+
+
 
 
 
