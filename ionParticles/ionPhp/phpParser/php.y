@@ -32,14 +32,21 @@
 
 
 #define YYERROR_VERBOSE
-#define YYSTYPE ASTNode
+#define YYSTYPE pASTNode
 
+#define yyparse ion_php_parse
+#define yylex   ion_php_lex
+#define yyerror ion_php_error
+#define yylval  ion_php_lval
+#define yychar  ion_php_char
+#define yydebug ion_php_debug
+#define yynerrs ion_php_nerrs
 
 %}
 
 %pure_parser
 %glr-parser
-// %expect 2
+%expect 2
 
 %left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE
 %left ','
@@ -153,8 +160,8 @@ top_statement_list:
 ;
 
 namespace_name:
-                T_STRING { $$ = new_ASTNode("namespace_name")->addChild($1); }
-        |	namespace_name T_NS_SEPARATOR T_STRING { $$ = new_ASTNode("namespace_name")->addChild($3); }
+                T_STRING { $$ = ASTNode::create("namespace_name")->addChild($1); }
+        |	namespace_name T_NS_SEPARATOR T_STRING { $$ = ASTNode::create("namespace_name")->addChild($3); }
 ;
 
 top_statement:
@@ -162,12 +169,12 @@ top_statement:
         |	function_declaration_statement
         |	class_declaration_statement
         |	T_HALT_COMPILER '(' ')' ';'      { $$ = $1; YYACCEPT; }
-        |	T_NAMESPACE namespace_name ';'	{ $$ = new_ASTNode("namespace")->addChild($2); }
+        |	T_NAMESPACE namespace_name ';'	{ $$ = ASTNode::create("namespace")->addChild($2); }
         |	T_NAMESPACE namespace_name '{'
-                top_statement_list '}'		{ $$ = new_ASTNode("namespace")->addChild($2)->addChild($4); }
+                top_statement_list '}'		{ $$ = ASTNode::create("namespace")->addChild($2)->addChild($4); }
         |	T_NAMESPACE '{'
-                top_statement_list '}'		{ $$ = new_ASTNode("namespace")->addChild($3); }
-        |	T_USE use_declarations ';'       { $$ = new_ASTNode("use")->addChild($2); }
+                top_statement_list '}'		{ $$ = ASTNode::create("namespace")->addChild($3); }
+        |	T_USE use_declarations ';'       { $$ = ASTNode::create("use")->addChild($2); }
         |	constant_declaration ';'
 ;
 
@@ -178,9 +185,9 @@ use_declarations:
 
 use_declaration:
                 namespace_name
-        |	namespace_name T_AS T_STRING	{ $$ = new_ASTNode("as")->addChild($1)->addChild($3); }
-        |	T_NS_SEPARATOR namespace_name    { $$ = new_ASTNode("namespaceroot")->addChild($2); }
-        |	T_NS_SEPARATOR namespace_name T_AS T_STRING { $$ = new_ASTNode("as")->addChild(new_ASTNode("namespaceroot")->addChild($2))->addChild($4); }
+        |	namespace_name T_AS T_STRING	{ $$ = ASTNode::create("as")->addChild($1)->addChild($3); }
+        |	T_NS_SEPARATOR namespace_name    { $$ = ASTNode::create("namespaceroot")->addChild($2); }
+        |	T_NS_SEPARATOR namespace_name T_AS T_STRING { $$ = ASTNode::create("as")->addChild(ASTNode::create("namespaceroot")->addChild($2))->addChild($4); }
 ;
 
 constant_declaration:
