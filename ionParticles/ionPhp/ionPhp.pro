@@ -56,7 +56,7 @@ QMAKE_EXTRA_TARGETS += gen_php_parser_dep
 
 
 gen_php_scanner.target = $${PWD}/phpParser/gen_php_scanner.cpp
-gen_php_scanner.commands =  cd "$${PWD}/phpParser/" && /usr/local/bin/re2c -i --case-inverted -cbdFt gen_php_scanner_defs.h -ogen_php_scanner.cpp php.l
+gen_php_scanner.commands =  cd "$${PWD}/phpParser/" && flex -i --header-file=gen_php_scanner.h -ogen_php_scanner.cpp php.l
 gen_php_scanner.depends =  $${PWD}/phpParser/php.l
 QMAKE_EXTRA_TARGETS += gen_php_scanner
 
