@@ -10,13 +10,12 @@
 
 
 #define yyparse ion_php_parse
-#define yylex   ion_php_lex
+#define yylex   context->__lex
 #define yyerror context->__error
 #define yylval  ion_php_lval
 #define yychar  ion_php_char
 #define yydebug ion_php_debug
 #define yynerrs ion_php_nerrs
-int ion_php_lex(pASTNode *astNode, void* yyscanner);
 
 %}
 
@@ -128,16 +127,18 @@ int ion_php_lex(pASTNode *astNode, void* yyscanner);
 
 %% /* Rules */
 
-%start top_statement_list;
+%start start;
+
+start: top_statement_list {context->__result = $1;};
 
 top_statement_list:
-                top_statement_list top_statement
-        |	/* empty */
+                top_statement_list top_statement {$1->addChild($2);}
+        |	/* empty */ {$$ = ASTNode::create("top_statement_list");}
 ;
 
 namespace_name:
                 T_STRING { $$ = ASTNode::create("namespace_name")->addChild($1); }
-        |	namespace_name T_NS_SEPARATOR T_STRING { $$ = ASTNode::create("namespace_name")->addChild($3); }
+        |	namespace_name T_NS_SEPARATOR T_STRING { $1->addChild($3); }
 ;
 
 top_statement:

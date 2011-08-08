@@ -3,6 +3,9 @@
 #include <iostream>
 #include <QVector>
 
+#include "gen_php_parser.hpp"
+
+extern int _impl_ionPhp_lex(pASTNode *astNode, yyscan_t yyscanner);
 
 int ion_php_parse(IonPhp::phpParser* context);
 
@@ -43,21 +46,22 @@ phpParser::~phpParser()
 bool phpParser::parse(QString doc, QString name)
 {
     void * buf = setBuf(doc.toAscii().constData());
+    __result = NULL;
     int ret = ion_php_parse(this);
     delBuf(buf);
 
     std::cout << ret << std::endl;
 
-    /*yyscan_t scanner;
-    yylex_init(&scanner);
-    YY_BUFFER_STATE buf = yy_scan_string(doc.toAscii().constData(), scanner);
-    //yylex(scanner);
-    int tok;
-    while ((tok=yylex()) > 0)
-              printf("tok=%d  yytext=%s\n", tok, yyget_text(scanner))
-    ;
-    yy_delete_buffer(buf, scanner);
-    yylex_destroy(scanner);*/
+    if (!ret && __result) {
+        // OK.
+        __result->print_r();
+        return true;
+    }
+
+    if (!ret && !__result) {
+        std::cerr << "DBG@\n";
+    }
+
     return false;
 }
 
@@ -65,6 +69,27 @@ bool phpParser::parse(QString doc, QString name)
 void phpParser::__error(phpParser *myself, const char *error) {
     Q_ASSERT(this == myself);
     std::cerr << "error: " << error << "\n";
+}
+
+int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
+{
+    while(1) {
+        int ret = _impl_ionPhp_lex(astNode, yyscanner);
+        switch (ret) {
+            case T_COMMENT:
+            case T_DOC_COMMENT:
+            case T_OPEN_TAG:
+            case T_WHITESPACE:
+                  continue;
+
+            case T_CLOSE_TAG:
+                  return ';'; /* implicit ; */
+            case T_OPEN_TAG_WITH_ECHO:
+                  return T_ECHO;
+            default:
+                  return ret;
+        }
+    }
 }
 
 }

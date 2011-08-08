@@ -2,6 +2,7 @@
 %option reentrant
 %option noyywrap
 %option stack
+%option prefix="_impl_ionPhp_"
 
 %{
 #include "phpparser.h"
@@ -9,7 +10,7 @@
 #include "gen_php_parser.hpp"
 
 #define yylval_param astNode
-#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
+//#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
 #define YY_EXTRA_TYPE IonPhp::phpParser*
 
 %}

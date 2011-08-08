@@ -22,6 +22,7 @@ IonTest::IonTest()
 void IonTest::testPhpParser()
 {
     IonPhp::phpParser p;
+    QVERIFY2(p.parse("<?php $a = moo();", "test"), "Failure");
     QVERIFY2(p.parse("<?php?><?php?><?php", "test"), "Failure");
     QVERIFY2(p.parse("<?php?><?php?><?php?>", "test"), "Failure");
     QVERIFY2(p.parse("<?php?>asd<?php?>asd", "test"), "Failure");
