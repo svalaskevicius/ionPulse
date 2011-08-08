@@ -22,7 +22,6 @@ public:
     static pASTNode create(QString name) {return new ASTNode(name);}
 };
 
-int ion_php_lex(pASTNode *astNode);
-void ion_php_error(const char *error);
+//void ion_php_error(const char *error);
 
 #endif // IONPARSERLIB_H

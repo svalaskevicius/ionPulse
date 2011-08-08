@@ -1,52 +1,30 @@
 %{
-/*
-   +----------------------------------------------------------------------+
-   | Zend Engine                                                          |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
-   +----------------------------------------------------------------------+
-   | This source file is subject to version 2.00 of the Zend license,     |
-   | that is bundled with this package in the file LICENSE, and is        |
-   | available through the world-wide-web at the following url:           |
-   | http://www.zend.com/license/2_00.txt.                                |
-   | If you did not receive a copy of the Zend license and are unable to  |
-   | obtain it through the world-wide-web, please send a note to          |
-   | license@zend.com so we can mail you a copy immediately.              |
-   +----------------------------------------------------------------------+
-   | Authors: Andi Gutmans <andi@zend.com>                                |
-   |          Zeev Suraski <zeev@zend.com>                                |
-   +----------------------------------------------------------------------+
-*/
-
-/* $Id: zend_language_parser.y 306939 2011-01-01 02:19:59Z felipe $ */
-
-/*
- * LALR shift/reduce conflicts and how they are resolved:
- *
- * - 2 shift/reduce conflicts due to the dangling elseif/else ambiguity. Solved by shift.
- *
- */
 
 
 #include "phpParser/ionParserLib.h"
-
+#include "phpparser.h"
 
 #define YYERROR_VERBOSE
 #define YYSTYPE pASTNode
+#define ion_php_scanner context->__scanner
+
 
 #define yyparse ion_php_parse
 #define yylex   ion_php_lex
-#define yyerror ion_php_error
+#define yyerror context->__error
 #define yylval  ion_php_lval
 #define yychar  ion_php_char
 #define yydebug ion_php_debug
 #define yynerrs ion_php_nerrs
+int ion_php_lex(pASTNode *astNode, void* yyscanner);
 
 %}
 
 %pure_parser
 %glr-parser
 %expect 2
+%parse-param { IonPhp::phpParser* context }
+%lex-param   { void* ion_php_scanner  }
 
 %left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE
 %left ','
@@ -150,9 +128,7 @@
 
 %% /* Rules */
 
-start:
-        top_statement_list
-;
+%start top_statement_list;
 
 top_statement_list:
                 top_statement_list top_statement
@@ -1000,6 +976,6 @@ class_constant:
  * Local variables:
  * tab-width: 4
  * c-basic-offset: 4
- * indent-tabs-mode: t
+ * indent-tabs-mode: s
  * End:
  */

@@ -15,7 +15,8 @@ TARGET = ionPhp
 INCLUDEPATH +=  ../..
 LIBS += -L../ionEditor \
             -lionEditor \
-            -lantlr3c
+
+#-lantlr3c
 
 HEADERS += \
     plugin.h \

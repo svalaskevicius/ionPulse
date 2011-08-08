@@ -1,8 +1,16 @@
-%{
-#include "phpParser/gen_php_parser.hpp"
-#include "phpParser/ionParserLib.h"
+%option bison-bridge
+%option reentrant
+%option noyywrap
+%option stack
 
-#define YY_DECL int ion_php_lex(pASTNode *astNode)
+%{
+#include "phpparser.h"
+#include "phpParser/ionParserLib.h"
+#include "gen_php_parser.hpp"
+
+#define yylval_param astNode
+#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
+#define YY_EXTRA_TYPE IonPhp::phpParser*
 
 %}
 LNUM	[0-9]+
@@ -16,7 +24,6 @@ TOKENS [;:,.\[\]()|^&+-/*=%!~$<>?@]
 ANY_CHAR [.]
 NEWLINE ("\r"|"\n"|"\r\n")
 
-%option stack
 %x ST_IN_SCRIPTING
 %x ST_LOOKING_FOR_PROPERTY
 %x ST_LOOKING_FOR_VARNAME
@@ -26,6 +33,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 %s ST_NOWDOC
 %s ST_VAR_OFFSET
 %x ST_END_HEREDOC
+
 %%
 
 <ST_IN_SCRIPTING>"exit" {
@@ -173,7 +181,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING>"->" {
-        yy_push_state(ST_LOOKING_FOR_PROPERTY);
+        yy_push_state(ST_LOOKING_FOR_PROPERTY, yyscanner);
         return T_OBJECT_OPERATOR;
 }
 
@@ -187,15 +195,14 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_LOOKING_FOR_PROPERTY>{LABEL} {
-        yy_pop_state();
+        yy_pop_state(yyscanner);
         *astNode = ASTNode::create("T_STRING")->setData("text", yytext);
         return T_STRING;
 }
 
 <ST_LOOKING_FOR_PROPERTY>{ANY_CHAR} {
         yyless(0);
-        yy_pop_state();
-        goto restart;
+        yy_pop_state(yyscanner);
 }
 
 <ST_IN_SCRIPTING>"::" {
@@ -444,37 +451,36 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_IN_SCRIPTING>"{" {
-        yy_push_state(ST_IN_SCRIPTING);
+        yy_push_state(ST_IN_SCRIPTING, yyscanner);
         return '{';
 }
 
 
 <ST_DOUBLE_QUOTES,ST_BACKQUOTE,ST_HEREDOC>"${" {
-        yy_push_state(ST_LOOKING_FOR_VARNAME);
+        yy_push_state(ST_LOOKING_FOR_VARNAME, yyscanner);
         return T_DOLLAR_OPEN_CURLY_BRACES;
 }
 
 
 <ST_IN_SCRIPTING>"}" {
         // was pushed in all occurences of '{'
-        yy_pop_state();
+        yy_pop_state(yyscanner);
         return '}';
 }
 
 
 <ST_LOOKING_FOR_VARNAME>{LABEL} {
         *astNode = ASTNode::create("T_STRING_VARNAME")->setData("text", yytext);
-        yy_pop_state();
-        yy_push_state(ST_IN_SCRIPTING);
+        yy_pop_state(yyscanner);
+        yy_push_state(ST_IN_SCRIPTING, yyscanner);
         return T_STRING_VARNAME;
 }
 
 
 <ST_LOOKING_FOR_VARNAME>{ANY_CHAR} {
         yyless(0);
-        yy_pop_state();
-        yy_push_state(ST_IN_SCRIPTING);
-        goto restart;
+        yy_pop_state(yyscanner);
+        yy_push_state(ST_IN_SCRIPTING, yyscanner);
 }
 
 
@@ -573,7 +579,6 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 <INITIAL>([^<])+ {
 inline_char_handler:
-inline_html:
         *astNode = ASTNode::create("T_INLINE_HTML")->setData("text", yytext);
         return T_INLINE_HTML;
 }
@@ -587,7 +592,7 @@ inline_html:
              * and "->" will be taken literally
              */
         yyless(yyleng - 3);
-        yy_push_state(ST_LOOKING_FOR_PROPERTY);
+        yy_push_state(ST_LOOKING_FOR_PROPERTY, yyscanner);
         *astNode = ASTNode::create("T_VARIABLE")->setData("text", yytext);
         return T_VARIABLE;
 }
@@ -596,7 +601,7 @@ inline_html:
         /* A [ always designates a variable offset, regardless of what follows
          */
         yyless(yyleng - 1);
-        yy_push_state(ST_VAR_OFFSET);
+        yy_push_state(ST_VAR_OFFSET, yyscanner);
         *astNode = ASTNode::create("T_VARIABLE")->setData("text", yytext);
         return T_VARIABLE;
 }
@@ -607,7 +612,7 @@ inline_html:
 }
 
 <ST_VAR_OFFSET>"]" {
-        yy_pop_state();
+        yy_pop_state(yyscanner);
         return ']';
 }
 
@@ -619,7 +624,7 @@ inline_html:
 <ST_VAR_OFFSET>[ \n\r\t\\'#] {
         /* Invalid rule to return a more explicit parse error with proper line number */
         yyless(0);
-        yy_pop_state();
+        yy_pop_state(yyscanner);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -629,90 +634,87 @@ inline_html:
 }
 
 
-<ST_IN_SCRIPTING>"#"|"//" {
-        while (YYCURSOR < YYLIMIT) {
-                switch (*YYCURSOR++) {
-                        case '\r':
-                                if (*YYCURSOR == '\n') {
-                                        YYCURSOR++;
-                                }
-                                /* fall through */
-                        case '\n':
-                                CG(zend_lineno)++;
+<ST_IN_SCRIPTING>("#"|"//") {
+
+    bool stop = false;
+    char c;
+    while(!stop && ((c = yyinput(yyscanner)) != 0)) {
+        switch (c) {
+            case '\r':
+                    c = yyinput(yyscanner);
+                    if (c != '\n') {
+                        unput(c);
+                    }
+                    /* fall through */
+            case '\n':
+                    stop = true;
+                    break;
+            case '%':
+                    /*if (!CG(asp_tags)) {
+                            continue;
+                    }*/
+                    /* fall through */
+            case '?':
+                    {
+                        char nc = yyinput(yyscanner);
+                        unput(nc);
+                        if (nc == '>') {
+                                unput(c);
+                                stop = true;
                                 break;
-                        case '%':
-                                if (!CG(asp_tags)) {
-                                        continue;
-                                }
-                                /* fall through */
-                        case '?':
-                                if (*YYCURSOR == '>') {
-                                        YYCURSOR--;
-                                        break;
-                                }
-                                /* fall through */
-                        default:
-                                continue;
-                }
-
-                break;
+                        }
+                    }
+                    /* fall through */
+            default:
+                    continue;
         }
+    }
 
-        yyleng = YYCURSOR - SCNG(yy_text);
-
-        return T_COMMENT;
+    *astNode = ASTNode::create("T_COMMENT")->setData("text", yytext);
+    return T_COMMENT;
 }
 
 <ST_IN_SCRIPTING>"/*"|"/**"{WHITESPACE} {
-        int doc_com;
+        bool doc_com;
 
         if (yyleng > 2) {
-                doc_com = 1;
-                RESET_DOC_COMMENT();
+                doc_com = true;
         } else {
-                doc_com = 0;
+                doc_com = false;
         }
 
-        while (YYCURSOR < YYLIMIT) {
-                if (*YYCURSOR++ == '*' && *YYCURSOR == '/') {
-                        break;
+        char c;
+
+        while ( (c = yyinput(yyscanner)) ) {
+            if (c == '*') {
+                char nc = yyinput(yyscanner);
+                if (nc == '/') {
+                    break;
+                } else {
+                    unput(nc);
                 }
+            }
         }
-
-        if (YYCURSOR < YYLIMIT) {
-                YYCURSOR++;
-        } else {
-                zend_error(E_COMPILE_WARNING, "Unterminated comment starting line %d", CG(zend_lineno));
-        }
-
-        yyleng = YYCURSOR - SCNG(yy_text);
-        HANDLE_NEWLINES(yytext, yyleng);
 
         if (doc_com) {
-                CG(doc_comment) = estrndup(yytext, yyleng);
-                CG(doc_comment_len) = yyleng;
-                return T_DOC_COMMENT;
+            *astNode = ASTNode::create("T_DOC_COMMENT")->setData("text", yytext);
+            return T_DOC_COMMENT;
         }
 
+        *astNode = ASTNode::create("T_COMMENT")->setData("text", yytext);
         return T_COMMENT;
 }
 
 <ST_IN_SCRIPTING>("?>"|"</script"{WHITESPACE}*">"){NEWLINE}? {
-        zendlval->value.str.val = yytext; /* no copying - intentional */
-        zendlval->value.str.len = yyleng;
-        zendlval->type = IS_STRING;
         BEGIN(INITIAL);
-        return T_CLOSE_TAG;  /* implicit ';' at php-end tag */
+        return T_CLOSE_TAG;
 }
 
 
 <ST_IN_SCRIPTING>"%>"{NEWLINE}? {
-        if (CG(asp_tags)) {
+        if (false /*CG(asp_tags)*/) {
                 BEGIN(INITIAL);
-                zendlval->value.str.len = yyleng;
-                zendlval->type = IS_STRING;
-                zendlval->value.str.val = yytext; /* no copying - intentional */
-                return T_CLOSE_TAG;  /* implicit ';' at php-end tag */
+                return T_CLOSE_TAG;
         } else {
                 yyless(1);
                 return yytext[0];
@@ -720,424 +722,149 @@ inline_html:
 }
 
 
-<ST_IN_SCRIPTING>b?['] {
-        register char *s, *t;
-        char *end;
-        int bprefix = (yytext[0] != '\'') ? 1 : 0;
-
-        while (1) {
-                if (YYCURSOR < YYLIMIT) {
-                        if (*YYCURSOR == '\'') {
-                                YYCURSOR++;
-                                yyleng = YYCURSOR - SCNG(yy_text);
-
-                                break;
-                        } else if (*YYCURSOR++ == '\\' && YYCURSOR < YYLIMIT) {
-                                YYCURSOR++;
-                        }
-                } else {
-                        yyleng = YYLIMIT - SCNG(yy_text);
-
-                        /* Unclosed single quotes; treat similar to double quotes, but without a separate token
-                         * for ' (unrecognized by parser), instead of old flex fallback to "Unexpected character..."
-                         * rule, which continued in ST_IN_SCRIPTING state after the quote */
-                        return T_ENCAPSED_AND_WHITESPACE;
-                }
+<ST_IN_SCRIPTING>"'" {
+        char c;
+        while ( (c = yyinput(yyscanner)) )  {
+            if (c == '\'') {
+                break;
+            } else if (c == '\\') {
+                yyinput(yyscanner); // consume one more char
+            }
         }
-
-        zendlval->value.str.val = estrndup(yytext+bprefix+1, yyleng-bprefix-2);
-        zendlval->value.str.len = yyleng-bprefix-2;
-        zendlval->type = IS_STRING;
-
-        /* convert escape sequences */
-        s = t = zendlval->value.str.val;
-        end = s+zendlval->value.str.len;
-        while (s<end) {
-                if (*s=='\\') {
-                        s++;
-
-                        switch(*s) {
-                                case '\\':
-                                case '\'':
-                                        *t++ = *s;
-                                        zendlval->value.str.len--;
-                                        break;
-                                default:
-                                        *t++ = '\\';
-                                        *t++ = *s;
-                                        break;
-                        }
-                } else {
-                        *t++ = *s;
-                }
-
-                if (*s == '\n' || (*s == '\r' && (*(s+1) != '\n'))) {
-                        CG(zend_lineno)++;
-                }
-                s++;
-        }
-        *t = 0;
-
-#ifdef ZEND_MULTIBYTE
-        if (SCNG(output_filter)) {
-                size_t sz = 0;
-                s = zendlval->value.str.val;
-                SCNG(output_filter)((unsigned char **)&(zendlval->value.str.val), &sz, (unsigned char *)s, (size_t)zendlval->value.str.len);
-                zendlval->value.str.len = sz;
-                efree(s);
-        }
-#endif /* ZEND_MULTIBYTE */
+        *astNode = ASTNode::create("T_CONSTANT_ENCAPSED_STRING")->setData("text", yytext);
         return T_CONSTANT_ENCAPSED_STRING;
 }
 
 
-<ST_IN_SCRIPTING>b?["] {
-        int bprefix = (yytext[0] != '"') ? 1 : 0;
-
-        while (YYCURSOR < YYLIMIT) {
-                switch (*YYCURSOR++) {
-                        case '"':
-                                yyleng = YYCURSOR - SCNG(yy_text);
-                                zend_scan_escape_string(zendlval, yytext+bprefix+1, yyleng-bprefix-2, '"');
-                                return T_CONSTANT_ENCAPSED_STRING;
-                        case '$':
-                                if (IS_LABEL_START(*YYCURSOR) || *YYCURSOR == '{') {
-                                        break;
-                                }
-                                continue;
-                        case '{':
-                                if (*YYCURSOR == '$') {
-                                        break;
-                                }
-                                continue;
-                        case '\\':
-                                if (YYCURSOR < YYLIMIT) {
-                                        YYCURSOR++;
-                                }
-                                /* fall through */
-                        default:
-                                continue;
-                }
-
-                YYCURSOR--;
-                break;
+<ST_IN_SCRIPTING>"\"" {
+        char c;
+        while ( (c = yyinput(yyscanner)) )  {
+            switch (c) {
+                case '"':
+                    *astNode = ASTNode::create("T_CONSTANT_ENCAPSED_STRING")->setData("text", yytext);
+                    return T_CONSTANT_ENCAPSED_STRING;
+                case '\\':
+                    yyinput(yyscanner); // consume one more char
+                    continue;
+                case '$':
+                    {
+                        char nc = yyinput(yyscanner);
+                        if ( (nc == '{')
+                             || (nc == '_')
+                             || ((nc >= 'a') && (nc <= 'z'))
+                             || ((nc >= 'A') && (nc <= 'Z'))
+                            ) {
+                            unput(nc);
+                            unput(c);
+                            break;
+                        }
+                        continue;
+                    }
+                case '{':
+                    {
+                        char nc = yyinput(yyscanner);
+                        if ( (nc == '$') ) {
+                            unput(nc);
+                            unput(c);
+                            break;
+                        }
+                    }
+                    /* fall through */
+                default:
+                    continue;
+            }
+            break;
         }
 
         /* Remember how much was scanned to save rescanning */
-        SET_DOUBLE_QUOTES_SCANNED_LENGTH(YYCURSOR - SCNG(yy_text) - yyleng);
-
-        YYCURSOR = SCNG(yy_text) + yyleng;
-
+        *astNode = ASTNode::create("\"")->setData("text", yytext);
         BEGIN(ST_DOUBLE_QUOTES);
         return '"';
 }
 
 
-<ST_IN_SCRIPTING>b?"<<<"{TABS_AND_SPACES}({LABEL}|([']{LABEL}['])|(["]{LABEL}["])){NEWLINE} {
-        char *s;
-        int bprefix = (yytext[0] != '<') ? 1 : 0;
-
-        /* save old heredoc label */
-        Z_STRVAL_P(zendlval) = CG(heredoc);
-        Z_STRLEN_P(zendlval) = CG(heredoc_len);
-
-        CG(zend_lineno)++;
-        CG(heredoc_len) = yyleng-bprefix-3-1-(yytext[yyleng-2]=='\r'?1:0);
-        s = yytext+bprefix+3;
-        while ((*s == ' ') || (*s == '\t')) {
-                s++;
-                CG(heredoc_len)--;
-        }
-
-        if (*s == '\'') {
-                s++;
-                CG(heredoc_len) -= 2;
-
-                BEGIN(ST_NOWDOC);
-        } else {
-                if (*s == '"') {
-                        s++;
-                        CG(heredoc_len) -= 2;
-                }
-
-                BEGIN(ST_HEREDOC);
-        }
-
-        CG(heredoc) = estrndup(s, CG(heredoc_len));
-
-        /* Check for ending label on the next line */
-        if (CG(heredoc_len) < YYLIMIT - YYCURSOR && !memcmp(YYCURSOR, s, CG(heredoc_len))) {
-                YYCTYPE *end = YYCURSOR + CG(heredoc_len);
-
-                if (*end == ';') {
-                        end++;
-                }
-
-                if (*end == '\n' || *end == '\r') {
-                        BEGIN(ST_END_HEREDOC);
-                }
-        }
-
-        return T_START_HEREDOC;
-}
-
-
-<ST_IN_SCRIPTING>[`] {
-        BEGIN(ST_BACKQUOTE);
-        return '`';
-}
-
-
-<ST_END_HEREDOC>{ANY_CHAR} {
-        YYCURSOR += CG(heredoc_len) - 1;
-        yyleng = CG(heredoc_len);
-
-        Z_STRVAL_P(zendlval) = CG(heredoc);
-        Z_STRLEN_P(zendlval) = CG(heredoc_len);
-        CG(heredoc) = NULL;
-        CG(heredoc_len) = 0;
-        BEGIN(ST_IN_SCRIPTING);
-        return T_END_HEREDOC;
-}
-
-
 <ST_DOUBLE_QUOTES,ST_BACKQUOTE,ST_HEREDOC>"{$" {
-        zendlval->value.lval = (long) '{';
-        yy_push_state(ST_IN_SCRIPTING);
+        yy_push_state(ST_IN_SCRIPTING, yyscanner);
         yyless(1);
         return T_CURLY_OPEN;
 }
 
 
-<ST_DOUBLE_QUOTES>["] {
+<ST_DOUBLE_QUOTES>"\"" {
         BEGIN(ST_IN_SCRIPTING);
         return '"';
 }
 
-<ST_BACKQUOTE>[`] {
-        BEGIN(ST_IN_SCRIPTING);
-        return '`';
-}
-
-
 <ST_DOUBLE_QUOTES>{ANY_CHAR} {
-        if (GET_DOUBLE_QUOTES_SCANNED_LENGTH()) {
-                YYCURSOR += GET_DOUBLE_QUOTES_SCANNED_LENGTH() - 1;
-                SET_DOUBLE_QUOTES_SCANNED_LENGTH(0);
 
-                goto double_quotes_scan_done;
+        if (yytext[0] == '\\') {
+            yyinput(yyscanner);
         }
 
-        if (YYCURSOR > YYLIMIT) {
-                return 0;
+        char c;
+        while ( (c = yyinput(yyscanner)) ) {
+            switch (c) {
+                case '"':
+                    *astNode = ASTNode::create("T_CONSTANT_ENCAPSED_STRING")->setData("text", yytext);
+                    return T_CONSTANT_ENCAPSED_STRING;
+                case '\\':
+                    yyinput(yyscanner); // consume one more char
+                    continue;
+                case '$':
+                    {
+                        char nc = yyinput(yyscanner);
+                        if ( (nc == '{')
+                             || (nc == '_')
+                             || ((nc >= 'a') && (nc <= 'z'))
+                             || ((nc >= 'A') && (nc <= 'Z'))
+                            ) {
+                            unput(nc);
+                            unput(c);
+                            break;
+                        }
+                        continue;
+                    }
+                case '{':
+                    {
+                        char nc = yyinput(yyscanner);
+                        if ( (nc == '$') ) {
+                            unput(nc);
+                            unput(c);
+                            break;
+                        }
+                    }
+                    /* fall through */
+                default:
+                    continue;
+            }
+            break;
         }
-        if (yytext[0] == '\\' && YYCURSOR < YYLIMIT) {
-                YYCURSOR++;
-        }
 
-        while (YYCURSOR < YYLIMIT) {
-                switch (*YYCURSOR++) {
-                        case '"':
-                                break;
-                        case '$':
-                                if (IS_LABEL_START(*YYCURSOR) || *YYCURSOR == '{') {
-                                        break;
-                                }
-                                continue;
-                        case '{':
-                                if (*YYCURSOR == '$') {
-                                        break;
-                                }
-                                continue;
-                        case '\\':
-                                if (YYCURSOR < YYLIMIT) {
-                                        YYCURSOR++;
-                                }
-                                /* fall through */
-                        default:
-                                continue;
-                }
-
-                YYCURSOR--;
-                break;
-        }
-
-double_quotes_scan_done:
-        yyleng = YYCURSOR - SCNG(yy_text);
-
-        zend_scan_escape_string(zendlval, yytext, yyleng, '"');
+        *astNode = ASTNode::create("T_ENCAPSED_AND_WHITESPACE")->setData("text", yytext);
         return T_ENCAPSED_AND_WHITESPACE;
 }
-
-
-<ST_BACKQUOTE>{ANY_CHAR} {
-        if (YYCURSOR > YYLIMIT) {
-                return 0;
-        }
-        if (yytext[0] == '\\' && YYCURSOR < YYLIMIT) {
-                YYCURSOR++;
-        }
-
-        while (YYCURSOR < YYLIMIT) {
-                switch (*YYCURSOR++) {
-                        case '`':
-                                break;
-                        case '$':
-                                if (IS_LABEL_START(*YYCURSOR) || *YYCURSOR == '{') {
-                                        break;
-                                }
-                                continue;
-                        case '{':
-                                if (*YYCURSOR == '$') {
-                                        break;
-                                }
-                                continue;
-                        case '\\':
-                                if (YYCURSOR < YYLIMIT) {
-                                        YYCURSOR++;
-                                }
-                                /* fall through */
-                        default:
-                                continue;
-                }
-
-                YYCURSOR--;
-                break;
-        }
-
-        yyleng = YYCURSOR - SCNG(yy_text);
-
-        zend_scan_escape_string(zendlval, yytext, yyleng, '`');
-        return T_ENCAPSED_AND_WHITESPACE;
-}
-
-
-<ST_HEREDOC>{ANY_CHAR} {
-        int newline = 0;
-
-        if (YYCURSOR > YYLIMIT) {
-                return 0;
-        }
-
-        YYCURSOR--;
-
-        while (YYCURSOR < YYLIMIT) {
-                switch (*YYCURSOR++) {
-                        case '\r':
-                                if (*YYCURSOR == '\n') {
-                                        YYCURSOR++;
-                                }
-                                /* fall through */
-                        case '\n':
-                                /* Check for ending label on the next line */
-                                if (IS_LABEL_START(*YYCURSOR) && CG(heredoc_len) < YYLIMIT - YYCURSOR && !memcmp(YYCURSOR, CG(heredoc), CG(heredoc_len))) {
-                                        YYCTYPE *end = YYCURSOR + CG(heredoc_len);
-
-                                        if (*end == ';') {
-                                                end++;
-                                        }
-
-                                        if (*end == '\n' || *end == '\r') {
-                                                /* newline before label will be subtracted from returned text, but
-                                                 * yyleng/yytext will include it, for zend_highlight/strip, tokenizer, etc. */
-                                                if (YYCURSOR[-2] == '\r' && YYCURSOR[-1] == '\n') {
-                                                        newline = 2; /* Windows newline */
-                                                } else {
-                                                        newline = 1;
-                                                }
-
-                                                CG(increment_lineno) = 1; /* For newline before label */
-                                                BEGIN(ST_END_HEREDOC);
-
-                                                goto heredoc_scan_done;
-                                        }
-                                }
-                                continue;
-                        case '$':
-                                if (IS_LABEL_START(*YYCURSOR) || *YYCURSOR == '{') {
-                                        break;
-                                }
-                                continue;
-                        case '{':
-                                if (*YYCURSOR == '$') {
-                                        break;
-                                }
-                                continue;
-                        case '\\':
-                                if (YYCURSOR < YYLIMIT && *YYCURSOR != '\n' && *YYCURSOR != '\r') {
-                                        YYCURSOR++;
-                                }
-                                /* fall through */
-                        default:
-                                continue;
-                }
-
-                YYCURSOR--;
-                break;
-        }
-
-heredoc_scan_done:
-        yyleng = YYCURSOR - SCNG(yy_text);
-
-        zend_scan_escape_string(zendlval, yytext, yyleng - newline, 0);
-        return T_ENCAPSED_AND_WHITESPACE;
-}
-
-
-<ST_NOWDOC>{ANY_CHAR} {
-        int newline = 0;
-
-        if (YYCURSOR > YYLIMIT) {
-                return 0;
-        }
-
-        YYCURSOR--;
-
-        while (YYCURSOR < YYLIMIT) {
-                switch (*YYCURSOR++) {
-                        case '\r':
-                                if (*YYCURSOR == '\n') {
-                                        YYCURSOR++;
-                                }
-                                /* fall through */
-                        case '\n':
-                                /* Check for ending label on the next line */
-                                if (IS_LABEL_START(*YYCURSOR) && CG(heredoc_len) < YYLIMIT - YYCURSOR && !memcmp(YYCURSOR, CG(heredoc), CG(heredoc_len))) {
-                                        YYCTYPE *end = YYCURSOR + CG(heredoc_len);
-
-                                        if (*end == ';') {
-                                                end++;
-                                        }
-
-                                        if (*end == '\n' || *end == '\r') {
-                                                /* newline before label will be subtracted from returned text, but
-                                                 * yyleng/yytext will include it, for zend_highlight/strip, tokenizer, etc. */
-                                                if (YYCURSOR[-2] == '\r' && YYCURSOR[-1] == '\n') {
-                                                        newline = 2; /* Windows newline */
-                                                } else {
-                                                        newline = 1;
-                                                }
-
-                                                CG(increment_lineno) = 1; /* For newline before label */
-                                                BEGIN(ST_END_HEREDOC);
-
-                                                goto nowdoc_scan_done;
-                                        }
-                                }
-                                /* fall through */
-                        default:
-                                continue;
-                }
-        }
-
-nowdoc_scan_done:
-        yyleng = YYCURSOR - SCNG(yy_text);
-
-        zend_copy_value(zendlval, yytext, yyleng - newline);
-        zendlval->type = IS_STRING;
-        HANDLE_NEWLINES(yytext, yyleng - newline);
-        return T_ENCAPSED_AND_WHITESPACE;
-}
-
 
 %%
+
+namespace IonPhp {
+        void phpParser::init_scanner()
+        {
+           yylex_init(&__scanner);
+           yyset_extra(this, __scanner);
+        }
+
+        void phpParser::destroy_scanner()
+        {
+           yylex_destroy(__scanner);
+        }
+
+        void *phpParser::setBuf(const char* data)
+        {
+            return yy_scan_string(data, __scanner);
+        }
+        void phpParser::delBuf(void *buf)
+        {
+            yy_delete_buffer((yy_buffer_state *)buf, __scanner);
+        }
+
+}
