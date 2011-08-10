@@ -43,14 +43,14 @@ phpParser::~phpParser()
 }
 */
 
-bool phpParser::parse(QString doc, QString name)
+bool phpParser::parse(QString doc)
 {
     void * buf = setBuf(doc.toAscii().constData());
     __result = NULL;
     int ret = ion_php_parse(this);
     delBuf(buf);
 
-    std::cout << ret << std::endl;
+    //std::cout << ret << std::endl;
 
     if (!ret && __result) {
         // OK.
@@ -74,6 +74,7 @@ void phpParser::__error(phpParser *myself, const char *error) {
 int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
 {
     while(1) {
+        *astNode = NULL;
         int ret = _impl_ionPhp_lex(astNode, yyscanner);
         switch (ret) {
             case T_COMMENT:
@@ -87,6 +88,7 @@ int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
             case T_OPEN_TAG_WITH_ECHO:
                   return T_ECHO;
             default:
+//                std::cout << "TOK: " << ret << std::endl;
                   return ret;
         }
     }

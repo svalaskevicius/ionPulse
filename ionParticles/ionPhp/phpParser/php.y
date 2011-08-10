@@ -132,7 +132,7 @@
 start: top_statement_list {context->__result = $1;};
 
 top_statement_list:
-                top_statement_list top_statement {$1->addChild($2);}
+                top_statement_list top_statement {if ($2) { $1->addChild($2);}}
         |	/* empty */ {$$ = ASTNode::create("top_statement_list");}
 ;
 

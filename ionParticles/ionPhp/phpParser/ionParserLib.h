@@ -18,7 +18,7 @@ protected:
     void _print_r(int level);
 public:
     ASTNode(QString name) : name(name) {}
-    pASTNode addChild(pASTNode child) {children.append(child);return this;}
+    pASTNode addChild(pASTNode child) {Q_ASSERT(child); children.append(child);return this;}
     pASTNode setData(QString name, QString data) {strdata[name]=data; return this;}
     static pASTNode create(QString name) {return new ASTNode(name);}
     void print_r() {_print_r(0);}

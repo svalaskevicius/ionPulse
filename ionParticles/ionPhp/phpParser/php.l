@@ -2,12 +2,19 @@
 %option reentrant
 %option noyywrap
 %option stack
+%option never-interactive
 %option prefix="_impl_ionPhp_"
 
 %{
 #include "phpparser.h"
 #include "phpParser/ionParserLib.h"
 #include "gen_php_parser.hpp"
+
+/* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
+ * is returned in "result".
+ */
+#define YY_INPUT(buf,result,max_size) \
+                result = 0;
 
 #define yylval_param astNode
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
@@ -21,7 +28,7 @@ HNUM	"0x"[0-9a-fA-F]+
 LABEL	[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
 WHITESPACE [ \n\r\t]+
 TABS_AND_SPACES [ \t]*
-TOKENS [;:,.\[\]()|^&+-/*=%!~$<>?@]
+TOKENS [;:,.\[\]()|^&+/=*%!~$<>?@-]
 ANY_CHAR [.]
 NEWLINE ("\r"|"\n"|"\r\n")
 
@@ -570,22 +577,97 @@ NEWLINE ("\r"|"\n"|"\r\n")
         return T_OPEN_TAG;
 }
 
-
+        /*
 <INITIAL>"<?" {
         // OPTIONS: SHORT TAGS
                 BEGIN(ST_IN_SCRIPTING);
                 return T_OPEN_TAG;
 
 }
+    */
 
-<INITIAL>([^<])+ {
+<INITIAL>.|[\n\r] {
 inline_char_handler:
-        *astNode = ASTNode::create("T_INLINE_HTML")->setData("text", yytext);
+        QString result = "";
+        char c = yytext[0];
+        while (c) {
+            if ('<' == c) {
+                char nc = yyinput(yyscanner);
+                switch (nc) {
+                    case 0:
+                        c = 0;
+                        break;
+                    case '?':
+                            if (0) {
+                                // allow shorttags?
+                                unput(nc);
+                                unput(c);
+                                break;
+                            }
+                            {
+                            char arr[4] = {0};
+                            if ( (arr[0] = yyinput(yyscanner)) ) {
+                                //TODO: optimize - check if p, then, h, then p
+                                if ( (arr[1] = yyinput(yyscanner)) ) {
+                                    if ( (arr[2] = yyinput(yyscanner)) ) {
+                                        if ( (arr[3] = yyinput(yyscanner)) ) {
+                                            unput(arr[3]);
+                                        }
+                                        unput(arr[2]);
+                                    }
+                                    unput(arr[1]);
+                                }
+                                unput(arr[0]);
+                            }
+                            if (
+                                    !strncasecmp(arr, "php", 3)
+                                    && (
+                                        (' ' == arr[3]) || ('\t' == arr[3]) || ('\r' == arr[3]) || ('\n' == arr[3])
+                                        )
+                            ) {
+                                unput(nc);
+                                unput(c);
+                                break;
+                            }
+                            unput(nc);
+                            result += c;
+                            c = yyinput(yyscanner);
+                            continue;
+                            }
+                        case '%':
+                                if (0) {
+                                //  allow asp tags?
+                                    unput(nc);
+                                    unput(c);
+                                        break;
+                                }
+                                unput(nc);
+                                result += c;
+                                c = yyinput(yyscanner);
+                                continue;
+                        case 's':
+                        case 'S':
+                                /* Probably NOT an opening PHP <script> tag, so don't end the HTML chunk yet
+                                 * If it is, the PHP <script> tag rule checks for any HTML scanned before it */
+                                unput(nc);
+                                unput(c);
+                                break;
+                        default:
+                                unput(nc);
+                                result += c;
+                                c = yyinput(yyscanner);
+                                continue;
+                }
+                break;
+            } else {
+                result += c;
+                c = yyinput(yyscanner);
+            }
+        }
+        if (result.length()) {
+            *astNode = ASTNode::create("T_INLINE_HTML")->setData("text", result);
+        }
         return T_INLINE_HTML;
-}
-
-<INITIAL>"<" {
-        goto inline_char_handler;
 }
 
 <ST_DOUBLE_QUOTES,ST_HEREDOC,ST_BACKQUOTE>"$"{LABEL}"->"[a-zA-Z_\x7f-\xff] {
@@ -861,11 +943,13 @@ namespace IonPhp {
 
         void *phpParser::setBuf(const char* data)
         {
-            return yy_scan_string(data, __scanner);
+            YY_BUFFER_STATE b = _impl_ionPhp__scan_string(data, __scanner);
+            b->yy_fill_buffer = 0;
+            return b;
         }
         void phpParser::delBuf(void *buf)
         {
-            yy_delete_buffer((yy_buffer_state *)buf, __scanner);
+            _impl_ionPhp__delete_buffer((yy_buffer_state *)buf, __scanner);
         }
 
 }
