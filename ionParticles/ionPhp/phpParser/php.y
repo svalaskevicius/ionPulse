@@ -215,7 +215,7 @@ unticked_statement:
         |	T_RETURN variable ';'
         |	T_GLOBAL global_var_list ';'
         |	T_STATIC static_var_list ';'
-        |	T_ECHO echo_expr_list ';'
+        |	T_ECHO echo_expr_list ';' {$$=$2;}
         |	T_INLINE_HTML
         |	expr ';'
         |	T_UNSET '(' unset_variables ')' ';'
@@ -444,18 +444,18 @@ optional_class_type:
 
 
 function_call_parameter_list:
-                non_empty_function_call_parameter_list	{ $$ = $1; }
-        |	/* empty */
+                non_empty_function_call_parameter_list
+        |	/* empty */ {$$=ASTNode::create("function_call_parameter_list");}
 ;
 
 
 non_empty_function_call_parameter_list:
-                expr_without_variable
-        |	variable
-        |	'&' w_variable
-        |	non_empty_function_call_parameter_list ',' expr_without_variable
-        |	non_empty_function_call_parameter_list ',' variable
-        |	non_empty_function_call_parameter_list ',' '&' w_variable
+                expr_without_variable {$$=ASTNode::create("function_call_parameter_list")->addChild($1);}
+        |	variable               {$$=ASTNode::create("function_call_parameter_list")->addChild($1);}
+        |	'&' w_variable         {$$=ASTNode::create("function_call_parameter_list")->addChild($2);$2->setData("reference", "1");}
+        |	non_empty_function_call_parameter_list ',' expr_without_variable {$1->addChild($3);}
+        |	non_empty_function_call_parameter_list ',' variable              {$1->addChild($3);}
+        |	non_empty_function_call_parameter_list ',' '&' w_variable        {$1->addChild($4);$4->setData("reference", "1");}
 ;
 
 global_var_list:
@@ -536,8 +536,8 @@ class_constant_declaration:
 ;
 
 echo_expr_list:
-                echo_expr_list ',' expr
-        |	expr
+                echo_expr_list ',' expr {$1->addChild($2);}
+        |	expr {$$ = ASTNode::create("echo_expr_list")->addChild($1);}
 ;
 
 
@@ -553,7 +553,7 @@ non_empty_for_expr:
 
 expr_without_variable:
                 T_LIST '('  assignment_list ')' '=' expr
-        |	variable '=' expr
+        |	variable '=' expr {$$=ASTNode::create("assignment")->addChild($1)->addChild($3);}
         |	variable '=' '&' variable
         |	variable '=' '&' T_NEW class_name_reference
         |	T_NEW class_name_reference  ctor_arguments
@@ -646,6 +646,7 @@ function_call:
                 namespace_name '('
                                 function_call_parameter_list
                                 ')'
+               {$$=ASTNode::create("function_call")->addChild($1)->addChild($3);}
         |	T_NAMESPACE T_NS_SEPARATOR namespace_name '('
                                 function_call_parameter_list
                                 ')'
@@ -788,8 +789,8 @@ non_empty_static_array_pair_list:
 ;
 
 expr:
-                r_variable					{ $$ = $1; }
-        |	expr_without_variable		{ $$ = $1; }
+                r_variable
+        |	expr_without_variable
 ;
 
 
@@ -810,7 +811,7 @@ variable:
                 base_variable_with_function_calls T_OBJECT_OPERATOR
                         object_property  method_or_not variable_properties
 
-        |	base_variable_with_function_calls { $$ = $1; }
+        |	base_variable_with_function_calls
 ;
 
 variable_properties:
@@ -846,7 +847,7 @@ variable_class_name:
 ;
 
 base_variable_with_function_calls:
-                base_variable		{ $$ = $1; }
+                base_variable
         |	function_call
 ;
 

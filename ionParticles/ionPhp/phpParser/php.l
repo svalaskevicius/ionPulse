@@ -588,8 +588,10 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 <INITIAL>.|[\n\r] {
 inline_char_handler:
+        // will eat at least one char to avoid endless wandering in this loop
         QString result = "";
-        char c = yytext[0];
+        result += (char)yytext[0];
+        char c = yyinput(yyscanner);
         while (c) {
             if ('<' == c) {
                 char nc = yyinput(yyscanner);

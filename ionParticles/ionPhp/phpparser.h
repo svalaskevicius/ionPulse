@@ -14,7 +14,7 @@ class phpParser
 public:
     phpParser();
     ~phpParser();
-    bool parse(QString doc);
+    pASTNode parse(QString doc);
 protected:
    void init_scanner();
    void destroy_scanner();

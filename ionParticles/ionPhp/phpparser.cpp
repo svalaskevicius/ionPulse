@@ -43,7 +43,7 @@ phpParser::~phpParser()
 }
 */
 
-bool phpParser::parse(QString doc)
+pASTNode phpParser::parse(QString doc)
 {
     void * buf = setBuf(doc.toAscii().constData());
     __result = NULL;
@@ -55,14 +55,10 @@ bool phpParser::parse(QString doc)
     if (!ret && __result) {
         // OK.
         __result->print_r();
-        return true;
+        return __result;
     }
 
-    if (!ret && !__result) {
-        std::cerr << "DBG@\n";
-    }
-
-    return false;
+    return NULL;
 }
 
 
@@ -74,6 +70,7 @@ void phpParser::__error(phpParser *myself, const char *error) {
 int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
 {
     while(1) {
+        pASTNode lastNode = *astNode;
         *astNode = NULL;
         int ret = _impl_ionPhp_lex(astNode, yyscanner);
         switch (ret) {
@@ -87,6 +84,12 @@ int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
                   return ';'; /* implicit ; */
             case T_OPEN_TAG_WITH_ECHO:
                   return T_ECHO;
+            case T_INLINE_HTML:
+                if (lastNode && (lastNode->getName() == "T_INLINE_HTML")) {
+                    // join them
+                    lastNode->setData("text", lastNode->getStrData("text")+(*astNode)->getStrData("text"));
+                    continue;
+                }
             default:
 //                std::cout << "TOK: " << ret << std::endl;
                   return ret;

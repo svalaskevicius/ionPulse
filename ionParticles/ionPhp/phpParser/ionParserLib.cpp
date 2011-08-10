@@ -32,3 +32,38 @@ void ASTNode::_print_r(int level)
      coutSpaces(level*4);
      cout << ")\n";
 }
+
+
+QString ASTNode::toString()
+{
+    QString ret = name;
+    if (strdata.count()) {
+        ret += " [";
+        QMap<QString, QString>::const_iterator i = strdata.begin();
+        bool _1st = true;
+        while (i != strdata.end()) {
+            if (!_1st) {
+                 ret += ", ";
+            } else {
+                _1st = false;
+            }
+            ret += i.key() + ":" + i.value();
+            ++i;
+        }
+        ret += "]";
+    }
+    if (children.size()) {
+        ret += "(";
+        bool _1st = true;
+        foreach (pASTNode child, children) {
+            if (!_1st) {
+                 ret += "; ";
+            } else {
+                _1st = false;
+            }
+            ret += child->toString();
+        }
+        ret += ")";
+    }
+    return ret;
+}
