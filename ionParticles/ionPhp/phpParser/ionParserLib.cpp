@@ -2,41 +2,16 @@
 #include <iostream>
 
 
-#define coutSpaces(l) { for(int _i=l;_i>0;_i--) std::cout << " ";}
+#define appendSpaces(w, l) { for(int _i=l;_i>0;_i--) w+=" ";}
 
 
-void ASTNode::_print_r(int level)
+QString ASTNode::toMlString(int indentLevel)
 {
-    coutSpaces(level*4);
-    using namespace std;
-    cout << name.toStdString();
-    if (strdata.count()) {
-        cout << " [";
-        QMap<QString, QString>::const_iterator i = strdata.begin();
-        bool _1st = true;
-        while (i != strdata.end()) {
-            if (!_1st) {
-                 cout << ", ";
-            } else {
-                _1st = false;
-            }
-            cout << i.key().toStdString() << ":" << i.value().toStdString();
-            ++i;
-        }
-        cout << "]";
+    QString ret;
+    if (indentLevel > 0) {
+        appendSpaces(ret, indentLevel*4);
     }
-    cout << "(\n";
-    foreach (pASTNode child, children) {
-        child->_print_r(level+1);
-    }
-     coutSpaces(level*4);
-     cout << ")\n";
-}
-
-
-QString ASTNode::toString()
-{
-    QString ret = name;
+    ret += name;
     if (strdata.count()) {
         ret += " [";
         QMap<QString, QString>::const_iterator i = strdata.begin();
@@ -54,6 +29,9 @@ QString ASTNode::toString()
     }
     if (children.size()) {
         ret += "(";
+        if (indentLevel >= 0) {
+            ret += "\n";
+        }
         bool _1st = true;
         foreach (pASTNode child, children) {
             if (!_1st) {
@@ -61,9 +39,16 @@ QString ASTNode::toString()
             } else {
                 _1st = false;
             }
-            ret += child->toString();
+            ret += child->toMlString(indentLevel<0?indentLevel:indentLevel+1);
+        }
+        if (indentLevel >= 0) {
+            ret += "\n";
+            appendSpaces(ret, indentLevel*4);
         }
         ret += ")";
+        if (indentLevel >= 0) {
+            ret += "\n";
+        }
     }
     return ret;
 }

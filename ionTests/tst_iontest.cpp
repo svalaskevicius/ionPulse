@@ -3,6 +3,16 @@
 #include <iostream>
 #include <ionParticles/ionPhp/phpparser.h>
 
+
+#define QCOMPARE_3(actual, expected, actions) \
+do {\
+    if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__))\
+        actions; \
+        return;\
+} while (0)
+
+#define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
+
 class IonTest : public QObject
 {
     Q_OBJECT
@@ -87,9 +97,10 @@ private Q_SLOTS:
     void testPhpParser_arrayDefinition() {
         pASTNode ret;
         QVERIFY(ret = IonPhp::phpParser().parse("<?php array('a', 2, 'sd'=>2);"));
-        QCOMPARE(
+        QCOMPARE_3(
             ret->toString(),
-            QString("")
+            QString(""),
+            PRINT(ret->toMlString())
         );
     }
 };

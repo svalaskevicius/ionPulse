@@ -54,7 +54,6 @@ pASTNode phpParser::parse(QString doc)
 
     if (!ret && __result) {
         // OK.
-        __result->print_r();
         return __result;
     }
 
