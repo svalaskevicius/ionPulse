@@ -573,7 +573,7 @@ method_body:
 ;
 
 variable_modifiers:
-                non_empty_member_modifiers    	{ $$ = $1; }
+                non_empty_member_modifiers
         |    T_VAR
 ;
 
@@ -583,7 +583,7 @@ method_modifiers:
 ;
 
 non_empty_member_modifiers:
-                member_modifier    	    	    	{ $$ = $1; }
+                member_modifier
         |    non_empty_member_modifiers member_modifier
 ;
 
@@ -616,12 +616,12 @@ echo_expr_list:
 
 for_expr:
                 /* empty */
-        |    non_empty_for_expr    { $$ = $1; }
+        |    non_empty_for_expr
 ;
 
 non_empty_for_expr:
                 non_empty_for_expr ','     expr
-        |    expr    	    	    { $$ = $1; }
+        |    expr
 ;
 
 expr_without_variable:
@@ -681,7 +681,7 @@ expr_without_variable:
                 expr
         |    expr '?' ':'
                 expr
-        |    internal_functions_in_yacc { $$ = $1; }
+        |    internal_functions
         |    T_INT_CAST expr
         |    T_DOUBLE_CAST expr
         |    T_STRING_CAST expr
@@ -691,7 +691,7 @@ expr_without_variable:
         |    T_UNSET_CAST expr
         |    T_EXIT exit_expr
         |    '@'  expr
-        |    scalar    	    	{ $$ = $1; }
+        |    scalar
         |    T_ARRAY '(' array_pair_list ')' { $$ = $3; }
         |    '`' backticks_expr '`'
         |    T_PRINT expr
@@ -1022,7 +1022,7 @@ encaps_var_offset:
 ;
 
 
-internal_functions_in_yacc:
+internal_functions:
                 T_ISSET '(' isset_variables ')' { $$ = $3; }
         |    T_EMPTY '(' variable ')'
         |    T_INCLUDE expr
