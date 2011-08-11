@@ -12,6 +12,15 @@ do {\
 } while (0)
 
 #define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
+#define TEST_PHP_PARSER(CODE, ASTSTR) { \
+    pASTNode ret; \
+    QVERIFY(ret = IonPhp::phpParser().parse(CODE)); \
+    QCOMPARE_3( \
+        ret->toString(), \
+        QString(ASTSTR), \
+        PRINT(ret->toMlString()) \
+    ); \
+}
 
 class IonTest : public QObject
 {
@@ -87,20 +96,15 @@ private Q_SLOTS:
         );
     }
     void testPhpParser_functionDefinition() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php function myfnc() {}"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list(function_declaration(T_STRING [text:myfnc]; parameter_list; inner_statement_list))")
+        TEST_PHP_PARSER(
+            "<?php function myfnc() {}",
+            "top_statement_list(function_declaration(T_STRING [text:myfnc]; parameter_list; inner_statement_list))"
         );
     }
     void testPhpParser_arrayDefinition() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php array('a', 2, 'sd'=>2);"));
-        QCOMPARE_3(
-            ret->toString(),
-            QString(""),
-            PRINT(ret->toMlString())
+        TEST_PHP_PARSER(
+            "<?php array('a', 2, 'sd'=>2);",
+            ""
         );
     }
 };
