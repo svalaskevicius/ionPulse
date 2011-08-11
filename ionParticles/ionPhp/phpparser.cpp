@@ -23,27 +23,7 @@ phpParser::~phpParser()
     destroy_scanner();
 }
 
-/*void print_tree (pANTLR3_BASE_TREE node, int level = 0) {
-    if (!node) {
-        return;
-    }
-    if (node->toString) {
-        std::cout << std::string((char *)node->toString(node)->chars);
-    } else {
-        std::cout << " NIL ";
-    }
-    std::cout << "; ";
-    if (int count = node->getChildCount(node)) {
-        std::cout << " ( ";
-        for (int i=0; i < count; i++) {
-            print_tree((pANTLR3_BASE_TREE)node->getChild(node, i));
-        }
-        std::cout << " ) ";
-    }
-}
-*/
-
-pASTNode phpParser::parse(QString doc)
+ASTRoot phpParser::parse(QString doc)
 {
     void * buf = setBuf(doc.toAscii().constData());
     __result = NULL;
@@ -52,12 +32,14 @@ pASTNode phpParser::parse(QString doc)
 
     //std::cout << ret << std::endl;
 
-    if (!ret && __result) {
-        // OK.
-        return __result;
+    if (ret) {
+        if (__result) {
+            delete __result;
+            __result = NULL;
+        }
     }
 
-    return NULL;
+    return ASTRoot(__result);
 }
 
 

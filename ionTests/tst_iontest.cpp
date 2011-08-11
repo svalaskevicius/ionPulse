@@ -13,8 +13,8 @@ do {\
 
 #define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
 #define TEST_PHP_PARSER(CODE, ASTSTR) { \
-    pASTNode ret; \
-    QVERIFY(ret = IonPhp::phpParser().parse(CODE)); \
+    ASTRoot ret; \
+    QVERIFY((ret = IonPhp::phpParser().parse(CODE)).data()); \
     QCOMPARE_3( \
         ret->toString(), \
         QString(ASTSTR), \
@@ -30,71 +30,38 @@ public:
     IonTest();
 
 private Q_SLOTS:
-    void testPhpParser_openCloseNoEnd() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php ?><?php ?><?php "));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list")
-        );
-    }
-    void testPhpParser_openCloseEnd() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php ?><?php ?><?php ?>"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list")
-        );
-    }
-    void testPhpParser_inlineHtml() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php ?>asd1<?php ?>asd2"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list(T_INLINE_HTML [text:asd1]; T_INLINE_HTML [text:asd2])")
-         );
-    }
-    void testPhpParser_scriptOpenTag() {
-        //QSKIP("boo", SkipSingle);
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php ?>asd<script language=\"php\">echo $d</script> asd"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list(T_INLINE_HTML [text:asd]; echo_expr_list(T_VARIABLE [text:$d]); T_INLINE_HTML [text: asd])")
-        );
-    }
-    void testPhpParser_scriptOpenTagWOQuotes() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php ?>asd<script language=php>echo $d</script> asd"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list(T_INLINE_HTML [text:asd]; echo_expr_list(T_VARIABLE [text:$d]); T_INLINE_HTML [text: asd])")
-        );
-    }
-    void testPhpParser_scriptOpenTagWrong() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php ?>asd<script language=notphp>echo $d</script> asd"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list(T_INLINE_HTML [text:asd<script language=notphp>echo $d</script> asd])")
-        );
-    }
-    void testPhpParser_variableAssignmentFromFncCall() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php $a = moo();"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list(assignment(T_VARIABLE [text:$a]; function_call(namespace_name(T_STRING [text:moo]); function_call_parameter_list)))")
-        );
-    }
-    void testPhpParser_variableAssignmentFromFncCallWithParams() {
-        pASTNode ret;
-        QVERIFY(ret = IonPhp::phpParser().parse("<?php $a = moo(1, $s);"));
-        QCOMPARE(
-            ret->toString(),
-            QString("top_statement_list(assignment(T_VARIABLE [text:$a]; function_call(namespace_name(T_STRING [text:moo]); function_call_parameter_list(T_LNUMBER [text:1]; T_VARIABLE [text:$s]))))")
-        );
-    }
+    void testPhpParser_openCloseNoEnd() { TEST_PHP_PARSER(
+        "<?php ?><?php ?><?php ",
+        "top_statement_list"
+    ); }
+    void testPhpParser_openCloseEnd() { TEST_PHP_PARSER(
+        "<?php ?><?php ?><?php ?>",
+        "top_statement_list"
+    ); }
+    void testPhpParser_inlineHtml() { TEST_PHP_PARSER(
+        "<?php ?>asd1<?php ?>asd2",
+        "top_statement_list(T_INLINE_HTML [text:asd1]; T_INLINE_HTML [text:asd2])"
+    ); }
+    void testPhpParser_scriptOpenTag() { TEST_PHP_PARSER(
+        "<?php ?>asd<script language=\"php\">echo $d</script> asd",
+        "top_statement_list(T_INLINE_HTML [text:asd]; echo_expr_list(T_VARIABLE [text:$d]); T_INLINE_HTML [text: asd])"
+    ); }
+    void testPhpParser_scriptOpenTagWOQuotes() { TEST_PHP_PARSER(
+        "<?php ?>asd<script language=php>echo $d</script> asd",
+        "top_statement_list(T_INLINE_HTML [text:asd]; echo_expr_list(T_VARIABLE [text:$d]); T_INLINE_HTML [text: asd])"
+    ); }
+    void testPhpParser_scriptOpenTagWrong() { TEST_PHP_PARSER(
+        "<?php ?>asd<script language=notphp>echo $d</script> asd",
+        "top_statement_list(T_INLINE_HTML [text:asd<script language=notphp>echo $d</script> asd])"
+    ); }
+    void testPhpParser_variableAssignmentFromFncCall() { TEST_PHP_PARSER(
+        "<?php $a = moo();",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; function_call(namespace_name(T_STRING [text:moo]); function_call_parameter_list)))"
+    ); }
+    void testPhpParser_variableAssignmentFromFncCallWithParams() { TEST_PHP_PARSER(
+        "<?php $a = moo(1, $s);",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; function_call(namespace_name(T_STRING [text:moo]); function_call_parameter_list(T_LNUMBER [text:1]; T_VARIABLE [text:$s]))))"
+    ); }
     void testPhpParser_functionDefinition() {
         TEST_PHP_PARSER(
             "<?php function myfnc() {}",
@@ -369,6 +336,7 @@ private Q_SLOTS:
     /*
         |    internal_functions { $$ = $1; }
         |    scalar    	    	{ $$ = $1; }
+        | statements
 
 */
 };

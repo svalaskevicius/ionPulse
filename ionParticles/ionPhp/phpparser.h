@@ -2,7 +2,6 @@
 #define PHPPARSER_H
 
 #include <QString>
-#include <QScopedPointer>
 #include "phpParser/ionParserLib.h"
 
 typedef void * yyscan_t;
@@ -14,7 +13,7 @@ class phpParser
 public:
     phpParser();
     ~phpParser();
-    pASTNode parse(QString doc);
+    ASTRoot parse(QString doc);
 protected:
    void init_scanner();
    void destroy_scanner();

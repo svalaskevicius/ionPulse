@@ -3,12 +3,13 @@
 
 #include <QString>
 #include <QList>
-#include <QSharedPointer>
 #include <QMap>
 #include <QVector>
+#include <QSharedPointer>
 
 class ASTNode;
 typedef ASTNode *pASTNode;
+typedef QSharedPointer<ASTNode> ASTRoot;
 
 class ASTNode {
 protected:
@@ -17,6 +18,7 @@ protected:
     QMap<QString, QString> strdata;
 public:
     ASTNode(QString name) : name(name) {}
+    ~ASTNode() {foreach (pASTNode n, children) delete n; children.clear();}
     QString getName() {return name;}
     pASTNode addChild(pASTNode child) {Q_ASSERT(child); children.append(child);return this;}
     pASTNode setData(QString name, QString data) {strdata[name]=data; return this;}

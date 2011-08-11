@@ -194,7 +194,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING,ST_LOOKING_FOR_PROPERTY>{WHITESPACE}+ {
-        *astNode = ASTNode::create("T_WHITESPACE")->setData("text", yytext);
+        // *astNode = ASTNode::create("T_WHITESPACE")->setData("text", yytext);
         return T_WHITESPACE;
 }
 
