@@ -191,7 +191,7 @@ statement:
 ;
 
 unticked_statement:
-                '{' inner_statement_list '}'
+                '{' inner_statement_list '}'           {$$=$2;}
         |    T_IF '(' expr ')'  statement  elseif_list else_single
         |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';'
         |    T_WHILE '('  expr  ')' while_statement
@@ -212,10 +212,10 @@ unticked_statement:
         |    T_CONTINUE expr ';'
         |    T_RETURN ';'
         |    T_RETURN expr_without_variable ';'
-        |    T_RETURN variable ';'
+        |    T_RETURN variable ';'          { $$ = ASTNode::create("return")->addChild($2);}
         |    T_GLOBAL global_var_list ';'
         |    T_STATIC static_var_list ';'
-        |    T_ECHO echo_expr_list ';' {$$=$2;}
+        |    T_ECHO echo_expr_list ';'
         |    T_INLINE_HTML
         |    expr ';'
         |    T_UNSET '(' unset_variables ')' ';'
@@ -510,7 +510,7 @@ non_empty_parameter_list:
 
 
 optional_class_type:
-                /* empty */
+                /* empty */ { $$ = ASTNode::create("__ANY_CLASS_TYPE__"); }
         |    fully_qualified_class_name
         |    T_ARRAY { $$ = ASTNode::create("T_ARRAY"); }
 ;
@@ -626,90 +626,101 @@ non_empty_for_expr:
 
 expr_without_variable:
                 T_LIST '('  assignment_list ')' '=' expr
+                {
+                    $$=ASTNode::create("assignment")->addChild($3)->addChild($6);
+                }
         |    variable '=' expr {$$=ASTNode::create("assignment")->addChild($1)->addChild($3);}
-        |    variable '=' '&' variable
+        |    variable '=' '&' variable {$$=ASTNode::create("assignment")->addChild($1)->addChild($4)->setData("is_reference", "1");}
         |    variable '=' '&' T_NEW class_name_reference
         |    T_NEW class_name_reference  ctor_arguments
-        |    T_CLONE expr
-        |    variable T_PLUS_EQUAL expr
-        |    variable T_MINUS_EQUAL expr
-        |    variable T_MUL_EQUAL expr
-        |    variable T_DIV_EQUAL expr
-        |    variable T_CONCAT_EQUAL expr
-        |    variable T_MOD_EQUAL expr
-        |    variable T_AND_EQUAL expr
-        |    variable T_OR_EQUAL expr
-        |    variable T_XOR_EQUAL expr
-        |    variable T_SL_EQUAL expr
-        |    variable T_SR_EQUAL expr
-        |    rw_variable T_INC
-        |    T_INC rw_variable
-        |    rw_variable T_DEC
-        |    T_DEC rw_variable
-        |    expr T_BOOLEAN_OR  expr
-        |    expr T_BOOLEAN_AND  expr
-        |    expr T_LOGICAL_OR  expr
-        |    expr T_LOGICAL_AND  expr
-        |    expr T_LOGICAL_XOR expr
-        |    expr '|' expr
-        |    expr '&' expr
-        |    expr '^' expr
-        |    expr '.' expr
-        |    expr '+' expr
-        |    expr '-' expr
-        |    expr '*' expr
-        |    expr '/' expr
-        |    expr '%' expr
-        |     expr T_SL expr
-        |    expr T_SR expr
+        |    T_CLONE expr {$$=ASTNode::create("clone")->addChild($2);}
+        |    variable T_PLUS_EQUAL expr    {$$=ASTNode::create("T_PLUS_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_MINUS_EQUAL expr   {$$=ASTNode::create("T_MINUS_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_MUL_EQUAL expr     {$$=ASTNode::create("T_MUL_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_DIV_EQUAL expr     {$$=ASTNode::create("T_DIV_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_CONCAT_EQUAL expr  {$$=ASTNode::create("T_CONCAT_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_MOD_EQUAL expr     {$$=ASTNode::create("T_MOD_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_AND_EQUAL expr     {$$=ASTNode::create("T_AND_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_OR_EQUAL expr      {$$=ASTNode::create("T_OR_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_XOR_EQUAL expr     {$$=ASTNode::create("T_XOR_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_SL_EQUAL expr      {$$=ASTNode::create("T_SL_EQUAL")->addChild($1)->addChild($3);}
+        |    variable T_SR_EQUAL expr      {$$=ASTNode::create("T_SR_EQUAL")->addChild($1)->addChild($3);}
+        |    rw_variable T_INC             {$$=ASTNode::create("POSTINC")->addChild($1);}
+        |    T_INC rw_variable             {$$=ASTNode::create("PREINC")->addChild($2);}
+        |    rw_variable T_DEC             {$$=ASTNode::create("POSTDEC")->addChild($1);}
+        |    T_DEC rw_variable             {$$=ASTNode::create("PREDEC")->addChild($2);}
+        |    expr T_BOOLEAN_OR  expr       {$$=ASTNode::create("T_BOOLEAN_OR")->addChild($1)->addChild($3);}
+        |    expr T_BOOLEAN_AND  expr      {$$=ASTNode::create("T_BOOLEAN_AND")->addChild($1)->addChild($3);}
+        |    expr T_LOGICAL_OR  expr       {$$=ASTNode::create("T_LOGICAL_OR")->addChild($1)->addChild($3);}
+        |    expr T_LOGICAL_AND  expr      {$$=ASTNode::create("T_LOGICAL_AND")->addChild($1)->addChild($3);}
+        |    expr T_LOGICAL_XOR expr       {$$=ASTNode::create("T_LOGICAL_XOR")->addChild($1)->addChild($3);}
+        |    expr '|' expr                 {$$=ASTNode::create("T_BINARY_OR")->addChild($1)->addChild($3);}
+        |    expr '&' expr                 {$$=ASTNode::create("T_BINARY_AND")->addChild($1)->addChild($3);}
+        |    expr '^' expr                 {$$=ASTNode::create("T_BINARY_XOR")->addChild($1)->addChild($3);}
+        |    expr '.' expr                 {$$=ASTNode::create("T_CONCAT")->addChild($1)->addChild($3);}
+        |    expr '+' expr                 {$$=ASTNode::create("T_PLUS")->addChild($1)->addChild($3);}
+        |    expr '-' expr                 {$$=ASTNode::create("T_MINUS")->addChild($1)->addChild($3);}
+        |    expr '*' expr                 {$$=ASTNode::create("T_MUL")->addChild($1)->addChild($3);}
+        |    expr '/' expr                 {$$=ASTNode::create("T_DIV")->addChild($1)->addChild($3);}
+        |    expr '%' expr                 {$$=ASTNode::create("T_MOD")->addChild($1)->addChild($3);}
+        |    expr T_SL expr                {$$=ASTNode::create("T_SHIFT_LEFT")->addChild($1)->addChild($3);}
+        |    expr T_SR expr                {$$=ASTNode::create("T_SHIFT_RIGHT")->addChild($1)->addChild($3);}
         |    '+' expr %prec T_INC
         |    '-' expr %prec T_INC
-        |    '!' expr
-        |    '~' expr
-        |    expr T_IS_IDENTICAL expr
-        |    expr T_IS_NOT_IDENTICAL expr
-        |    expr T_IS_EQUAL expr
-        |    expr T_IS_NOT_EQUAL expr
-        |    expr '<' expr
-        |    expr T_IS_SMALLER_OR_EQUAL expr
-        |    expr '>' expr
-        |    expr T_IS_GREATER_OR_EQUAL expr
-        |    expr T_INSTANCEOF class_name_reference
-        |    '(' expr ')'     { $$ = $2; }
+        |    '!' expr                      {$$=ASTNode::create("T_NEGATE")->addChild($2);}
+        |    '~' expr                      {$$=ASTNode::create("T_INVERSE")->addChild($2);}
+        |    expr T_IS_IDENTICAL expr      {$$=ASTNode::create("T_IS_IDENTICAL")->addChild($1)->addChild($3);}
+        |    expr T_IS_NOT_IDENTICAL expr  {$$=ASTNode::create("T_IS_NOT_IDENTICAL")->addChild($1)->addChild($3);}
+        |    expr T_IS_EQUAL expr          {$$=ASTNode::create("T_IS_EQUAL")->addChild($1)->addChild($3);}
+        |    expr T_IS_NOT_EQUAL expr      {$$=ASTNode::create("T_IS_NOT_EQUAL")->addChild($1)->addChild($3);}
+        |    expr '<' expr                 {$$=ASTNode::create("T_LESSTHAN")->addChild($1)->addChild($3);}
+        |    expr T_IS_SMALLER_OR_EQUAL expr  {$$=ASTNode::create("T_LESSTHAN_EQ")->addChild($1)->addChild($3);}
+        |    expr '>' expr                 {$$=ASTNode::create("T_GREATERTHAN")->addChild($1)->addChild($3);}
+        |    expr T_IS_GREATER_OR_EQUAL expr  {$$=ASTNode::create("T_GREATERTHAN_EQ")->addChild($1)->addChild($3);}
+        |    expr T_INSTANCEOF class_name_reference  {$$=ASTNode::create("T_INSTANCEOF")->addChild($1)->addChild($3);}
+        |    '(' expr ')'                  { $$ = $2; }
         |    expr '?'
                 expr ':'
-                expr
+                expr                       {$$=ASTNode::create("TERNARYOP")->addChild($1)->addChild($3)->addChild($5);}
         |    expr '?' ':'
-                expr
+                expr                       {$$=ASTNode::create("TERNARYOP")->addChild($1)->addChild(ASTNode::create("VOID"))->addChild($4);}
         |    internal_functions
-        |    T_INT_CAST expr
-        |    T_DOUBLE_CAST expr
-        |    T_STRING_CAST expr
-        |    T_ARRAY_CAST expr
-        |    T_OBJECT_CAST expr
-        |    T_BOOL_CAST expr
-        |    T_UNSET_CAST expr
-        |    T_EXIT exit_expr
-        |    '@'  expr
+        |    T_INT_CAST expr               {$$=ASTNode::create("T_INT_CAST")->addChild($2);}
+        |    T_DOUBLE_CAST expr            {$$=ASTNode::create("T_DOUBLE_CAST")->addChild($2);}
+        |    T_STRING_CAST expr            {$$=ASTNode::create("T_STRING_CAST")->addChild($2);}
+        |    T_ARRAY_CAST expr             {$$=ASTNode::create("T_ARRAY_CAST")->addChild($2);}
+        |    T_OBJECT_CAST expr            {$$=ASTNode::create("T_OBJECT_CAST")->addChild($2);}
+        |    T_BOOL_CAST expr              {$$=ASTNode::create("T_BOOL_CAST")->addChild($2);}
+        |    T_UNSET_CAST expr             {$$=ASTNode::create("T_UNSET_CAST")->addChild($2);}
+        |    T_EXIT exit_expr              {$$=ASTNode::create("T_EXIT")->addChild($2);}
+        |    '@'  expr                     {$$=ASTNode::create("SILENCE")->addChild($2);}
         |    scalar
-        |    T_ARRAY '(' array_pair_list ')' { $$ = $3; }
-        |    '`' backticks_expr '`'
-        |    T_PRINT expr
+        |    T_ARRAY '(' array_pair_list ')' { $$ = ASTNode::create("T_ARRAY")->addChild($3); }
+        |    '`' backticks_expr '`'        { $$ = ASTNode::create("BACKTICKS")->addChild($2); }
+        |    T_PRINT expr                  {$$=ASTNode::create("T_PRINT")->addChild($2);}
         |    T_FUNCTION is_reference '('
                         parameter_list ')' lexical_vars '{' inner_statement_list '}'
+             {
+                $$=ASTNode::create("LAMBDA_FUNCTION")
+                    ->addChild($4)
+                    ->addChild($6)
+                    ->addChild($8)
+                ;
+                /* handle ref! is_reference */
+             }
 ;
 
 
 lexical_vars:
-                /* empty */
-        |    T_USE '(' lexical_var_list ')'
+                /* empty */                 { $$ = ASTNode::create("T_USE"); }
+        |    T_USE '(' lexical_var_list ')' { $$ = ASTNode::create("T_USE")->addChild($3); }
 ;
 
 lexical_var_list:
-                lexical_var_list ',' T_VARIABLE
-        |    lexical_var_list ',' '&' T_VARIABLE
-        |    T_VARIABLE
-        |    '&' T_VARIABLE
+                lexical_var_list ',' T_VARIABLE   { $1->addChild($3); }
+        |    lexical_var_list ',' '&' T_VARIABLE  { $1->addChild($4); $4->setData("is_reference", "1");}
+        |    T_VARIABLE                     { $$ = ASTNode::create("lexical_var_list")->addChild($1); }
+        |    '&' T_VARIABLE                 { $$ = ASTNode::create("lexical_var_list")->addChild($2); $2->setData("is_reference", "1"); }
 ;
 
 function_call:
@@ -781,7 +792,7 @@ dynamic_class_name_variable_property:
 
 exit_expr:
                 /* empty */
-        |    '(' ')'
+        |    '(' ')'         { $$ = ASTNode::create("VOID"); }
         |    '(' expr ')'    { $$ = $2; }
 ;
 

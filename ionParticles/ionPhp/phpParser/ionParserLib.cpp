@@ -35,7 +35,11 @@ QString ASTNode::toMlString(int indentLevel)
         bool _1st = true;
         foreach (pASTNode child, children) {
             if (!_1st) {
-                 ret += "; ";
+                 if (indentLevel >= 0) {
+                     ret += "\n";
+                 } else {
+                     ret += "; ";
+                 }
             } else {
                 _1st = false;
             }
@@ -46,9 +50,6 @@ QString ASTNode::toMlString(int indentLevel)
             appendSpaces(ret, indentLevel*4);
         }
         ret += ")";
-        if (indentLevel >= 0) {
-            ret += "\n";
-        }
     }
     return ret;
 }
