@@ -1,3 +1,5 @@
+=== parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
+
 === semantic parser ===
 
 === semantic hightlight ===

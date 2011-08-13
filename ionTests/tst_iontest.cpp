@@ -44,11 +44,11 @@ private Q_SLOTS:
     ); }
     void testPhpParser_scriptOpenTag() { TEST_PHP_PARSER(
         "<?php ?>asd<script language=\"php\">echo $d</script> asd",
-        "top_statement_list(T_INLINE_HTML [text:asd]; echo_expr_list(T_VARIABLE [text:$d]); T_INLINE_HTML [text: asd])"
+        "top_statement_list(T_INLINE_HTML [text:asd]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
     ); }
     void testPhpParser_scriptOpenTagWOQuotes() { TEST_PHP_PARSER(
         "<?php ?>asd<script language=php>echo $d</script> asd",
-        "top_statement_list(T_INLINE_HTML [text:asd]; echo_expr_list(T_VARIABLE [text:$d]); T_INLINE_HTML [text: asd])"
+        "top_statement_list(T_INLINE_HTML [text:asd]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
     ); }
     void testPhpParser_scriptOpenTagWrong() { TEST_PHP_PARSER(
         "<?php ?>asd<script language=notphp>echo $d</script> asd",
@@ -70,7 +70,7 @@ private Q_SLOTS:
     }
     void testPhpParser_listDefinition() { TEST_PHP_PARSER(
         "<?php list($a, $b) = $c;",
-        ""
+        "top_statement_list(assignment(assignment_list(T_VARIABLE [text:$a]; T_VARIABLE [text:$b]); T_VARIABLE [text:$c]))"
     ); }
     void testPhpParser_assignDefinition() { TEST_PHP_PARSER(
         "<?php $a = $c;",
@@ -81,12 +81,12 @@ private Q_SLOTS:
         "top_statement_list(assignment [is_reference:1](T_VARIABLE [text:$a]; T_VARIABLE [text:$c]))"
     ); }
     void testPhpParser_assignRefNewClassDefinition() { TEST_PHP_PARSER(
-        "<?php $a = new & asd;",
-        ""
+        "<?php $a = & new asd;",
+        "top_statement_list(assignment [is_reference:1](T_VARIABLE [text:$a]; T_NEW(namespace_name(T_STRING [text:asd]))))"
     ); }
     void testPhpParser_newClassDefinition() { TEST_PHP_PARSER(
         "<?php new asd(1, '2');",
-        ""
+        "top_statement_list(T_NEW(namespace_name(T_STRING [text:asd]); function_call_parameter_list(T_LNUMBER [text:1]; T_CONSTANT_ENCAPSED_STRING [text:2])))"
     ); }
     void testPhpParser_cloneDefinition() { TEST_PHP_PARSER(
         "<?php clone $a;",
@@ -309,8 +309,12 @@ private Q_SLOTS:
         "top_statement_list(SILENCE(T_VARIABLE [text:$a]))"
     ); }
     void testPhpParser_arrayDefinition() { TEST_PHP_PARSER(
-        "<?php array(1=>$a, $b, 'c'=>\"d\",) ;",
-        ""
+        "<?php array(1=>$a, &$b, 'c'=>3+2,) ;",
+        "top_statement_list(T_ARRAY(array_pair_list(array_pair(array_key(T_LNUMBER [text:1]); array_value(T_VARIABLE [text:$a])); array_pair(array_key; array_value [is_reference:1](T_VARIABLE [text:$b])); array_pair(array_key(T_CONSTANT_ENCAPSED_STRING [text:c]); array_value(T_PLUS(T_LNUMBER [text:3]; T_LNUMBER [text:2]))))))"
+    ); }
+    void testPhpParser_arrayDefinitionRef() { TEST_PHP_PARSER(
+        "<?php array(&$a, &$b) ;",
+        "top_statement_list(T_ARRAY(array_pair_list(array_pair(array_key; array_value [is_reference:1](T_VARIABLE [text:$a])); array_pair(array_key; array_value [is_reference:1](T_VARIABLE [text:$b])))))"
     ); }
     void testPhpParser_backticksDefinition() { TEST_PHP_PARSER(
         "<?php `$a boo moo` ;",

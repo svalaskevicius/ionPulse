@@ -809,14 +809,18 @@ inline_char_handler:
 
 <ST_IN_SCRIPTING>"'" {
         char c;
+        QString result = "";
         while ( (c = yyinput(yyscanner)) )  {
             if (c == '\'') {
                 break;
-            } else if (c == '\\') {
-                yyinput(yyscanner); // consume one more char
+            } else {
+                result += c;
+                if (c == '\\') {
+                    result += yyinput(yyscanner); // consume one more char
+                }
             }
         }
-        *astNode = ASTNode::create("T_CONSTANT_ENCAPSED_STRING")->setData("text", yytext);
+        *astNode = ASTNode::create("T_CONSTANT_ENCAPSED_STRING")->setData("text", result);
         return T_CONSTANT_ENCAPSED_STRING;
 }
 

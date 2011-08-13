@@ -146,11 +146,11 @@ top_statement:
         |    function_declaration_statement
         |    class_declaration_statement
         |    T_HALT_COMPILER '(' ')' ';'      { $$ = $1; YYACCEPT; }
-        |    T_NAMESPACE namespace_name ';'    { $$ = ASTNode::create("namespace")->addChild($2); }
+        |    T_NAMESPACE namespace_name ';'   { $$ = ASTNode::create("namespace")->addChild($2); }
         |    T_NAMESPACE namespace_name '{'
-                top_statement_list '}'    	{ $$ = ASTNode::create("namespace")->addChild($2)->addChild($4); }
+                top_statement_list '}'        { $$ = ASTNode::create("namespace")->addChild($2)->addChild($4); }
         |    T_NAMESPACE '{'
-                top_statement_list '}'    	{ $$ = ASTNode::create("namespace")->addChild($3); }
+                top_statement_list '}'        { $$ = ASTNode::create("namespace")->addChild($3); }
         |    T_USE use_declarations ';'       { $$ = ASTNode::create("use")->addChild($2); }
         |    constant_declaration ';'
 ;
@@ -162,8 +162,8 @@ use_declarations:
 
 use_declaration:
                 namespace_name
-        |    namespace_name T_AS T_STRING    { $$ = ASTNode::create("as")->addChild($1)->addChild($3); }
-        |    T_NS_SEPARATOR namespace_name    { $$ = ASTNode::create("namespaceroot")->addChild($2); }
+        |    namespace_name T_AS T_STRING                { $$ = ASTNode::create("as")->addChild($1)->addChild($3); }
+        |    T_NS_SEPARATOR namespace_name               { $$ = ASTNode::create("namespaceroot")->addChild($2); }
         |    T_NS_SEPARATOR namespace_name T_AS T_STRING { $$ = ASTNode::create("as")->addChild(ASTNode::create("namespaceroot")->addChild($2))->addChild($4); }
 ;
 
@@ -215,7 +215,7 @@ unticked_statement:
         |    T_RETURN variable ';'          { $$ = ASTNode::create("return")->addChild($2);}
         |    T_GLOBAL global_var_list ';'
         |    T_STATIC static_var_list ';'
-        |    T_ECHO echo_expr_list ';'
+        |    T_ECHO echo_expr_list ';'      { $$ = ASTNode::create("echo")->addChild($2);}
         |    T_INLINE_HTML
         |    expr ';'
         |    T_UNSET '(' unset_variables ')' ';'
@@ -631,8 +631,8 @@ expr_without_variable:
                 }
         |    variable '=' expr {$$=ASTNode::create("assignment")->addChild($1)->addChild($3);}
         |    variable '=' '&' variable {$$=ASTNode::create("assignment")->addChild($1)->addChild($4)->setData("is_reference", "1");}
-        |    variable '=' '&' T_NEW class_name_reference
-        |    T_NEW class_name_reference  ctor_arguments
+        |    variable '=' '&' T_NEW class_name_reference    { $$ = ASTNode::create("assignment")->addChild($1)->addChild(ASTNode::create("T_NEW")->addChild($5))->setData("is_reference", "1");}
+        |    T_NEW class_name_reference  ctor_arguments     { $$ = ASTNode::create("T_NEW")->addChild($2)->addChild($3);}
         |    T_CLONE expr {$$=ASTNode::create("clone")->addChild($2);}
         |    variable T_PLUS_EQUAL expr    {$$=ASTNode::create("T_PLUS_EQUAL")->addChild($1)->addChild($3);}
         |    variable T_MINUS_EQUAL expr   {$$=ASTNode::create("T_MINUS_EQUAL")->addChild($1)->addChild($3);}
@@ -979,8 +979,8 @@ simple_indirect_reference:
 ;
 
 assignment_list:
-                assignment_list ',' assignment_list_element
-        |    assignment_list_element
+                assignment_list ',' assignment_list_element { $1->addChild($3); }
+        |    assignment_list_element { $$ = ASTNode::create("assignment_list")->addChild($1); }
 ;
 
 
@@ -992,19 +992,79 @@ assignment_list_element:
 
 
 array_pair_list:
-                /* empty */
-        |    non_empty_array_pair_list possible_comma    { $$ = $1; }
+                /* empty */ {$$ = ASTNode::create("array_pair_list");}
+        |    non_empty_array_pair_list possible_comma
 ;
 
 non_empty_array_pair_list:
                 non_empty_array_pair_list ',' expr T_DOUBLE_ARROW expr
+            {
+                $1->addChild(
+                    ASTNode::create("array_pair")
+                    ->addChild(ASTNode::create("array_key")->addChild($3))
+                    ->addChild(ASTNode::create("array_value")->addChild($5))
+                );
+            }
         |    non_empty_array_pair_list ',' expr
+            {
+                $1->addChild(
+                    ASTNode::create("array_pair")
+                    ->addChild(ASTNode::create("array_key"))
+                    ->addChild(ASTNode::create("array_value")->addChild($3))
+                );
+            }
         |    expr T_DOUBLE_ARROW expr
+            {
+                $$ = ASTNode::create("array_pair_list")
+                ->addChild(
+                    ASTNode::create("array_pair")
+                    ->addChild(ASTNode::create("array_key")->addChild($1))
+                    ->addChild(ASTNode::create("array_value")->addChild($3))
+                );
+            }
         |    expr
+            {
+                $$ = ASTNode::create("array_pair_list")
+                ->addChild(
+                    ASTNode::create("array_pair")
+                    ->addChild(ASTNode::create("array_key"))
+                    ->addChild(ASTNode::create("array_value")->addChild($1))
+                );
+            }
         |    non_empty_array_pair_list ',' expr T_DOUBLE_ARROW '&' w_variable
+            {
+                $1->addChild(
+                    ASTNode::create("array_pair")
+                    ->addChild(ASTNode::create("array_key")->addChild($3))
+                    ->addChild(ASTNode::create("array_value")->addChild($6)->setData("is_reference", "1"))
+                );
+            }
         |    non_empty_array_pair_list ',' '&' w_variable
+        {
+            $1->addChild(
+                ASTNode::create("array_pair")
+                ->addChild(ASTNode::create("array_key"))
+                ->addChild(ASTNode::create("array_value")->addChild($4)->setData("is_reference", "1"))
+            );
+        }
         |    expr T_DOUBLE_ARROW '&' w_variable
+        {
+            $$ = ASTNode::create("array_pair_list")
+            ->addChild(
+                ASTNode::create("array_pair")
+                ->addChild(ASTNode::create("array_key")->addChild($1))
+                ->addChild(ASTNode::create("array_value")->addChild($4)->setData("is_reference", "1"))
+            );
+        }
         |    '&' w_variable
+        {
+            $$ = ASTNode::create("array_pair_list")
+            ->addChild(
+                ASTNode::create("array_pair")
+                ->addChild(ASTNode::create("array_key"))
+                ->addChild(ASTNode::create("array_value")->addChild($2)->setData("is_reference", "1"))
+            );
+        }
 ;
 
 encaps_list:
