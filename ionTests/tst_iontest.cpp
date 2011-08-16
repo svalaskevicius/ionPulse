@@ -318,7 +318,7 @@ private Q_SLOTS:
     ); }
     void testPhpParser_backticksDefinition() { TEST_PHP_PARSER(
         "<?php `$a boo moo` ;",
-        ""
+        "top_statement_list(BACKTICKS(encaps_list(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text: boo moo])))"
     ); }
     void testPhpParser_printDefinition() { TEST_PHP_PARSER(
         "<?php print $x ;",
@@ -336,7 +336,14 @@ private Q_SLOTS:
         "<?php function & ($a) use ($b, &$c) { return $c; } ;",
         "top_statement_list(LAMBDA_FUNCTION(parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE [text:$a])); T_USE(lexical_var_list(T_VARIABLE [text:$b]; T_VARIABLE [is_reference:1, text:$c])); inner_statement_list(return(T_VARIABLE [text:$c]))))"
     ); }
-
+    void testPhpParser_doubleQuotesConst() { TEST_PHP_PARSER(
+        "<?php $a = \"\\rtest string\\n\" ;",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_CONSTANT_ENCAPSED_STRING [text:\\rtest string\\n]))"
+    ); }
+    void testPhpParser_doubleQuotesWithVars() { TEST_PHP_PARSER(
+        "<?php $a = \"\\ntest $moo more text\n\\n {$boo}${buka}s${aa[2]}tring\" ;",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; doubleQuotes(encaps_list(T_ENCAPSED_AND_WHITESPACE [text:\\ntest ]; T_VARIABLE [text:$moo]; T_ENCAPSED_AND_WHITESPACE [text: more text\n\\n ]; T_VARIABLE [text:$boo]; T_STRING_VARNAME [text:buka]; T_ENCAPSED_AND_WHITESPACE [text:s]; offset(T_STRING_VARNAME [text:aa]; T_LNUMBER [text:2]); T_ENCAPSED_AND_WHITESPACE [text:tring]))))"
+    ); }
     /*
         |    internal_functions { $$ = $1; }
         |    scalar    	    	{ $$ = $1; }

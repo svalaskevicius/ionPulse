@@ -847,7 +847,7 @@ scalar:
         |    T_NAMESPACE T_NS_SEPARATOR namespace_name
         |    T_NS_SEPARATOR namespace_name
         |    common_scalar    	    { $$ = $1; }
-        |    '"' encaps_list '"'     { $$ = $2; }
+        |    '"' encaps_list '"'     { $$ = ASTNode::create("doubleQuotes")->addChild($2); }
         |    T_START_HEREDOC encaps_list T_END_HEREDOC
 ;
 
@@ -1068,21 +1068,21 @@ non_empty_array_pair_list:
 ;
 
 encaps_list:
-                encaps_list encaps_var
-        |    encaps_list T_ENCAPSED_AND_WHITESPACE
-        |    encaps_var
-        |    T_ENCAPSED_AND_WHITESPACE encaps_var
+                encaps_list encaps_var {$1->addChild($2);}
+        |    encaps_list T_ENCAPSED_AND_WHITESPACE {$1->addChild($2);}
+        |    encaps_var  {$$ = ASTNode::create("encaps_list")->addChild($1);}
+        |    T_ENCAPSED_AND_WHITESPACE encaps_var {$$ = ASTNode::create("encaps_list")->addChild($1)->addChild($2);}
 ;
 
 
 
 encaps_var:
                 T_VARIABLE
-        |    T_VARIABLE '['  encaps_var_offset ']'
-        |    T_VARIABLE T_OBJECT_OPERATOR T_STRING
-        |    T_DOLLAR_OPEN_CURLY_BRACES expr '}'
-        |    T_DOLLAR_OPEN_CURLY_BRACES T_STRING_VARNAME '[' expr ']' '}'
-        |    T_CURLY_OPEN variable '}' { $$ = $2; }
+        |    T_VARIABLE '['  encaps_var_offset ']' {$$ = ASTNode::create("offset")->addChild($1)->addChild($3);}
+        |    T_VARIABLE T_OBJECT_OPERATOR T_STRING {$$ = ASTNode::create("static")->addChild($1)->addChild($3);}
+        |    T_DOLLAR_OPEN_CURLY_BRACES expr '}'   {$$ = $2;}
+        |    T_DOLLAR_OPEN_CURLY_BRACES T_STRING_VARNAME '[' expr ']' '}' {$$ = ASTNode::create("offset")->addChild($2)->addChild($4);}
+        |    T_CURLY_OPEN variable '}'             { $$ = $2; }
 ;
 
 

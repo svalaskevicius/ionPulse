@@ -72,8 +72,12 @@ int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
                     continue;
                 }
             default:
-//                std::cout << "TOK: " << ret << std::endl;
-                  return ret;
+/*                std::cout << "TOK: " << ret;
+                if (*astNode) {
+                    std::cout << " "  << (*astNode)->getStrData("text").toStdString();
+                }
+                std::cout << std::endl;
+  */                return ret;
         }
     }
 }
