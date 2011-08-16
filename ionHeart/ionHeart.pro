@@ -11,16 +11,20 @@ TARGET = ionHeart
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    pluginloader.cpp
 
 HEADERS  += mainwindow.h \
     ionPulse/shared.h \
     ionPulse/plugin.h \
     shared.h \
-    plugin.h
+    plugin.h \
+    pluginloader.h
 
 FORMS    +=
 
 target.path += "$${INSTALL_DIR}"
 INSTALLS += target
+
+
 
