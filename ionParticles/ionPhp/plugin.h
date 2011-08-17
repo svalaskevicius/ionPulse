@@ -7,13 +7,13 @@
 namespace IonPhp {
 
 
-class Plugin : public QObject, public IonPlugin
+class Plugin : public QObject, public IonHeart::IPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonPlugin)
+    Q_INTERFACES(IonHeart::IPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
-    void initialize(IonHeart::MainWindow * /* mainWindow */);
+    void initialize();
     QString getName() {
         return "ionPhp";
     }
@@ -22,7 +22,7 @@ public:
         ret.append("ionEditor");
         return ret;
     }
-    virtual void addParent(IonPlugin *parent);
+    virtual void addParent(IPlugin *parent);
 
 signals:
 

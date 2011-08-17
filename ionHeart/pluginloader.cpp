@@ -29,16 +29,16 @@ QDir PluginLoader::_getPluginsDir()
 }
 
 
-void PluginLoader::loadPlugins(MainWindow *parent)
+void PluginLoader::loadPlugins(LayoutManager &layoutManager)
 {
     QString oldPwd = QDir::currentPath();
     QDir pluginsDir = _getPluginsDir();
     QDir::setCurrent(pluginsDir.absolutePath());
 
 
-    QList<IonPlugin *> pluginsToLoad;
+    QList<IPlugin *> pluginsToLoad;
     foreach (QObject *plugin, QPluginLoader::staticInstances()) {
-        IonPlugin *plg = qobject_cast<IonPlugin *>(plugin);
+        IPlugin *plg = qobject_cast<IPlugin *>(plugin);
         if (plg) {
             pluginsToLoad.append(plg);
         }
@@ -47,7 +47,7 @@ void PluginLoader::loadPlugins(MainWindow *parent)
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
-        IonPlugin *plg = qobject_cast<IonPlugin *>(plugin);
+        IPlugin *plg = qobject_cast<IPlugin *>(plugin);
         if (plg) {
             pluginsToLoad.append(plg);
         }
@@ -56,8 +56,8 @@ void PluginLoader::loadPlugins(MainWindow *parent)
     bool madeChanges = false;
     do {
         madeChanges = false;
-        QList<IonPlugin *> pluginsToLoadLater;
-        foreach (IonPlugin *plg, pluginsToLoad) {
+        QList<IPlugin *> pluginsToLoadLater;
+        foreach (IPlugin *plg, pluginsToLoad) {
             if (_arePluginsIncluded(plg->getDependencies())) {
                 _includePlugin(plg);
                 madeChanges = true;
@@ -70,8 +70,11 @@ void PluginLoader::loadPlugins(MainWindow *parent)
 
     QDir::setCurrent(oldPwd);
 
-    foreach (IonPlugin *plugin, _includedPlugins.values()) {
-        plugin->initialize(parent);
+    foreach (IPlugin *plugin, _includedPlugins.values()) {
+        plugin->initialize();
+        foreach (IPanelWidget *panel, plugin->getPanelWidgets()) {
+            layoutManager.add(panel);
+        }
     }
 }
 
@@ -86,7 +89,7 @@ bool  PluginLoader::_arePluginsIncluded(QStringList pluginNames)
 }
 
 
-void PluginLoader::_includePlugin(IonPlugin *plugin)
+void PluginLoader::_includePlugin(IPlugin *plugin)
 {
     foreach (QString dep, plugin->getDependencies()) {
         plugin->addParent(_includedPlugins[dep]);

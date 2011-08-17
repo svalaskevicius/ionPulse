@@ -5,6 +5,10 @@
 #include "editorwidgetfactory.h"
 #include <QMessageBox>
 #include "editorwidgetfactory.h"
+#include <ionHeart/panelwidget.h>
+#include <QBoxLayout>
+
+
 
 namespace IonEditor {
 
@@ -21,9 +25,13 @@ Plugin::~Plugin()
 }
 
 
-void Plugin::initialize(IonHeart::MainWindow *mainWindow)
+void Plugin::initialize()
 {
-    mainWindow->setCentralWidget(new EditorWidget(getEditorWidgetFactory(), mainWindow));
+}
+
+QList<IonHeart::IPanelWidget *> Plugin::getPanelWidgets()
+{
+    return QList<IonHeart::IPanelWidget *>() << new EditorWidget(getEditorWidgetFactory());
 }
 
 EditorWidgetFactory *Plugin::getEditorWidgetFactory()

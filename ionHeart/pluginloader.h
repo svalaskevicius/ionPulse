@@ -3,22 +3,22 @@
 
 #include <QMap>
 #include <QDir>
-
-class IonPlugin;
+#include "layoutmanager.h"
 
 namespace IonHeart {
-class MainWindow;
+
+class IPlugin;
 
 class PluginLoader
 {
 public:
     PluginLoader();
-    void loadPlugins(MainWindow *parent);
+    void loadPlugins(LayoutManager &layoutManager);
 private:
-    QMap<QString, IonPlugin *> _includedPlugins;
+    QMap<QString, IPlugin *> _includedPlugins;
     QDir _getPluginsDir();
     bool _arePluginsIncluded(QStringList pluginNames);
-    void _includePlugin(IonPlugin *plugin);
+    void _includePlugin(IPlugin *plugin);
 
 };
 

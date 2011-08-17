@@ -9,18 +9,19 @@ namespace IonEditor {
 
 class EditorWidgetFactory;
 
-class Plugin : public QObject, public IonPlugin
+class Plugin : public QObject, public IonHeart::IPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonPlugin)
+    Q_INTERFACES(IonHeart::IPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     ~Plugin();
-    void initialize(IonHeart::MainWindow *mainWindow);
+    void initialize();
     QString getName() {
         return "ionEditor";
     }
     EditorWidgetFactory *getEditorWidgetFactory();
+    virtual QList<IonHeart::IPanelWidget *> getPanelWidgets();
 
 private:
     QScopedPointer<EditorWidgetFactory> _editorWidgetFactory;

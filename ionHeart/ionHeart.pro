@@ -12,19 +12,27 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    pluginloader.cpp
+    pluginloader.cpp \
+    layoutmanager.cpp
 
 HEADERS  += mainwindow.h \
     ionPulse/shared.h \
     ionPulse/plugin.h \
     shared.h \
     plugin.h \
-    pluginloader.h
+    pluginloader.h \
+    panelwidget.h \
+    layoutmanager.h
 
 FORMS    +=
 
 target.path += "$${INSTALL_DIR}"
 INSTALLS += target
+
+
+
+
+
 
 
 

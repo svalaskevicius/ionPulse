@@ -2,18 +2,24 @@
 #define INTERFACES_H
 
 #include "mainwindow.h"
+#include "panelwidget.h"
+#include <QList>
 
-class IonPlugin {
+namespace IonHeart {
+
+class IPlugin {
 public:
-    virtual ~IonPlugin() {}
-    virtual void initialize(IonHeart::MainWindow *mainWindow) = 0;
+    virtual void initialize() = 0;
     virtual QString getName() = 0;
     virtual QList<QString> getDependencies() {
         return QList<QString>();
     }
-    virtual void addParent(IonPlugin * /* parent */) {}
+    virtual void addParent(IPlugin * /* parent */) {}
+    virtual QList<IPanelWidget *> getPanelWidgets() {return QList<IPanelWidget *>();}
 };
 
-Q_DECLARE_INTERFACE(IonPlugin, "com.ionPulse.PluginInterface")
+}
+
+Q_DECLARE_INTERFACE(IonHeart::IPlugin, "com.ionPulse.PluginInterface")
 
 #endif // INTERFACES_H

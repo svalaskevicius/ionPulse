@@ -16,11 +16,11 @@ Plugin::Plugin(QObject *parent) :
 {
 }
 
-void Plugin::initialize(IonHeart::MainWindow * /* mainWindow */)
+void Plugin::initialize()
 {
 }
 
-void Plugin::addParent(IonPlugin *parent) {
+void Plugin::addParent(IPlugin *parent) {
     if ("ionEditor" == parent->getName()) {
         IonEditor::Plugin *editorPlugin = dynamic_cast<IonEditor::Plugin *>(parent);
         Q_ASSERT(editorPlugin);

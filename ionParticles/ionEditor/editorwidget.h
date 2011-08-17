@@ -5,6 +5,7 @@
 #include <QEvent>
 #include <QMap>
 #include <QTextBlock>
+#include <ionHeart/panelwidget.h>
 
 namespace IonEditor {
 
@@ -13,7 +14,7 @@ class LineNumberArea;
 class Highlighter;
 
 
-class EditorWidget : public QPlainTextEdit
+class EditorWidget : public QPlainTextEdit, public IonHeart::IPanelWidget
 {
     Q_OBJECT
 public:
@@ -57,6 +58,11 @@ protected:
     void addComponent(Component *component) {
         components.append(component);
     }
+
+public:
+    virtual QWidget *getWidget() {return this;}
+    virtual QString getPanelTitle() {return "title";}
+    virtual QString getPanelZone() {return "central";}
 
 private slots:
 
