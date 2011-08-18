@@ -16,6 +16,7 @@ public:
     }
     virtual void addParent(IPlugin * /* parent */) {}
     virtual QList<IPanelWidget *> getPanelWidgets() {return QList<IPanelWidget *>();}
+    virtual QList<ZoneDefinition> getZoneDefinitions() {return QList<ZoneDefinition>();}
 };
 
 }

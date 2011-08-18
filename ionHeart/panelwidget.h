@@ -5,6 +5,14 @@
 
 namespace IonHeart {
 
+
+struct ZoneDefinition {
+    QString parentPath;
+    QString name;
+    Qt::Orientation orientation;
+    int sortOrder;
+};
+
 class IPanelWidget {
 public:
     virtual QWidget *getWidget() = 0;

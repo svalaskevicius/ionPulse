@@ -7,19 +7,24 @@
 #include <QTabWidget>
 #include <QString>
 #include <QMap>
+#include <stdexcept>
 
 
 namespace IonHeart {
 
 class ZoneNodeLeaf;
+class ZoneNodeBranch;
 
 class ZoneNode {
 protected:
-    QString zoneName;
+    ZoneDefinition  zoneDef;
 public:
-    ZoneNode(QString name) : zoneName(name) {}
-    QString getZoneName() {return zoneName;}
-    virtual ZoneNodeLeaf *findZone(QStringList path) = 0;
+    ZoneNode(ZoneDefinition  zoneDef) : zoneDef(zoneDef) {}
+    QString getZoneName() {return zoneDef.name;}
+    virtual ZoneNode *findSubZone(QStringList &path) = 0;
+    virtual ZoneNode *findZone(QString path) { if (!path.length()) {return this;} QStringList sl = path.split('/'); return findSubZone(sl); }
+    virtual QTabWidget *getZoneContents() = 0;
+    virtual ZoneNodeBranch *getZoneAsBranch() = 0;
 };
 
 class ZoneNodeBranch : public QSplitter, public ZoneNode
@@ -28,23 +33,38 @@ protected:
     typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
 public:
-    ZoneNodeBranch(QWidget *parent) : QSplitter(parent), ZoneNode("") {}
-    ZoneNodeBranch(ZoneNodeBranch *parent, QString name) : QSplitter(parent), ZoneNode(name) {}
-    //virtual ZoneList getSubZones() {return subZones;}
-    void addSubZone(ZoneNode *child) {subZones[child->getZoneName()] = child;}
-    virtual ZoneNodeLeaf *findZone(QStringList path) {
-        ZoneNode *next = subZones[path.front()];
-        Q_ASSERT(next);
-        path.pop_front();
-        return next->findZone(path);
+    ZoneNodeBranch(QWidget *parent) : QSplitter(parent), ZoneNode(ZoneDefinition()) {}
+    ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef) : QSplitter(parent), ZoneNode(zoneDef)
+    {
+        setOrientation(zoneDef.orientation);
     }
+    void addSubZone(ZoneNode *child) {subZones[child->getZoneName()] = child;}
+    virtual ZoneNode *findSubZone(QStringList &path);
+    virtual QTabWidget *getZoneContents() {
+        QStringList empty;
+        return findSubZone(empty)->getZoneContents();
+    }
+    virtual ZoneNodeBranch *getZoneAsBranch() {return this;}
 };
 
 class ZoneNodeLeaf : public QTabWidget, public ZoneNode
 {
+protected:
+    ZoneNodeBranch *parent;
 public:
-    ZoneNodeLeaf(ZoneNodeBranch *parent, QString name) : QTabWidget(parent), ZoneNode(name) {}
-    virtual ZoneNodeLeaf *findZone(QStringList path) {Q_ASSERT(path.size() == 0); return this;}
+    ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef) : QTabWidget(parent), ZoneNode(zoneDef), parent(parent) {}
+    virtual QTabWidget *getZoneContents() {
+        return this;
+    }
+    virtual ZoneNode *findSubZone(QStringList &path) {Q_ASSERT(path.size() == 0); return this;}
+    virtual ZoneNodeBranch *getZoneAsBranch() {
+        ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
+        parent->addSubZone(br);
+        parent->insertWidget(parent->indexOf(this), br);
+        this->setParent(br);
+        br->addWidget(this);
+        return br;
+    }
 };
 
 class LayoutZonesManager
@@ -54,6 +74,7 @@ protected:
 public:
     LayoutZonesManager(MainWindow &mainWidget);
     QTabWidget *getZone(QString path);
+    void addZone(ZoneDefinition &zone);
 };
 
 
@@ -65,6 +86,7 @@ protected:
 public:
     LayoutManager(MainWindow &mainWidget);
     void add(IPanelWidget *panel);
+    void addZone(ZoneDefinition &zone);
 };
 
 }
