@@ -1,3 +1,8 @@
+
+=== files view ===
+
+=== multiple files opened, tabbed gui ===
+
 === parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
 
 === semantic parser ===
@@ -10,18 +15,15 @@
 === editor handler ===
 handles key presses, such as tab, enter etc
 
-=== autocomplete ===
-
 === class view ===
 
-=== files view ===
-
 === search & replace ===
+
+=== autocomplete ===
 
 === search & replace in files ===
 should be possible to delete some results after reviewing
 
-=== multiple files opened, tabbed gui ===
 
 
 === config loader for colors, fonts etc ===
@@ -37,7 +39,9 @@ should be possible to delete some results after reviewing
 
 === checkstyle ===
 
+=== class diagram ===
 
+=== dynamic class rewrite rules for type hinting ===
 
 
 ====== DONE =====
