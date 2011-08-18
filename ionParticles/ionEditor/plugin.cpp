@@ -40,21 +40,31 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     IonHeart::ZoneDefinition def;
 
     def.name = "central";
-    def.orientation = IonHeart::ZoneDefinition::HORIZONTAL;
+    def.orientation = Qt::Horizontal;
     def.parentPath = "";
-    def.sortOrder = 0;
+    def.after = "left";
+    def.before = "right";
     ret.append(def);
 
     def.name = "left";
-    def.orientation = IonHeart::ZoneDefinition::VERTICAL;
+    def.orientation = Qt::Vertical;
     def.parentPath = "";
-    def.sortOrder = -100;
+    def.after = "";
+    def.before = "central";
     ret.append(def);
 
     def.name = "leftbottom";
-    def.orientation = IonHeart::ZoneDefinition::VERTICAL;
+    def.orientation = Qt::Vertical;
     def.parentPath = "left";
-    def.sortOrder = 100;
+    def.after = "left";
+    def.before = "";
+    ret.append(def);
+
+    def.name = "right";
+    def.orientation = Qt::Vertical;
+    def.parentPath = "";
+    def.after = "central";
+    def.before = "";
     ret.append(def);
 
     return ret;

@@ -10,7 +10,7 @@ struct ZoneDefinition {
     QString parentPath;
     QString name;
     Qt::Orientation orientation;
-    int sortOrder;
+    QString after, before;
 };
 
 class IPanelWidget {

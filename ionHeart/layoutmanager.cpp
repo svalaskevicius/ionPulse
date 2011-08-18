@@ -4,19 +4,60 @@
 namespace IonHeart {
 
 
-ZoneNode *ZoneNodeBranch::findSubZone(QStringList &path)
+ZoneNode *ZoneNode::getSubZone(QStringList &path) throw(std::runtime_error)
+{
+    ZoneNode *ret = findSubZone(path);
+    if (!ret) {
+        throw std::runtime_error(("zone '"+path.join(".")+"' not found").toStdString());
+    }
+    return ret;
+}
+
+ZoneNode *ZoneNode::getZone(QString path)
+{
+    if (!path.length()) {
+        return this;
+    }
+    QStringList sl = path.split('/');
+    return getSubZone(sl);
+}
+
+
+///////////
+
+ZoneNode *ZoneNodeBranch::findSubZone(QStringList &path) throw()
 {
     if (!path.length()) {
         path << getZoneName();
     }
     ZoneNode *next = subZones[path.front()];
     if (!next) {
-        throw std::runtime_error(("zone element '"+path.front()+"' not found").toStdString());
+        return NULL;
     }
     path.pop_front();
     return next->findSubZone(path);
 }
 
+ZoneNodeLeaf *ZoneNodeBranch::getZoneLeaf() {
+    QStringList empty;
+    return getSubZone(empty)->getZoneLeaf();
+}
+
+
+///////////
+
+
+ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
+    ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
+    parent->addSubZone(br);
+    parent->insertWidget(parent->indexOf(this), br);
+    this->setParent(br);
+    br->addWidget(this);
+    if (this->isHidden()) {
+        br->hide();
+    }
+    return br;
+}
 
 LayoutZonesManager::LayoutZonesManager(MainWindow &mainWidget)
 {
@@ -24,33 +65,49 @@ LayoutZonesManager::LayoutZonesManager(MainWindow &mainWidget)
     mainWidget.setCentralWidget(root);
 }
 
-QTabWidget *LayoutZonesManager::getZone(QString path)
+ZoneNodeLeaf *LayoutZonesManager::getZone(QString path)
 {
-    return root->findZone(path)->getZoneContents();
+    return root->getZone(path)->getZoneLeaf();
 }
 
 
 void LayoutZonesManager::addZone(ZoneDefinition &zone)
 {
-    printf("AA: %s\n%s\n", zone.parentPath.toAscii().constData(), zone.name.toAscii().constData());
-   ZoneNodeBranch *node = root->findZone(zone.parentPath)->getZoneAsBranch();
+   ZoneNodeBranch *node = root->getZone(zone.parentPath)->getZoneAsBranch();
    Q_ASSERT(node);
-   node->addSubZone(new ZoneNodeLeaf(node, zone));
+   ZoneNodeLeaf *leaf = new ZoneNodeLeaf(node, zone);
+   node->addSubZone(leaf);
+   ZoneNode *pos;
+   signed int index = -1;
+
+   if ( zone.after.length() && (pos = node->findSubZone(QStringList() << zone.after)) ) {
+       index = 1+node->indexOf(pos->getWidget());
+   } else if ( zone.before.length() && (pos = node->findSubZone(QStringList() << zone.before)) ) {
+       index = node->indexOf(pos->getWidget());
+   }
+   if (index > -1) {
+       leaf->setParent(0);
+       node->insertWidget(index, leaf);
+   }
+
+   leaf->hide();
 }
 
-///
+///////////
+
 LayoutManager::LayoutManager(MainWindow &mainWidget) : zonesManager(mainWidget)
 {
 }
 
 void LayoutManager::add(IPanelWidget *panel)
 {
-    QTabWidget *z = zonesManager.getZone(panel->getPanelZone());
+    ZoneNodeLeaf *z = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(z);
     z->addTab(
         panel->getWidget(),
         panel->getPanelTitle()
     );
+    z->show();
 }
 
 void LayoutManager::addZone(ZoneDefinition &zone)
