@@ -32,7 +32,7 @@ void Plugin::initialize()
 QList<IonHeart::IPanelWidget *> Plugin::getPanelWidgets()
 {
     return QList<IonHeart::IPanelWidget *>()
-           << new EditorWidget(getEditorWidgetFactory())
+         //  << new EditorWidget(getEditorWidgetFactory())
            << new FileTreeWidget()
     ;
 }

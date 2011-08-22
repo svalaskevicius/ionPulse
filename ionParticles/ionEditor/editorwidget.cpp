@@ -7,13 +7,15 @@
 
 namespace IonEditor {
 
+QMap<QString, QString> EditorWidget::fileTypes; // file ending -> file type in factories
+
 
 EditorWidget::EditorWidget(EditorWidgetFactory *widgetFactory, QWidget *parent) : QPlainTextEdit(parent), widgetFactory(widgetFactory)
 {
-    lineNumberArea = widgetFactory->createLineNumberArea(this);
+    lineNumberArea = widgetFactory->createLineNumberArea(this, "asd");
     addComponent(lineNumberArea);
 
-    highlighter = widgetFactory->createHighlighter(this);
+    highlighter = widgetFactory->createHighlighter(this, "asd");
 
     QFont font("Monaco");
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);

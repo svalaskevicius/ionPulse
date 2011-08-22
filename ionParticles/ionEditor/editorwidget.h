@@ -75,6 +75,8 @@ private:
 signals:
 
 public slots:
+public:
+    static QMap<QString, QString> fileTypes; // file ending -> file type in factories
 };
 
 
