@@ -51,7 +51,9 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
     parent->addSubZone(br);
     parent->insertWidget(parent->indexOf(this), br);
+    br->addSubZone(this);
     this->setParent(br);
+    ZoneNode::parent = br;
     br->addWidget(this);
     if (this->isHidden()) {
         br->hide();
@@ -90,7 +92,11 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
        node->insertWidget(index, leaf);
    }
 
-   leaf->hide();
+   if (zone.hideIfEmpty) {
+       leaf->hide();
+   } else {
+       leaf->show();
+   }
 }
 
 ///////////

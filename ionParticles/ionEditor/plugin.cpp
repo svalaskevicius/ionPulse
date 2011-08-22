@@ -7,7 +7,7 @@
 #include "editorwidgetfactory.h"
 #include <ionHeart/panelwidget.h>
 #include <QBoxLayout>
-
+#include "filetreewidget.h"
 
 
 namespace IonEditor {
@@ -31,7 +31,10 @@ void Plugin::initialize()
 
 QList<IonHeart::IPanelWidget *> Plugin::getPanelWidgets()
 {
-    return QList<IonHeart::IPanelWidget *>() << new EditorWidget(getEditorWidgetFactory());
+    return QList<IonHeart::IPanelWidget *>()
+           << new EditorWidget(getEditorWidgetFactory())
+           << new FileTreeWidget()
+    ;
 }
 
 QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
@@ -44,6 +47,7 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.parentPath = "";
     def.after = "left";
     def.before = "right";
+    def.hideIfEmpty = false;
     ret.append(def);
 
     def.name = "left";
@@ -51,6 +55,7 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.parentPath = "";
     def.after = "";
     def.before = "central";
+    def.hideIfEmpty = false;
     ret.append(def);
 
     def.name = "leftbottom";
@@ -58,6 +63,7 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.parentPath = "left";
     def.after = "left";
     def.before = "";
+    def.hideIfEmpty = true;
     ret.append(def);
 
     def.name = "right";
@@ -65,6 +71,7 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.parentPath = "";
     def.after = "central";
     def.before = "";
+    def.hideIfEmpty = true;
     ret.append(def);
 
     return ret;

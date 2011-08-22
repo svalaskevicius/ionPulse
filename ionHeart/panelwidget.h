@@ -11,6 +11,7 @@ struct ZoneDefinition {
     QString name;
     Qt::Orientation orientation;
     QString after, before;
+    bool hideIfEmpty;
 };
 
 class IPanelWidget {

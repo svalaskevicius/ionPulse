@@ -18,14 +18,18 @@ HEADERS += \
     plugin.h \
     editorwidget.h \
     highlighter.h \
-    editorwidgetfactory.h
+    editorwidgetfactory.h \
+    filetreewidget.h
 
 SOURCES += \
     linenumberarea.cpp \
     plugin.cpp \
     editorwidget.cpp \
     highlighter.cpp \
-    editorwidgetfactory.cpp
+    editorwidgetfactory.cpp \
+    filetreewidget.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
