@@ -2,7 +2,7 @@
 #define FILETREEWIDGET_H
 
 #include <QTreeView>
-#include <ionHeart/panelwidget.h>
+#include <ionHeart/layout.h>
 
 namespace IonEditor {
 

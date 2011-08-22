@@ -5,7 +5,7 @@
 #include <QEvent>
 #include <QMap>
 #include <QTextBlock>
-#include <ionHeart/panelwidget.h>
+#include <ionHeart/layout.h>
 
 namespace IonEditor {
 

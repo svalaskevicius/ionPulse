@@ -4,15 +4,17 @@
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include <QSharedPointer>
-
+#include <ionHeart/layout.h>
 
 namespace IonEditor {
 
 class EditorWidget;
 
-struct EditorWidgetFactory
+class EditorWidgetFactory
 {
 protected:
+    IonHeart::ILayoutManager &layoutManager;
+
     struct LineNumberArea {
         virtual IonEditor::LineNumberArea *operator()(EditorWidget *);
     };
@@ -24,6 +26,7 @@ private:
     QMap<QString, QSharedPointer<LineNumberArea> > m_createLineNumberAreaMap;
 
 public:
+    EditorWidgetFactory(IonHeart::ILayoutManager &layoutManager) : layoutManager(layoutManager) {}
     IonEditor::Highlighter *createHighlighter(EditorWidget *widget, QString filetype);
     IonEditor::LineNumberArea *createLineNumberArea(EditorWidget *widget, QString filetype);
 

@@ -2,21 +2,22 @@
 #define INTERFACES_H
 
 #include "mainwindow.h"
-#include "panelwidget.h"
+#include "layout.h"
 #include <QList>
 
 namespace IonHeart {
 
 class IPlugin {
+protected:
+    ILayoutManager *layoutManager;
 public:
+    void setLayoutManager(ILayoutManager *layoutManager) {this->layoutManager = layoutManager;}
     virtual void initialize() = 0;
     virtual QString getName() = 0;
     virtual QList<QString> getDependencies() {
         return QList<QString>();
     }
     virtual void addParent(IPlugin * /* parent */) {}
-    virtual QList<IPanelWidget *> getPanelWidgets() {return QList<IPanelWidget *>();}
-    virtual QList<ZoneDefinition> getZoneDefinitions() {return QList<ZoneDefinition>();}
 };
 
 }

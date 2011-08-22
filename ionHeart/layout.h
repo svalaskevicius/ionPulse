@@ -21,6 +21,15 @@ public:
     virtual QString getPanelZone() = 0;
 };
 
+
+class ILayoutManager
+{
+public:
+    virtual void add(IPanelWidget *panel) = 0;
+    virtual void addZone(ZoneDefinition &zone) = 0;
+};
+
+
 }
 
 #endif // PANELWIDGET_H

@@ -21,9 +21,6 @@ public:
         return "ionEditor";
     }
     EditorWidgetFactory *getEditorWidgetFactory();
-    virtual QList<IonHeart::IPanelWidget *> getPanelWidgets();
-    virtual QList<IonHeart::ZoneDefinition> getZoneDefinitions();
-
 private:
     QScopedPointer<EditorWidgetFactory> _editorWidgetFactory;
 

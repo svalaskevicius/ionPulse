@@ -71,13 +71,8 @@ void PluginLoader::loadPlugins(LayoutManager &layoutManager)
     QDir::setCurrent(oldPwd);
 
     foreach (IPlugin *plugin, _includedPlugins.values()) {
+        plugin->setLayoutManager(&layoutManager);
         plugin->initialize();
-        foreach (ZoneDefinition zonedef, plugin->getZoneDefinitions()) {
-            layoutManager.addZone(zonedef);
-        }
-        foreach (IPanelWidget *panel, plugin->getPanelWidgets()) {
-            layoutManager.add(panel);
-        }
     }
 }
 

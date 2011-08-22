@@ -1,7 +1,7 @@
 #ifndef LAYOUTMANAGER_H
 #define LAYOUTMANAGER_H
 
-#include "panelwidget.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include <QSplitter>
 #include <QTabWidget>
@@ -92,15 +92,14 @@ public:
 };
 
 
-
-class LayoutManager
+class LayoutManager : public ILayoutManager
 {
 protected:
     LayoutZonesManager zonesManager;
 public:
     LayoutManager(MainWindow &mainWidget);
-    void add(IPanelWidget *panel);
-    void addZone(ZoneDefinition &zone);
+    virtual void add(IPanelWidget *panel);
+    virtual void addZone(ZoneDefinition &zone);
 };
 
 }

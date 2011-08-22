@@ -21,13 +21,15 @@ HEADERS  += mainwindow.h \
     shared.h \
     plugin.h \
     pluginloader.h \
-    panelwidget.h \
-    layoutmanager.h
+    layoutmanager.h \
+    layout.h
 
 FORMS    +=
 
 target.path += "$${INSTALL_DIR}"
 INSTALLS += target
+
+
 
 
 

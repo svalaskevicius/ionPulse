@@ -5,7 +5,7 @@
 #include "editorwidgetfactory.h"
 #include <QMessageBox>
 #include "editorwidgetfactory.h"
-#include <ionHeart/panelwidget.h>
+#include <ionHeart/layout.h>
 #include <QBoxLayout>
 #include "filetreewidget.h"
 
@@ -27,19 +27,8 @@ Plugin::~Plugin()
 
 void Plugin::initialize()
 {
-}
+    Q_ASSERT(layoutManager);
 
-QList<IonHeart::IPanelWidget *> Plugin::getPanelWidgets()
-{
-    return QList<IonHeart::IPanelWidget *>()
-         //  << new EditorWidget(getEditorWidgetFactory())
-           << new FileTreeWidget()
-    ;
-}
-
-QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
-{
-    QList<IonHeart::ZoneDefinition> ret;
     IonHeart::ZoneDefinition def;
 
     def.name = "central";
@@ -48,7 +37,7 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.after = "left";
     def.before = "right";
     def.hideIfEmpty = false;
-    ret.append(def);
+    layoutManager->addZone(def);
 
     def.name = "left";
     def.orientation = Qt::Vertical;
@@ -56,7 +45,7 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.after = "";
     def.before = "central";
     def.hideIfEmpty = false;
-    ret.append(def);
+    layoutManager->addZone(def);
 
     def.name = "leftbottom";
     def.orientation = Qt::Vertical;
@@ -64,7 +53,7 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.after = "left";
     def.before = "";
     def.hideIfEmpty = true;
-    ret.append(def);
+    layoutManager->addZone(def);
 
     def.name = "right";
     def.orientation = Qt::Vertical;
@@ -72,16 +61,16 @@ QList<IonHeart::ZoneDefinition> Plugin::getZoneDefinitions()
     def.after = "central";
     def.before = "";
     def.hideIfEmpty = true;
-    ret.append(def);
+    layoutManager->addZone(def);
 
-    return ret;
+    //layoutManager->add(new EditorWidget(getEditorWidgetFactory()));
+    layoutManager->add(new FileTreeWidget());
 }
-
 
 EditorWidgetFactory *Plugin::getEditorWidgetFactory()
 {
     if (!_editorWidgetFactory) {
-        _editorWidgetFactory.reset(new EditorWidgetFactory());
+        _editorWidgetFactory.reset(new EditorWidgetFactory(*layoutManager));
     }
     return _editorWidgetFactory.data();
 }
