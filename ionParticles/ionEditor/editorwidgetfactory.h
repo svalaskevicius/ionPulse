@@ -13,7 +13,6 @@ class EditorWidget;
 class EditorWidgetFactory
 {
 protected:
-    IonHeart::ILayoutManager &layoutManager;
 
     struct LineNumberArea {
         virtual IonEditor::LineNumberArea *operator()(EditorWidget *);
@@ -26,9 +25,10 @@ private:
     QMap<QString, QSharedPointer<LineNumberArea> > m_createLineNumberAreaMap;
 
 public:
-    EditorWidgetFactory(IonHeart::ILayoutManager &layoutManager) : layoutManager(layoutManager) {}
+    EditorWidgetFactory() {} 
     IonEditor::Highlighter *createHighlighter(EditorWidget *widget, QString filetype);
     IonEditor::LineNumberArea *createLineNumberArea(EditorWidget *widget, QString filetype);
+    IonEditor::EditorWidget *createEditor(QString path);
 
     void registerHighlighter(QString filetype, Highlighter *highlighter) {
         m_createHighlighterMap[filetype] = QSharedPointer<Highlighter>(highlighter);

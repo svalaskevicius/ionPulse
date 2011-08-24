@@ -27,6 +27,8 @@ private:
 signals:
 
 public slots:
+    void openFile(QString path);
+
 private:
     Q_DISABLE_COPY(Plugin)
 };

@@ -33,4 +33,12 @@ LineNumberArea *EditorWidgetFactory::createLineNumberArea(EditorWidget *widget, 
     return _default(widget);
 }
 
+IonEditor::EditorWidget *EditorWidgetFactory::createEditor(QString path)
+{
+    IonEditor::EditorWidget *ret = new IonEditor::EditorWidget();
+    ret->setComponents(QList<IonEditor::EditorWidget::Component *>() << createLineNumberArea(ret, "php"));
+    ret->setHighlighter(createHighlighter(ret, "php"));
+    return ret;
+}
+
 }

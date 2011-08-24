@@ -63,14 +63,21 @@ void Plugin::initialize()
     def.hideIfEmpty = true;
     layoutManager->addZone(def);
 
-    //layoutManager->add(new EditorWidget(getEditorWidgetFactory()));
-    layoutManager->add(new FileTreeWidget());
+    FileTreeWidget *fileTree = new FileTreeWidget();
+    layoutManager->add(fileTree);
+    connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
 }
+
+void Plugin::openFile(QString path)
+{
+    layoutManager->add(getEditorWidgetFactory()->createEditor(path));
+}
+
 
 EditorWidgetFactory *Plugin::getEditorWidgetFactory()
 {
     if (!_editorWidgetFactory) {
-        _editorWidgetFactory.reset(new EditorWidgetFactory(*layoutManager));
+        _editorWidgetFactory.reset(new EditorWidgetFactory());
     }
     return _editorWidgetFactory.data();
 }

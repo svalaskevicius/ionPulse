@@ -10,18 +10,14 @@ namespace IonEditor {
 QMap<QString, QString> EditorWidget::fileTypes; // file ending -> file type in factories
 
 
-EditorWidget::EditorWidget(EditorWidgetFactory *widgetFactory, QWidget *parent) : QPlainTextEdit(parent), widgetFactory(widgetFactory)
+EditorWidget::EditorWidget()
+    :
+      QPlainTextEdit(NULL),
+      highlighter(NULL)
 {
-    lineNumberArea = widgetFactory->createLineNumberArea(this, "asd");
-    addComponent(lineNumberArea);
-
-    highlighter = widgetFactory->createHighlighter(this, "asd");
-
     QFont font("Monaco");
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);
-
-    updateViewportMargins();
 }
 
 EditorWidget::~EditorWidget()
@@ -29,9 +25,7 @@ EditorWidget::~EditorWidget()
     if (highlighter) {
         delete highlighter;
     }
-    if (lineNumberArea) {
-        delete lineNumberArea;
-    }
+    resetComponents();
 }
 
 
@@ -54,6 +48,19 @@ bool EditorWidget::event ( QEvent * event ) {
         component->editorEvent(event);
     }
     return QPlainTextEdit::event(event);
+}
+
+
+void EditorWidget::resetComponents() {
+    foreach (Component *component, components) {
+        delete component;
+    }
+    components.clear();
+}
+void EditorWidget::resetHighlighter() {
+    if (highlighter) {
+        delete highlighter;
+    }
 }
 
 

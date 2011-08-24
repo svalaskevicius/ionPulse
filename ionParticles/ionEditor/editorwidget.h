@@ -26,6 +26,7 @@ public:
     public:
         EditorWidget *widget;
         Component(EditorWidget *widget): widget(widget) {}
+        virtual ~Component() {}
         virtual void editorEvent(QEvent * ) = 0;
         virtual int getWidth() {return 0;}
     protected:
@@ -46,18 +47,25 @@ public:
             return widget->blockBoundingRect(block);
         }
     };
-    explicit EditorWidget(EditorWidgetFactory *widgetFactory, QWidget *parent = 0);
+    explicit EditorWidget();
     virtual ~EditorWidget();
     void addEventListener(QEvent::Type type, Component *component) {
         eventListeners[type].append(component);
     }
     void updateViewportMargins();
-protected:
-    EditorWidgetFactory *widgetFactory;
-    bool event ( QEvent * event );
-    void addComponent(Component *component) {
-        components.append(component);
+    void setComponents(QList<Component *> components) {
+        resetComponents();
+        this->components = components;
+        updateViewportMargins();
     }
+    void setHighlighter(Highlighter *highlighter) {
+        resetHighlighter();
+        this->highlighter = highlighter;
+    }
+protected:
+    bool event ( QEvent * event );
+    void resetComponents();
+    void resetHighlighter();
 
 public:
     virtual QWidget *getWidget() {return this;}
@@ -67,9 +75,8 @@ public:
 private slots:
 
 private:
-    LineNumberArea *lineNumberArea;
-    Highlighter *highlighter;
     QList<Component *> components;
+    Highlighter *highlighter;
     QMap<QEvent::Type, QList<Component *> > eventListeners;
 
 signals:
