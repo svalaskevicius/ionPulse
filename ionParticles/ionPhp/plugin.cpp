@@ -25,9 +25,9 @@ void Plugin::addParent(IPlugin *parent) {
         IonEditor::Plugin *editorPlugin = dynamic_cast<IonEditor::Plugin *>(parent);
         Q_ASSERT(editorPlugin);
         editorPlugin->getEditorWidgetFactory()->registerHighlighter("php", new EditorWidgetFactory::Highlighter());
-        IonEditor::EditorWidget::fileTypes.insert("php",   "php");
-        IonEditor::EditorWidget::fileTypes.insert("php3",  "php");
-        IonEditor::EditorWidget::fileTypes.insert("phtml", "php");
+        IonEditor::EditorWidgetFactory::fileTypes.insert("php",   "php");
+        IonEditor::EditorWidgetFactory::fileTypes.insert("php3",  "php");
+        IonEditor::EditorWidgetFactory::fileTypes.insert("phtml", "php");
     }
 }
 

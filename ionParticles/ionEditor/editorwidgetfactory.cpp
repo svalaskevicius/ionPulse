@@ -3,6 +3,8 @@
 
 
 namespace IonEditor {
+QMap<QString, QString> EditorWidgetFactory::fileTypes; // file ending -> file type in factories
+
 
 LineNumberArea *EditorWidgetFactory::LineNumberArea::operator ()(EditorWidget *widget)
 {
@@ -36,9 +38,22 @@ LineNumberArea *EditorWidgetFactory::createLineNumberArea(EditorWidget *widget, 
 IonEditor::EditorWidget *EditorWidgetFactory::createEditor(QString path)
 {
     IonEditor::EditorWidget *ret = new IonEditor::EditorWidget();
-    ret->setComponents(QList<IonEditor::EditorWidget::Component *>() << createLineNumberArea(ret, "php"));
-    ret->setHighlighter(createHighlighter(ret, "php"));
+    QString type = getFileType(path);
+    ret->setComponents(QList<IonEditor::EditorWidget::Component *>() << createLineNumberArea(ret, type));
+    ret->setHighlighter(createHighlighter(ret, type));
     return ret;
+}
+
+QString EditorWidgetFactory::getFileType(QString filePath)
+{
+    int pos = filePath.lastIndexOf('.');
+    if (pos > 0) {
+        QMap<QString, QString>::const_iterator it = fileTypes.find(filePath.right(filePath.length()-pos-1));
+        if (it != fileTypes.end()) {
+            return it.value();
+        }
+    }
+    return "text";
 }
 
 }

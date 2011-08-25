@@ -20,12 +20,15 @@ protected:
     struct Highlighter {
         virtual IonEditor::Highlighter *operator()(EditorWidget *);
     };
+    QString getFileType(QString filePath);
 private:
     QMap<QString, QSharedPointer<Highlighter> > m_createHighlighterMap;
     QMap<QString, QSharedPointer<LineNumberArea> > m_createLineNumberAreaMap;
 
 public:
-    EditorWidgetFactory() {} 
+    static QMap<QString, QString> fileTypes; // file ending -> file type in factories
+
+    EditorWidgetFactory() {}
     IonEditor::Highlighter *createHighlighter(EditorWidget *widget, QString filetype);
     IonEditor::LineNumberArea *createLineNumberArea(EditorWidget *widget, QString filetype);
     IonEditor::EditorWidget *createEditor(QString path);

@@ -7,8 +7,6 @@
 
 namespace IonEditor {
 
-QMap<QString, QString> EditorWidget::fileTypes; // file ending -> file type in factories
-
 
 EditorWidget::EditorWidget()
     :
