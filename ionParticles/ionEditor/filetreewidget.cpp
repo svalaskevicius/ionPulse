@@ -31,5 +31,17 @@ void FileTreeWidget::onItemActivated(const QModelIndex &index )
     }
 }
 
+void FileTreeWidget::keyPressEvent ( QKeyEvent * event ) {
+    switch (event->key()) {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            emit activated(currentIndex());
+            break;
+        default:
+            QTreeView::keyPressEvent(event);
+    }
+}
+
+
 
 }
