@@ -1,21 +1,16 @@
-
-=== files view ===
-	use enter key too to activate item
-
 === project view ===
 	filter php files
 	add quick search filter
 	hide empty dirs
-
-=== multiple files opened, tabbed gui ===
-	on file open - focus editor
-	setup widget size constraints / proportions
 
 === parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
 
 === semantic parser ===
 
 === semantic hightlight ===
+
+=== decouple php plugin from editor ===
+
 
 === match parentheses ===
     == animate ==
@@ -56,5 +51,10 @@ should be possible to delete some results after reviewing
 === syntax highlight ===
 
 
+=== files view ===
+	use enter key too to activate item
 
+=== multiple files opened, tabbed gui ===
+	on file open - focus editor
+	setup widget size constraints / proportions
 

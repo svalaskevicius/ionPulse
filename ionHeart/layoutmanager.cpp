@@ -128,12 +128,12 @@ void LayoutManager::add(IPanelWidget *panel)
 {
     ZoneNodeLeaf *z = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(z);
-    z->setCurrentIndex(
-        z->addTab(
-            panel->getWidget(),
-            panel->getPanelTitle()
-        )
+    int idx = z->addTab(
+        panel->getWidget(),
+        panel->getPanelTitle()
     );
+    z->setCurrentIndex(idx);
+    z->widget(idx)->setFocus();
     z->show();
 }
 
