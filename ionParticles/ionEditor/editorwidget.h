@@ -47,7 +47,7 @@ public:
             return widget->blockBoundingRect(block);
         }
     };
-    explicit EditorWidget();
+    explicit EditorWidget(QString filePath);
     virtual ~EditorWidget();
     void addEventListener(QEvent::Type type, Component *component) {
         eventListeners[type].append(component);
@@ -69,7 +69,7 @@ protected:
 
 public:
     virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelTitle() {return "title";}
+    virtual QString getPanelTitle();
     virtual QString getPanelZone() {return "central";}
 
 private slots:
@@ -78,7 +78,7 @@ private:
     QList<Component *> components;
     Highlighter *highlighter;
     QMap<QEvent::Type, QList<Component *> > eventListeners;
-
+    QString filePath;
 signals:
 
 public slots:

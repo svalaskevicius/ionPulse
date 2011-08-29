@@ -3,19 +3,26 @@
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include "editorwidgetfactory.h"
-
+#include <QFileInfo>
+#include <QFile>
+#include <QTextStream>
 
 namespace IonEditor {
 
 
-EditorWidget::EditorWidget()
+EditorWidget::EditorWidget(QString filePath)
     :
       QPlainTextEdit(NULL),
-      highlighter(NULL)
+      highlighter(NULL),
+      filePath(filePath)
 {
     QFont font("Monaco");
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);
+    QFile f(filePath);
+    if (f.open(QFile::ReadOnly)) {
+        setPlainText(QTextStream(&f).readAll());
+    }
 }
 
 EditorWidget::~EditorWidget()
@@ -61,6 +68,9 @@ void EditorWidget::resetHighlighter() {
     }
 }
 
+QString EditorWidget::getPanelTitle() {
+    return QFileInfo(filePath).fileName();
+}
 
 
 }

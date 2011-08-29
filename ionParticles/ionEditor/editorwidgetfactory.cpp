@@ -37,7 +37,7 @@ LineNumberArea *EditorWidgetFactory::createLineNumberArea(EditorWidget *widget, 
 
 IonEditor::EditorWidget *EditorWidgetFactory::createEditor(QString path)
 {
-    IonEditor::EditorWidget *ret = new IonEditor::EditorWidget();
+    IonEditor::EditorWidget *ret = new IonEditor::EditorWidget(path);
     QString type = getFileType(path);
     ret->setComponents(QList<IonEditor::EditorWidget::Component *>() << createLineNumberArea(ret, type));
     ret->setHighlighter(createHighlighter(ret, type));
