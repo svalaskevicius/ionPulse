@@ -43,6 +43,25 @@ ZoneNodeLeaf *ZoneNodeBranch::getZoneLeaf() {
     return getSubZone(empty)->getZoneLeaf();
 }
 
+void ZoneNodeBranch::resizeEvent ( QResizeEvent * event ) {
+    if (!childrenResized) {
+        resizeChildren();
+        childrenResized = true;
+    }
+    QSplitter::resizeEvent(event);
+}
+void ZoneNodeBranch::resizeChildren() {
+    QVector<int> vSizes(this->children().size());
+    foreach (ZoneNode * const br, subZones) {
+        int sw = br->getDefinition().sizeWeight;
+        Q_ASSERT(sw); // not implemented support of sw = 0 (auto size adjusment)
+        int i = indexOf(br->getWidget());
+        printf("nfo: name: %s, size: %d, i: %d\n", br->getDefinition().name.toAscii().constData(), sw, i);
+        vSizes[i] = sw;
+    }
+    this->setSizes(vSizes.toList());
+}
+
 
 ///////////
 

@@ -9,6 +9,7 @@ namespace IonHeart {
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    resize(1024, 800);
     setWindowTitle(QObject::tr("ionPulse"));
     setStatusBar(new QStatusBar(this));
 }

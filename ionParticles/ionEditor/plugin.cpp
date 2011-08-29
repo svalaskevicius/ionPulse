@@ -37,6 +37,7 @@ void Plugin::initialize()
     def.after = "left";
     def.before = "right";
     def.hideIfEmpty = false;
+    def.sizeWeight = 700;
     layoutManager->addZone(def);
 
     def.name = "left";
@@ -45,6 +46,7 @@ void Plugin::initialize()
     def.after = "";
     def.before = "central";
     def.hideIfEmpty = false;
+    def.sizeWeight = 200;
     layoutManager->addZone(def);
 
     def.name = "leftbottom";
@@ -53,6 +55,7 @@ void Plugin::initialize()
     def.after = "left";
     def.before = "";
     def.hideIfEmpty = true;
+    def.sizeWeight = 150;
     layoutManager->addZone(def);
 
     def.name = "right";
@@ -61,6 +64,7 @@ void Plugin::initialize()
     def.after = "central";
     def.before = "";
     def.hideIfEmpty = true;
+    def.sizeWeight = 150;
     layoutManager->addZone(def);
 
     FileTreeWidget *fileTree = new FileTreeWidget();

@@ -33,17 +33,20 @@ public:
             parent->show();
         }
     }
-   // const ZoneDefinition getDefinition() const {return zoneDef;}
+    const ZoneDefinition & getDefinition() const {return zoneDef;}
 };
 
 class ZoneNodeBranch : public QSplitter, public ZoneNode
 {
+private:
+    bool childrenResized;
 protected:
     typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
+    virtual void resizeEvent ( QResizeEvent * event );
 public:
-    ZoneNodeBranch(QWidget *parent) : QSplitter(parent), ZoneNode(NULL, ZoneDefinition()) {}
-    ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef) : QSplitter(parent), ZoneNode(parent, zoneDef)
+    ZoneNodeBranch(QWidget *parent) : QSplitter(parent), ZoneNode(NULL, ZoneDefinition()), childrenResized(false) {}
+    ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef) : QSplitter(parent), ZoneNode(parent, zoneDef), childrenResized(false)
     {
         setOrientation(zoneDef.orientation);
     }
@@ -57,6 +60,7 @@ public:
         QSplitter::show();
         ZoneNode::show();
     }
+    void resizeChildren();
 };
 
 class ZoneNodeLeaf : public QTabWidget, public ZoneNode
