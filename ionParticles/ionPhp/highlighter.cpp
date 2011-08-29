@@ -55,30 +55,31 @@ Highlighter::Highlighter(IonEditor::EditorWidget *parent) :
     }
 
 
-    QTextCharFormat varialeFormat;
-    varialeFormat.setFontWeight(QFont::Bold);
-    varialeFormat.setForeground(Qt::darkMagenta);
+    QTextCharFormat variableFormat;
+    variableFormat.setForeground(QColor::fromHsv(90, 155, 85));
     rule.pattern = QRegExp("\\$[A-Za-z]+\\b");
-    rule.format = varialeFormat;
+    rule.format = variableFormat;
+    highlightingRules.append(rule);
+
+    QTextCharFormat quotationFormat;
+    quotationFormat.setForeground(Qt::darkGreen);
+    rule.pattern = QRegExp("([\"']).*\\1");
+    rule.pattern.setMinimal(true);
+    rule.format = quotationFormat;
+    highlightingRules.append(rule);
+
+    QTextCharFormat functionFormat;
+    functionFormat.setFontWeight(QFont::Bold);
+    //functionFormat.setFontItalic(true);
+    functionFormat.setForeground(QColor::fromHsv(20, 205, 105));
+    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
+    rule.format = functionFormat;
     highlightingRules.append(rule);
 
     QTextCharFormat singleLineCommentFormat;
     singleLineCommentFormat.setForeground(Qt::red);
     rule.pattern = QRegExp("//[^\n]*");
     rule.format = singleLineCommentFormat;
-    highlightingRules.append(rule);
-
-    QTextCharFormat quotationFormat;
-    quotationFormat.setForeground(Qt::darkGreen);
-    rule.pattern = QRegExp("\".*\"");
-    rule.format = quotationFormat;
-    highlightingRules.append(rule);
-
-    QTextCharFormat functionFormat;
-    functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
-    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
-    rule.format = functionFormat;
     highlightingRules.append(rule);
 
 
