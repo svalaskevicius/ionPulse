@@ -18,7 +18,7 @@ Highlighter *EditorWidgetFactory::Highlighter::operator ()(EditorWidget *widget)
 
 Highlighter *EditorWidgetFactory::createHighlighter(EditorWidget *widget, QString filetype)
 {
-    QMap<QString, QSharedPointer<Highlighter> >::const_iterator it = m_createHighlighterMap.find(filetype);
+    QMap<QString, QSharedPointer<IHighlighter> >::const_iterator it = m_createHighlighterMap.find(filetype);
     if (it != m_createHighlighterMap.end()) {
         return (*(*it))(widget);
     }
@@ -27,7 +27,7 @@ Highlighter *EditorWidgetFactory::createHighlighter(EditorWidget *widget, QStrin
 }
 LineNumberArea *EditorWidgetFactory::createLineNumberArea(EditorWidget *widget, QString filetype)
 {
-    QMap<QString, QSharedPointer<LineNumberArea> >::const_iterator it = m_createLineNumberAreaMap.find(filetype);
+    QMap<QString, QSharedPointer<ILineNumberArea> >::const_iterator it = m_createLineNumberAreaMap.find(filetype);
     if (it != m_createLineNumberAreaMap.end()) {
         return (*(*it))(widget);
     }
@@ -35,11 +35,11 @@ LineNumberArea *EditorWidgetFactory::createLineNumberArea(EditorWidget *widget, 
     return _default(widget);
 }
 
-IonEditor::EditorWidget *EditorWidgetFactory::createEditor(QString path)
+IonHeart::IPanelWidget *EditorWidgetFactory::createEditor(QString path)
 {
     IonEditor::EditorWidget *ret = new IonEditor::EditorWidget(path);
     QString type = getFileType(path);
-    ret->setComponents(QList<IonEditor::EditorWidget::Component *>() << createLineNumberArea(ret, type));
+    ret->setComponents(QList<IEditorComponent*>() << createLineNumberArea(ret, type));
     ret->setHighlighter(createHighlighter(ret, type));
     return ret;
 }
@@ -55,5 +55,13 @@ QString EditorWidgetFactory::getFileType(QString filePath)
     }
     return "text";
 }
+
+void EditorWidgetFactory::registerHighlighter(QString filetype, IEditorWidgetFactory::IHighlighter *highlighter) {
+    m_createHighlighterMap[filetype] = QSharedPointer<IHighlighter>(highlighter);
+}
+void EditorWidgetFactory::registerLineNumberArea(QString filetype, IEditorWidgetFactory::ILineNumberArea *lineNumberArea) {
+    m_createLineNumberAreaMap[filetype] = QSharedPointer<ILineNumberArea>(lineNumberArea);
+}
+
 
 }

@@ -9,12 +9,14 @@
 
 namespace IonEditor {
 
+//////
 
 EditorWidget::EditorWidget(QString filePath)
     :
       QPlainTextEdit(NULL),
       highlighter(NULL),
-      filePath(filePath)
+      filePath(filePath),
+      componentInfo(this)
 {
     QFont font("Monaco");
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
@@ -40,7 +42,7 @@ EditorWidget::~EditorWidget()
 void EditorWidget::updateViewportMargins()
 {
     QMargins margins(0, 0, 0, 0);
-    foreach (Component *component, components) {
+    foreach (IEditorComponent* component, components) {
         margins.setLeft(margins.left()+component->getWidth());
     }
 
@@ -49,7 +51,7 @@ void EditorWidget::updateViewportMargins()
 
 
 bool EditorWidget::event ( QEvent * event ) {
-    foreach (Component *component, eventListeners[event->type()]) {
+    foreach (IEditorComponent *component, eventListeners[event->type()]) {
         component->editorEvent(event);
     }
     return QPlainTextEdit::event(event);
@@ -57,8 +59,8 @@ bool EditorWidget::event ( QEvent * event ) {
 
 
 void EditorWidget::resetComponents() {
-    foreach (Component *component, components) {
-        delete component;
+    foreach (IEditorComponent *component, components) {
+       delete component;
     }
     components.clear();
 }

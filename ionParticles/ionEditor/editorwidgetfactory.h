@@ -5,25 +5,26 @@
 #include "highlighter.h"
 #include <QSharedPointer>
 #include <ionHeart/layout.h>
+#include "editorapi.h"
 
 namespace IonEditor {
 
 class EditorWidget;
 
-class EditorWidgetFactory
+class EditorWidgetFactory : public IEditorWidgetFactory
 {
 protected:
 
-    struct LineNumberArea {
+    struct LineNumberArea : public IEditorWidgetFactory::ILineNumberArea {
         virtual IonEditor::LineNumberArea *operator()(EditorWidget *);
     };
-    struct Highlighter {
+    struct Highlighter : public IEditorWidgetFactory::IHighlighter {
         virtual IonEditor::Highlighter *operator()(EditorWidget *);
     };
     QString getFileType(QString filePath);
 private:
-    QMap<QString, QSharedPointer<Highlighter> > m_createHighlighterMap;
-    QMap<QString, QSharedPointer<LineNumberArea> > m_createLineNumberAreaMap;
+    QMap<QString, QSharedPointer<IHighlighter> > m_createHighlighterMap;
+    QMap<QString, QSharedPointer<ILineNumberArea> > m_createLineNumberAreaMap;
 
 public:
     static QMap<QString, QString> fileTypes; // file ending -> file type in factories
@@ -31,14 +32,10 @@ public:
     EditorWidgetFactory() {}
     IonEditor::Highlighter *createHighlighter(EditorWidget *widget, QString filetype);
     IonEditor::LineNumberArea *createLineNumberArea(EditorWidget *widget, QString filetype);
-    IonEditor::EditorWidget *createEditor(QString path);
+    IonHeart::IPanelWidget *createEditor(QString path);
 
-    void registerHighlighter(QString filetype, Highlighter *highlighter) {
-        m_createHighlighterMap[filetype] = QSharedPointer<Highlighter>(highlighter);
-    }
-    void registerLineNumberArea(QString filetype, LineNumberArea *lineNumberArea) {
-        m_createLineNumberAreaMap[filetype] = QSharedPointer<LineNumberArea>(lineNumberArea);
-    }
+    virtual void registerHighlighter(QString filetype, IHighlighter *highlighter);
+    virtual void registerLineNumberArea(QString filetype, ILineNumberArea *lineNumberArea);
 };
 
 }

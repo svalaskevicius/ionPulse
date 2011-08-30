@@ -7,11 +7,12 @@
 namespace IonEditor {
 
 
-class LineNumberArea : public QWidget, public EditorWidget::Component
+class LineNumberArea : public QWidget, public IEditorComponent
 {
     Q_OBJECT
 public:
-    explicit LineNumberArea(EditorWidget *parent = 0);
+    explicit LineNumberArea(IEditor *parent = 0);
+    virtual ~LineNumberArea(){}
     QSize sizeHint() {
         return QSize(getWidth(), 0);
     }
@@ -29,7 +30,7 @@ private slots:
     void editorBlockCountChanged(int /* newBlockCount */);
     void editorCursorPositionChanged();
 private:
-    EditorWidget *ionText;
+    IEditor *ionText;
     int currentLine;
 };
 

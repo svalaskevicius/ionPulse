@@ -6,6 +6,8 @@
 #include <QMap>
 #include <QTextBlock>
 #include <ionHeart/layout.h>
+#include "editorapi.h"
+
 
 namespace IonEditor {
 
@@ -14,7 +16,7 @@ class LineNumberArea;
 class Highlighter;
 
 
-class EditorWidget : public QPlainTextEdit, public IonHeart::IPanelWidget
+class EditorWidget : public QPlainTextEdit, public IEditor, public IonHeart::IPanelWidget
 {
     Q_OBJECT
 public:
@@ -22,14 +24,11 @@ public:
      * a class for defining separate components, used to
      * open some of the protected functionality
      */
-    class Component {
+    class ComponentInfo : public IEditorComponentInfo {
     public:
         EditorWidget *widget;
-        Component(EditorWidget *widget): widget(widget) {}
-        virtual ~Component() {}
-        virtual void editorEvent(QEvent * ) = 0;
-        virtual int getWidth() {return 0;}
-    protected:
+        ComponentInfo(EditorWidget *widget): widget(widget) {}
+        virtual ~ComponentInfo() {}
         inline QTextBlock firstVisibleBlock() const
         {
             return widget->firstVisibleBlock();
@@ -49,15 +48,6 @@ public:
     };
     explicit EditorWidget(QString filePath);
     virtual ~EditorWidget();
-    void addEventListener(QEvent::Type type, Component *component) {
-        eventListeners[type].append(component);
-    }
-    void updateViewportMargins();
-    void setComponents(QList<Component *> components) {
-        resetComponents();
-        this->components = components;
-        updateViewportMargins();
-    }
     void setHighlighter(Highlighter *highlighter) {
         resetHighlighter();
         this->highlighter = highlighter;
@@ -72,13 +62,30 @@ public:
     virtual QString getPanelTitle();
     virtual QString getPanelZone() {return "central";}
 
+public:
+    virtual const IEditorComponentInfo &getEditorInfo() const {
+        return componentInfo;
+    }
+    virtual void addEventListener(QEvent::Type type, IEditorComponent *component) {
+        eventListeners[type].append(component);
+    }
+    void updateViewportMargins();
+    void setComponents(QList<IEditorComponent*> components) {
+        resetComponents();
+        this->components = components;
+        updateViewportMargins();
+    }
+    virtual QPlainTextEdit* getEditorInstance() {return this;}
+
+
 private slots:
 
 private:
-    QList<Component *> components;
+    QList<IEditorComponent* > components;
     Highlighter *highlighter;
-    QMap<QEvent::Type, QList<Component *> > eventListeners;
+    QMap<QEvent::Type, QList<IEditorComponent *> > eventListeners;
     QString filePath;
+    ComponentInfo componentInfo;
 signals:
 
 public slots:

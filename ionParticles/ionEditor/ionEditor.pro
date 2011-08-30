@@ -19,7 +19,8 @@ HEADERS += \
     editorwidget.h \
     highlighter.h \
     editorwidgetfactory.h \
-    filetreewidget.h
+    filetreewidget.h \
+    editorapi.h
 
 SOURCES += \
     linenumberarea.cpp \
@@ -31,5 +32,6 @@ SOURCES += \
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
 
 

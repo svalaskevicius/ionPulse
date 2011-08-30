@@ -4,12 +4,14 @@
 #include <QObject>
 #include <ionHeart/plugin.h>
 #include <QScopedPointer>
+#include "editorapi.h"
+
 
 namespace IonEditor {
 
 class EditorWidgetFactory;
 
-class Plugin : public QObject, public IonHeart::IPlugin
+class Plugin : public QObject, public IonHeart::IPlugin, public IEditorPlugin
 {
     Q_OBJECT
     Q_INTERFACES(IonHeart::IPlugin)
@@ -20,7 +22,7 @@ public:
     QString getName() {
         return "ionEditor";
     }
-    EditorWidgetFactory *getEditorWidgetFactory();
+    IEditorWidgetFactory *getEditorWidgetFactory();
 private:
     QScopedPointer<EditorWidgetFactory> _editorWidgetFactory;
 

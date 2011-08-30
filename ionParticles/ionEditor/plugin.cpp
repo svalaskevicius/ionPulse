@@ -78,7 +78,7 @@ void Plugin::openFile(QString path)
 }
 
 
-EditorWidgetFactory *Plugin::getEditorWidgetFactory()
+IEditorWidgetFactory *Plugin::getEditorWidgetFactory()
 {
     if (!_editorWidgetFactory) {
         _editorWidgetFactory.reset(new EditorWidgetFactory());
