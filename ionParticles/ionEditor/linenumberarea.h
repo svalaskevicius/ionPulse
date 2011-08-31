@@ -6,6 +6,7 @@
 
 namespace IonEditor {
 
+namespace Private {
 
 class LineNumberArea : public QWidget, public IEditorComponent
 {
@@ -33,6 +34,8 @@ private:
     IEditor *ionText;
     int currentLine;
 };
+
+}
 
 }
 

@@ -11,6 +11,8 @@
 
 namespace IonEditor {
 
+namespace Private {
+
 class EditorWidgetFactory;
 class LineNumberArea;
 class Highlighter;
@@ -95,6 +97,7 @@ public slots:
 public:
 };
 
+}
 
 }
 

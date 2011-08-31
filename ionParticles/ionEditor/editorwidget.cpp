@@ -10,6 +10,7 @@
 namespace IonEditor {
 
 //////
+namespace Private {
 
 EditorWidget::EditorWidget(QString filePath)
     :
@@ -102,4 +103,5 @@ void EditorWidget::addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection>
     }
 }
 
+}
 }

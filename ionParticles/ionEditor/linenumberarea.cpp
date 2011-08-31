@@ -5,6 +5,7 @@
 #include <ionHeart/shared.h>
 
 namespace IonEditor {
+namespace Private {
 
 LineNumberArea::LineNumberArea(IEditor *parent) :
     QWidget(parent->getEditorInstance()),
@@ -122,3 +123,4 @@ void LineNumberArea::editorCursorPositionChanged()
 
 }
 
+}

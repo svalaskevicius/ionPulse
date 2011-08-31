@@ -4,6 +4,8 @@
 namespace IonHeart {
 
 
+namespace Private {
+
 ZoneNode *ZoneNode::getSubZone(QStringList &path) throw(std::runtime_error)
 {
     ZoneNode *ret = findSubZone(path);
@@ -142,5 +144,5 @@ void LayoutManager::addZone(ZoneDefinition &zone)
     zonesManager.addZone(zone);
 }
 
-
+}
 }

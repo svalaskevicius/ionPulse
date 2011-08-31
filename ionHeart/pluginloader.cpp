@@ -6,6 +6,8 @@
 
 namespace IonHeart {
 
+namespace Private {
+
 PluginLoader::PluginLoader()
 {
 }
@@ -107,5 +109,5 @@ void PluginLoader::_includePlugin(IPlugin *plugin)
     }
     _includedPlugins.insert(plugin->getName(), plugin);
 }
-
+}
 }

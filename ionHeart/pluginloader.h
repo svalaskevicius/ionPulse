@@ -9,6 +9,8 @@ namespace IonHeart {
 
 class IPlugin;
 
+namespace Private {
+
 class PluginLoader
 {
 public:
@@ -22,7 +24,7 @@ private:
     void _includePlugin(IPlugin *plugin);
 
 };
-
+}
 }
 
 #endif // PLUGINLOADER_H

@@ -12,6 +12,8 @@
 
 namespace IonHeart {
 
+namespace Private {
+
 class ZoneNodeLeaf;
 class ZoneNodeBranch;
 
@@ -105,7 +107,7 @@ public:
     virtual void add(IPanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
 };
-
+}
 }
 
 #endif // LAYOUTMANAGER_H

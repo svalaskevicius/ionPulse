@@ -3,6 +3,7 @@
 #include "editorwidget.h"
 
 namespace IonEditor {
+namespace Private {
 
 Highlighter::Highlighter(QPlainTextEdit *parent) :
     QSyntaxHighlighter(parent->document()), ionText(parent)
@@ -17,6 +18,6 @@ void Highlighter::highlightBlock(const QString &)
 }
 
 
-
+}
 
 }

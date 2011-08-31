@@ -8,6 +8,8 @@
 
 namespace IonEditor {
 
+namespace Private {
+
 class FileTreeWidget : public QTreeView, public IonHeart::IPanelWidget
 {
     Q_OBJECT
@@ -28,7 +30,7 @@ protected slots:
     void onItemActivated(const QModelIndex &index );
 
 };
-
+}
 }
 
 #endif // FILETREEWIDGET_H

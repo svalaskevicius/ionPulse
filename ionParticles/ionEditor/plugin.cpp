@@ -67,7 +67,7 @@ void Plugin::initialize()
     def.sizeWeight = 150;
     layoutManager->addZone(def);
 
-    FileTreeWidget *fileTree = new FileTreeWidget();
+    Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
 }
@@ -81,7 +81,7 @@ void Plugin::openFile(QString path)
 IEditorWidgetFactory *Plugin::getEditorWidgetFactory()
 {
     if (!_editorWidgetFactory) {
-        _editorWidgetFactory.reset(new EditorWidgetFactory());
+        _editorWidgetFactory.reset(new Private::EditorWidgetFactory());
     }
     return _editorWidgetFactory.data();
 }

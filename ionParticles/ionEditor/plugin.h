@@ -8,8 +8,10 @@
 
 
 namespace IonEditor {
-
+namespace Private {
 class EditorWidgetFactory;
+}
+
 
 class Plugin : public QObject, public IEditorPlugin
 {
@@ -24,7 +26,7 @@ public:
     }
     IEditorWidgetFactory *getEditorWidgetFactory();
 private:
-    QScopedPointer<EditorWidgetFactory> _editorWidgetFactory;
+    QScopedPointer<Private::EditorWidgetFactory> _editorWidgetFactory;
 
 signals:
 

@@ -4,6 +4,8 @@
 
 namespace IonHeart {
 
+namespace Private {
+
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -17,6 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 }
-
+}
 
 }

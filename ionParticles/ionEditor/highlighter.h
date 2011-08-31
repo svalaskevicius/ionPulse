@@ -5,8 +5,8 @@
 #include <QPlainTextEdit>
 
 namespace IonEditor {
+namespace Private {
 
-class EditorWidget;
 
 class Highlighter : public QSyntaxHighlighter
 {
@@ -22,6 +22,6 @@ private:
 };
 
 }
-
+}
 
 #endif // IONHIGHLIGHTER_H

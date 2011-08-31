@@ -2,6 +2,7 @@
 
 namespace IonEditor {
 
+namespace Private {
 
 FileTreeWidget::FileTreeWidget(QWidget *parent) :
     QTreeView(parent), _fiModel(NULL)
@@ -42,6 +43,6 @@ void FileTreeWidget::keyPressEvent ( QKeyEvent * event ) {
     }
 }
 
-
+}
 
 }

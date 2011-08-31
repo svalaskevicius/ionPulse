@@ -9,6 +9,8 @@
 
 namespace IonEditor {
 
+namespace Private {
+
 class EditorWidget;
 
 class EditorWidgetFactory : public IEditorWidgetFactory
@@ -17,7 +19,7 @@ protected:
     static QMap<QString, QString> fileTypes; // file ending -> file type in factories
 
     struct LineNumberArea : public IEditorWidgetFactory::ILineNumberArea {
-        virtual IonEditor::LineNumberArea *operator()(IEditor *);
+        virtual IonEditor::IEditorComponent *operator()(IEditor *);
     };
     struct Highlighter : public IEditorWidgetFactory::IHighlighter {
         virtual QSyntaxHighlighter *operator()(IEditor *);
@@ -42,6 +44,7 @@ public:
     virtual void registerLineNumberArea(QString const & filetype, ILineNumberArea *lineNumberArea);
 };
 
+}
 }
 
 #endif // EDITORWIDGETFACTORY_H

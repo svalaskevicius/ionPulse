@@ -6,6 +6,8 @@
 
 namespace IonHeart {
 
+namespace Private {
+
 
 class MainWindow : public QMainWindow
 {
@@ -15,7 +17,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 };
-
+}
 }
 
 #endif // MAINWINDOW_H
