@@ -11,6 +11,7 @@ class IPlugin {
 protected:
     ILayoutManager *layoutManager;
 public:
+    virtual ~IPlugin(){}
     void setLayoutManager(ILayoutManager *layoutManager) {this->layoutManager = layoutManager;}
     virtual void initialize() = 0;
     virtual QString getName() = 0;

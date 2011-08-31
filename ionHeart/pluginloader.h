@@ -13,6 +13,7 @@ class PluginLoader
 {
 public:
     PluginLoader();
+    ~PluginLoader();
     void loadPlugins(LayoutManager &layoutManager);
 private:
     QMap<QString, IPlugin *> _includedPlugins;

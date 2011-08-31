@@ -52,8 +52,8 @@ public:
     virtual IonHeart::IPanelWidget *createEditor(QString path) = 0;
 
     virtual void registerFileType(QString fileExt, QString fileType) = 0;
-    virtual void registerHighlighter(QString filetype, IHighlighter *highlighter) = 0;
-    virtual void registerLineNumberArea(QString filetype, ILineNumberArea *lineNumberArea) = 0;
+    virtual void registerHighlighter(QString const & filetype, IHighlighter *highlighter) = 0;
+    virtual void registerLineNumberArea(QString const & filetype, ILineNumberArea *lineNumberArea) = 0;
 };
 
 class IEditorPlugin : public IonHeart::IPlugin {

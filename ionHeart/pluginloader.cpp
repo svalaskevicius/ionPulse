@@ -10,6 +10,12 @@ PluginLoader::PluginLoader()
 {
 }
 
+PluginLoader::~PluginLoader()
+{
+    foreach (IPlugin *plg, _includedPlugins) {
+        delete plg;
+    }
+}
 
 QDir PluginLoader::_getPluginsDir()
 {
@@ -41,6 +47,8 @@ void PluginLoader::loadPlugins(LayoutManager &layoutManager)
         IPlugin *plg = qobject_cast<IPlugin *>(plugin);
         if (plg) {
             pluginsToLoad.append(plg);
+        } else {
+            delete plugin;
         }
     }
 
@@ -50,6 +58,8 @@ void PluginLoader::loadPlugins(LayoutManager &layoutManager)
         IPlugin *plg = qobject_cast<IPlugin *>(plugin);
         if (plg) {
             pluginsToLoad.append(plg);
+        } else {
+            delete plugin;
         }
     }
 
@@ -67,7 +77,10 @@ void PluginLoader::loadPlugins(LayoutManager &layoutManager)
         }
         pluginsToLoad = pluginsToLoadLater;
     } while (madeChanges);
-
+    foreach (IPlugin *plg, pluginsToLoad) {
+        std::cerr << "failed to load plugin: " << plg->getName().toStdString() << std::endl;
+        delete plg;
+    }
     QDir::setCurrent(oldPwd);
 
     foreach (IPlugin *plugin, _includedPlugins.values()) {

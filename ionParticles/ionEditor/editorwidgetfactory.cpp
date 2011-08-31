@@ -59,10 +59,10 @@ QString EditorWidgetFactory::getFileType(QString filePath)
 void EditorWidgetFactory::registerFileType(QString fileExt, QString fileType) {
     fileTypes.insert(fileExt, fileType);
 }
-void EditorWidgetFactory::registerHighlighter(QString filetype, IEditorWidgetFactory::IHighlighter *highlighter) {
+void EditorWidgetFactory::registerHighlighter(QString const & filetype, IEditorWidgetFactory::IHighlighter *highlighter) {
     m_createHighlighterMap[filetype] = QSharedPointer<IHighlighter>(highlighter);
 }
-void EditorWidgetFactory::registerLineNumberArea(QString filetype, IEditorWidgetFactory::ILineNumberArea *lineNumberArea) {
+void EditorWidgetFactory::registerLineNumberArea(QString const & filetype, IEditorWidgetFactory::ILineNumberArea *lineNumberArea) {
     m_createLineNumberAreaMap[filetype] = QSharedPointer<ILineNumberArea>(lineNumberArea);
 }
 

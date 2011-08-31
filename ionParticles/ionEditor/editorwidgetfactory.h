@@ -29,13 +29,19 @@ private:
 
 public:
     EditorWidgetFactory() {}
+    ~EditorWidgetFactory() {
+        printf("clearing.. ");
+        m_createHighlighterMap.clear();
+        m_createLineNumberAreaMap.clear();
+        printf("done\n");
+    }
     QSyntaxHighlighter *createHighlighter(IEditor *widget, QString filetype);
     IonEditor::IEditorComponent *createLineNumberArea(IEditor *widget, QString filetype);
     IonHeart::IPanelWidget *createEditor(QString path);
 
     virtual void registerFileType(QString fileExt, QString fileType);
-    virtual void registerHighlighter(QString filetype, IHighlighter *highlighter);
-    virtual void registerLineNumberArea(QString filetype, ILineNumberArea *lineNumberArea);
+    virtual void registerHighlighter(QString const & filetype, IHighlighter *highlighter);
+    virtual void registerLineNumberArea(QString const & filetype, ILineNumberArea *lineNumberArea);
 };
 
 }
