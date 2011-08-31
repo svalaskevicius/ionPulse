@@ -30,10 +30,8 @@ private:
 public:
     EditorWidgetFactory() {}
     ~EditorWidgetFactory() {
-        printf("clearing.. ");
         m_createHighlighterMap.clear();
         m_createLineNumberAreaMap.clear();
-        printf("done\n");
     }
     QSyntaxHighlighter *createHighlighter(IEditor *widget, QString filetype);
     IonEditor::IEditorComponent *createLineNumberArea(IEditor *widget, QString filetype);
