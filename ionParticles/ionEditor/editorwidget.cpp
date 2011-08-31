@@ -25,6 +25,8 @@ EditorWidget::EditorWidget(QString filePath)
     if (f.open(QFile::ReadOnly)) {
         setPlainText(QTextStream(&f).readAll());
     }
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(editorCursorPositionChanged()));
+    editorCursorPositionChanged();
 }
 
 EditorWidget::~EditorWidget()
@@ -74,5 +76,30 @@ QString EditorWidget::getPanelTitle() {
     return QFileInfo(filePath).fileName();
 }
 
+
+void EditorWidget::editorCursorPositionChanged()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    addCurrentLineExtraSelection(extraSelections);
+
+    this->setExtraSelections(extraSelections);
+}
+
+void EditorWidget::addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections)
+{
+    if (!this->isReadOnly()) {
+        QTextEdit::ExtraSelection selection;
+
+        QColor lineColor = QColor(QColor::fromHsl(90, 70, 220));
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = this->textCursor();
+        selection.cursor.clearSelection();
+
+        extraSelections.append(selection);
+    }
+}
 
 }

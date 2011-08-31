@@ -6,17 +6,17 @@ namespace IonEditor {
 QMap<QString, QString> EditorWidgetFactory::fileTypes; // file ending -> file type in factories
 
 
-LineNumberArea *EditorWidgetFactory::LineNumberArea::operator ()(EditorWidget *widget)
+LineNumberArea *EditorWidgetFactory::LineNumberArea::operator ()(IEditor *widget)
 {
     return new IonEditor::LineNumberArea(widget);
 }
 
-Highlighter *EditorWidgetFactory::Highlighter::operator ()(EditorWidget *widget)
+QSyntaxHighlighter *EditorWidgetFactory::Highlighter::operator ()(IEditor *widget)
 {
-    return new IonEditor::Highlighter(widget);
+    return new IonEditor::Highlighter(widget->getEditorInstance());
 }
 
-Highlighter *EditorWidgetFactory::createHighlighter(EditorWidget *widget, QString filetype)
+QSyntaxHighlighter *EditorWidgetFactory::createHighlighter(IEditor *widget, QString filetype)
 {
     QMap<QString, QSharedPointer<IHighlighter> >::const_iterator it = m_createHighlighterMap.find(filetype);
     if (it != m_createHighlighterMap.end()) {
@@ -25,7 +25,7 @@ Highlighter *EditorWidgetFactory::createHighlighter(EditorWidget *widget, QStrin
     Highlighter _default;
     return _default(widget);
 }
-LineNumberArea *EditorWidgetFactory::createLineNumberArea(EditorWidget *widget, QString filetype)
+IEditorComponent *EditorWidgetFactory::createLineNumberArea(IEditor *widget, QString filetype)
 {
     QMap<QString, QSharedPointer<ILineNumberArea> >::const_iterator it = m_createLineNumberAreaMap.find(filetype);
     if (it != m_createLineNumberAreaMap.end()) {
@@ -56,6 +56,9 @@ QString EditorWidgetFactory::getFileType(QString filePath)
     return "text";
 }
 
+void EditorWidgetFactory::registerFileType(QString fileExt, QString fileType) {
+    fileTypes.insert(fileExt, fileType);
+}
 void EditorWidgetFactory::registerHighlighter(QString filetype, IEditorWidgetFactory::IHighlighter *highlighter) {
     m_createHighlighterMap[filetype] = QSharedPointer<IHighlighter>(highlighter);
 }

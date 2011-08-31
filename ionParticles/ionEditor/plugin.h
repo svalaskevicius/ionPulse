@@ -2,7 +2,7 @@
 #define IONEDITOR_H
 
 #include <QObject>
-#include <ionHeart/plugin.h>
+
 #include <QScopedPointer>
 #include "editorapi.h"
 
@@ -11,7 +11,7 @@ namespace IonEditor {
 
 class EditorWidgetFactory;
 
-class Plugin : public QObject, public IonHeart::IPlugin, public IEditorPlugin
+class Plugin : public QObject, public IEditorPlugin
 {
     Q_OBJECT
     Q_INTERFACES(IonHeart::IPlugin)

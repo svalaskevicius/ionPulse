@@ -1,15 +1,16 @@
 #ifndef PHPHIGHLIGHTER_H
 #define PHPHIGHLIGHTER_H
 
-#include <ionParticles/ionEditor/highlighter.h>
+#include <QSyntaxHighlighter>
+#include <QPlainTextEdit>
 
 namespace IonPhp {
 
-class Highlighter : public IonEditor::Highlighter
+class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    explicit Highlighter(IonEditor::EditorWidget *parent);
+    explicit Highlighter(QPlainTextEdit *parent);
 private:
     struct HighlightingRule
     {
@@ -24,7 +25,7 @@ private:
     QTextCharFormat multiLineCommentFormat;
 
 protected:
-    void highlightBlock(const QString &text);
+    virtual void highlightBlock(const QString &text);
 
 
 signals:

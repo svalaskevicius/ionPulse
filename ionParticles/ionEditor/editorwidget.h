@@ -48,7 +48,7 @@ public:
     };
     explicit EditorWidget(QString filePath);
     virtual ~EditorWidget();
-    void setHighlighter(Highlighter *highlighter) {
+    void setHighlighter(QSyntaxHighlighter *highlighter) {
         resetHighlighter();
         this->highlighter = highlighter;
     }
@@ -78,11 +78,14 @@ public:
     virtual QPlainTextEdit* getEditorInstance() {return this;}
 
 
-private slots:
+protected slots:
+    void editorCursorPositionChanged();
+protected:
+    void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
 
 private:
     QList<IEditorComponent* > components;
-    Highlighter *highlighter;
+    QSyntaxHighlighter *highlighter;
     QMap<QEvent::Type, QList<IEditorComponent *> > eventListeners;
     QString filePath;
     ComponentInfo componentInfo;

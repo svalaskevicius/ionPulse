@@ -13,8 +13,8 @@ VERSION = 0.1.0
 QT       += core
 TARGET = ionPhp
 INCLUDEPATH +=  ../..
-LIBS += -L../ionEditor \
-            -lionEditor \
+#LIBS += -L../ionEditor \
+#            -lionEditor \
 
 #-lantlr3c
 

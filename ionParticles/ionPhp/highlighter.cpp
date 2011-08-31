@@ -3,8 +3,8 @@
 
 namespace IonPhp {
 
-Highlighter::Highlighter(IonEditor::EditorWidget *parent) :
-    IonEditor::Highlighter(parent)
+Highlighter::Highlighter(QPlainTextEdit *parent) :
+    QSyntaxHighlighter(parent->document())
 {
     HighlightingRule rule;
 

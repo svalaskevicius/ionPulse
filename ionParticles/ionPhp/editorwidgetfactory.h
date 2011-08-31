@@ -1,16 +1,16 @@
 #ifndef PHPEDITORWIDGETFACTORY_H
 #define PHPEDITORWIDGETFACTORY_H
 
-#include <ionParticles/ionEditor/editorwidgetfactory.h>
+#include <ionParticles/ionEditor/editorapi.h>
 
 
 namespace IonPhp {
-class IonEditor::Highlighter;
-struct EditorWidgetFactory : public IonEditor::EditorWidgetFactory
+
+class EditorWidgetFactory : public IonEditor::IEditorWidgetFactory
 {
 public:
-    struct Highlighter : virtual public IonEditor::EditorWidgetFactory::Highlighter {
-        virtual IonEditor::Highlighter *operator()(IonEditor::EditorWidget *);
+    struct Highlighter : virtual public IonEditor::IEditorWidgetFactory::IHighlighter {
+        virtual QSyntaxHighlighter *operator()(IonEditor::IEditor *);
     };
 };
 

@@ -4,12 +4,11 @@
 #include <QTextBlock>
 #include <QEvent>
 #include <QPlainTextEdit>
+#include <QSyntaxHighlighter>
+#include <ionHeart/layout.h>
+#include <ionHeart/plugin.h>
 
 namespace IonEditor {
-
-class Highlighter;
-class LineNumberArea;
-class EditorWidget;
 
 class IEditorComponentInfo {
 public:
@@ -41,22 +40,24 @@ class IEditorWidgetFactory
 {
 protected:
     struct ILineNumberArea {
-        virtual IonEditor::LineNumberArea *operator()(EditorWidget *) = 0;
+        virtual IonEditor::IEditorComponent *operator()(IEditor *) = 0;
     };
     struct IHighlighter {
-        virtual IonEditor::Highlighter *operator()(EditorWidget *) = 0;
+        virtual QSyntaxHighlighter *operator()(IEditor *) = 0;
     };
 public:
     virtual ~IEditorWidgetFactory(){}
-    virtual IonEditor::Highlighter *createHighlighter(EditorWidget *widget, QString filetype) = 0;
-    virtual IonEditor::LineNumberArea *createLineNumberArea(EditorWidget *widget, QString filetype) = 0;
+    virtual QSyntaxHighlighter *createHighlighter(IEditor *widget, QString filetype) = 0;
+    virtual IonEditor::IEditorComponent *createLineNumberArea(IEditor *widget, QString filetype) = 0;
     virtual IonHeart::IPanelWidget *createEditor(QString path) = 0;
 
+    virtual void registerFileType(QString fileExt, QString fileType) = 0;
     virtual void registerHighlighter(QString filetype, IHighlighter *highlighter) = 0;
     virtual void registerLineNumberArea(QString filetype, ILineNumberArea *lineNumberArea) = 0;
 };
 
-class IEditorPlugin {
+class IEditorPlugin : public IonHeart::IPlugin {
+public:
     virtual IEditorWidgetFactory *getEditorWidgetFactory() = 0;
 };
 

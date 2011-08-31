@@ -14,12 +14,13 @@ class EditorWidget;
 class EditorWidgetFactory : public IEditorWidgetFactory
 {
 protected:
+    static QMap<QString, QString> fileTypes; // file ending -> file type in factories
 
     struct LineNumberArea : public IEditorWidgetFactory::ILineNumberArea {
-        virtual IonEditor::LineNumberArea *operator()(EditorWidget *);
+        virtual IonEditor::LineNumberArea *operator()(IEditor *);
     };
     struct Highlighter : public IEditorWidgetFactory::IHighlighter {
-        virtual IonEditor::Highlighter *operator()(EditorWidget *);
+        virtual QSyntaxHighlighter *operator()(IEditor *);
     };
     QString getFileType(QString filePath);
 private:
@@ -27,13 +28,12 @@ private:
     QMap<QString, QSharedPointer<ILineNumberArea> > m_createLineNumberAreaMap;
 
 public:
-    static QMap<QString, QString> fileTypes; // file ending -> file type in factories
-
     EditorWidgetFactory() {}
-    IonEditor::Highlighter *createHighlighter(EditorWidget *widget, QString filetype);
-    IonEditor::LineNumberArea *createLineNumberArea(EditorWidget *widget, QString filetype);
+    QSyntaxHighlighter *createHighlighter(IEditor *widget, QString filetype);
+    IonEditor::IEditorComponent *createLineNumberArea(IEditor *widget, QString filetype);
     IonHeart::IPanelWidget *createEditor(QString path);
 
+    virtual void registerFileType(QString fileExt, QString fileType);
     virtual void registerHighlighter(QString filetype, IHighlighter *highlighter);
     virtual void registerLineNumberArea(QString filetype, ILineNumberArea *lineNumberArea);
 };
