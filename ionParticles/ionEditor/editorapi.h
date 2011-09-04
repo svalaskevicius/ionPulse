@@ -8,6 +8,8 @@
 #include <ionHeart/layout.h>
 #include <ionHeart/plugin.h>
 
+#define EDITOR_PLUGIN_NAME "ionEditor"
+
 namespace IonEditor {
 
 class IEditorComponentInfo {

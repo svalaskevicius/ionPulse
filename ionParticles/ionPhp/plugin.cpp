@@ -21,7 +21,7 @@ void Plugin::initialize()
 }
 
 void Plugin::addParent(IPlugin *parent) {
-    if ("ionEditor" == parent->getName()) {
+    if (EDITOR_PLUGIN_NAME == parent->getName()) {
         IonEditor::IEditorPlugin *editorPlugin = static_cast<IonEditor::IEditorPlugin *>(parent);
         Q_ASSERT(editorPlugin);
 

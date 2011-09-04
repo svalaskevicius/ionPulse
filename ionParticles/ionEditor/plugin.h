@@ -22,7 +22,7 @@ public:
     ~Plugin();
     void initialize();
     QString getName() {
-        return "ionEditor";
+        return EDITOR_PLUGIN_NAME;
     }
     IEditorWidgetFactory *getEditorWidgetFactory();
 private:

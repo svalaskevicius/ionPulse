@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <ionHeart/plugin.h>
+#include <ionParticles/ionEditor/editorapi.h>
 
 namespace IonProject {
 
@@ -23,10 +24,13 @@ public:
         return ret;
     }
     virtual void addParent(IPlugin *parent);
-
+private:
+    IonEditor::IEditorPlugin *editorPlugin;
 signals:
 
 public slots:
+protected slots:
+    void openFile(QString path);
 
 };
 

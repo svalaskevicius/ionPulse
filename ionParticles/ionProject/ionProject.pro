@@ -15,10 +15,18 @@ TARGET = ionProject
 INCLUDEPATH +=  ../..
 
 HEADERS += \
-    plugin.h
+    plugin.h \
+    projecttreewidget.h
 
 SOURCES += \
-    plugin.cpp
+    plugin.cpp \
+    projecttreewidget.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
+
+
+
+
