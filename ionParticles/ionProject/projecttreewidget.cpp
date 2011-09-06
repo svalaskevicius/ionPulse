@@ -23,7 +23,8 @@ ProjectTreeWidget::ProjectTreeWidget(QWidget *parent) :
 
     setLayout(layout);
 
-   connect(this, SIGNAL(activated( QModelIndex )), this, SLOT(onItemActivated( QModelIndex )));
+    connect(this, SIGNAL(activated( QModelIndex )), this, SLOT(onItemActivated( QModelIndex )));
+    connect(_filterInputField, SIGNAL(textChanged( QString )), this, SLOT(onFilterTextChanged( QString )));
 }
 
 void ProjectTreeWidget::onItemActivated(const QModelIndex &index )
@@ -39,14 +40,24 @@ void ProjectTreeWidget::onItemActivated(const QModelIndex &index )
 }
 
 void ProjectTreeWidget::keyPressEvent ( QKeyEvent * event ) {
-    switch (event->key()) {
+    int key = event->key();
+    switch (key) {
         case Qt::Key_Return:
         case Qt::Key_Enter:
             emit activated(currentIndex());
             break;
         default:
-            QTreeView::keyPressEvent(event);
+            if ((Qt::Key_A <= key) && (Qt::Key_Z >= key)) {
+                _filterInputField->setFocus(Qt::ShortcutFocusReason);
+                _filterInputField->setText(QString( (char) key - Qt::Key_A + 'a'));
+            } else {
+                QTreeView::keyPressEvent(event);
+            }
     }
+}
+
+void ProjectTreeWidget::onFilterTextChanged ( const QString & text ) {
+    printf("FILTER: %s\n", text.toAscii().constData());
 }
 
 }

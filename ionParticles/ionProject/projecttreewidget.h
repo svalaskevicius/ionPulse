@@ -30,7 +30,7 @@ signals:
 public slots:
 protected slots:
     void onItemActivated(const QModelIndex &index );
-
+    void onFilterTextChanged ( const QString & text );
 };
 }
 }
