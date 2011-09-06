@@ -11,7 +11,7 @@ namespace IonProject {
 
 namespace Private {
 
-class ProjectTreeWidget : public QTreeView, public IonHeart::IPanelWidget
+class ProjectTreeWidget : public QTreeView, public IonHeart::PanelWidget
 {
     Q_OBJECT
 protected:

@@ -15,7 +15,7 @@ struct ZoneDefinition {
     int sizeWeight;
 };
 
-class IPanelWidget {
+class PanelWidget {
 public:
     virtual QWidget *getWidget() = 0;
     virtual QString getPanelTitle() = 0;
@@ -23,10 +23,10 @@ public:
 };
 
 
-class ILayoutManager
+class LayoutManager
 {
 public:
-    virtual void add(IPanelWidget *panel) = 0;
+    virtual void add(PanelWidget *panel) = 0;
     virtual void addZone(ZoneDefinition &zone) = 0;
 };
 

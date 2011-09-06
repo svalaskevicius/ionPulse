@@ -10,7 +10,7 @@ namespace IonEditor {
 
 namespace Private {
 
-class FileTreeWidget : public QTreeView, public IonHeart::IPanelWidget
+class FileTreeWidget : public QTreeView, public IonHeart::PanelWidget
 {
     Q_OBJECT
 protected:

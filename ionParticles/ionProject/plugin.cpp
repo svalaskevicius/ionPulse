@@ -19,9 +19,9 @@ void Plugin::initialize()
     connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
 }
 
-void Plugin::addParent(IPlugin *parent) {
+void Plugin::addParent(BasicPlugin *parent) {
     if (EDITOR_PLUGIN_NAME == parent->getName()) {
-        editorPlugin = static_cast<IonEditor::IEditorPlugin *>(parent);
+        editorPlugin = static_cast<IonEditor::EditorPlugin *>(parent);
     }
 }
 

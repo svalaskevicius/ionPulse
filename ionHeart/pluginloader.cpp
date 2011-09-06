@@ -14,7 +14,7 @@ PluginLoader::PluginLoader()
 
 PluginLoader::~PluginLoader()
 {
-    foreach (IPlugin *plg, _includedPlugins) {
+    foreach (BasicPlugin *plg, _includedPlugins) {
         delete plg;
     }
 }
@@ -37,16 +37,16 @@ QDir PluginLoader::_getPluginsDir()
 }
 
 
-void PluginLoader::loadPlugins(LayoutManager &layoutManager)
+void PluginLoader::loadPlugins(LayoutManagerImpl &layoutManager)
 {
     QString oldPwd = QDir::currentPath();
     QDir pluginsDir = _getPluginsDir();
     QDir::setCurrent(pluginsDir.absolutePath());
 
 
-    QList<IPlugin *> pluginsToLoad;
+    QList<BasicPlugin *> pluginsToLoad;
     foreach (QObject *plugin, QPluginLoader::staticInstances()) {
-        IPlugin *plg = qobject_cast<IPlugin *>(plugin);
+        BasicPlugin *plg = qobject_cast<BasicPlugin *>(plugin);
         if (plg) {
             pluginsToLoad.append(plg);
         } else {
@@ -57,7 +57,7 @@ void PluginLoader::loadPlugins(LayoutManager &layoutManager)
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
-        IPlugin *plg = qobject_cast<IPlugin *>(plugin);
+        BasicPlugin *plg = qobject_cast<BasicPlugin *>(plugin);
         if (plg) {
             pluginsToLoad.append(plg);
         } else {
@@ -68,8 +68,8 @@ void PluginLoader::loadPlugins(LayoutManager &layoutManager)
     bool madeChanges = false;
     do {
         madeChanges = false;
-        QList<IPlugin *> pluginsToLoadLater;
-        foreach (IPlugin *plg, pluginsToLoad) {
+        QList<BasicPlugin *> pluginsToLoadLater;
+        foreach (BasicPlugin *plg, pluginsToLoad) {
             if (_arePluginsIncluded(plg->getDependencies())) {
                 _includePlugin(plg);
                 madeChanges = true;
@@ -79,13 +79,13 @@ void PluginLoader::loadPlugins(LayoutManager &layoutManager)
         }
         pluginsToLoad = pluginsToLoadLater;
     } while (madeChanges);
-    foreach (IPlugin *plg, pluginsToLoad) {
+    foreach (BasicPlugin *plg, pluginsToLoad) {
         std::cerr << "failed to load plugin: " << plg->getName().toStdString() << std::endl;
         delete plg;
     }
     QDir::setCurrent(oldPwd);
 
-    foreach (IPlugin *plugin, _includedPlugins.values()) {
+    foreach (BasicPlugin *plugin, _includedPlugins.values()) {
         plugin->setLayoutManager(&layoutManager);
         plugin->initialize();
     }
@@ -102,7 +102,7 @@ bool  PluginLoader::_arePluginsIncluded(QStringList pluginNames)
 }
 
 
-void PluginLoader::_includePlugin(IPlugin *plugin)
+void PluginLoader::_includePlugin(BasicPlugin *plugin)
 {
     foreach (QString dep, plugin->getDependencies()) {
         plugin->addParent(_includedPlugins[dep]);

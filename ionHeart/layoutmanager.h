@@ -98,13 +98,13 @@ public:
 };
 
 
-class LayoutManager : public ILayoutManager
+class LayoutManagerImpl : public LayoutManager
 {
 protected:
     LayoutZonesManager zonesManager;
 public:
-    LayoutManager(MainWindow &mainWidget);
-    virtual void add(IPanelWidget *panel);
+    LayoutManagerImpl(MainWindow &mainWidget);
+    virtual void add(PanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
 };
 }

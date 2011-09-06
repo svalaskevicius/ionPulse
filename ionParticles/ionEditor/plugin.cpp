@@ -78,10 +78,10 @@ void Plugin::openFile(QString path)
 }
 
 
-IEditorWidgetFactory *Plugin::getEditorWidgetFactory()
+EditorWidgetFactory *Plugin::getEditorWidgetFactory()
 {
     if (!_editorWidgetFactory) {
-        _editorWidgetFactory.reset(new Private::EditorWidgetFactory());
+        _editorWidgetFactory.reset(new Private::EditorWidgetFactoryImpl());
     }
     return _editorWidgetFactory.data();
 }

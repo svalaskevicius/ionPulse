@@ -8,10 +8,10 @@
 namespace IonProject {
 
 
-class Plugin : public QObject, public IonHeart::IPlugin
+class Plugin : public QObject, public IonHeart::BasicPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonHeart::IPlugin)
+    Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     void initialize();
@@ -23,9 +23,9 @@ public:
         ret.append("ionEditor");
         return ret;
     }
-    virtual void addParent(IPlugin *parent);
+    virtual void addParent(BasicPlugin *parent);
 private:
-    IonEditor::IEditorPlugin *editorPlugin;
+    IonEditor::EditorPlugin *editorPlugin;
 signals:
 
 public slots:

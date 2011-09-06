@@ -7,7 +7,7 @@
 
 namespace IonHeart {
 
-class IPlugin;
+class BasicPlugin;
 
 namespace Private {
 
@@ -16,12 +16,12 @@ class PluginLoader
 public:
     PluginLoader();
     ~PluginLoader();
-    void loadPlugins(LayoutManager &layoutManager);
+    void loadPlugins(LayoutManagerImpl &layoutManager);
 private:
-    QMap<QString, IPlugin *> _includedPlugins;
+    QMap<QString, BasicPlugin *> _includedPlugins;
     QDir _getPluginsDir();
     bool _arePluginsIncluded(QStringList pluginNames);
-    void _includePlugin(IPlugin *plugin);
+    void _includePlugin(BasicPlugin *plugin);
 
 };
 }

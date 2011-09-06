@@ -12,55 +12,55 @@
 
 namespace IonEditor {
 
-class IEditorComponentInfo {
+class EditorComponentInfo {
 public:
-    virtual ~IEditorComponentInfo() {}
+    virtual ~EditorComponentInfo() {}
     virtual QTextBlock firstVisibleBlock() const = 0;
     virtual QRectF blockBoundingGeometry(const QTextBlock &block) const = 0;
     virtual QPointF contentOffset() const = 0;
     virtual QRectF blockBoundingRect(const QTextBlock &block) const = 0;
 };
 
-class IEditorComponent {
+class EditorComponent {
 public:
-    virtual ~IEditorComponent() {}
+    virtual ~EditorComponent() {}
     virtual void editorEvent(QEvent * ) = 0;
     virtual int getWidth() = 0;
 };
 
-class IEditor {
+class Editor {
 public:
-    virtual ~IEditor() {}
-    virtual const IEditorComponentInfo &getEditorInfo() const = 0;
-    virtual void addEventListener(QEvent::Type type, IEditorComponent *component) = 0;
+    virtual ~Editor() {}
+    virtual const EditorComponentInfo &getEditorInfo() const = 0;
+    virtual void addEventListener(QEvent::Type type, EditorComponent *component) = 0;
     virtual void updateViewportMargins() = 0;
-    virtual void setComponents(QList<IEditorComponent* > components) = 0;
+    virtual void setComponents(QList<EditorComponent* > components) = 0;
     virtual QPlainTextEdit* getEditorInstance() = 0;
 };
 
-class IEditorWidgetFactory
+class EditorWidgetFactory
 {
 protected:
-    struct ILineNumberArea {
-        virtual IonEditor::IEditorComponent *operator()(IEditor *) = 0;
+    struct LineNumberArea {
+        virtual IonEditor::EditorComponent *operator()(Editor *) = 0;
     };
-    struct IHighlighter {
-        virtual QSyntaxHighlighter *operator()(IEditor *) = 0;
+    struct Highlighter {
+        virtual QSyntaxHighlighter *operator()(Editor *) = 0;
     };
 public:
-    virtual ~IEditorWidgetFactory(){}
-    virtual QSyntaxHighlighter *createHighlighter(IEditor *widget, QString filetype) = 0;
-    virtual IonEditor::IEditorComponent *createLineNumberArea(IEditor *widget, QString filetype) = 0;
-    virtual IonHeart::IPanelWidget *createEditor(QString path) = 0;
+    virtual ~EditorWidgetFactory(){}
+    virtual QSyntaxHighlighter *createHighlighter(Editor *widget, QString filetype) = 0;
+    virtual IonEditor::EditorComponent *createLineNumberArea(Editor *widget, QString filetype) = 0;
+    virtual IonHeart::PanelWidget *createEditor(QString path) = 0;
 
     virtual void registerFileType(QString fileExt, QString fileType) = 0;
-    virtual void registerHighlighter(QString const & filetype, IHighlighter *highlighter) = 0;
-    virtual void registerLineNumberArea(QString const & filetype, ILineNumberArea *lineNumberArea) = 0;
+    virtual void registerHighlighter(QString const & filetype, Highlighter *highlighter) = 0;
+    virtual void registerLineNumberArea(QString const & filetype, LineNumberArea *lineNumberArea) = 0;
 };
 
-class IEditorPlugin : public IonHeart::IPlugin {
+class EditorPlugin : public IonHeart::BasicPlugin {
 public:
-    virtual IEditorWidgetFactory *getEditorWidgetFactory() = 0;
+    virtual EditorWidgetFactory *getEditorWidgetFactory() = 0;
 };
 
 

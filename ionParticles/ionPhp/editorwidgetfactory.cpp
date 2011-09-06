@@ -4,7 +4,7 @@
 
 namespace IonPhp {
 
-QSyntaxHighlighter *EditorWidgetFactory::Highlighter::operator()(IonEditor::IEditor *parent)
+QSyntaxHighlighter *EditorWidgetFactory::Highlighter::operator()(IonEditor::Editor *parent)
 {
     return new IonPhp::Highlighter(parent->getEditorInstance());
 }

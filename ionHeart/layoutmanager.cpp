@@ -122,11 +122,11 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
 
 ///////////
 
-LayoutManager::LayoutManager(MainWindow &mainWidget) : zonesManager(mainWidget)
+LayoutManagerImpl::LayoutManagerImpl(MainWindow &mainWidget) : zonesManager(mainWidget)
 {
 }
 
-void LayoutManager::add(IPanelWidget *panel)
+void LayoutManagerImpl::add(PanelWidget *panel)
 {
     ZoneNodeLeaf *z = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(z);
@@ -139,7 +139,7 @@ void LayoutManager::add(IPanelWidget *panel)
     z->show();
 }
 
-void LayoutManager::addZone(ZoneDefinition &zone)
+void LayoutManagerImpl::addZone(ZoneDefinition &zone)
 {
     zonesManager.addZone(zone);
 }

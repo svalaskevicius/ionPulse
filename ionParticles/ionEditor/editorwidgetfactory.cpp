@@ -7,48 +7,48 @@ namespace IonEditor {
 namespace Private {
 
 
-QMap<QString, QString> EditorWidgetFactory::fileTypes; // file ending -> file type in factories
+QMap<QString, QString> EditorWidgetFactoryImpl::fileTypes; // file ending -> file type in factories
 
 
-IEditorComponent *EditorWidgetFactory::LineNumberArea::operator ()(IEditor *widget)
+EditorComponent *EditorWidgetFactoryImpl::DefaultLineNumberArea::operator ()(Editor *widget)
 {
     return new IonEditor::Private::LineNumberArea(widget);
 }
 
-QSyntaxHighlighter *EditorWidgetFactory::Highlighter::operator ()(IEditor *widget)
+QSyntaxHighlighter *EditorWidgetFactoryImpl::DefaultHighlighter::operator ()(Editor *widget)
 {
     return new IonEditor::Private::Highlighter(widget->getEditorInstance());
 }
 
-QSyntaxHighlighter *EditorWidgetFactory::createHighlighter(IEditor *widget, QString filetype)
+QSyntaxHighlighter *EditorWidgetFactoryImpl::createHighlighter(Editor *widget, QString filetype)
 {
-    QMap<QString, QSharedPointer<IHighlighter> >::const_iterator it = m_createHighlighterMap.find(filetype);
+    QMap<QString, QSharedPointer<Highlighter> >::const_iterator it = m_createHighlighterMap.find(filetype);
     if (it != m_createHighlighterMap.end()) {
         return (*(*it))(widget);
     }
-    Highlighter _default;
+    DefaultHighlighter _default;
     return _default(widget);
 }
-IEditorComponent *EditorWidgetFactory::createLineNumberArea(IEditor *widget, QString filetype)
+EditorComponent *EditorWidgetFactoryImpl::createLineNumberArea(Editor *widget, QString filetype)
 {
-    QMap<QString, QSharedPointer<ILineNumberArea> >::const_iterator it = m_createLineNumberAreaMap.find(filetype);
+    QMap<QString, QSharedPointer<LineNumberArea> >::const_iterator it = m_createLineNumberAreaMap.find(filetype);
     if (it != m_createLineNumberAreaMap.end()) {
         return (*(*it))(widget);
     }
-    LineNumberArea _default;
+    DefaultLineNumberArea _default;
     return _default(widget);
 }
 
-IonHeart::IPanelWidget *EditorWidgetFactory::createEditor(QString path)
+IonHeart::PanelWidget *EditorWidgetFactoryImpl::createEditor(QString path)
 {
     EditorWidget *ret = new EditorWidget(path);
     QString type = getFileType(path);
-    ret->setComponents(QList<IEditorComponent*>() << createLineNumberArea(ret, type));
+    ret->setComponents(QList<EditorComponent*>() << createLineNumberArea(ret, type));
     ret->setHighlighter(createHighlighter(ret, type));
     return ret;
 }
 
-QString EditorWidgetFactory::getFileType(QString filePath)
+QString EditorWidgetFactoryImpl::getFileType(QString filePath)
 {
     int pos = filePath.lastIndexOf('.');
     if (pos > 0) {
@@ -60,14 +60,14 @@ QString EditorWidgetFactory::getFileType(QString filePath)
     return "text";
 }
 
-void EditorWidgetFactory::registerFileType(QString fileExt, QString fileType) {
+void EditorWidgetFactoryImpl::registerFileType(QString fileExt, QString fileType) {
     fileTypes.insert(fileExt, fileType);
 }
-void EditorWidgetFactory::registerHighlighter(QString const & filetype, IEditorWidgetFactory::IHighlighter *highlighter) {
-    m_createHighlighterMap[filetype] = QSharedPointer<IHighlighter>(highlighter);
+void EditorWidgetFactoryImpl::registerHighlighter(QString const & filetype, EditorWidgetFactoryImpl::Highlighter *highlighter) {
+    m_createHighlighterMap[filetype] = QSharedPointer<Highlighter>(highlighter);
 }
-void EditorWidgetFactory::registerLineNumberArea(QString const & filetype, IEditorWidgetFactory::ILineNumberArea *lineNumberArea) {
-    m_createLineNumberAreaMap[filetype] = QSharedPointer<ILineNumberArea>(lineNumberArea);
+void EditorWidgetFactoryImpl::registerLineNumberArea(QString const & filetype, EditorWidgetFactoryImpl::LineNumberArea *lineNumberArea) {
+    m_createLineNumberAreaMap[filetype] = QSharedPointer<LineNumberArea>(lineNumberArea);
 }
 
 }

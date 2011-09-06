@@ -7,7 +7,7 @@
 namespace IonEditor {
 namespace Private {
 
-LineNumberArea::LineNumberArea(IEditor *parent) :
+LineNumberArea::LineNumberArea(Editor *parent) :
     QWidget(parent->getEditorInstance()),
     ionText(parent),
     currentLine(0)

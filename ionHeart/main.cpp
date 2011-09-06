@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     IonHeart::Private::MainWindow w;
-    IonHeart::Private::LayoutManager lm(w);
+    IonHeart::Private::LayoutManagerImpl lm(w);
     IonHeart::Private::PluginLoader plugins;
     plugins.loadPlugins(lm);
 

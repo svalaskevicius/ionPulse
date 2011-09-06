@@ -45,7 +45,7 @@ EditorWidget::~EditorWidget()
 void EditorWidget::updateViewportMargins()
 {
     QMargins margins(0, 0, 0, 0);
-    foreach (IEditorComponent* component, components) {
+    foreach (EditorComponent* component, components) {
         margins.setLeft(margins.left()+component->getWidth());
     }
 
@@ -54,7 +54,7 @@ void EditorWidget::updateViewportMargins()
 
 
 bool EditorWidget::event ( QEvent * event ) {
-    foreach (IEditorComponent *component, eventListeners[event->type()]) {
+    foreach (EditorComponent *component, eventListeners[event->type()]) {
         component->editorEvent(event);
     }
     return QPlainTextEdit::event(event);
@@ -62,7 +62,7 @@ bool EditorWidget::event ( QEvent * event ) {
 
 
 void EditorWidget::resetComponents() {
-    foreach (IEditorComponent *component, components) {
+    foreach (EditorComponent *component, components) {
        delete component;
     }
     components.clear();

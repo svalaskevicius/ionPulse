@@ -20,12 +20,12 @@ void Plugin::initialize()
 {
 }
 
-void Plugin::addParent(IPlugin *parent) {
+void Plugin::addParent(BasicPlugin *parent) {
     if (EDITOR_PLUGIN_NAME == parent->getName()) {
-        IonEditor::IEditorPlugin *editorPlugin = static_cast<IonEditor::IEditorPlugin *>(parent);
+        IonEditor::EditorPlugin *editorPlugin = static_cast<IonEditor::EditorPlugin *>(parent);
         Q_ASSERT(editorPlugin);
 
-        IonEditor::IEditorWidgetFactory *wf = editorPlugin->getEditorWidgetFactory();
+        IonEditor::EditorWidgetFactory *wf = editorPlugin->getEditorWidgetFactory();
         Q_ASSERT(wf);
 
         wf->registerHighlighter("php", new EditorWidgetFactory::Highlighter());

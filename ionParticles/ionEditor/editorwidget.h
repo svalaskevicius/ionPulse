@@ -13,12 +13,7 @@ namespace IonEditor {
 
 namespace Private {
 
-class EditorWidgetFactory;
-class LineNumberArea;
-class Highlighter;
-
-
-class EditorWidget : public QPlainTextEdit, public IEditor, public IonHeart::IPanelWidget
+class EditorWidget : public QPlainTextEdit, public Editor, public IonHeart::PanelWidget
 {
     Q_OBJECT
 public:
@@ -26,7 +21,7 @@ public:
      * a class for defining separate components, used to
      * open some of the protected functionality
      */
-    class ComponentInfo : public IEditorComponentInfo {
+    class ComponentInfo : public EditorComponentInfo {
     public:
         EditorWidget *widget;
         ComponentInfo(EditorWidget *widget): widget(widget) {}
@@ -65,14 +60,14 @@ public:
     virtual QString getPanelZone() {return "central";}
 
 public:
-    virtual const IEditorComponentInfo &getEditorInfo() const {
+    virtual const EditorComponentInfo &getEditorInfo() const {
         return componentInfo;
     }
-    virtual void addEventListener(QEvent::Type type, IEditorComponent *component) {
+    virtual void addEventListener(QEvent::Type type, EditorComponent *component) {
         eventListeners[type].append(component);
     }
     void updateViewportMargins();
-    void setComponents(QList<IEditorComponent*> components) {
+    void setComponents(QList<EditorComponent*> components) {
         resetComponents();
         this->components = components;
         updateViewportMargins();
@@ -86,9 +81,9 @@ protected:
     void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
 
 private:
-    QList<IEditorComponent* > components;
+    QList<EditorComponent* > components;
     QSyntaxHighlighter *highlighter;
-    QMap<QEvent::Type, QList<IEditorComponent *> > eventListeners;
+    QMap<QEvent::Type, QList<EditorComponent *> > eventListeners;
     QString filePath;
     ComponentInfo componentInfo;
 signals:

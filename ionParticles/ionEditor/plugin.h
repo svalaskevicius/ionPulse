@@ -9,14 +9,14 @@
 
 namespace IonEditor {
 namespace Private {
-class EditorWidgetFactory;
+class EditorWidgetFactoryImpl;
 }
 
 
-class Plugin : public QObject, public IEditorPlugin
+class Plugin : public QObject, public EditorPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonHeart::IPlugin)
+    Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     ~Plugin();
@@ -24,9 +24,9 @@ public:
     QString getName() {
         return EDITOR_PLUGIN_NAME;
     }
-    IEditorWidgetFactory *getEditorWidgetFactory();
+    EditorWidgetFactory *getEditorWidgetFactory();
 private:
-    QScopedPointer<Private::EditorWidgetFactory> _editorWidgetFactory;
+    QScopedPointer<Private::EditorWidgetFactoryImpl> _editorWidgetFactory;
 
 signals:
 
