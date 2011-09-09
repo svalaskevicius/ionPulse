@@ -1,45 +1,40 @@
-#include "projecttreewidget.h"
+#include "treewidget.h"
+#include "treemodel.h"
 #include <QVBoxLayout>
 
 namespace IonProject {
-
 namespace Private {
 
-ProjectTreeWidget::ProjectTreeWidget(QWidget *parent) :
+TreeWidget::TreeWidget(QWidget *parent) :
     QTreeView(parent), _fiModel(NULL)
 {
-    _fiModel = new QFileSystemModel(this);
-    _fiModel->setRootPath(QDir::homePath());
+    _fiModel = new TreeModel("/Users/svalaskevicius/csDisk/warner.development.local");
     this->setModel(_fiModel);
-    this->setRootIndex(_fiModel->index(QDir::homePath()));
-    for (int i=1;i<_fiModel->columnCount();i++) {
-        this->setColumnHidden(i, true);
-    }
+
     _filterInputField = new QLineEdit(this);
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(5, 0, 5, 3);
     layout->addSpacing(100000);
     layout->addWidget(_filterInputField);
-
     setLayout(layout);
 
     connect(this, SIGNAL(activated( QModelIndex )), this, SLOT(onItemActivated( QModelIndex )));
     connect(_filterInputField, SIGNAL(textChanged( QString )), this, SLOT(onFilterTextChanged( QString )));
 }
 
-void ProjectTreeWidget::onItemActivated(const QModelIndex &index )
+void TreeWidget::onItemActivated(const QModelIndex &index )
 {
-    if (!index.isValid()) {
+    /*if (!index.isValid()) {
         return;
     }
     Q_ASSERT(_fiModel);
     QFileInfo fi = _fiModel->fileInfo(index);
     if (fi.isFile()) {
         emit fileActivated(fi.filePath());
-    }
+    }*/
 }
 
-void ProjectTreeWidget::keyPressEvent ( QKeyEvent * event ) {
+void TreeWidget::keyPressEvent ( QKeyEvent * event ) {
     int key = event->key();
     switch (key) {
         case Qt::Key_Return:
@@ -56,7 +51,7 @@ void ProjectTreeWidget::keyPressEvent ( QKeyEvent * event ) {
     }
 }
 
-void ProjectTreeWidget::onFilterTextChanged ( const QString & text ) {
+void TreeWidget::onFilterTextChanged ( const QString & text ) {
     printf("FILTER: %s\n", text.toAscii().constData());
 }
 

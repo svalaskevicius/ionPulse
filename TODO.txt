@@ -1,6 +1,6 @@
 === project view ===
-	filter php files
 	add quick search filter
+	add a timeout of 0.5s to start filtering
 	hide empty dirs
 
 === parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===

@@ -1,8 +1,8 @@
-#ifndef PROJECTTREEWIDGET_H
-#define PROJECTTREEWIDGET_H
+#ifndef PROJECT_TREEWIDGET_H
+#define PROJECT_TREEWIDGET_H
 
 #include <QTreeView>
-#include <QFileSystemModel>
+#include <QAbstractItemModel>
 #include <ionHeart/layout.h>
 #include <QKeyEvent>
 #include <QLineEdit>
@@ -11,16 +11,16 @@ namespace IonProject {
 
 namespace Private {
 
-class ProjectTreeWidget : public QTreeView, public IonHeart::PanelWidget
+class TreeWidget : public QTreeView, public IonHeart::PanelWidget
 {
     Q_OBJECT
 protected:
-    QFileSystemModel *_fiModel;
+    QAbstractItemModel *_fiModel;
     QLineEdit *_filterInputField;
 
     virtual void keyPressEvent ( QKeyEvent * event );
 public:
-    explicit ProjectTreeWidget(QWidget *parent = 0);
+    explicit TreeWidget(QWidget *parent = 0);
     virtual QWidget *getWidget() {return this;}
     virtual QString getPanelTitle() {return "Project Browser";}
     virtual QString getPanelZone() {return "left";}
@@ -32,6 +32,8 @@ protected slots:
     void onItemActivated(const QModelIndex &index );
     void onFilterTextChanged ( const QString & text );
 };
+
+
 }
 }
 

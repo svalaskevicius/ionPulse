@@ -2,7 +2,7 @@
 
 #include <QtPlugin>
 #include <ionHeart/shared.h>
-#include "projecttreewidget.h"
+#include "treewidget.h"
 
 namespace IonProject {
 
@@ -14,7 +14,7 @@ Plugin::Plugin(QObject *parent) :
 void Plugin::initialize()
 {
     Q_ASSERT(editorPlugin);
-    Private::ProjectTreeWidget *fileTree = new Private::ProjectTreeWidget();
+    Private::TreeWidget *fileTree = new Private::TreeWidget();
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
 }

@@ -16,14 +16,26 @@ INCLUDEPATH +=  ../..
 
 HEADERS += \
     plugin.h \
-    projecttreewidget.h
+    treeitem.h \
+    treewidget.h \
+    treemodel.h
 
 SOURCES += \
     plugin.cpp \
-    projecttreewidget.cpp
+    treeitem.cpp \
+    treewidget.cpp \
+    treemodel.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
+
+
+
+
+
+
 
 
 
