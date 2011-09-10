@@ -38,29 +38,28 @@ public:
     virtual QPlainTextEdit* getEditorInstance() = 0;
 };
 
-class EditorWidgetFactory
+class EditorWidgetBuilder
 {
 protected:
-    struct LineNumberArea {
+    struct LineNumberAreaFactory {
         virtual IonEditor::EditorComponent *operator()(Editor *) = 0;
     };
-    struct Highlighter {
+    struct HighlighterFactory {
         virtual QSyntaxHighlighter *operator()(Editor *) = 0;
     };
+
 public:
-    virtual ~EditorWidgetFactory(){}
-    virtual QSyntaxHighlighter *createHighlighter(Editor *widget, QString filetype) = 0;
-    virtual IonEditor::EditorComponent *createLineNumberArea(Editor *widget, QString filetype) = 0;
+    virtual ~EditorWidgetBuilder(){}
     virtual IonHeart::PanelWidget *createEditor(QString path) = 0;
 
     virtual void registerFileType(QString fileExt, QString fileType) = 0;
-    virtual void registerHighlighter(QString const & filetype, Highlighter *highlighter) = 0;
-    virtual void registerLineNumberArea(QString const & filetype, LineNumberArea *lineNumberArea) = 0;
+    virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter) = 0;
+    virtual void registerLineNumberAreaFactory(QString const & filetype, LineNumberAreaFactory *lineNumberArea) = 0;
 };
 
 class EditorPlugin : public IonHeart::BasicPlugin {
 public:
-    virtual EditorWidgetFactory *getEditorWidgetFactory() = 0;
+    virtual EditorWidgetBuilder *getEditorWidgetBuilder() = 0;
 };
 
 

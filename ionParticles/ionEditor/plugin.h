@@ -9,7 +9,7 @@
 
 namespace IonEditor {
 namespace Private {
-class EditorWidgetFactoryImpl;
+class EditorWidgetBuilderImpl;
 }
 
 
@@ -24,9 +24,9 @@ public:
     QString getName() {
         return EDITOR_PLUGIN_NAME;
     }
-    EditorWidgetFactory *getEditorWidgetFactory();
+    EditorWidgetBuilder *getEditorWidgetBuilder();
 private:
-    QScopedPointer<Private::EditorWidgetFactoryImpl> _editorWidgetFactory;
+    QScopedPointer<Private::EditorWidgetBuilderImpl> _editorWidgetFactory;
 
 signals:
 

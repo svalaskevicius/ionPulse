@@ -6,10 +6,10 @@
 
 namespace IonPhp {
 
-class EditorWidgetFactory : public IonEditor::EditorWidgetFactory
+class EditorWidgetBuilder : public IonEditor::EditorWidgetBuilder
 {
 public:
-    struct Highlighter : virtual public IonEditor::EditorWidgetFactory::Highlighter {
+    struct HighlighterFactory : virtual public IonEditor::EditorWidgetBuilder::HighlighterFactory {
         virtual QSyntaxHighlighter *operator()(IonEditor::Editor *);
     };
 };

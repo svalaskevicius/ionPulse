@@ -13,35 +13,35 @@ namespace Private {
 
 class EditorWidget;
 
-class EditorWidgetFactoryImpl : public IonEditor::EditorWidgetFactory
+class EditorWidgetBuilderImpl : public IonEditor::EditorWidgetBuilder
 {
 protected:
-    static QMap<QString, QString> fileTypes; // file ending -> file type in factories
-
-    struct DefaultLineNumberArea : public EditorWidgetFactory::LineNumberArea {
+    struct DefaultLineNumberAreaFactory : public EditorWidgetBuilder::LineNumberAreaFactory {
         virtual IonEditor::EditorComponent *operator()(Editor *);
     };
-    struct DefaultHighlighter : public EditorWidgetFactory::Highlighter {
+    struct DefaultHighlighterFactory : public EditorWidgetBuilder::HighlighterFactory {
         virtual QSyntaxHighlighter *operator()(Editor *);
     };
     QString getFileType(QString filePath);
 private:
-    QMap<QString, QSharedPointer<Highlighter> > m_createHighlighterMap;
-    QMap<QString, QSharedPointer<LineNumberArea> > m_createLineNumberAreaMap;
+    static QMap<QString, QString> fileExtToTypeMap;
 
-public:
-    EditorWidgetFactoryImpl() {}
-    ~EditorWidgetFactoryImpl() {
-        m_createHighlighterMap.clear();
-        m_createLineNumberAreaMap.clear();
-    }
+    QMap<QString, QSharedPointer<HighlighterFactory> > typeToHighlighterFactoryMap;
+    QMap<QString, QSharedPointer<LineNumberAreaFactory> > typeToLineNumberAreaFactoryMap;
+
     QSyntaxHighlighter *createHighlighter(Editor *widget, QString filetype);
     IonEditor::EditorComponent *createLineNumberArea(Editor *widget, QString filetype);
+public:
+    EditorWidgetBuilderImpl() {}
+    ~EditorWidgetBuilderImpl() {
+        typeToHighlighterFactoryMap.clear();
+        typeToLineNumberAreaFactoryMap.clear();
+    }
     IonHeart::PanelWidget *createEditor(QString path);
 
     virtual void registerFileType(QString fileExt, QString fileType);
-    virtual void registerHighlighter(QString const & filetype, Highlighter *highlighter);
-    virtual void registerLineNumberArea(QString const & filetype, LineNumberArea *lineNumberArea);
+    virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter);
+    virtual void registerLineNumberAreaFactory(QString const & filetype, LineNumberAreaFactory *lineNumberArea);
 };
 
 }

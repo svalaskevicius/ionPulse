@@ -25,10 +25,10 @@ void Plugin::addParent(BasicPlugin *parent) {
         IonEditor::EditorPlugin *editorPlugin = static_cast<IonEditor::EditorPlugin *>(parent);
         Q_ASSERT(editorPlugin);
 
-        IonEditor::EditorWidgetFactory *wf = editorPlugin->getEditorWidgetFactory();
+        IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
         Q_ASSERT(wf);
 
-        wf->registerHighlighter("php", new EditorWidgetFactory::Highlighter());
+        wf->registerHighlighterFactory("php", new EditorWidgetBuilder::HighlighterFactory());
 
         wf->registerFileType("php", "php");
         wf->registerFileType("php3", "php");

@@ -5,7 +5,6 @@
 
 namespace IonHeart {
 
-
 struct ZoneDefinition {
     QString parentPath;
     QString name;

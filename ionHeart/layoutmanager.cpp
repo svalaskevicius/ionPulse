@@ -25,7 +25,12 @@ ZoneNode *ZoneNode::getZone(QString path)
 }
 
 
+
+
 ///////////
+
+
+
 
 ZoneNode *ZoneNodeBranch::findSubZone(QStringList &path) throw()
 {
@@ -55,17 +60,23 @@ void ZoneNodeBranch::resizeEvent ( QResizeEvent * event ) {
 void ZoneNodeBranch::resizeChildren() {
     QVector<int> vSizes(this->children().size());
     foreach (ZoneNode * const br, subZones) {
-        int sw = br->getDefinition().sizeWeight;
-        Q_ASSERT(sw); // not implemented support of sw = 0 (auto size adjusment)
+        int sizeWeight = br->getDefinition().sizeWeight;
+        Q_ASSERT(sizeWeight); // not implemented support of sizeWeight = 0 (auto size adjusment)
         int i = indexOf(br->getWidget());
-        printf("nfo: name: %s, size: %d, i: %d\n", br->getDefinition().name.toAscii().constData(), sw, i);
-        vSizes[i] = sw;
+        printf("nfo: name: %s, size: %d, i: %d\n", br->getDefinition().name.toAscii().constData(), sizeWeight, i);
+        vSizes[i] = sizeWeight;
     }
     this->setSizes(vSizes.toList());
 }
 
 
+
+
+
 ///////////
+
+
+
 
 
 ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
@@ -82,6 +93,14 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     return br;
 }
 
+
+
+
+///////////
+
+
+
+
 LayoutZonesManager::LayoutZonesManager(MainWindow &mainWidget)
 {
     root = new ZoneNodeBranch(&mainWidget);
@@ -92,7 +111,6 @@ ZoneNodeLeaf *LayoutZonesManager::getZone(QString path)
 {
     return root->getZone(path)->getZoneLeaf();
 }
-
 
 void LayoutZonesManager::addZone(ZoneDefinition &zone)
 {
@@ -120,7 +138,13 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
    }
 }
 
+
+
+
 ///////////
+
+
+
 
 LayoutManagerImpl::LayoutManagerImpl(MainWindow &mainWidget) : zonesManager(mainWidget)
 {

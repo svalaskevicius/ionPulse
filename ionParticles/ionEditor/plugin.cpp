@@ -74,14 +74,14 @@ void Plugin::initialize()
 
 void Plugin::openFile(QString path)
 {
-    layoutManager->add(getEditorWidgetFactory()->createEditor(path));
+    layoutManager->add(getEditorWidgetBuilder()->createEditor(path));
 }
 
 
-EditorWidgetFactory *Plugin::getEditorWidgetFactory()
+EditorWidgetBuilder *Plugin::getEditorWidgetBuilder()
 {
     if (!_editorWidgetFactory) {
-        _editorWidgetFactory.reset(new Private::EditorWidgetFactoryImpl());
+        _editorWidgetFactory.reset(new Private::EditorWidgetBuilderImpl());
     }
     return _editorWidgetFactory.data();
 }

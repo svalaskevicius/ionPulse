@@ -28,7 +28,7 @@ void Plugin::addParent(BasicPlugin *parent) {
 void Plugin::openFile(QString path)
 {
     Q_ASSERT(editorPlugin);
-    layoutManager->add(editorPlugin->getEditorWidgetFactory()->createEditor(path));
+    layoutManager->add(editorPlugin->getEditorWidgetBuilder()->createEditor(path));
 }
 
 }
