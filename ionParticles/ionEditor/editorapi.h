@@ -38,16 +38,15 @@ public:
     virtual QPlainTextEdit* getEditorInstance() = 0;
 };
 
+struct LineNumberAreaFactory {
+    virtual IonEditor::EditorComponent *operator()(Editor *) = 0;
+};
+struct HighlighterFactory {
+    virtual QSyntaxHighlighter *operator()(Editor *) = 0;
+};
+
 class EditorWidgetBuilder
 {
-protected:
-    struct LineNumberAreaFactory {
-        virtual IonEditor::EditorComponent *operator()(Editor *) = 0;
-    };
-    struct HighlighterFactory {
-        virtual QSyntaxHighlighter *operator()(Editor *) = 0;
-    };
-
 public:
     virtual ~EditorWidgetBuilder(){}
     virtual IonHeart::PanelWidget *createEditor(QString path) = 0;

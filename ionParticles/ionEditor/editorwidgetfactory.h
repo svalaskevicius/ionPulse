@@ -13,15 +13,16 @@ namespace Private {
 
 class EditorWidget;
 
+struct DefaultLineNumberAreaFactory : public LineNumberAreaFactory {
+    virtual IonEditor::EditorComponent *operator()(Editor *);
+};
+struct DefaultHighlighterFactory : public HighlighterFactory {
+    virtual QSyntaxHighlighter *operator()(Editor *);
+};
+
 class EditorWidgetBuilderImpl : public IonEditor::EditorWidgetBuilder
 {
 protected:
-    struct DefaultLineNumberAreaFactory : public EditorWidgetBuilder::LineNumberAreaFactory {
-        virtual IonEditor::EditorComponent *operator()(Editor *);
-    };
-    struct DefaultHighlighterFactory : public EditorWidgetBuilder::HighlighterFactory {
-        virtual QSyntaxHighlighter *operator()(Editor *);
-    };
     QString getFileType(QString filePath);
 private:
     static QMap<QString, QString> fileExtToTypeMap;

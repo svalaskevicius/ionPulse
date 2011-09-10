@@ -28,7 +28,7 @@ void Plugin::addParent(BasicPlugin *parent) {
         IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
         Q_ASSERT(wf);
 
-        wf->registerHighlighterFactory("php", new EditorWidgetBuilder::HighlighterFactory());
+        wf->registerHighlighterFactory("php", new HighlighterFactory());
 
         wf->registerFileType("php", "php");
         wf->registerFileType("php3", "php");
