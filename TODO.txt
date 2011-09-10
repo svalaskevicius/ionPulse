@@ -1,5 +1,6 @@
 === project view ===
 	add quick search filter
+	use case insensitive qsort & binary search for filter by filename: cpu saver for some initial precalc, reconstruct tree by walking parent() (cloning) calls
 	add a timeout of 0.5s to start filtering
 	hide empty dirs
 
