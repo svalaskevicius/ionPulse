@@ -22,8 +22,14 @@ LIBS += -L../ionParticles/ionPhp \
             -lionEditor
 
 
-SOURCES += tst_iontest.cpp
+SOURCES += tst_iontest.cpp \
+    phpparsertest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+HEADERS += \
+    phpparsertest.h
+
+
