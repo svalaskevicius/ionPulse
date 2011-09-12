@@ -7,13 +7,10 @@
 namespace IonProject {
 namespace Private {
 
-TreeModel::TreeModel(const QString &initialDir, QObject *parent)
+TreeModel::TreeModel(TreeModelSource *source, QObject *parent)
     : QAbstractItemModel(parent)
 {
-    QList<QVariant> rootData;
-    rootData << "Name";
-    rootItem = new TreeBranch(rootData);
-    setupModelData(initialDir, rootItem);
+    rootItem = source->setupData();
 }
 
 TreeModel::~TreeModel()
@@ -23,10 +20,12 @@ TreeModel::~TreeModel()
 
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
-        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-    else
-        return rootItem->columnCount();
+    return 1;
+
+//    if (parent.isValid())
+//        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+//    else
+//        return rootItem->columnCount();
 }
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
@@ -107,8 +106,16 @@ int TreeModel::rowCount(const QModelIndex &parent) const
     return parentItem->childrenCount();
 }
 
-void TreeModel::setupModelData(const QString &initialDir, TreeBranch *parent)
+void TreeModel::filter(QString filter) {
+    rootItem->setFilter(filter);
+    reset();
+}
+
+
+TreeBranch *DirectoryTreeSource::setupData()
 {
+    TreeBranch* parent = new TreeBranch(QList<QVariant>() << "name" << "path");
+
     QList<TreeBranch*> parents;
     QList<QString> directoryNames;
     parents << parent;
@@ -122,17 +129,20 @@ void TreeModel::setupModelData(const QString &initialDir, TreeBranch *parent)
         parents.pop_back();
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
-            TreeBranch* newTreeItem = new TreeBranch(QList<QVariant>() << subDirName, currentTreeItemsParent);
+            QString fullPath = currentDir.absolutePath()+"/"+subDirName;
+            TreeBranch* newTreeItem = new TreeBranch(QList<QVariant>() << subDirName << fullPath, currentTreeItemsParent);
             currentTreeItemsParent->appendChild(newTreeItem);
 
-            directoryNames.append(currentDir.absolutePath()+"/"+subDirName);
+            directoryNames.append(fullPath);
             parents << newTreeItem;
         }
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
-            currentTreeItemsParent->appendChild(new TreeItem(QList<QVariant>() << fileName, currentTreeItemsParent));
+            QString fullPath = currentDir.absolutePath()+"/"+fileName;
+            currentTreeItemsParent->appendChild(new TreeItem(QList<QVariant>() << fileName << fullPath, currentTreeItemsParent));
         }
     }
+    return parent;
 }
 
 }

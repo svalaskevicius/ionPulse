@@ -11,11 +11,13 @@ namespace IonProject {
 
 namespace Private {
 
+class TreeModel;
+
 class TreeWidget : public QTreeView, public IonHeart::PanelWidget
 {
     Q_OBJECT
 protected:
-    QAbstractItemModel *_fiModel;
+    TreeModel *_fiModel;
     QLineEdit *_filterInputField;
 
     virtual void keyPressEvent ( QKeyEvent * event );

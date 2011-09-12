@@ -8,7 +8,8 @@ namespace Private {
 TreeWidget::TreeWidget(QWidget *parent) :
     QTreeView(parent), _fiModel(NULL)
 {
-    _fiModel = new TreeModel("/Users/svalaskevicius/csDisk/warner.development.local");
+    DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/warner.development.local");
+    _fiModel = new TreeModel(&dirTreeSource);
     this->setModel(_fiModel);
 
     _filterInputField = new QLineEdit(this);
@@ -52,7 +53,7 @@ void TreeWidget::keyPressEvent ( QKeyEvent * event ) {
 }
 
 void TreeWidget::onFilterTextChanged ( const QString & text ) {
-    printf("FILTER: %s\n", text.toAscii().constData());
+    _fiModel->filter(text);
 }
 
 }

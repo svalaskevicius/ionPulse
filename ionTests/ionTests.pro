@@ -16,20 +16,26 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 INCLUDEPATH +=  ..
-LIBS += -L../ionParticles/ionPhp \
+LIBS += \
+            -L../ionParticles/ionProject \
+            -lionProject \
+            -L../ionParticles/ionPhp \
             -lionPhp \
             -L../ionParticles/ionEditor \
             -lionEditor
 
 
 SOURCES += tst_iontest.cpp \
-    phpparsertest.cpp
+    phpparsertest.cpp \
+    projecttreetest.cpp
+
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
 
 HEADERS += \
-    phpparsertest.h
+    phpparsertest.h \
+    projecttreetest.h
 
 

@@ -1,6 +1,7 @@
 #include <QStringList>
+#include <stdexcept>
 
- #include "treeitem.h"
+#include "treeitem.h"
 
 namespace IonProject {
 
@@ -10,6 +11,7 @@ TreeItem::TreeItem(const QList<QVariant> &data, TreeBranch *parent)
 {
     parentItem = parent;
     itemData = data;
+    visible = true;
 }
 TreeItem::~TreeItem()
 {
@@ -43,6 +45,12 @@ int TreeItem::childrenCount() const
        return 0;
 }
 
+void TreeItem::setFilter(QString const filter)
+{
+    visible = itemData[1].toString().toLower().contains(filter.toLower());
+}
+
+
 
 
 
@@ -62,17 +70,53 @@ void TreeBranch::appendChild(TreeItem *item)
 
 TreeItem *TreeBranch::getChild(int row)
 {
-    return childItems.value(row);
+    int current = 0;
+    foreach (TreeItem* child, childItems) {
+        if (child->isVisible()) {
+            if (current == row) {
+                return child;
+            }
+            current++;
+        }
+    }
+    throw std::out_of_range("children size reached");
+//    return childItems.value(row);
 }
 
 int TreeBranch::childrenCount() const
 {
-    return childItems.count();
+    int current = 0;
+    foreach (TreeItem* child, childItems) {
+        if (child->isVisible()) {
+            current++;
+        }
+    }
+    return current;
+//    return childItems.count();
 }
 int TreeBranch::getChildRowNr(TreeItem *child)
 {
-    return childItems.indexOf(child);
+    int current = 0;
+    foreach (TreeItem* cchild, childItems) {
+        if (cchild->isVisible()) {
+            if (cchild == child) {
+                return current;
+            }
+            current++;
+        }
+    }
+    throw std::out_of_range("children size reached");
+    //return childItems.indexOf(child);
 }
+void TreeBranch::setFilter(QString const filter)
+{
+    visible = false;
+    foreach (TreeItem* child, childItems) {
+        child->setFilter(filter);
+        visible |= child->isVisible();
+    }
+}
+
 
 }
 }

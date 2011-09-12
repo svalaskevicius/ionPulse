@@ -10,12 +10,27 @@ namespace Private {
 
 class TreeBranch;
 
+class TreeModelSource {
+public:
+    virtual TreeBranch * setupData() = 0;
+};
+
+class DirectoryTreeSource : public TreeModelSource {
+public:
+    DirectoryTreeSource(const QString &initialDir)
+        : initialDir(initialDir) {
+    }
+    virtual TreeBranch * setupData();
+private:
+    QString initialDir;
+};
+
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    TreeModel(const QString &initialDir, QObject *parent = 0);
+    TreeModel(TreeModelSource *source, QObject *parent = 0);
     ~TreeModel();
 
     QVariant data(const QModelIndex &index, int role) const;
@@ -28,9 +43,9 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-private:
-    void setupModelData(const QString &initialDir, TreeBranch *parent);
+    void filter(QString filter);
 
+private:
     TreeBranch *rootItem;
 };
 
