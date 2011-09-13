@@ -1,23 +1,33 @@
-=== project view ===
-	add quick search filter
-	use case insensitive qsort & binary search for filter by filename: cpu saver for some initial precalc, reconstruct tree by walking parent() (cloning) calls
-	add a timeout of 0.5s to start filtering
-	hide empty dirs
-
 === parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
 
-=== semantic parser ===
+=== project holder ===
+	initially just one project at any time.
+	save & load config.xml to paths and settings
+	each project will contain its own sqlLite handle
+
+=== sqlLite integration for project data ===
+	tables for file parsing info
+		files:       id, file, path
+		definitions: id, definition, type (class, function, variable, const), fileId, lineNr
+		usages:      definitionId, fileId, lineId
+
+=== parser: find and parse php files in project  ===
+	semantic parser for semantic highlight
 
 === semantic hightlight ===
 
-=== decouple php plugin from editor ===
+=== save file ===
 
+=== close file tab ===
+
+=== layout manager ===
+	vertical/horizontal split source code tabs e.g. for tests/code
 
 === match parentheses ===
-    == animate ==
+    == basic highlight ==
 
 === editor handler ===
-handles key presses, such as tab, (shift) enter etc
+	handles key presses, such as tab, (shift) enter etc
 
 === class view ===
 
@@ -26,7 +36,7 @@ handles key presses, such as tab, (shift) enter etc
 === autocomplete ===
 
 === search & replace in files ===
-should be possible to delete some results after reviewing
+	should be possible to delete some results after reviewing
 
 
 
@@ -47,6 +57,14 @@ should be possible to delete some results after reviewing
 
 === dynamic class rewrite rules for type hinting ===
 
+=== match parentheses ===
+    == animate ==
+
+
+
+
+
+
 
 ====== DONE =====
 === syntax highlight ===
@@ -58,4 +76,10 @@ should be possible to delete some results after reviewing
 === multiple files opened, tabbed gui ===
 	on file open - focus editor
 	setup widget size constraints / proportions
+
+=== project view ===
+	add quick search filter
+
+=== decouple php plugin from editor ===
+
 
