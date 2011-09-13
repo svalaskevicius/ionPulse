@@ -45,6 +45,7 @@ public:
 
     void filter(QString filter);
 
+    QString getPath(const QModelIndex &index) const;
 private:
     TreeBranch *rootItem;
 };

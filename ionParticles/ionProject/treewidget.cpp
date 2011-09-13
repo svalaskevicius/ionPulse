@@ -1,6 +1,7 @@
 #include "treewidget.h"
 #include "treemodel.h"
 #include <QVBoxLayout>
+#include <QFileInfo>
 
 namespace IonProject {
 namespace Private {
@@ -25,14 +26,14 @@ TreeWidget::TreeWidget(QWidget *parent) :
 
 void TreeWidget::onItemActivated(const QModelIndex &index )
 {
-    /*if (!index.isValid()) {
+    if (!index.isValid()) {
         return;
     }
     Q_ASSERT(_fiModel);
-    QFileInfo fi = _fiModel->fileInfo(index);
+    QFileInfo fi(_fiModel->getPath(index));
     if (fi.isFile()) {
         emit fileActivated(fi.filePath());
-    }*/
+    }
 }
 
 void TreeWidget::keyPressEvent ( QKeyEvent * event ) {

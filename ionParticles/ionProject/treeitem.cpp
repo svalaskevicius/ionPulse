@@ -7,10 +7,9 @@ namespace IonProject {
 
 namespace Private {
 
-TreeItem::TreeItem(const QList<QVariant> &data, TreeBranch *parent)
+TreeItem::TreeItem(QString const name, QString const path, TreeBranch *parent)
+    : name(name), path(path), parentItem(parent)
 {
-    parentItem = parent;
-    itemData = data;
     visible = true;
 }
 TreeItem::~TreeItem()
@@ -18,14 +17,13 @@ TreeItem::~TreeItem()
 }
 
 
-int TreeItem::columnCount() const
-{
-    return itemData.count();
-}
 
 QVariant TreeItem::data(int column) const
 {
-    return itemData.value(column);
+    if (0 == column) {
+        return QVariant(name);
+    }
+    return QVariant();
 }
 
 TreeItem *TreeItem::parent()
@@ -45,17 +43,17 @@ int TreeItem::childrenCount() const
        return 0;
 }
 
-void TreeItem::setFilter(QString const filter)
+void TreeItem::filter(QString const filter)
 {
-    visible = itemData[1].toString().toLower().contains(filter.toLower());
+    visible = path.toLower().contains(filter.toLower());
 }
 
 
 
 
 
-TreeBranch::TreeBranch(const QList<QVariant> &data, TreeBranch *parent)
-    :TreeItem(data, parent), childItems()
+TreeBranch::TreeBranch(QString const name, QString const path, TreeBranch *parent)
+    :TreeItem(name, path, parent), childItems()
 {
 }
 TreeBranch::~TreeBranch()
@@ -108,11 +106,11 @@ int TreeBranch::getChildRowNr(TreeItem *child)
     throw std::out_of_range("children size reached");
     //return childItems.indexOf(child);
 }
-void TreeBranch::setFilter(QString const filter)
+void TreeBranch::filter(QString const filter)
 {
     visible = false;
     foreach (TreeItem* child, childItems) {
-        child->setFilter(filter);
+        child->filter(filter);
         visible |= child->isVisible();
     }
 }

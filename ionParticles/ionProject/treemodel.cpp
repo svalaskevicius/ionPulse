@@ -18,14 +18,9 @@ TreeModel::~TreeModel()
     delete rootItem;
 }
 
-int TreeModel::columnCount(const QModelIndex &parent) const
+int TreeModel::columnCount(const QModelIndex &) const
 {
     return 1;
-
-//    if (parent.isValid())
-//        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-//    else
-//        return rootItem->columnCount();
 }
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
@@ -107,14 +102,25 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 }
 
 void TreeModel::filter(QString filter) {
-    rootItem->setFilter(filter);
+    rootItem->filter(filter);
     reset();
 }
+
+QString TreeModel::getPath(const QModelIndex &index) const {
+    if (!index.isValid())
+        return "";
+
+    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+    return item->getPath();
+}
+
+
+
 
 
 TreeBranch *DirectoryTreeSource::setupData()
 {
-    TreeBranch* parent = new TreeBranch(QList<QVariant>() << "name" << "path");
+    TreeBranch* parent = new TreeBranch("Name", "", NULL);
 
     QList<TreeBranch*> parents;
     QList<QString> directoryNames;
@@ -130,7 +136,7 @@ TreeBranch *DirectoryTreeSource::setupData()
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+subDirName;
-            TreeBranch* newTreeItem = new TreeBranch(QList<QVariant>() << subDirName << fullPath, currentTreeItemsParent);
+            TreeBranch* newTreeItem = new TreeBranch(subDirName, fullPath, currentTreeItemsParent);
             currentTreeItemsParent->appendChild(newTreeItem);
 
             directoryNames.append(fullPath);
@@ -139,7 +145,7 @@ TreeBranch *DirectoryTreeSource::setupData()
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            currentTreeItemsParent->appendChild(new TreeItem(QList<QVariant>() << fileName << fullPath, currentTreeItemsParent));
+            currentTreeItemsParent->appendChild(new TreeItem(fileName, fullPath, currentTreeItemsParent));
         }
     }
     return parent;

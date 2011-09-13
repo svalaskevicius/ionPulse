@@ -13,17 +13,17 @@ class TreeItem;
 struct TreeItem
 {
 public:
-    TreeItem(const QList<QVariant> &data, TreeBranch *parent = 0);
+    TreeItem(QString const name, QString const path, TreeBranch *parent);
     virtual ~TreeItem();
-    int columnCount() const;
     QVariant data(int column) const;
     int getRowNr();
     TreeItem *parent();
     virtual int childrenCount() const;
-    virtual void setFilter(QString const filter);
+    virtual void filter(QString const filter);
     bool isVisible() const {return visible;}
+    QString getPath() const {return path;}
 private:
-    QList<QVariant> itemData;
+    QString name, path;
     TreeBranch *parentItem;
 protected:
     bool visible;
@@ -32,14 +32,14 @@ protected:
 struct TreeBranch : public TreeItem
 {
 public:
-    TreeBranch(const QList<QVariant> &data, TreeBranch *parent = 0);
+    TreeBranch(QString const name, QString const path, TreeBranch *parent);
     ~TreeBranch();
 
     void appendChild(TreeItem *getChild);
     TreeItem *getChild(int getRowNr);
     virtual int childrenCount() const;
     int getChildRowNr(TreeItem *getChild);
-    virtual void setFilter(QString const filter);
+    virtual void filter(QString const filter);
 private:
     QList<TreeItem*> childItems;
 };
