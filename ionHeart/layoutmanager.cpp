@@ -63,18 +63,18 @@ void ZoneNodeBranch::resizeEvent ( QResizeEvent * event ) {
         resizeChildren();
         childrenResized = true;
     }
-    QSplitter::resizeEvent(event);
+    //uiSplitter.resizeEvent(event);
 }
 void ZoneNodeBranch::resizeChildren() {
-    QVector<int> vSizes(this->children().size());
+    QVector<int> vSizes(uiSplitter.children().size());
     foreach (ZoneNode * const br, subZones) {
         int sizeWeight = br->getDefinition().sizeWeight;
         Q_ASSERT(sizeWeight); // not implemented support of sizeWeight = 0 (auto size adjusment)
-        int i = indexOf(br->getWidget());
+        int i = uiSplitter.indexOf(br->getWidget());
         printf("nfo: name: %s, size: %d, i: %d\n", br->getDefinition().name.toAscii().constData(), sizeWeight, i);
         vSizes[i] = sizeWeight;
     }
-    this->setSizes(vSizes.toList());
+    uiSplitter.setSizes(vSizes.toList());
 }
 
 
@@ -90,13 +90,13 @@ void ZoneNodeBranch::resizeChildren() {
 ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
     parent->addSubZone(br);
-    parent->insertWidget(parent->indexOf(this), br);
+//    parent->insertWidget(parent->indexOf(this), br);
     br->addSubZone(this);
-    this->setParent(br);
+    uiTab.setParent(br->getWidget());
     ZoneNode::parent = br;
-    br->addWidget(this);
-    if (this->isHidden()) {
-        br->hide();
+//    br->addWidget(this);
+    if (uiTab.isHidden()) {
+//        br->hide();
     }
     return br;
 }
@@ -112,7 +112,7 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
 LayoutZonesManager::LayoutZonesManager(MainWindow &mainWidget)
 {
     root = new ZoneNodeBranch(&mainWidget);
-    mainWidget.setCentralWidget(root);
+    mainWidget.setCentralWidget(root->getWidget());
 }
 
 ZoneNodeLeaf *LayoutZonesManager::getZone(QString path)
@@ -130,17 +130,17 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
    signed int index = -1;
 
    if ( zone.after.length() && (pos = node->findSubZone(QStringList() << zone.after)) ) {
-       index = 1+node->indexOf(pos->getWidget());
+//       index = 1+node->indexOf(pos->getWidget());
    } else if ( zone.before.length() && (pos = node->findSubZone(QStringList() << zone.before)) ) {
-       index = node->indexOf(pos->getWidget());
+//       index = node->indexOf(pos->getWidget());
    }
    if (index > -1) {
-       leaf->setParent(0);
-       node->insertWidget(index, leaf);
+//       leaf->setParent(0);
+//       node->insertWidget(index, leaf);
    }
 
    if (zone.hideIfEmpty) {
-       leaf->hide();
+//       leaf->hide();
    } else {
        leaf->show();
    }
@@ -162,12 +162,12 @@ void LayoutManagerImpl::add(PanelWidget *panel)
 {
     ZoneNodeLeaf *z = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(z);
-    int idx = z->addTab(
-        panel->getWidget(),
-        panel->getPanelTitle()
-    );
-    z->setCurrentIndex(idx);
-    z->widget(idx)->setFocus();
+//    int idx = z->addTab(
+//        panel->getWidget(),
+//        panel->getPanelTitle()
+//    );
+//    z->setCurrentIndex(idx);
+//    z->widget(idx)->setFocus();
     z->show();
 }
 
