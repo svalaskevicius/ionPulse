@@ -21,6 +21,14 @@ namespace Private {
 
 class PluginLoader
 {
+protected:
+    class PluginsList : public QList<BasicPlugin *> {
+    private:
+        void _checkAndAddOrDeletePlugin(QObject *plugin);
+    public:
+        void addStaticPlugins();
+        void addPluginsFromDir(QDir dir);
+    };
 public:
     PluginLoader();
     ~PluginLoader();
@@ -30,6 +38,7 @@ private:
     QDir _getPluginsDir();
     bool _arePluginsIncluded(QStringList pluginNames);
     void _includePlugin(BasicPlugin *plugin);
+    void _loadPluginsList(PluginsList &plugins);
 
 };
 }
