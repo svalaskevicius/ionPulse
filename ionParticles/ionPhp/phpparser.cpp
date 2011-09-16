@@ -11,7 +11,7 @@
 #include <iostream>
 #include <QVector>
 
-#include "gen_php_parser.hpp"
+#include "phpParser/gen_php_parser.hpp"
 
 extern int _impl_ionPhp_lex(pASTNode *astNode, yyscan_t yyscanner);
 

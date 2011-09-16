@@ -18,3 +18,11 @@ isEmpty(IDE_BUILD_TREE) {
     IDE_BUILD_TREE ~= s,$$re_escape($$sub_dir)$,,
 }
 INSTALL_DIR = $$IDE_BUILD_TREE/bin
+
+
+
+QMAKE_CFLAGS_DEBUG += -fprofile-arcs -ftest-coverage -Wall
+QMAKE_CXXFLAGS_DEBUG += -fprofile-arcs -ftest-coverage -Wall
+QMAKE_LFLAGS_DEBUG += -fprofile-arcs -ftest-coverage -lgcov
+
+
