@@ -56,7 +56,7 @@ protected:
     ZoneList subZones;
     virtual void resizeEvent ( QResizeEvent * event );
 public:
-    ZoneNodeBranch(QWidget *parent) : ZoneNode(NULL, ZoneDefinition()), uiSplitter(parent), childrenResized(false) {}
+    ZoneNodeBranch() : ZoneNode(NULL, ZoneDefinition()), uiSplitter(NULL), childrenResized(false) {}
     ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef) : ZoneNode(parent, zoneDef), uiSplitter(parent->getWidget()), childrenResized(false)
     {
         uiSplitter.setOrientation(zoneDef.orientation);
@@ -102,9 +102,10 @@ class LayoutZonesManager
 protected:
     ZoneNodeBranch *root;
 public:
-    LayoutZonesManager(MainWindow &mainWidget);
+    LayoutZonesManager();
     ZoneNodeLeaf *getZone(QString path);
     void addZone(ZoneDefinition &zone);
+    QWidget *getMainWidget();
 };
 
 
@@ -113,7 +114,7 @@ class LayoutManagerImpl : public LayoutManager
 protected:
     LayoutZonesManager zonesManager;
 public:
-    LayoutManagerImpl(MainWindow &mainWidget);
+    LayoutManagerImpl(MainWindow &mainWindow);
     virtual void add(PanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
 };

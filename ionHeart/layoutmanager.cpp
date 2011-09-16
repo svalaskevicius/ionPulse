@@ -109,11 +109,15 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
 
 
 
-LayoutZonesManager::LayoutZonesManager(MainWindow &mainWidget)
+LayoutZonesManager::LayoutZonesManager()
 {
-    root = new ZoneNodeBranch(&mainWidget);
-    mainWidget.setCentralWidget(root->getWidget());
+    root = new ZoneNodeBranch();
 }
+QWidget *LayoutZonesManager::getMainWidget()
+{
+    return root->getWidget();
+}
+
 
 ZoneNodeLeaf *LayoutZonesManager::getZone(QString path)
 {
@@ -154,8 +158,11 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
 
 
 
-LayoutManagerImpl::LayoutManagerImpl(MainWindow &mainWidget) : zonesManager(mainWidget)
+LayoutManagerImpl::LayoutManagerImpl(MainWindow &mainWindow) : zonesManager()
 {
+    QWidget *mainWidget = zonesManager.getMainWidget();
+    mainWindow.setCentralWidget(mainWidget);
+    mainWidget->setParent(&mainWindow);
 }
 
 void LayoutManagerImpl::add(PanelWidget *panel)
