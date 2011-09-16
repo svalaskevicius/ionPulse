@@ -12,6 +12,10 @@
 #include <QObject>
 #include <ionHeart/plugin.h>
 
+#include <ionParticles/ionEditor/editorapi.h>
+
+#define PHP_PLUGIN_NAME "ionPhp"
+
 namespace IonPhp {
 
 
@@ -23,11 +27,11 @@ public:
     explicit Plugin(QObject *parent = 0);
     void initialize();
     QString getName() {
-        return "ionPhp";
+        return PHP_PLUGIN_NAME;
     }
     virtual QList<QString> getDependencies() {
         QList<QString> ret;
-        ret.append("ionEditor");
+        ret.append(EDITOR_PLUGIN_NAME);
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);

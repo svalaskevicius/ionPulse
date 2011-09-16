@@ -13,6 +13,8 @@
 #include <ionHeart/plugin.h>
 #include <ionParticles/ionEditor/editorapi.h>
 
+#define PROJECT_PLUGIN_NAME "ionProject"
+
 namespace IonProject {
 
 
@@ -24,11 +26,11 @@ public:
     explicit Plugin(QObject *parent = 0);
     void initialize();
     QString getName() {
-        return "ionProject";
+        return PROJECT_PLUGIN_NAME;
     }
     virtual QList<QString> getDependencies() {
         QList<QString> ret;
-        ret.append("ionEditor");
+        ret.append(EDITOR_PLUGIN_NAME);
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);

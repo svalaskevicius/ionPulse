@@ -13,8 +13,6 @@
 #include <QMessageBox>
 #include "ionHeart/shared.h"
 
-#include <ionParticles/ionEditor/plugin.h>
-
 #include "editorwidgetfactory.h"
 
 namespace IonPhp {
