@@ -1,6 +1,6 @@
 
 TEMPLATE  = subdirs
 CONFIG += ordered
-SUBDIRS = ionEditor ionProject ionPhp
+SUBDIRS = ionLayout ionEditor ionProject ionPhp
 
 ionPhp.depends = ionEditor
