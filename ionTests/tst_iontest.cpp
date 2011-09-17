@@ -25,6 +25,11 @@ int main(int argc, char *argv[])
     ADD_TEST_CLASS(PhpParserTest);
     ADD_TEST_CLASS(ProjectTreeTest);
     ADD_TEST_CLASS(LayoutManagerTest);
+    if (!ret) {
+        std::cout << "all tests PASSED\n";
+    } else {
+        std::cout << "some tests FAILED\n";
+    }
     return ret;
 }
 
