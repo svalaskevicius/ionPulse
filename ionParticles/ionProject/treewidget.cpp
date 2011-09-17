@@ -32,6 +32,10 @@ TreeWidget::TreeWidget(QWidget *parent) :
     connect(_filterInputField, SIGNAL(textChanged( QString )), this, SLOT(onFilterTextChanged( QString )));
 }
 
+TreeWidget::~TreeWidget() {
+    delete _fiModel;
+}
+
 void TreeWidget::onItemActivated(const QModelIndex &index )
 {
     if (!index.isValid()) {

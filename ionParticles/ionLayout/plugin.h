@@ -21,6 +21,11 @@ class Plugin : public QObject, public LayoutPlugin
     Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
+    virtual ~Plugin() {
+        if(layoutManager) {
+            delete layoutManager;
+        }
+    }
     void preLoad();
     QString getName() {
         return LAYOUT_PLUGIN_NAME;

@@ -31,6 +31,7 @@ protected:
     virtual void keyPressEvent ( QKeyEvent * event );
 public:
     explicit TreeWidget(QWidget *parent = 0);
+    virtual ~TreeWidget();
     virtual QWidget *getWidget() {return this;}
     virtual QString getPanelTitle() {return "Project Browser";}
     virtual QString getPanelZone() {return "left";}
