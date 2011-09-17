@@ -29,7 +29,7 @@ private Q_SLOTS:
     void test_zones_getZoneNameReturnsNameFromZoneDef() {
         ZoneDefinition def;
         def.name = "name of the zone";
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         ZoneNodeBranch branch(&root, def);
         ZoneNodeLeaf leaf(&root, def);
@@ -39,65 +39,60 @@ private Q_SLOTS:
     }
 
     void test_zones_findSubZoneReturnsNullIfNotFound() {
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
         QStringList empty;
         QCOMPARE((ulong)root.findSubZone(empty), (ulong)NULL);
     }
 
     void test_zones_findSubZoneReturnsDeepestPath() {
         ZoneDefinition def;
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         def.name = "name br";
-        ZoneNodeBranch branch(&root, def);
+        ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
         def.name = "name lf";
-        ZoneNodeLeaf leaf(&root, def);
+        ZoneNodeLeaf *leaf = new ZoneNodeLeaf(branch, def);
 
-        root.addSubZone(&branch);
-        root.addSubZone(&leaf);
-        branch.addSubZone(&leaf);
+        root.addSubZone(branch);
+        branch->addSubZone(leaf);
 
         QStringList searchPath;
         searchPath << "name br" << "name lf";
-        QCOMPARE(root.findSubZone(searchPath), &leaf);
-
-        searchPath.clear();
-        searchPath << "name lf";
-        QCOMPARE(root.findSubZone(searchPath), &leaf);
+        QCOMPARE(root.findSubZone(searchPath), leaf);
     }
 
     void test_zones_findSubZoneForBranchesLooksForSameNameIfSearchListIsEmpty() {
         ZoneDefinition def;
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         def.name = "name br";
-        ZoneNodeBranch branch(&root, def);
-        ZoneNodeLeaf leaf(&root, def);
+        ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
+        ZoneNodeLeaf *leaf = new ZoneNodeLeaf(&root, def);
 
-        root.addSubZone(&branch);
-        branch.addSubZone(&leaf);
+        root.addSubZone(branch);
+        branch->addSubZone(leaf);
 
         QStringList searchPath;
         searchPath << "name br";
-        QCOMPARE(root.findSubZone(searchPath), &leaf);
+        QCOMPARE(root.findSubZone(searchPath), leaf);
     }
 
     void test_zones_getSubZoneReturnsFindSubZoneIfSuccess() {
         ZoneDefinition def;
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         def.name = "name lf";
-        ZoneNodeLeaf leaf(&root, def);
+        ZoneNodeLeaf *leaf = new ZoneNodeLeaf(&root, def);
 
-        root.addSubZone(&leaf);
+        root.addSubZone(leaf);
 
         QStringList searchPath;
         searchPath << "name lf";
-        QCOMPARE(root.getSubZone(searchPath), &leaf);
+        QCOMPARE(root.getSubZone(searchPath), leaf);
     }
 
     void test_zones_getSubZoneThrowsExceptionOnError() {
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         QStringList searchPath;
         searchPath << "name lf";
@@ -112,41 +107,41 @@ private Q_SLOTS:
 
     void test_zones_getZoneReturnsDeepestPaths() {
         ZoneDefinition def;
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         def.name = "zone0";
-        ZoneNodeBranch branch(&root, def);
-        ZoneNodeLeaf leaf0(&branch, def);
+        ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
+        ZoneNodeLeaf *leaf0 = new ZoneNodeLeaf(branch, def);
         def.name = "zone1";
-        ZoneNodeLeaf leaf1(&branch, def);
+        ZoneNodeLeaf *leaf1 = new ZoneNodeLeaf(branch, def);
 
-        root.addSubZone(&branch);
-        branch.addSubZone(&leaf0);
-        branch.addSubZone(&leaf1);
+        root.addSubZone(branch);
+        branch->addSubZone(leaf0);
+        branch->addSubZone(leaf1);
 
         QCOMPARE(root.getZone(""), &root);
-        QCOMPARE(root.getZone("zone0"), &leaf0);
-        QCOMPARE(root.getZone("zone0/zone0"), &leaf0);
-        QCOMPARE(root.getZone("zone0/zone1"), &leaf1);
+        QCOMPARE(root.getZone("zone0"), leaf0);
+        QCOMPARE(root.getZone("zone0/zone0"), leaf0);
+        QCOMPARE(root.getZone("zone0/zone1"), leaf1);
     }
 
     void test_zones_getZoneLeafReturnsDeepestLeaf() {
         ZoneDefinition def;
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         def.name = "zone0";
-        ZoneNodeBranch branch(&root, def);
-        ZoneNodeLeaf leaf0(&branch, def);
+        ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
+        ZoneNodeLeaf *leaf0 = new ZoneNodeLeaf(branch, def);
         def.name = "zone1";
-        ZoneNodeLeaf leaf1(&branch, def);
+        ZoneNodeLeaf *leaf1 = new ZoneNodeLeaf(branch, def);
 
-        root.addSubZone(&branch);
-        branch.addSubZone(&leaf0);
-        branch.addSubZone(&leaf1);
+        root.addSubZone(branch);
+        branch->addSubZone(leaf0);
+        branch->addSubZone(leaf1);
 
-        QCOMPARE(branch.getZoneLeaf(), &leaf0);
-        QCOMPARE(leaf0.getZoneLeaf(), &leaf0);
-        QCOMPARE(leaf1.getZoneLeaf(), &leaf1);
+        QCOMPARE(branch->getZoneLeaf(), leaf0);
+        QCOMPARE(leaf0->getZoneLeaf(), leaf0);
+        QCOMPARE(leaf1->getZoneLeaf(), leaf1);
     }
 
     void test_zones_getZoneAsBranchConvertsLeavesToBranchesIfNecessary() {
@@ -155,36 +150,37 @@ private Q_SLOTS:
         def.sizeWeight = 23;
         def.orientation = Qt::Vertical;
         def.hideIfEmpty = 1;
-        ZoneNodeBranch root;
+        ZoneNodeRoot root;
 
         def.name = "zone0";
-        ZoneNodeBranch branch(&root, def);
-        ZoneNodeLeaf leaf0(&branch, def);
+        ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
+        ZoneNodeLeaf *leaf0 = new ZoneNodeLeaf(branch, def);
         def.name = "zone1";
-        ZoneNodeLeaf leaf1(&branch, def);
+        ZoneNodeLeaf *leaf1 = new ZoneNodeLeaf(branch, def);
 
-        root.addSubZone(&branch);
-        branch.addSubZone(&leaf0);
-        branch.addSubZone(&leaf1);
+        root.addSubZone(branch);
+        branch->addSubZone(leaf0);
+        branch->addSubZone(leaf1);
 
-        QCOMPARE(branch.getZoneAsBranch(), &branch);
-        ZoneNodeBranch *newBranch = leaf1.getZoneAsBranch();
+
+        QCOMPARE(branch->getZoneAsBranch(), branch);
+        ZoneNodeBranch *newBranch = leaf1->getZoneAsBranch();
         const ZoneDefinition &newBrDef = newBranch->getDefinition();
         QCOMPARE(newBrDef.parentPath, QString("parentpath"));
         QCOMPARE(newBrDef.name, QString("zone1"));
         QCOMPARE(newBrDef.orientation, Qt::Vertical);
         QCOMPARE(newBrDef.sizeWeight, 23);
 
-        QCOMPARE(root.getZone("zone0"), &leaf0);
-        QCOMPARE(root.getZone("zone0/zone0"), &leaf0);
-        QCOMPARE(root.getZone("zone0/zone1"), &leaf1);
-        QCOMPARE(root.getZone("zone0/zone1/zone1"), &leaf1);
+        QCOMPARE(root.getZone("zone0"), leaf0);
+        QCOMPARE(root.getZone("zone0/zone0"), leaf0);
+        QCOMPARE(root.getZone("zone0/zone1"), leaf1);
+        QCOMPARE(root.getZone("zone0/zone1/zone1"), leaf1);
     }
 
     void test_zones_showPropagatesToParents() {
         ZoneDefinition def;
 
-        ZoneNodeBranch branch;
+        ZoneNodeRoot branch;
         ZoneNodeLeaf leaf(&branch, def);
         branch.getWidget()->hide();
 

@@ -48,11 +48,6 @@ void ZoneNode::show()
     }
 }
 
-void ZoneNode::hide()
-{
-    getWidget()->hide();
-}
-
 const ZoneDefinition & ZoneNode::getDefinition() const
 {
     return zoneDef;
@@ -64,24 +59,22 @@ const ZoneDefinition & ZoneNode::getDefinition() const
 ///////////
 
 
-ZoneNodeBranch::ZoneNodeBranch()
-    : ZoneNode(NULL, ZoneDefinition()), childrenResized(false)
+ZoneNodeBranch::ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef)
+    : QSplitter(parent), ZoneNode(parent, zoneDef), childrenResized(false)
 {
-    uiSplitter = _createUiSplitter();
+    setOrientation(zoneDef.orientation);
 }
 
-ZoneNodeBranch::ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef)
-    : ZoneNode(parent, zoneDef), childrenResized(false)
+ZoneNodeBranch::~ZoneNodeBranch()
 {
-    uiSplitter = _createUiSplitter();
-    uiSplitter->setOrientation(zoneDef.orientation);
 }
+
 
 void ZoneNodeBranch::addSubZone(ZoneNode *child, int position)
 {
     QString zoneName = child->getZoneName();
     subZones[zoneName] = child;
-    uiSplitter->insertWidget(position, child->getWidget());
+    this->insertWidget(position, child->getWidget());
 }
 
 ZoneNodeBranch *ZoneNodeBranch::getZoneAsBranch()
@@ -91,17 +84,12 @@ ZoneNodeBranch *ZoneNodeBranch::getZoneAsBranch()
 
 QWidget *ZoneNodeBranch::getWidget()
 {
-    return uiSplitter;
-}
-
-int ZoneNodeBranch::indexOf(ZoneNode *child)
-{
-    return uiSplitter->indexOf(child->getWidget());
+    return this;
 }
 
 void ZoneNodeBranch::show()
 {
-    uiSplitter->show();
+    QSplitter::show();
     ZoneNode::show();
 }
 
@@ -130,21 +118,15 @@ void ZoneNodeBranch::splitterResized ( ) {
     }
 }
 void ZoneNodeBranch::resizeChildren() {
-    QVector<int> vSizes(uiSplitter->children().size());
+    QVector<int> vSizes(this->children().size());
     foreach (ZoneNode * const br, subZones) {
         int sizeWeight = br->getDefinition().sizeWeight;
         Q_ASSERT(sizeWeight); // not implemented support of sizeWeight = 0 (auto size adjusment)
-        int i = uiSplitter->indexOf(br->getWidget());
+        int i = this->indexOf(br->getWidget());
         printf("nfo: name: %s, size: %d, i: %d\n", br->getDefinition().name.toAscii().constData(), sizeWeight, i);
         vSizes[i] = sizeWeight;
     }
-    uiSplitter->setSizes(vSizes.toList());
-}
-UiSplitter *ZoneNodeBranch::_createUiSplitter()
-{
-    UiSplitter *uiSplitter = new UiSplitter();
-    connect(uiSplitter, SIGNAL(splitterResized()), this, SLOT(splitterResized()));
-    return uiSplitter;
+    this->setSizes(vSizes.toList());
 }
 
 
@@ -159,9 +141,11 @@ UiSplitter *ZoneNodeBranch::_createUiSplitter()
 
 
 ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
-    : ZoneNode(parent, zoneDef), parent(parent)
+    : QTabWidget(parent), ZoneNode(parent, zoneDef), parent(parent)
 {
-    uiTab = new QTabWidget();
+}
+ZoneNodeLeaf::~ZoneNodeLeaf()
+{
 }
 
 ZoneNodeLeaf *ZoneNodeLeaf::getZoneLeaf()
@@ -170,7 +154,7 @@ ZoneNodeLeaf *ZoneNodeLeaf::getZoneLeaf()
 }
 QTabWidget *ZoneNodeLeaf::getZoneContents()
 {
-    return uiTab;
+    return this;
 }
 ZoneNode *ZoneNodeLeaf::findSubZone(QStringList &path) throw()
 {
@@ -179,19 +163,19 @@ ZoneNode *ZoneNodeLeaf::findSubZone(QStringList &path) throw()
 }
 QWidget *ZoneNodeLeaf::getWidget()
 {
-    return uiTab;
+    return this;
 }
 void ZoneNodeLeaf::show()
 {
-    uiTab->show();
+    QTabWidget::show();
     ZoneNode::show();
 }
 ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
     parent->addSubZone(br, parent->indexOf(this));
-    br->addSubZone(this, 0);
+    br->addSubZone(this);
     parent = br;
-    if (uiTab->isHidden()) {
+    if (this->isHidden()) {
         br->getWidget()->hide();
     }
     return br;
@@ -207,7 +191,7 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
 
 LayoutZonesManager::LayoutZonesManager()
 {
-    root = new ZoneNodeBranch();
+    root = new ZoneNodeRoot();
 }
 QWidget *LayoutZonesManager::getMainWidget()
 {
@@ -229,9 +213,9 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
    signed int index = -1;
 
    if ( zone.after.length() && (pos = parentNode->findSubZone(QStringList() << zone.after)) ) {
-       index = 1 + parentNode->indexOf(pos);
+       index = 1 + parentNode->indexOf(pos->getWidget());
    } else if ( zone.before.length() && (pos = parentNode->findSubZone(QStringList() << zone.before)) ) {
-       index = parentNode->indexOf(pos);
+       index = parentNode->indexOf(pos->getWidget());
    }
    parentNode->addSubZone(leaf, index);
 
