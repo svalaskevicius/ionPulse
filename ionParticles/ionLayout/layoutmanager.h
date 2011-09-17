@@ -57,7 +57,7 @@ protected:
     virtual void resizeEvent ( QResizeEvent * event );
 public:
     ZoneNodeBranch() : ZoneNode(NULL, ZoneDefinition()), uiSplitter(NULL), childrenResized(false) {}
-    ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef) : ZoneNode(parent, zoneDef), uiSplitter(parent->getWidget()), childrenResized(false)
+    ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef) : ZoneNode(parent, zoneDef), uiSplitter(), childrenResized(false)
     {
         uiSplitter.setOrientation(zoneDef.orientation);
     }
@@ -80,7 +80,7 @@ protected:
     QTabWidget uiTab;
     ZoneNodeBranch *parent;
 public:
-    ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef) : ZoneNode(parent, zoneDef), uiTab(parent->getWidget()), parent(parent) {}
+    ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef) : ZoneNode(parent, zoneDef), uiTab(), parent(parent) {}
     virtual ZoneNodeLeaf *getZoneLeaf() {
         return this;
     }

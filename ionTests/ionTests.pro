@@ -16,18 +16,18 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 INCLUDEPATH +=  ..
-LIBS += \
+LIBS += -lAmop \
             -L../ionParticles/ionProject \
             -lionProject \
             -L../ionParticles/ionPhp \
             -lionPhp \
             -L../ionParticles/ionEditor \
-            -lionEditor
+            -lionEditor \
+            -L../ionParticles/ionLayout \
+            -lionLayout
 
 
-SOURCES += tst_iontest.cpp \
-    phpparsertest.cpp \
-    projecttreetest.cpp
+SOURCES += tst_iontest.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -36,6 +36,10 @@ INSTALLS += target
 
 HEADERS += \
     phpparsertest.h \
-    projecttreetest.h
+    projecttreetest.h \
+    layouttest.h
+
+
+
 
 

@@ -12,15 +12,20 @@
 
 #include "phpparsertest.h"
 #include "projecttreetest.h"
+#include "layouttest.h"
 
 #define ADD_TEST_CLASS(className) { className tc; ret |= QTest::qExec(&tc, argc, argv); }
 
 int main(int argc, char *argv[])
 {
+    QApplication app(argc, argv);
+    QTEST_DISABLE_KEYPAD_NAVIGATION
+
     int ret = 0;
-    ADD_TEST_CLASS(PhpParserTest)
-    ADD_TEST_CLASS(ProjectTreeTest)
+    ADD_TEST_CLASS(PhpParserTest);
+    ADD_TEST_CLASS(ProjectTreeTest);
+    ADD_TEST_CLASS(LayoutManagerTest);
     return ret;
 }
 
-//#include "tst_iontest.moc"
+

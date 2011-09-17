@@ -92,8 +92,8 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     parent->addSubZone(br);
 //    parent->insertWidget(parent->indexOf(this), br);
     br->addSubZone(this);
-    uiTab.setParent(br->getWidget());
-    ZoneNode::parent = br;
+   // uiTab.setParent(br->getWidget());
+     parent = br;
 //    br->addWidget(this);
     if (uiTab.isHidden()) {
 //        br->hide();
