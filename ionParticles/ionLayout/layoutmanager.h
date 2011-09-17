@@ -30,71 +30,54 @@ protected:
     ZoneNode *parent;
     ZoneDefinition  zoneDef;
 public:
-    ZoneNode(ZoneNode *parent, ZoneDefinition  zoneDef) : parent(parent), zoneDef(zoneDef) {}
-    QString getZoneName() {return zoneDef.name;}
+    ZoneNode(ZoneNode *parent, ZoneDefinition  zoneDef);
+    QString getZoneName();
     virtual ZoneNode *findSubZone(QStringList &path) throw() = 0;
     virtual ZoneNode *getSubZone(QStringList &path) throw(std::runtime_error);
     virtual ZoneNodeLeaf *getZoneLeaf() = 0;
     virtual ZoneNode *getZone(QString path);
     virtual ZoneNodeBranch *getZoneAsBranch() = 0;
     virtual QWidget *getWidget() = 0;
-    virtual void show() {
-        if (parent) {
-            parent->show();
-        }
-    }
-    const ZoneDefinition & getDefinition() const {return zoneDef;}
+    virtual void show();
+    virtual void hide();
+    const ZoneDefinition & getDefinition() const;
 };
 
 class ZoneNodeBranch : public ZoneNode
 {
 private:
-    QSplitter uiSplitter;
+    QSplitter *uiSplitter;
     bool childrenResized;
 protected:
     typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
     virtual void resizeEvent ( QResizeEvent * event );
 public:
-    ZoneNodeBranch() : ZoneNode(NULL, ZoneDefinition()), uiSplitter(NULL), childrenResized(false) {}
-    ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef) : ZoneNode(parent, zoneDef), uiSplitter(), childrenResized(false)
-    {
-        uiSplitter.setOrientation(zoneDef.orientation);
-    }
-    void addSubZone(ZoneNode *child) {subZones[child->getZoneName()] = child;}
+    ZoneNodeBranch();
+    ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef);
+    void addSubZone(ZoneNode *child, int position = -1);
     virtual ZoneNode *findSubZone(QStringList &path) throw();
     virtual ZoneNodeLeaf *getZoneLeaf();
-    virtual ZoneNodeBranch *getZoneAsBranch() {return this;}
-    virtual QWidget *getWidget() {return &uiSplitter;}
-    virtual void show()
-    {
-        uiSplitter.show();
-        ZoneNode::show();
-    }
+    virtual ZoneNodeBranch *getZoneAsBranch();
+    virtual QWidget *getWidget();
+    int indexOf(ZoneNode *child);
+    virtual void show();
     void resizeChildren();
 };
 
 class ZoneNodeLeaf : public ZoneNode
 {
 protected:
-    QTabWidget uiTab;
+    QTabWidget *uiTab;
     ZoneNodeBranch *parent;
 public:
-    ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef) : ZoneNode(parent, zoneDef), uiTab(), parent(parent) {}
-    virtual ZoneNodeLeaf *getZoneLeaf() {
-        return this;
-    }
-    virtual QTabWidget *getZoneContents() {
-        return &uiTab;
-    }
-    virtual ZoneNode *findSubZone(QStringList &path) throw() {Q_ASSERT(path.size() == 0); return this;}
+    ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef);
+    virtual ZoneNodeLeaf *getZoneLeaf();
+    virtual QTabWidget *getZoneContents();
+    virtual ZoneNode *findSubZone(QStringList &path) throw();
     virtual ZoneNodeBranch *getZoneAsBranch();
-    virtual QWidget *getWidget() {return &uiTab;}
-    virtual void show()
-    {
-        uiTab.show();
-        ZoneNode::show();
-    }
+    virtual QWidget *getWidget();
+    virtual void show();
 };
 
 class LayoutZonesManager
