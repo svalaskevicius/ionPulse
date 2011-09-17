@@ -13,7 +13,7 @@
 #include <QEvent>
 #include <QMap>
 #include <QTextBlock>
-#include <ionHeart/layout.h>
+#include <ionParticles/ionLayout/layoutapi.h>
 #include "editorapi.h"
 
 
@@ -21,7 +21,7 @@ namespace IonEditor {
 
 namespace Private {
 
-class EditorWidget : public QPlainTextEdit, public Editor, public IonHeart::PanelWidget
+class EditorWidget : public QPlainTextEdit, public Editor, public IonLayout::PanelWidget
 {
     Q_OBJECT
 public:

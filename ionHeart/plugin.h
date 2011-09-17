@@ -9,19 +9,20 @@
 #ifndef INTERFACES_H
 #define INTERFACES_H
 
-#include "mainwindow.h"
-#include "layout.h"
 #include <QList>
+#include <QMainWindow>
+
 
 namespace IonHeart {
 
 class BasicPlugin {
 protected:
-    LayoutManager *layoutManager;
+    QMainWindow *mainWindow;
 public:
     virtual ~BasicPlugin(){}
-    void setLayoutManager(LayoutManager *layoutManager) {this->layoutManager = layoutManager;}
-    virtual void initialize() = 0;
+    void setMainWindow(QMainWindow *mainWindow) {this->mainWindow = mainWindow;}
+    virtual void preLoad() {}
+    virtual void postLoad() {}
     virtual QString getName() = 0;
     virtual QList<QString> getDependencies() {
         return QList<QString>();

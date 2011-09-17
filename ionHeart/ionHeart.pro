@@ -12,17 +12,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    pluginloader.cpp \
-    layoutmanager.cpp
+        pluginloader.cpp
 
 HEADERS  += mainwindow.h \
     ionPulse/shared.h \
     ionPulse/plugin.h \
     shared.h \
     plugin.h \
-    pluginloader.h \
-    layoutmanager.h \
-    layout.h
+    pluginloader.h
 
 FORMS    +=
 

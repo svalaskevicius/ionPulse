@@ -13,9 +13,10 @@
 
 #include <QScopedPointer>
 #include "editorapi.h"
-
+#include <ionParticles/ionLayout/layoutapi.h>
 
 namespace IonEditor {
+
 namespace Private {
 class EditorWidgetBuilderImpl;
 }
@@ -28,14 +29,20 @@ class Plugin : public QObject, public EditorPlugin
 public:
     explicit Plugin(QObject *parent = 0);
     ~Plugin();
-    void initialize();
+    void postLoad();
     QString getName() {
         return EDITOR_PLUGIN_NAME;
     }
+    virtual QList<QString> getDependencies() {
+        QList<QString> ret;
+        ret.append(LAYOUT_PLUGIN_NAME);
+        return ret;
+    }
+    virtual void addParent(BasicPlugin *parent);
     EditorWidgetBuilder *getEditorWidgetBuilder();
 private:
     QScopedPointer<Private::EditorWidgetBuilderImpl> _editorWidgetFactory;
-
+    IonLayout::LayoutManager *layoutManager;
 signals:
 
 public slots:

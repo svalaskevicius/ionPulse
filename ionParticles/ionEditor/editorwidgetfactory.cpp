@@ -47,7 +47,7 @@ EditorComponent *EditorWidgetBuilderImpl::createLineNumberArea(Editor *widget, Q
     return _default(widget);
 }
 
-IonHeart::PanelWidget *EditorWidgetBuilderImpl::createEditor(QString path)
+IonLayout::PanelWidget *EditorWidgetBuilderImpl::createEditor(QString path)
 {
     EditorWidget *ret = new EditorWidget(path);
     QString type = getFileType(path);

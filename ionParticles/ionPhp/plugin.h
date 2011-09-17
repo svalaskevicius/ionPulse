@@ -25,7 +25,7 @@ class Plugin : public QObject, public IonHeart::BasicPlugin
     Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
-    void initialize();
+    void postLoad();
     QString getName() {
         return PHP_PLUGIN_NAME;
     }

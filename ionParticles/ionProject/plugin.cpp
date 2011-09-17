@@ -15,11 +15,11 @@
 namespace IonProject {
 
 Plugin::Plugin(QObject *parent) :
-    QObject(parent), editorPlugin(NULL)
+    QObject(parent), editorPlugin(NULL), layoutManager(NULL)
 {
 }
 
-void Plugin::initialize()
+void Plugin::postLoad()
 {
     Q_ASSERT(editorPlugin);
     Private::TreeWidget *fileTree = new Private::TreeWidget();
@@ -30,7 +30,12 @@ void Plugin::initialize()
 void Plugin::addParent(BasicPlugin *parent) {
     if (EDITOR_PLUGIN_NAME == parent->getName()) {
         editorPlugin = static_cast<IonEditor::EditorPlugin *>(parent);
+    } else if (LAYOUT_PLUGIN_NAME == parent->getName()) {
+        IonLayout::LayoutPlugin *layoutPlugin = static_cast<IonLayout::LayoutPlugin *>(parent);
+        Q_ASSERT(layoutPlugin);
+        layoutManager = layoutPlugin->getLayoutManager();
     }
+
 }
 
 void Plugin::openFile(QString path)

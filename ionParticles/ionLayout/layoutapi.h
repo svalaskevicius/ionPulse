@@ -10,8 +10,11 @@
 #define PANELWIDGET_H
 
 #include <QWidget>
+#include <ionHeart/plugin.h>
 
-namespace IonHeart {
+#define LAYOUT_PLUGIN_NAME "ionLayout"
+
+namespace IonLayout {
 
 struct ZoneDefinition {
     QString parentPath;
@@ -37,6 +40,11 @@ public:
     virtual void addZone(ZoneDefinition &zone) = 0;
 };
 
+
+class LayoutPlugin : public IonHeart::BasicPlugin {
+public:
+    virtual LayoutManager *getLayoutManager() = 0;
+};
 
 }
 

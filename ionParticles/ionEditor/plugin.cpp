@@ -13,7 +13,7 @@
 #include "editorwidgetfactory.h"
 #include <QMessageBox>
 #include "editorwidgetfactory.h"
-#include <ionHeart/layout.h>
+#include <ionParticles/ionLayout/layoutapi.h>
 #include <QBoxLayout>
 #include "filetreewidget.h"
 
@@ -22,7 +22,7 @@ namespace IonEditor {
 
 
 Plugin::Plugin(QObject *parent) :
-    QObject(parent)
+    QObject(parent), layoutManager(NULL)
 {
 }
 
@@ -32,12 +32,20 @@ Plugin::~Plugin()
     // http://doc.qt.nokia.com/latest/qscopedpointer.html#forward-declared-pointers
 }
 
+void Plugin::addParent(BasicPlugin *parent) {
+    if (LAYOUT_PLUGIN_NAME == parent->getName()) {
+        IonLayout::LayoutPlugin *layoutPlugin = static_cast<IonLayout::LayoutPlugin *>(parent);
+        Q_ASSERT(layoutPlugin);
+        layoutManager = layoutPlugin->getLayoutManager();
+    }
+}
 
-void Plugin::initialize()
+
+void Plugin::postLoad()
 {
     Q_ASSERT(layoutManager);
 
-    IonHeart::ZoneDefinition def;
+    IonLayout::ZoneDefinition def;
 
     def.name = "central";
     def.orientation = Qt::Horizontal;

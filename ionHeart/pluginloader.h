@@ -11,7 +11,9 @@
 
 #include <QMap>
 #include <QDir>
-#include "layoutmanager.h"
+
+#include "mainwindow.h"
+
 
 namespace IonHeart {
 
@@ -32,7 +34,7 @@ protected:
 public:
     PluginLoader();
     ~PluginLoader();
-    void loadPlugins(LayoutManagerImpl &layoutManager);
+    void loadPlugins(MainWindow &mainWindow);
 private:
     QMap<QString, BasicPlugin *> _includedPlugins;
     QDir _getPluginsDir();

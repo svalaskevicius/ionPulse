@@ -22,7 +22,7 @@ Plugin::Plugin(QObject *parent) :
 {
 }
 
-void Plugin::initialize()
+void Plugin::postLoad()
 {
 }
 

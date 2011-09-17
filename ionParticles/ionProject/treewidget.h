@@ -11,7 +11,7 @@
 
 #include <QTreeView>
 #include <QAbstractItemModel>
-#include <ionHeart/layout.h>
+#include <ionParticles/ionLayout/layoutapi.h>
 #include <QKeyEvent>
 #include <QLineEdit>
 
@@ -21,7 +21,7 @@ namespace Private {
 
 class TreeModel;
 
-class TreeWidget : public QTreeView, public IonHeart::PanelWidget
+class TreeWidget : public QTreeView, public IonLayout::PanelWidget
 {
     Q_OBJECT
 protected:

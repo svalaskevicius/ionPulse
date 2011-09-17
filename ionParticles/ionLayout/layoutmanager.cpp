@@ -9,7 +9,7 @@
 #include "layoutmanager.h"
 
 
-namespace IonHeart {
+namespace IonLayout {
 
 
 namespace Private {
@@ -158,11 +158,11 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
 
 
 
-LayoutManagerImpl::LayoutManagerImpl(MainWindow &mainWindow) : zonesManager()
+LayoutManagerImpl::LayoutManagerImpl(QMainWindow *mainWindow) : zonesManager()
 {
     QWidget *mainWidget = zonesManager.getMainWidget();
-    mainWindow.setCentralWidget(mainWidget);
-    mainWidget->setParent(&mainWindow);
+    mainWindow->setCentralWidget(mainWidget);
+    mainWidget->setParent(mainWindow);
 }
 
 void LayoutManagerImpl::add(PanelWidget *panel)

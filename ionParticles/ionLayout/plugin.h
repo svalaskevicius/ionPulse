@@ -10,22 +10,24 @@
 
 #include <QObject>
 #include <ionHeart/plugin.h>
-
-#define LAYOUT_PLUGIN_NAME "ionLayout"
+#include "layoutapi.h"
 
 namespace IonLayout {
 
 
-class Plugin : public QObject, public IonHeart::BasicPlugin
+class Plugin : public QObject, public LayoutPlugin
 {
     Q_OBJECT
     Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
-    void initialize();
+    void preLoad();
     QString getName() {
         return LAYOUT_PLUGIN_NAME;
     }
+    virtual LayoutManager *getLayoutManager();
+private:
+    LayoutManager *layoutManager;
 signals:
 
 public slots:

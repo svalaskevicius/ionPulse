@@ -45,7 +45,7 @@ QDir PluginLoader::_getPluginsDir()
 }
 
 
-void PluginLoader::loadPlugins(LayoutManagerImpl &layoutManager)
+void PluginLoader::loadPlugins(MainWindow &mainWindow)
 {
     QString oldPwd = QDir::currentPath();
     QDir pluginsDir = _getPluginsDir();
@@ -55,13 +55,17 @@ void PluginLoader::loadPlugins(LayoutManagerImpl &layoutManager)
     pluginsToLoad.addStaticPlugins();
     pluginsToLoad.addPluginsFromDir(pluginsDir);
 
+    foreach (BasicPlugin *plugin, pluginsToLoad) {
+        plugin->setMainWindow(&mainWindow);
+        plugin->preLoad();
+    }
+
     _loadPluginsList(pluginsToLoad);
 
     QDir::setCurrent(oldPwd);
 
     foreach (BasicPlugin *plugin, _includedPlugins.values()) {
-        plugin->setLayoutManager(&layoutManager);
-        plugin->initialize();
+        plugin->postLoad();
     }
 }
 

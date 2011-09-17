@@ -13,7 +13,7 @@
 #include <QEvent>
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
-#include <ionHeart/layout.h>
+#include <ionParticles/ionLayout/layoutapi.h>
 #include <ionHeart/plugin.h>
 
 #define EDITOR_PLUGIN_NAME "ionEditor"
@@ -57,7 +57,7 @@ class EditorWidgetBuilder
 {
 public:
     virtual ~EditorWidgetBuilder(){}
-    virtual IonHeart::PanelWidget *createEditor(QString path) = 0;
+    virtual IonLayout::PanelWidget *createEditor(QString path) = 0;
 
     virtual void registerFileType(QString fileExt, QString fileType) = 0;
     virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter) = 0;

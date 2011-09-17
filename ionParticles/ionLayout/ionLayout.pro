@@ -15,13 +15,20 @@ TARGET = ionLayout
 INCLUDEPATH +=  ../..
 
 HEADERS += \
-    plugin.h
+    plugin.h \
+    layoutmanager.h \
+    layoutapi.h
 
 SOURCES += \
-    plugin.cpp
+    plugin.cpp \
+    layoutmanager.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
+
+
 
 
 

@@ -9,16 +9,16 @@
 #ifndef LAYOUTMANAGER_H
 #define LAYOUTMANAGER_H
 
-#include "layout.h"
-#include "mainwindow.h"
+#include "layoutapi.h"
 #include <QSplitter>
 #include <QTabWidget>
 #include <QString>
 #include <QMap>
 #include <stdexcept>
+#include <QMainWindow>
 
 
-namespace IonHeart {
+namespace IonLayout {
 
 namespace Private {
 
@@ -114,7 +114,7 @@ class LayoutManagerImpl : public LayoutManager
 protected:
     LayoutZonesManager zonesManager;
 public:
-    LayoutManagerImpl(MainWindow &mainWindow);
+    LayoutManagerImpl(QMainWindow *mainWindow);
     virtual void add(PanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
 };

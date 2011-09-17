@@ -12,6 +12,7 @@
 #include <QObject>
 #include <ionHeart/plugin.h>
 #include <ionParticles/ionEditor/editorapi.h>
+#include <ionParticles/ionLayout/layoutapi.h>
 
 #define PROJECT_PLUGIN_NAME "ionProject"
 
@@ -24,18 +25,20 @@ class Plugin : public QObject, public IonHeart::BasicPlugin
     Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
-    void initialize();
+    void postLoad();
     QString getName() {
         return PROJECT_PLUGIN_NAME;
     }
     virtual QList<QString> getDependencies() {
         QList<QString> ret;
+        ret.append(LAYOUT_PLUGIN_NAME);
         ret.append(EDITOR_PLUGIN_NAME);
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
 private:
     IonEditor::EditorPlugin *editorPlugin;
+    IonLayout::LayoutManager *layoutManager;
 signals:
 
 public slots:

@@ -11,15 +11,25 @@
 #include <QtPlugin>
 #include <ionHeart/shared.h>
 
+#include "layoutmanager.h"
+
+
 namespace IonLayout {
 
 Plugin::Plugin(QObject *parent) :
-    QObject(parent)
+    QObject(parent), layoutManager(NULL)
 {
 }
 
-void Plugin::initialize()
+void Plugin::preLoad()
 {
+    Q_ASSERT(mainWindow);
+    layoutManager = new Private::LayoutManagerImpl(mainWindow);
+}
+
+LayoutManager *Plugin::getLayoutManager()
+{
+    return layoutManager;
 }
 
 }

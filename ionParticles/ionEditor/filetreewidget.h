@@ -11,14 +11,14 @@
 
 #include <QTreeView>
 #include <QFileSystemModel>
-#include <ionHeart/layout.h>
+#include <ionParticles/ionLayout/layoutapi.h>
 #include <QKeyEvent>
 
 namespace IonEditor {
 
 namespace Private {
 
-class FileTreeWidget : public QTreeView, public IonHeart::PanelWidget
+class FileTreeWidget : public QTreeView, public IonLayout::PanelWidget
 {
     Q_OBJECT
 protected:

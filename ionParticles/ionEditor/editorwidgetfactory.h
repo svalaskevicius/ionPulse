@@ -12,7 +12,7 @@
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include <QSharedPointer>
-#include <ionHeart/layout.h>
+#include <ionParticles/ionLayout/layoutapi.h>
 #include "editorapi.h"
 
 namespace IonEditor {
@@ -46,7 +46,7 @@ public:
         typeToHighlighterFactoryMap.clear();
         typeToLineNumberAreaFactoryMap.clear();
     }
-    IonHeart::PanelWidget *createEditor(QString path);
+    IonLayout::PanelWidget *createEditor(QString path);
 
     virtual void registerFileType(QString fileExt, QString fileType);
     virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter);
