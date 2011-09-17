@@ -16,7 +16,7 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 INCLUDEPATH +=  ..
-LIBS += -lAmop \
+LIBS += -lmockcpp \
             -L../ionParticles/ionProject \
             -lionProject \
             -L../ionParticles/ionPhp \

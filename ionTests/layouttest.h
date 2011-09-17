@@ -13,9 +13,10 @@
 #include <iostream>
 
 #include <ionParticles/ionLayout/layoutmanager.h>
-#include <amop/MockObject.h>
+#include <mockcpp/MockObject.h>
+#include <mockcpp/ChainingMockHelper.h>
 
-using namespace amop;
+USING_MOCKCPP_NS
 using namespace IonLayout;
 using namespace IonLayout::Private;
 
@@ -183,24 +184,13 @@ private Q_SLOTS:
     void test_zones_showPropagatesToParents() {
         ZoneDefinition def;
 
-        TMockObject<ZoneNodeBranch> parentMock;
-        parentMock.Method(&ZoneNodeBranch::show).Count(2);
-        ZoneNodeBranch *parent = (ZoneNodeBranch *)parentMock;
-
-        ZoneNodeBranch branch(parent, def);
+        ZoneNodeBranch branch;
         ZoneNodeLeaf leaf(&branch, def);
+        branch.getWidget()->hide();
 
-        branch.show();
         leaf.show();
 
-        try {
-            parentMock.Verify();
-        } catch (TCallCountException e) {
-            QString msg = QString("call count failed - expected: %1, actuall: %2")
-                            .arg(e.GetExpect())
-                            .arg(e.GetActual());
-            QFAIL(msg.toAscii().constData());
-        }
+        QCOMPARE(branch.getWidget()->isVisible(), 1);
     }
 
 };
