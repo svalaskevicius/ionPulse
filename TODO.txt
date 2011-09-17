@@ -1,5 +1,8 @@
 === parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
 
+=== structure: addParent and plugin management: refactor goal: remove the requirement of if/switch at the plugin client side ===
+
+
 === project holder ===
 	initially just one project at any time.
 	save & load config.xml to paths and settings
