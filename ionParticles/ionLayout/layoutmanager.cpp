@@ -64,17 +64,16 @@ const ZoneDefinition & ZoneNode::getDefinition() const
 ///////////
 
 
-
 ZoneNodeBranch::ZoneNodeBranch()
     : ZoneNode(NULL, ZoneDefinition()), childrenResized(false)
 {
-    uiSplitter = new QSplitter();
+    uiSplitter = _createUiSplitter();
 }
 
 ZoneNodeBranch::ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef)
     : ZoneNode(parent, zoneDef), childrenResized(false)
 {
-    uiSplitter = new QSplitter();
+    uiSplitter = _createUiSplitter();
     uiSplitter->setOrientation(zoneDef.orientation);
 }
 
@@ -124,12 +123,11 @@ ZoneNodeLeaf *ZoneNodeBranch::getZoneLeaf() {
     return getSubZone(empty)->getZoneLeaf();
 }
 
-void ZoneNodeBranch::resizeEvent ( QResizeEvent * event ) {
+void ZoneNodeBranch::splitterResized ( ) {
     if (!childrenResized) {
         resizeChildren();
         childrenResized = true;
     }
-    //uiSplitter.resizeEvent(event);
 }
 void ZoneNodeBranch::resizeChildren() {
     QVector<int> vSizes(uiSplitter->children().size());
@@ -142,6 +140,13 @@ void ZoneNodeBranch::resizeChildren() {
     }
     uiSplitter->setSizes(vSizes.toList());
 }
+UiSplitter *ZoneNodeBranch::_createUiSplitter()
+{
+    UiSplitter *uiSplitter = new UiSplitter();
+    connect(uiSplitter, SIGNAL(splitterResized()), this, SLOT(splitterResized()));
+    return uiSplitter;
+}
+
 
 
 

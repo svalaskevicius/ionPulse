@@ -22,6 +22,19 @@ namespace IonLayout {
 
 namespace Private {
 
+class UiSplitter : public QSplitter {
+    Q_OBJECT
+public:
+signals:
+    void splitterResized();
+protected:
+    virtual void resizeEvent ( QResizeEvent * event ) {
+        QSplitter::resizeEvent(event);
+        emit splitterResized();
+    }
+};
+
+
 class ZoneNodeLeaf;
 class ZoneNodeBranch;
 
@@ -43,15 +56,16 @@ public:
     const ZoneDefinition & getDefinition() const;
 };
 
-class ZoneNodeBranch : public ZoneNode
+class ZoneNodeBranch : public QObject, public ZoneNode
 {
+   Q_OBJECT
 private:
-    QSplitter *uiSplitter;
+    UiSplitter *uiSplitter;
     bool childrenResized;
+    UiSplitter *_createUiSplitter();
 protected:
     typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
-    virtual void resizeEvent ( QResizeEvent * event );
 public:
     ZoneNodeBranch();
     ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef);
@@ -63,6 +77,8 @@ public:
     int indexOf(ZoneNode *child);
     virtual void show();
     void resizeChildren();
+protected slots:
+    void splitterResized ( );
 };
 
 class ZoneNodeLeaf : public ZoneNode
