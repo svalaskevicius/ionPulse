@@ -60,8 +60,6 @@
 
 === dynamic class rewrite rules for type hinting ===
 
-=== match parentheses ===
-    == animate ==
 
 
 
