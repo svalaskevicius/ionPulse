@@ -841,12 +841,12 @@ inline_char_handler:
                 case '$':
                     {
                         char nc = yyinput(yyscanner);
+                        unput(nc);
                         if ( (nc == '{')
                              || (nc == '_')
                              || ((nc >= 'a') && (nc <= 'z'))
                              || ((nc >= 'A') && (nc <= 'Z'))
                             ) {
-                            unput(nc);
                             unput(c);
                             break;
                         }
@@ -961,28 +961,26 @@ printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().const
                 case '$':
                     {
                         char nc = yyinput(yyscanner);
+                        unput(nc);
                         if ( (nc == '{')
                              || (nc == '_')
                              || ((nc >= 'a') && (nc <= 'z'))
                              || ((nc >= 'A') && (nc <= 'Z'))
                             ) {
-                            unput(nc);
                             unput(c);
                             break;
                         }
-                        unput(nc);
                         result += c;
                         continue;
                     }
                 case '{':
                     {
                         char nc = yyinput(yyscanner);
+                        unput(nc);
                         if ( (nc == '$') ) {
-                            unput(nc);
                             unput(c);
                             break;
                         }
-                        unput(nc);
                     }
                     /* fall through */
                 default:
