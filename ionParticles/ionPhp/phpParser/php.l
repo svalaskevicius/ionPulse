@@ -877,75 +877,57 @@ inline_char_handler:
         BEGIN(ST_DOUBLE_QUOTES);
         return '"';
 }
-    /*
-                <ST_IN_SCRIPTING>b?"<<<"{TABS_AND_SPACES}({LABEL}|([']{LABEL}['])|(["]{LABEL}["])){NEWLINE} {
-                        char *s;
-                        int bprefix = (yytext[0] != '<') ? 1 : 0;
 
-                        // save old heredoc label
-                        Z_STRVAL_P(zendlval) = CG(heredoc);
-                        Z_STRLEN_P(zendlval) = CG(heredoc_len);
+<ST_IN_SCRIPTING>"<<<"{TABS_AND_SPACES}({LABEL}|([']{LABEL}['])|(["]{LABEL}["])){NEWLINE} {
+printf("heredox starting with %s\n", yytext);
+        char *s = yytext + 3;
+//        while ((*s == ' ') || (*s == '\t')) {
+//            s++;
+//        }
 
-                        CG(zend_lineno)++;
-                        CG(heredoc_len) = yyleng-bprefix-3-1-(yytext[yyleng-2]=='\r'?1:0);
-                        s = yytext+bprefix+3;
-                        while ((*s == ' ') || (*s == '\t')) {
-                                s++;
-                                CG(heredoc_len)--;
-                        }
+//        if (*s == '\'') {
+//            s++;
+//            BEGIN(ST_NOWDOC);
+//        } else {
+//            if (*s == '"') {
+//                s++;
+//            }
+//            BEGIN(ST_HEREDOC);
+//        }
+        // rm next line
+                    BEGIN(ST_HEREDOC);
 
-                        if (*s == '\'') {
-                                s++;
-                                CG(heredoc_len) -= 2;
 
-                                BEGIN(ST_NOWDOC);
-                        } else {
-                                if (*s == '"') {
-                                        s++;
-                                        CG(heredoc_len) -= 2;
-                                }
-
-                                BEGIN(ST_HEREDOC);
-                        }
-
-                        CG(heredoc) = estrndup(s, CG(heredoc_len));
-
-                        // Check for ending label on the next line
-                        if (CG(heredoc_len) < YYLIMIT - YYCURSOR && !memcmp(YYCURSOR, s, CG(heredoc_len))) {
-                                YYCTYPE *end = YYCURSOR + CG(heredoc_len);
-
-                                if (*end == ';') {
-                                        end++;
-                                }
-
-                                if (*end == '\n' || *end == '\r') {
-                                        BEGIN(ST_END_HEREDOC);
-                                }
-                        }
-
-                        return T_START_HEREDOC;
-                }
-    */
+        yyextra->currentHeredocLabel = "";
+        int limit = 255;
+        do {
+            switch(*s) {
+                case '"':
+                    // fall through
+                case '\'':
+                    s++;
+                    // fall through
+                case '\n':
+                    // fall through
+                case '\t':
+                    // fall through
+                case ' ':
+                    break;
+                default:
+                    yyextra->currentHeredocLabel += *s;
+                    s++;
+                    continue;
+            }
+            break;
+        } while (--limit);
+printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().constData());
+        return T_START_HEREDOC;
+}
 
 <ST_IN_SCRIPTING>[`] {
         BEGIN(ST_BACKQUOTE);
         return '`';
 }
-
-    /*
-<ST_END_HEREDOC>{ANY_CHAR} {
-        YYCURSOR += CG(heredoc_len) - 1;
-        yyleng = CG(heredoc_len);
-
-        Z_STRVAL_P(zendlval) = CG(heredoc);
-        Z_STRLEN_P(zendlval) = CG(heredoc_len);
-        CG(heredoc) = NULL;
-        CG(heredoc_len) = 0;
-        BEGIN(ST_IN_SCRIPTING);
-        return T_END_HEREDOC;
-}
-    */
-
 
 <ST_DOUBLE_QUOTES,ST_BACKQUOTE,ST_HEREDOC>"{$" {
         yy_push_state(ST_IN_SCRIPTING, yyscanner);
@@ -1073,80 +1055,101 @@ inline_char_handler:
             *astNode = ASTNode::create("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
             return T_ENCAPSED_AND_WHITESPACE;
 }
-    /*
 
-        <ST_HEREDOC>{ANY_CHAR} {
-                int newline = 0;
+<ST_HEREDOC>.|[\n\r] {
+        int newline = 0;
+        QString result = "";
 
-                if (YYCURSOR > YYLIMIT) {
-                        return 0;
+        char c = yytext[0];
+        while ( c ) {
+            printf("heredoc char: %c, %i\n", c, c);
+                switch (c) {
+                        case '\r':
+                                {
+                                    char nc = yyinput(yyscanner);
+                                    if (nc != '\n') {
+                                        unput(nc);
+                                    }
+                                }
+                                // fall through
+                        case '\n':
+                                // Check for ending label on the next line
+                                {
+                                    bool matching = true;
+                                    QString reading = "";
+                                    int idx=0, idxLimit = yyextra->currentHeredocLabel.length();
+                                    while (matching && (idx < idxLimit)) {
+                                        char currentChar = yyinput(yyscanner);
+                                        reading += currentChar;
+                                        if (yyextra->currentHeredocLabel[idx] != currentChar) {
+                                            matching = false;
+                                        }
+                                        idx++;
+                                    }
+                                    if (matching && idx == idxLimit) {
+                                        // label matched, now check ';'
+                                        char currentChar;
+                                        do {
+                                            currentChar = yyinput(yyscanner);
+                                            reading += currentChar;
+                                        } while ((currentChar == ' ') || (currentChar == '\t'));
+                                        if (currentChar == ';') {
+                                            unput(currentChar); // give ';' back to stream
+                                            BEGIN(ST_IN_SCRIPTING);
+printf("heredox done!\n");
+                                            break;
+                                        }
+                                    }
+                                    // matching failed.. restore string
+                                    for (idx = reading.length(); idx>0;idx--) {
+                                        char currentChar = reading[idx-1].toAscii();
+                                        unput(currentChar);
+                                    }
+
+                                }
+                                c = yyinput(yyscanner);
+                                continue;
+                        case '$':
+                            {
+                                char nc = yyinput(yyscanner);
+                                if ( (nc == '{')
+                                     || (nc == '_')
+                                     || ((nc >= 'a') && (nc <= 'z'))
+                                     || ((nc >= 'A') && (nc <= 'Z'))
+                                    ) {
+                                    unput(nc);
+                                    unput(c);
+                                    break;
+                                }
+                                unput(nc);
+                                result += c;
+                                c = yyinput(yyscanner);
+                                continue;
+                            }
+                        case '{':
+                            {
+                                char nc = yyinput(yyscanner);
+                                if ( (nc == '$') ) {
+                                    unput(nc);
+                                    unput(c);
+                                    break;
+                                }
+                                unput(nc);
+                            }
+                            /* fall through */
+                        default:
+                            result += c;
+                            c = yyinput(yyscanner);
+                            continue;
                 }
-
-                YYCURSOR--;
-
-                while (YYCURSOR < YYLIMIT) {
-                        switch (*YYCURSOR++) {
-                                case '\r':
-                                        if (*YYCURSOR == '\n') {
-                                                YYCURSOR++;
-                                        }
-                                        // fall through
-                                case '\n':
-                                        // Check for ending label on the next line
-                                        if (IS_LABEL_START(*YYCURSOR) && CG(heredoc_len) < YYLIMIT - YYCURSOR && !memcmp(YYCURSOR, CG(heredoc), CG(heredoc_len))) {
-                                                YYCTYPE *end = YYCURSOR + CG(heredoc_len);
-
-                                                if (*end == ';') {
-                                                        end++;
-                                                }
-
-                                                if (*end == '\n' || *end == '\r') {
-                                                        // newline before label will be subtracted from returned text, but
-                                                        // yyleng/yytext will include it, for zend_highlight/strip, tokenizer, etc.
-                                                        if (YYCURSOR[-2] == '\r' && YYCURSOR[-1] == '\n') {
-                                                                newline = 2; // Windows newline
-                                                        } else {
-                                                                newline = 1;
-                                                        }
-
-                                                        CG(increment_lineno) = 1; // For newline before label
-                                                        BEGIN(ST_END_HEREDOC);
-
-                                                        goto heredoc_scan_done;
-                                                }
-                                        }
-                                        continue;
-                                case '$':
-                                        if (IS_LABEL_START(*YYCURSOR) || *YYCURSOR == '{') {
-                                                break;
-                                        }
-                                        continue;
-                                case '{':
-                                        if (*YYCURSOR == '$') {
-                                                break;
-                                        }
-                                        continue;
-                                case '\\':
-                                        if (YYCURSOR < YYLIMIT && *YYCURSOR != '\n' && *YYCURSOR != '\r') {
-                                                YYCURSOR++;
-                                        }
-                                        // fall through
-                                default:
-                                        continue;
-                        }
-
-                        YYCURSOR--;
-                        break;
-                }
-
-        heredoc_scan_done:
-                yyleng = YYCURSOR - SCNG(yy_text);
-
-                zend_scan_escape_string(zendlval, yytext, yyleng - newline, 0 TSRMLS_CC);
-                return T_ENCAPSED_AND_WHITESPACE;
+                break;
         }
+printf("heredox result: %s\n", result.toAscii().constData());
+        *astNode = ASTNode::create("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+        return T_ENCAPSED_AND_WHITESPACE;
+}
 
-
+    /*
         <ST_NOWDOC>{ANY_CHAR} {
                 int newline = 0;
 

@@ -353,7 +353,17 @@ private Q_SLOTS:
         "<?php $a = \"\\ntest $moo more text\n\\n {$boo}${buka}s${aa[2]}tring\" ;",
         "top_statement_list(assignment(T_VARIABLE [text:$a]; doubleQuotes(encaps_list(T_ENCAPSED_AND_WHITESPACE [text:\\ntest ]; T_VARIABLE [text:$moo]; T_ENCAPSED_AND_WHITESPACE [text: more text\n\\n ]; T_VARIABLE [text:$boo]; T_STRING_VARNAME [text:buka]; T_ENCAPSED_AND_WHITESPACE [text:s]; offset(T_STRING_VARNAME [text:aa]; T_LNUMBER [text:2]); T_ENCAPSED_AND_WHITESPACE [text:tring]))))"
     ); }
+    void test_doubleQuotesWithNonVars() { TEST_PHP_PARSER(
+        "<?php $a = \"test $12 more text\" ;",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_CONSTANT_ENCAPSED_STRING [text:test $12 more text]))"
+    ); }
+    void test_hereDoc() { TEST_PHP_PARSER(
+        "<?php $a = <<<MYDOC\ntext\nMYDOC; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
+    ); }
     /*
+      heredoc
+      nowdoc
         |    internal_functions { $$ = $1; }
         |    scalar    	    	{ $$ = $1; }
         | statements

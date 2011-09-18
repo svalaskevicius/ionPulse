@@ -32,6 +32,7 @@ public:
     pASTNode __result;
     void __error(phpParser *myself, const char *error);
     int  __lex(pASTNode *astNode, yyscan_t yyscanner);
+    QString currentHeredocLabel;
 };
 
 }

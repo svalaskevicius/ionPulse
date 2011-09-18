@@ -116,7 +116,6 @@
 %token T_CLOSE_TAG
 %token T_WHITESPACE
 %token T_START_HEREDOC
-%token T_END_HEREDOC
 %token T_DOLLAR_OPEN_CURLY_BRACES
 %token T_CURLY_OPEN
 %token T_DOUBLE_COLON
@@ -820,8 +819,8 @@ common_scalar:
         |    T_METHOD_C    	    	    { $$ = $1; }
         |    T_FUNC_C    	    	    { $$ = $1; }
         |    T_NS_C    	    	    	{ $$ = $1; }
-        |    T_START_HEREDOC T_ENCAPSED_AND_WHITESPACE T_END_HEREDOC
-        |    T_START_HEREDOC T_END_HEREDOC
+        |    T_START_HEREDOC T_ENCAPSED_AND_WHITESPACE { $$ = $2; }
+        //|    T_START_HEREDOC T_END_HEREDOC
 ;
 
 
@@ -848,7 +847,7 @@ scalar:
         |    T_NS_SEPARATOR namespace_name
         |    common_scalar    	    { $$ = $1; }
         |    '"' encaps_list '"'     { $$ = ASTNode::create("doubleQuotes")->addChild($2); }
-        |    T_START_HEREDOC encaps_list T_END_HEREDOC
+        //|    T_START_HEREDOC encaps_list T_END_HEREDOC
 ;
 
 
