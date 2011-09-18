@@ -1,7 +1,8 @@
 === parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
 
 === structure: addParent and plugin management: refactor goal: remove the requirement of if/switch at the plugin client side ===
-
+	one solution:
+		use registry from the main app, which would be set to BasicPlugins, so that later code, in specific plugins could just retrieve full registry and select by name
 
 === project holder ===
 	initially just one project at any time.
