@@ -119,7 +119,7 @@
 %token T_END_HEREDOC
 %token T_DOLLAR_OPEN_CURLY_BRACES
 %token T_CURLY_OPEN
-%token T_PAAMAYIM_NEKUDOTAYIM
+%token T_DOUBLE_COLON
 %token T_NAMESPACE
 %token T_NS_C
 %token T_DIR
@@ -734,16 +734,16 @@ function_call:
         |    T_NS_SEPARATOR namespace_name '('
                                 function_call_parameter_list
                                 ')'
-        |    class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING '('
+        |    class_name T_DOUBLE_COLON T_STRING '('
                         function_call_parameter_list
                         ')'
-        |    class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects '('
+        |    class_name T_DOUBLE_COLON variable_without_objects '('
                         function_call_parameter_list
                         ')'
-        |    variable_class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING '('
+        |    variable_class_name T_DOUBLE_COLON T_STRING '('
                         function_call_parameter_list
                         ')'
-        |    variable_class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects '('
+        |    variable_class_name T_DOUBLE_COLON variable_without_objects '('
                         function_call_parameter_list
                         ')'
         |    variable_without_objects  '('
@@ -837,7 +837,7 @@ static_scalar: /* compile-time evaluated scalars */
 ;
 
 static_class_constant:
-                class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING
+                class_name T_DOUBLE_COLON T_STRING
 ;
 
 scalar:
@@ -918,8 +918,8 @@ variable_without_objects:
 ;
 
 static_member:
-                class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects
-        |    variable_class_name T_PAAMAYIM_NEKUDOTAYIM variable_without_objects
+                class_name T_DOUBLE_COLON variable_without_objects
+        |    variable_class_name T_DOUBLE_COLON variable_without_objects
 
 ;
 
@@ -1109,8 +1109,8 @@ isset_variables:
 ;
 
 class_constant:
-                class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING
-        |    variable_class_name T_PAAMAYIM_NEKUDOTAYIM T_STRING
+                class_name T_DOUBLE_COLON T_STRING
+        |    variable_class_name T_DOUBLE_COLON T_STRING
 ;
 
 %%

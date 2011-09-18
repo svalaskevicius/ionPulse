@@ -214,7 +214,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING>"::" {
-        return T_PAAMAYIM_NEKUDOTAYIM;
+        return T_DOUBLE_COLON;
 }
 
 <ST_IN_SCRIPTING>"\\" {
