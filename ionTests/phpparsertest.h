@@ -30,9 +30,10 @@ do {\
     QCOMPARE_3( \
         ret->toString(), \
         QString(ASTSTR), \
-        PRINT(ret->toMlString()) \
+        PRINT(ret->toString()) \
     ); \
 }
+
 
 class PhpParserTest : public QObject
 {
@@ -350,8 +351,31 @@ private Q_SLOTS:
         "top_statement_list(assignment(T_VARIABLE [text:$a]; T_CONSTANT_ENCAPSED_STRING [text:\\rtest string\\n]))"
     ); }
     void test_doubleQuotesWithVars() { TEST_PHP_PARSER(
-        "<?php $a = \"\\ntest $moo more text\n\\n {$boo}${buka}s${aa[2]}tring\" ;",
-        "top_statement_list(assignment(T_VARIABLE [text:$a]; doubleQuotes(encaps_list(T_ENCAPSED_AND_WHITESPACE [text:\\ntest ]; T_VARIABLE [text:$moo]; T_ENCAPSED_AND_WHITESPACE [text: more text\n\\n ]; T_VARIABLE [text:$boo]; T_STRING_VARNAME [text:buka]; T_ENCAPSED_AND_WHITESPACE [text:s]; offset(T_STRING_VARNAME [text:aa]; T_LNUMBER [text:2]); T_ENCAPSED_AND_WHITESPACE [text:tring]))))"
+        "<?php $a = \"\\ntest $moo more text\n\\n {$boo}${buka}s${aa[2]} {$o->prop}tring\" ;",
+        "top_statement_list("
+            "assignment("
+                "T_VARIABLE [text:$a]; "
+                "doubleQuotes("
+                    "encaps_list("
+                        "T_ENCAPSED_AND_WHITESPACE [text:\\ntest ]; "
+                        "T_VARIABLE [text:$moo]; "
+                        "T_ENCAPSED_AND_WHITESPACE [text: more text\n\\n ]; "
+                        "T_VARIABLE [text:$boo]; "
+                        "T_STRING_VARNAME [text:buka]; "
+                        "T_ENCAPSED_AND_WHITESPACE [text:s]; "
+                        "offset(T_STRING_VARNAME [text:aa]; T_LNUMBER [text:2]); "
+                        "T_ENCAPSED_AND_WHITESPACE [text: ]; "
+                        "T_OBJECT_OPERATOR("
+                            "T_VARIABLE [text:$o]; "
+                            "T_STRING [text:prop]; "
+                            "method_or_not; "
+                            "variable_properties"
+                        "); "
+                        "T_ENCAPSED_AND_WHITESPACE [text:tring]"
+                    ")"
+                ")"
+            ")"
+        ")"
     ); }
     void test_doubleQuotesWithNonVars() { TEST_PHP_PARSER(
         "<?php $a = \"test $12 more text\" ;",
@@ -360,6 +384,29 @@ private Q_SLOTS:
     void test_hereDoc() { TEST_PHP_PARSER(
         "<?php $a = <<<MYDOC\ntext\nMYDOC; ",
         "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
+    ); }
+    void test_hereDocWithVars() { TEST_PHP_PARSER(
+        "<?php $a = <<<MYDOC\ntex$var1 {$var2} {$var3[$i]} {$var4->prop} ${var5[$i]}t\nMYDOC; ",
+        "top_statement_list("
+            "assignment("
+                "T_VARIABLE [text:$a]; "
+                "hereDoc("
+                    "encaps_list("
+                        "T_ENCAPSED_AND_WHITESPACE [text:tex]; "
+                        "T_VARIABLE [text:$var1]; "
+                        "T_ENCAPSED_AND_WHITESPACE [text: ]; "
+                        "T_VARIABLE [text:$var2]; "
+                        "T_ENCAPSED_AND_WHITESPACE [text: ]; "
+                        "offset(T_VARIABLE [text:$var3]; T_VARIABLE [text:$i]); "
+                        "T_ENCAPSED_AND_WHITESPACE [text: ]; "
+                        "T_OBJECT_OPERATOR(T_VARIABLE [text:$var4]; T_STRING [text:prop]; method_or_not; variable_properties); "
+                        "T_ENCAPSED_AND_WHITESPACE [text: ]; "
+                        "offset(T_STRING_VARNAME [text:var5]; T_VARIABLE [text:$i]); "
+                        "T_ENCAPSED_AND_WHITESPACE [text:t]"
+                    ")"
+                ")"
+            ")"
+        ")"
     ); }
     /*
       heredoc

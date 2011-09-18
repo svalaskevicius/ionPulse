@@ -847,7 +847,7 @@ scalar:
         |    T_NS_SEPARATOR namespace_name
         |    common_scalar    	    { $$ = $1; }
         |    '"' encaps_list '"'     { $$ = ASTNode::create("doubleQuotes")->addChild($2); }
-        //|    T_START_HEREDOC encaps_list T_END_HEREDOC
+        |    T_START_HEREDOC encaps_list { $$ = ASTNode::create("hereDoc")->addChild($2); }
 ;
 
 
@@ -890,25 +890,26 @@ rw_variable:
 variable:
                 base_variable_with_function_calls T_OBJECT_OPERATOR
                         object_property  method_or_not variable_properties
-
+                { $$ = ASTNode::create("T_OBJECT_OPERATOR")->addChild($1)->addChild($3)->addChild($4)->addChild($5); }
         |    base_variable_with_function_calls
 ;
 
 variable_properties:
-                variable_properties variable_property
-        |    /* empty */
+                variable_properties variable_property {$1->addChild($2);}
+        |    /* empty */ { $$ = ASTNode::create("variable_properties"); }
 ;
 
 
 variable_property:
                 T_OBJECT_OPERATOR object_property  method_or_not
+                {$$ = ASTNode::create("T_OBJECT_OPERATOR")->addChild($2)->addChild($3);}
 ;
 
 method_or_not:
                 '('
                                 function_call_parameter_list ')'
-
-        |    /* empty */
+                         {$$ = ASTNode::create("method_or_not")->addChild($2);}
+        |    /* empty */ {$$ = ASTNode::create("method_or_not");}
 ;
 
 variable_without_objects:
@@ -939,20 +940,20 @@ base_variable:
 ;
 
 reference_variable:
-                reference_variable '[' dim_offset ']'
-        |    reference_variable '{' expr '}'
+                reference_variable '[' dim_offset ']' { $$ = ASTNode::create("offset")->addChild($1)->addChild($3); }
+        |    reference_variable '{' expr '}'          { $$ = ASTNode::create("str_offset")->addChild($1)->addChild($3); }
         |    compound_variable
 ;
 
 
 compound_variable:
-                T_VARIABLE    	    { $$ = $1; }
+                T_VARIABLE
         |    '$' '{' expr '}'    { $$ = $3; }
 ;
 
 dim_offset:
                 /* empty */
-        |    expr    	    { $$ = $1; }
+        |    expr
 ;
 
 
@@ -968,7 +969,7 @@ object_dim_list:
 ;
 
 variable_name:
-                T_STRING    	{ $$ = $1; }
+                T_STRING
         |    '{' expr '}'    { $$ = $2; }
 ;
 
@@ -1078,7 +1079,7 @@ encaps_list:
 encaps_var:
                 T_VARIABLE
         |    T_VARIABLE '['  encaps_var_offset ']' {$$ = ASTNode::create("offset")->addChild($1)->addChild($3);}
-        |    T_VARIABLE T_OBJECT_OPERATOR T_STRING {$$ = ASTNode::create("static")->addChild($1)->addChild($3);}
+        |    T_VARIABLE T_OBJECT_OPERATOR T_STRING {$$ = ASTNode::create("T_OBJECT_OPERATOR")->addChild($1)->addChild($3);}
         |    T_DOLLAR_OPEN_CURLY_BRACES expr '}'   {$$ = $2;}
         |    T_DOLLAR_OPEN_CURLY_BRACES T_STRING_VARNAME '[' expr ']' '}' {$$ = ASTNode::create("offset")->addChild($2)->addChild($4);}
         |    T_CURLY_OPEN variable '}'             { $$ = $2; }
