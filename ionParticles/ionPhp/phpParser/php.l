@@ -599,30 +599,21 @@ inline_char_handler:
         char c = yyinput(yyscanner);
         while (c) {
             if ('<' == c) {
-                char nc = yyinput(yyscanner);
-                switch (nc) {
+                switch (lookupChar(yyscanner)) {
                     case 0:
                         c = 0;
                         break;
                     case '?':
                             if (0) {
                                 // allow shorttags?
-                                unput(nc);
                                 unput(c);
                                 break;
                             }
                             {
-                                QString next4 = lookupChars(4, yyscanner);
-                                if (next4.startsWith("php")
-                                    && (
-                                        (' ' == next4[3]) || ('\t' == next4[3]) || ('\r' == next4[3]) || ('\n' == next4[3])
-                                        )
-                                ) {
-                                    unput(nc);
+                                if ( matchesRegexp(lookupChars(5, yyscanner), "^\\?php\\s$") ) {
                                     unput(c);
                                     break;
                                 }
-                                unput(nc);
                                 result += c;
                                 c = yyinput(yyscanner);
                                 continue;
@@ -630,11 +621,9 @@ inline_char_handler:
                         case '%':
                                 if (0) {
                                 //  allow asp tags?
-                                    unput(nc);
                                     unput(c);
                                         break;
                                 }
-                                unput(nc);
                                 result += c;
                                 c = yyinput(yyscanner);
                                 continue;
@@ -642,11 +631,9 @@ inline_char_handler:
                         case 'S':
                                 /* Probably NOT an opening PHP <script> tag, so don't end the HTML chunk yet
                                  * If it is, the PHP <script> tag rule checks for any HTML scanned before it */
-                                unput(nc);
                                 unput(c);
                                 break;
                         default:
-                                unput(nc);
                                 result += c;
                                 c = yyinput(yyscanner);
                                 continue;
@@ -838,9 +825,7 @@ inline_char_handler:
                     }
                 case '{':
                     {
-                        char nc = yyinput(yyscanner);
-                        if ( (nc == '$') ) {
-                            unput(nc);
+                        if ( lookupChar(yyscanner) == '$') {
                             unput(c);
                             break;
                         }
