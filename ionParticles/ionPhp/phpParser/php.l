@@ -25,6 +25,7 @@ QString lookupChars(int numberOfChars, yyscan_t yyscanner);
 bool matchesRegexp(QString input, QString regex);
 QString retrieveChars(int numberOfChars, yyscan_t yyscanner);
 void putCharsBack(QString chars, yyscan_t yyscanner);
+bool isStartOfLabel(yyscan_t yyscanner);
 %}
 LNUM	[0-9]+
 DNUM	([0-9]*"."[0-9]+)|([0-9]+"."[0-9]*)
@@ -816,7 +817,7 @@ inline_char_handler:
                     continue;
                 case '$':
                     {
-                        if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
+                        if ( isStartOfLabel(yyscanner) ) {
                             unput(c);
                             break;
                         }
@@ -928,7 +929,7 @@ printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().const
                     continue;
                 case '$':
                     {
-                        if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
+                        if ( isStartOfLabel(yyscanner) ) {
                             unput(c);
                             break;
                         }
@@ -978,7 +979,7 @@ printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().const
                         continue;
                     case '$':
                         {
-                            if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
+                            if ( isStartOfLabel(yyscanner) ) {
                                 unput(c);
                                 break;
                             }
@@ -1037,7 +1038,7 @@ printf("heredox done!\n");
                                 continue;
                         case '$':
                             {
-                                if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
+                                if ( isStartOfLabel(yyscanner) ) {
                                     unput(c);
                                     break;
                                 }
@@ -1162,6 +1163,11 @@ bool matchesRegexp(QString input, QString regex)
 {
     QRegExp r(regex);
     return r.exactMatch(input);
+}
+bool isStartOfLabel(yyscan_t yyscanner)
+{
+    static QRegExp r("^[a-zA-Z\\{_]$");
+    return r.exactMatch(lookupChars(1, yyscanner));
 }
 
 namespace IonPhp {
