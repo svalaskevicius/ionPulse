@@ -408,9 +408,28 @@ private Q_SLOTS:
             ")"
         ")"
     ); }
+    void test_hereDocWithQuoteLabels() { TEST_PHP_PARSER(
+        "<?php $a = <<<\"MYDOC\"\ntext\nMYDOC; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
+    ); }
+    void test_nowDoc() { TEST_PHP_PARSER(
+        "<?php $a = <<<'MYDOC'\ntext$nonvar w\nMYDOC; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text$nonvar w]))"
+    ); }
+    void test_singleLineComment() { TEST_PHP_PARSER(
+        "<?php //$a = <<<'MYDOC'\n$s=1; // asd \n // //..  ",
+        "top_statement_list(assignment(T_VARIABLE [text:$s]; T_LNUMBER [text:1]))"
+    ); }
+    void test_singleLineHashComment() { TEST_PHP_PARSER(
+        "<?php #$a = <<<'MYDOC'\n$s=1; # asd \n # /..  ",
+        "top_statement_list(assignment(T_VARIABLE [text:$s]; T_LNUMBER [text:1]))"
+    ); }
+    void test_multiLineComment() { TEST_PHP_PARSER(
+        "<?php /* $a = <<<'MYDOC'\n$s=1; # asd \n # /.. */ $b=2; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$b]; T_LNUMBER [text:2]))"
+    ); }
+
     /*
-      heredoc
-      nowdoc
         |    internal_functions { $$ = $1; }
         |    scalar    	    	{ $$ = $1; }
         | statements
