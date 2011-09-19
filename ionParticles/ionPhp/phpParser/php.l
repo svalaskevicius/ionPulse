@@ -20,6 +20,11 @@
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
 #define YY_EXTRA_TYPE IonPhp::phpParser*
 
+char lookupChar(yyscan_t yyscanner);
+QString lookupChars(int numberOfChars, yyscan_t yyscanner);
+bool matchesRegexp(QString input, QString regex);
+QString retrieveChars(int numberOfChars, yyscan_t yyscanner);
+void putCharsBack(QString chars, yyscan_t yyscanner);
 %}
 LNUM	[0-9]+
 DNUM	([0-9]*"."[0-9]+)|([0-9]+"."[0-9]*)
@@ -607,34 +612,20 @@ inline_char_handler:
                                 break;
                             }
                             {
-                            char arr[4] = {0};
-                            if ( (arr[0] = yyinput(yyscanner)) ) {
-                                //TODO: optimize - check if p, then, h, then p
-                                if ( (arr[1] = yyinput(yyscanner)) ) {
-                                    if ( (arr[2] = yyinput(yyscanner)) ) {
-                                        if ( (arr[3] = yyinput(yyscanner)) ) {
-                                            unput(arr[3]);
-                                        }
-                                        unput(arr[2]);
-                                    }
-                                    unput(arr[1]);
-                                }
-                                unput(arr[0]);
-                            }
-                            if (
-                                    !strncasecmp(arr, "php", 3)
+                                QString next4 = lookupChars(4, yyscanner);
+                                if (next4.startsWith("php")
                                     && (
-                                        (' ' == arr[3]) || ('\t' == arr[3]) || ('\r' == arr[3]) || ('\n' == arr[3])
+                                        (' ' == next4[3]) || ('\t' == next4[3]) || ('\r' == next4[3]) || ('\n' == next4[3])
                                         )
-                            ) {
+                                ) {
+                                    unput(nc);
+                                    unput(c);
+                                    break;
+                                }
                                 unput(nc);
-                                unput(c);
-                                break;
-                            }
-                            unput(nc);
-                            result += c;
-                            c = yyinput(yyscanner);
-                            continue;
+                                result += c;
+                                c = yyinput(yyscanner);
+                                continue;
                             }
                         case '%':
                                 if (0) {
@@ -741,9 +732,7 @@ inline_char_handler:
                     /* fall through */
             case '?':
                     {
-                        char nc = yyinput(yyscanner);
-                        unput(nc);
-                        if (nc == '>') {
+                        if (lookupChar(yyscanner) == '>') {
                                 unput(c);
                                 stop = true;
                                 break;
@@ -840,13 +829,7 @@ inline_char_handler:
                     continue;
                 case '$':
                     {
-                        char nc = yyinput(yyscanner);
-                        unput(nc);
-                        if ( (nc == '{')
-                             || (nc == '_')
-                             || ((nc >= 'a') && (nc <= 'z'))
-                             || ((nc >= 'A') && (nc <= 'Z'))
-                            ) {
+                        if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
                             unput(c);
                             break;
                         }
@@ -960,13 +943,7 @@ printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().const
                     continue;
                 case '$':
                     {
-                        char nc = yyinput(yyscanner);
-                        unput(nc);
-                        if ( (nc == '{')
-                             || (nc == '_')
-                             || ((nc >= 'a') && (nc <= 'z'))
-                             || ((nc >= 'A') && (nc <= 'Z'))
-                            ) {
+                        if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
                             unput(c);
                             break;
                         }
@@ -975,9 +952,7 @@ printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().const
                     }
                 case '{':
                     {
-                        char nc = yyinput(yyscanner);
-                        unput(nc);
-                        if ( (nc == '$') ) {
+                        if ( (lookupChar(yyscanner) == '$') ) {
                             unput(c);
                             break;
                         }
@@ -1018,29 +993,19 @@ printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().const
                         continue;
                     case '$':
                         {
-                            char nc = yyinput(yyscanner);
-                            if ( (nc == '{')
-                                 || (nc == '_')
-                                 || ((nc >= 'a') && (nc <= 'z'))
-                                 || ((nc >= 'A') && (nc <= 'Z'))
-                                ) {
-                                unput(nc);
+                            if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
                                 unput(c);
                                 break;
                             }
-                            unput(nc);
                             result += c;
                             continue;
                         }
                     case '{':
                         {
-                            char nc = yyinput(yyscanner);
-                            if ( (nc == '$') ) {
-                                unput(nc);
+                            if ( lookupChar(yyscanner) == '$')  {
                                 unput(c);
                                 break;
                             }
-                            unput(nc);
                         }
                         /* fall through */
                     default:
@@ -1073,66 +1038,34 @@ printf("heredox start label: %s\n", yyextra->currentHeredocLabel.toAscii().const
                         case '\n':
                                 // Check for ending label on the next line
                                 {
-                                    bool matching = true;
-                                    QString reading = "";
-                                    int idx=0, idxLimit = yyextra->currentHeredocLabel.length();
-                                    while (matching && (idx < idxLimit)) {
-                                        char currentChar = yyinput(yyscanner);
-                                        reading += currentChar;
-                                        if (yyextra->currentHeredocLabel[idx] != currentChar) {
-                                            matching = false;
-                                        }
-                                        idx++;
-                                    }
-                                    if (matching && idx == idxLimit) {
-                                        // label matched, now check ';'
-                                        char currentChar;
-                                        do {
-                                            currentChar = yyinput(yyscanner);
-                                            reading += currentChar;
-                                        } while ((currentChar == ' ') || (currentChar == '\t'));
-                                        if (currentChar == ';') {
-                                            unput(currentChar); // give ';' back to stream
+                                    QString nextText = retrieveChars(yyextra->currentHeredocLabel.length(), yyscanner);
+                                    if (nextText == yyextra->currentHeredocLabel) {
+                                        if (lookupChar(yyscanner) == ';') {
                                             BEGIN(ST_IN_SCRIPTING);
 printf("heredox done!\n");
                                             break;
                                         }
                                     }
-                                    // matching failed.. restore string
-                                    for (idx = reading.length(); idx>0;idx--) {
-                                        char currentChar = reading[idx-1].toAscii();
-                                        unput(currentChar);
-                                    }
-
+                                    putCharsBack(nextText, yyscanner);
                                 }
                                 c = yyinput(yyscanner);
                                 continue;
                         case '$':
                             {
-                                char nc = yyinput(yyscanner);
-                                if ( (nc == '{')
-                                     || (nc == '_')
-                                     || ((nc >= 'a') && (nc <= 'z'))
-                                     || ((nc >= 'A') && (nc <= 'Z'))
-                                    ) {
-                                    unput(nc);
+                                if ( matchesRegexp(lookupChars(1, yyscanner), "^[a-zA-Z\\{_]$") ) {
                                     unput(c);
                                     break;
                                 }
-                                unput(nc);
                                 result += c;
                                 c = yyinput(yyscanner);
                                 continue;
                             }
                         case '{':
                             {
-                                char nc = yyinput(yyscanner);
-                                if ( (nc == '$') ) {
-                                    unput(nc);
+                                if ( lookupChar(yyscanner) == '$') {
                                     unput(c);
                                     break;
                                 }
-                                unput(nc);
                             }
                             /* fall through */
                         default:
@@ -1205,6 +1138,46 @@ printf("heredox result: %s\n", result.toAscii().constData());
 
     */
 %%
+#include <QRegExp>
+
+QString retrieveChars(int numberOfChars, yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+    QString result;
+    char c;
+    while (numberOfChars-- && (c = yyinput(yyscanner))) {
+        result += c;
+    }
+    return result;
+
+}
+void putCharsBack(QString chars, yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+    int i = chars.length();
+    while (i--) {
+        unput(chars[i].toAscii());
+    }
+}
+QString lookupChars(int numberOfChars, yyscan_t yyscanner)
+{
+    QString result = retrieveChars(numberOfChars, yyscanner);
+    putCharsBack(result, yyscanner);
+    return result;
+}
+
+char lookupChar(yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+    char c = yyinput(yyscanner);
+    unput(c);
+    return c;
+}
+bool matchesRegexp(QString input, QString regex)
+{
+    QRegExp r(regex);
+    return r.exactMatch(input);
+}
 
 namespace IonPhp {
         void phpParser::init_scanner()
