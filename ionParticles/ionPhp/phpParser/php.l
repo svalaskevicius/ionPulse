@@ -26,6 +26,7 @@ bool matchesRegexp(QString input, QString regex);
 QString retrieveChars(int numberOfChars, yyscan_t yyscanner);
 void putCharsBack(QString chars, yyscan_t yyscanner);
 bool isStartOfLabel(yyscan_t yyscanner);
+bool scanForHereDocEnd(yyscan_t yyscanner);
 %}
 LNUM	[0-9]+
 DNUM	([0-9]*"."[0-9]+)|([0-9]+"."[0-9]*)
@@ -1020,20 +1021,23 @@ inline_char_handler:
                                     if (nc != '\n') {
                                         unput(nc);
                                     }
-                                }
-                                // fall through
-                        case '\n':
-                                // Check for ending label on the next line
-                                {
-                                    QString nextText = retrieveChars(yyextra->currentHeredocLabel.length(), yyscanner);
-                                    if (nextText == yyextra->currentHeredocLabel) {
-                                        if (lookupChar(yyscanner) == ';') {
-                                            BEGIN(ST_IN_SCRIPTING);
-                                            break;
-                                        }
+                                    if (scanForHereDocEnd(yyscanner)) {
+                                        BEGIN(ST_IN_SCRIPTING);
+                                        break;
                                     }
-                                    putCharsBack(nextText, yyscanner);
+                                    result += c;
+                                    if (nc == '\n') {
+                                        result += nc;
+                                    }
+                                    c = yyinput(yyscanner);
                                 }
+                                continue;
+                        case '\n':
+                                if (scanForHereDocEnd(yyscanner)) {
+                                    BEGIN(ST_IN_SCRIPTING);
+                                    break;
+                                }
+                                result += c;
                                 c = yyinput(yyscanner);
                                 continue;
                         case '$':
@@ -1078,20 +1082,23 @@ inline_char_handler:
                                     if (nc != '\n') {
                                         unput(nc);
                                     }
-                                }
-                                // fall through
-                        case '\n':
-                                // Check for ending label on the next line
-                                {
-                                    QString nextText = retrieveChars(yyextra->currentHeredocLabel.length(), yyscanner);
-                                    if (nextText == yyextra->currentHeredocLabel) {
-                                        if (lookupChar(yyscanner) == ';') {
-                                            BEGIN(ST_IN_SCRIPTING);
-                                            break;
-                                        }
+                                    if (scanForHereDocEnd(yyscanner)) {
+                                        BEGIN(ST_IN_SCRIPTING);
+                                        break;
                                     }
-                                    putCharsBack(nextText, yyscanner);
+                                    result += c;
+                                    if (nc == '\n') {
+                                        result += nc;
+                                    }
+                                    c = yyinput(yyscanner);
                                 }
+                                continue;
+                        case '\n':
+                                if (scanForHereDocEnd(yyscanner)) {
+                                    BEGIN(ST_IN_SCRIPTING);
+                                    break;
+                                }
+                                result += c;
                                 c = yyinput(yyscanner);
                                 continue;
                         default:
@@ -1150,6 +1157,18 @@ bool isStartOfLabel(yyscan_t yyscanner)
 {
     static QRegExp r("^[a-zA-Z\\{_]$");
     return r.exactMatch(lookupChars(1, yyscanner));
+}
+bool scanForHereDocEnd(yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+    QString nextText = retrieveChars(yyextra->currentHeredocLabel.length(), yyscanner);
+    if (nextText == yyextra->currentHeredocLabel) {
+        if (lookupChar(yyscanner) == ';') {
+            return true;
+        }
+    }
+    putCharsBack(nextText, yyscanner);
+    return false;
 }
 
 namespace IonPhp {
