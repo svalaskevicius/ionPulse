@@ -53,8 +53,8 @@ private Q_SLOTS:
         "top_statement_list(T_INLINE_HTML [text:asd1]; T_INLINE_HTML [text:asd2])"
     ); }
     void test_scriptOpenTag() { TEST_PHP_PARSER(
-        "<?php ?>asd<script language=\"php\">echo $d</script> asd",
-        "top_statement_list(T_INLINE_HTML [text:asd]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
+        " <?<%<?php ?>asd?%<script language=\"php\">echo $d</script> asd",
+        "top_statement_list(T_INLINE_HTML [text: <?<%]; T_INLINE_HTML [text:asd?%]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
     ); }
     void test_scriptOpenTagWOQuotes() { TEST_PHP_PARSER(
         "<?php ?>asd<script language=php>echo $d</script> asd",
