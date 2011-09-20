@@ -330,6 +330,22 @@ private Q_SLOTS:
         "<?php `$a boo moo` ;",
         "top_statement_list(BACKTICKS(encaps_list(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text: boo moo])))"
     ); }
+    void test_backticksStartsWithBackslash() { TEST_PHP_PARSER(
+        "<?php `\\$a boo moo` ;",
+        "top_statement_list(BACKTICKS(T_ENCAPSED_AND_WHITESPACE [text:\\$a boo moo]))"
+    ); }
+    void test_backticksContainsBackslash() { TEST_PHP_PARSER(
+        "<?php `asd\\$a boo moo` ;",
+        "top_statement_list(BACKTICKS(T_ENCAPSED_AND_WHITESPACE [text:asd\\$a boo moo]))"
+    ); }
+    void test_backticksWithTwoVariables() { TEST_PHP_PARSER(
+        "<?php `asd$a $boo moo` ;",
+        "top_statement_list(BACKTICKS(encaps_list(T_ENCAPSED_AND_WHITESPACE [text:asd]; T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text: ]; T_VARIABLE [text:$boo]; T_ENCAPSED_AND_WHITESPACE [text: moo])))"
+    ); }
+    void test_backticksWithTwoVariablesAndSecondIsBracketed() { TEST_PHP_PARSER(
+        "<?php `asd$a {$boo} moo` ;",
+        "top_statement_list(BACKTICKS(encaps_list(T_ENCAPSED_AND_WHITESPACE [text:asd]; T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text: ]; T_VARIABLE [text:$boo]; T_ENCAPSED_AND_WHITESPACE [text: moo])))"
+    ); }
     void test_printDefinition() { TEST_PHP_PARSER(
         "<?php print $x ;",
         "top_statement_list(T_PRINT(T_VARIABLE [text:$x]))"
@@ -385,6 +401,14 @@ private Q_SLOTS:
         "<?php $a = <<<MYDOC\ntext\nMYDOC; ",
         "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
     ); }
+    void test_hereDocWithWindowsEndLines() { TEST_PHP_PARSER(
+        "<?php $a = <<<MYDOC\r\ntext\r\nMYDOC; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
+    ); }
+    void test_hereDocWithMacEndLines() { TEST_PHP_PARSER(
+        "<?php $a = <<<MYDOC\rtext\rMYDOC; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
+    ); }
     void test_hereDocWithVars() { TEST_PHP_PARSER(
         "<?php $a = <<<MYDOC\ntex$var1 {$var2} {$var3[$i]} {$var4->prop} ${var5[$i]}t\nMYDOC; ",
         "top_statement_list("
@@ -415,6 +439,14 @@ private Q_SLOTS:
     void test_nowDoc() { TEST_PHP_PARSER(
         "<?php $a = <<<'MYDOC'\ntext$nonvar w\nMYDOC; ",
         "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text$nonvar w]))"
+    ); }
+    void test_nowDocWithWindowsEndLines() { TEST_PHP_PARSER(
+        "<?php $a = <<<'MYDOC'\r\ntext\r\nMYDOC; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
+    ); }
+    void test_nowDocWithMacEndLines() { TEST_PHP_PARSER(
+        "<?php $a = <<<'MYDOC'\rtext\rMYDOC; ",
+        "top_statement_list(assignment(T_VARIABLE [text:$a]; T_ENCAPSED_AND_WHITESPACE [text:text]))"
     ); }
     void test_singleLineComment() { TEST_PHP_PARSER(
         "<?php //$a = <<<'MYDOC'\n$s=1; // asd \n // //..  ",

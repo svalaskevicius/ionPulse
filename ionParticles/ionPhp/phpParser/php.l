@@ -873,6 +873,12 @@ inline_char_handler:
                 case '\'':
                     s++;
                     // fall through
+                case '\r':
+                    {
+                        if (*(s+1) == '\n') {
+                            s++;
+                        }
+                    }
                 case '\n':
                     // fall through
                 case '\t':
