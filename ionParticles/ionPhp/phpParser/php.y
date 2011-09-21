@@ -141,9 +141,9 @@ namespace_name:
 ;
 
 top_statement:
-                statement
-        |    function_declaration_statement
-        |    class_declaration_statement
+                statement { $$ = $1; }
+        |    function_declaration_statement { $$ = $1; }
+        |    class_declaration_statement { $$ = $1; }
         |    T_HALT_COMPILER '(' ')' ';'      { $$ = $1; YYACCEPT; }
         |    T_NAMESPACE namespace_name ';'   { $$ = ASTNode::create("namespace")->addChild($2); }
         |    T_NAMESPACE namespace_name '{'
@@ -151,24 +151,24 @@ top_statement:
         |    T_NAMESPACE '{'
                 top_statement_list '}'        { $$ = ASTNode::create("namespace")->addChild($3); }
         |    T_USE use_declarations ';'       { $$ = ASTNode::create("use")->addChild($2); }
-        |    constant_declaration ';'
+        |    constant_declaration ';'  { $$ = $1; }
 ;
 
 use_declarations:
-                use_declarations ',' use_declaration
-        |    use_declaration
+                use_declarations ',' use_declaration  { $$ = $1; }
+        |    use_declaration { $$ = $1; }
 ;
 
 use_declaration:
-                namespace_name
+                namespace_name { $$ = $1; }
         |    namespace_name T_AS T_STRING                { $$ = ASTNode::create("as")->addChild($1)->addChild($3); }
         |    T_NS_SEPARATOR namespace_name               { $$ = ASTNode::create("namespaceroot")->addChild($2); }
         |    T_NS_SEPARATOR namespace_name T_AS T_STRING { $$ = ASTNode::create("as")->addChild(ASTNode::create("namespaceroot")->addChild($2))->addChild($4); }
 ;
 
 constant_declaration:
-                constant_declaration ',' T_STRING '=' static_scalar
-        |    T_CONST T_STRING '=' static_scalar
+                constant_declaration ',' T_STRING '=' static_scalar { $$ = $1; }
+        |    T_CONST T_STRING '=' static_scalar { $$ = $1; }
 ;
 
 inner_statement_list:
@@ -178,23 +178,23 @@ inner_statement_list:
 
 
 inner_statement:
-                statement
-        |    function_declaration_statement
-        |    class_declaration_statement
+                statement { $$ = $1; }
+        |    function_declaration_statement { $$ = $1; }
+        |    class_declaration_statement { $$ = $1; }
 ;
 
 
 statement:
-                unticked_statement
-        |    T_STRING ':'
+                unticked_statement { $$ = $1; }
+        |    T_STRING ':' { $$ = $1; }
 ;
 
 unticked_statement:
                 '{' inner_statement_list '}'           {$$=$2;}
-        |    T_IF '(' expr ')'  statement  elseif_list else_single
-        |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';'
-        |    T_WHILE '('  expr  ')' while_statement
-        |    T_DO  statement T_WHILE '(' expr ')' ';'
+        |    T_IF '(' expr ')'  statement  elseif_list else_single { $$ = $1; }
+        |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';' { $$ = $1; }
+        |    T_WHILE '('  expr  ')' while_statement { $$ = $1; }
+        |    T_DO  statement T_WHILE '(' expr ')' ';' { $$ = $1; }
         |    T_FOR
                         '('
                                 for_expr
@@ -204,44 +204,48 @@ unticked_statement:
                                 for_expr
                         ')'
                         for_statement
-        |    T_SWITCH '(' expr ')'     switch_case_list
-        |    T_BREAK ';'
-        |    T_BREAK expr ';'
-        |    T_CONTINUE ';'
-        |    T_CONTINUE expr ';'
-        |    T_RETURN ';'
-        |    T_RETURN expr_without_variable ';'
+                { $$ = $1; }
+        |    T_SWITCH '(' expr ')'     switch_case_list { $$ = $1; }
+        |    T_BREAK ';' { $$ = $1; }
+        |    T_BREAK expr ';' { $$ = $1; }
+        |    T_CONTINUE ';' { $$ = $1; }
+        |    T_CONTINUE expr ';' { $$ = $1; }
+        |    T_RETURN ';' { $$ = $1; }
+        |    T_RETURN expr_without_variable ';' { $$ = $1; }
         |    T_RETURN variable ';'          { $$ = ASTNode::create("return")->addChild($2);}
-        |    T_GLOBAL global_var_list ';'
-        |    T_STATIC static_var_list ';'
+        |    T_GLOBAL global_var_list ';' { $$ = $1; }
+        |    T_STATIC static_var_list ';' { $$ = $1; }
         |    T_ECHO echo_expr_list ';'      { $$ = ASTNode::create("echo")->addChild($2);}
-        |    T_INLINE_HTML
-        |    expr ';'
-        |    T_UNSET '(' unset_variables ')' ';'
+        |    T_INLINE_HTML { $$ = $1; }
+        |    expr ';' { $$ = $1; }
+        |    T_UNSET '(' unset_variables ')' ';' { $$ = $1; }
         |    T_FOREACH '(' variable T_AS
 
                 foreach_variable foreach_optional_arg ')'
                 foreach_statement
+            { $$ = $1; }
         |    T_FOREACH '(' expr_without_variable T_AS
 
                 variable foreach_optional_arg ')'
                 foreach_statement
-        |    T_DECLARE  '(' declare_list ')' declare_statement
-        |    ';'    	/* empty statement */
+             { $$ = $1; }
+        |    T_DECLARE  '(' declare_list ')' declare_statement { $$ = $1; }
+        |    ';'    	/* empty statement */ { $$ = $1; }
         |    T_TRY  '{' inner_statement_list '}'
                 T_CATCH '('
                 fully_qualified_class_name
                 T_VARIABLE ')'
                 '{' inner_statement_list '}'
                 additional_catches
-        |    T_THROW expr ';'
-        |    T_GOTO T_STRING ';'
+             { $$ = $1; }
+        |    T_THROW expr ';' { $$ = $1; }
+        |    T_GOTO T_STRING ';' { $$ = $1; }
 ;
 
 
 additional_catches:
                 non_empty_additional_catches { $$ = $1; }
-        |    /* empty */
+        |    /* empty */ {}
 ;
 
 non_empty_additional_catches:
@@ -251,17 +255,17 @@ non_empty_additional_catches:
 
 
 additional_catch:
-        T_CATCH '(' fully_qualified_class_name  T_VARIABLE ')'  '{' inner_statement_list '}'
+        T_CATCH '(' fully_qualified_class_name  T_VARIABLE ')'  '{' inner_statement_list '}' { $$ = $1; }
 ;
 
 
 unset_variables:
-                unset_variable
-        |    unset_variables ',' unset_variable
+                unset_variable { $$ = $1; }
+        |    unset_variables ',' unset_variable { $$ = $1; }
 ;
 
 unset_variable:
-                variable
+                variable { $$ = $1; }
 ;
 
 function_declaration_statement:
@@ -317,7 +321,7 @@ is_reference:
 
 
 class_entry_type:
-                T_CLASS
+                T_CLASS { $$ = $1; }
         |    T_ABSTRACT T_CLASS { $$ = $2; $$->setData("type", "abstract"); }
         |    T_FINAL T_CLASS    { $$ = $2; $$->setData("type", "final"); }
 ;
@@ -328,7 +332,7 @@ extends_from:
 ;
 
 interface_entry:
-        T_INTERFACE
+        T_INTERFACE { $$ = $1; }
 ;
 
 interface_extends_list:
@@ -347,37 +351,37 @@ interface_list:
 ;
 
 foreach_optional_arg:
-                /* empty */
+                /* empty */ {}
         |    T_DOUBLE_ARROW foreach_variable    { $$ = $2; }
 ;
 
 
 foreach_variable:
-                variable
-        |    '&' variable
+                variable { $$ = $1; }
+        |    '&' variable { $$ = $1; }
 ;
 
 for_statement:
-                statement
-        |    ':' inner_statement_list T_ENDFOR ';'
+                statement { $$ = $1; }
+        |    ':' inner_statement_list T_ENDFOR ';' { $$ = $1; }
 ;
 
 
 foreach_statement:
-                statement
-        |    ':' inner_statement_list T_ENDFOREACH ';'
+                statement { $$ = $1; }
+        |    ':' inner_statement_list T_ENDFOREACH ';' { $$ = $1; }
 ;
 
 
 declare_statement:
-                statement
-        |    ':' inner_statement_list T_ENDDECLARE ';'
+                statement { $$ = $1; }
+        |    ':' inner_statement_list T_ENDDECLARE ';' { $$ = $1; }
 ;
 
 
 declare_list:
-                T_STRING '=' static_scalar
-        |    declare_list ',' T_STRING '=' static_scalar
+                T_STRING '=' static_scalar { $$ = $1; }
+        |    declare_list ',' T_STRING '=' static_scalar { $$ = $1; }
 ;
 
 
@@ -390,51 +394,51 @@ switch_case_list:
 
 
 case_list:
-                /* empty */
-        |    case_list T_CASE expr case_separator  inner_statement_list
-        |    case_list T_DEFAULT case_separator  inner_statement_list
+                /* empty */ {}
+        |    case_list T_CASE expr case_separator  inner_statement_list { $$ = $1; }
+        |    case_list T_DEFAULT case_separator  inner_statement_list { $$ = $1; }
 ;
 
 
 case_separator:
-                ':'
-        |    ';'
+                ':' { $$ = $1; }
+        |    ';' { $$ = $1; }
 ;
 
 
 while_statement:
-                statement
-        |    ':' inner_statement_list T_ENDWHILE ';'
+                statement { $$ = $1; }
+        |    ':' inner_statement_list T_ENDWHILE ';' { $$ = $1; }
 ;
 
 
 
 elseif_list:
-                /* empty */
-        |    elseif_list T_ELSEIF '(' expr ')'  statement
+                /* empty */ { }
+        |    elseif_list T_ELSEIF '(' expr ')'  statement { $$ = $1; }
 ;
 
 
 new_elseif_list:
-                /* empty */
-        |    new_elseif_list T_ELSEIF '(' expr ')' ':'  inner_statement_list
+                /* empty */ {}
+        |    new_elseif_list T_ELSEIF '(' expr ')' ':'  inner_statement_list { $$ = $1; }
 ;
 
 
 else_single:
-                /* empty */
-        |    T_ELSE statement
+                /* empty */ {}
+        |    T_ELSE statement { $$ = $1; }
 ;
 
 
 new_else_single:
-                /* empty */
-        |    T_ELSE ':' inner_statement_list
+                /* empty */ {}
+        |    T_ELSE ':' inner_statement_list { $$ = $1; }
 ;
 
 
 parameter_list:
-                non_empty_parameter_list
+                non_empty_parameter_list { $$ = $1; }
         |    /* empty */ { $$ = ASTNode::create("parameter_list"); }
 ;
 
@@ -525,13 +529,13 @@ non_empty_parameter_list:
 
 optional_class_type:
                 /* empty */ { $$ = ASTNode::create("__ANY_CLASS_TYPE__"); }
-        |    fully_qualified_class_name
+        |    fully_qualified_class_name { $$ = $1; }
         |    T_ARRAY { $$ = ASTNode::create("T_ARRAY"); }
 ;
 
 
 function_call_parameter_list:
-                non_empty_function_call_parameter_list
+                non_empty_function_call_parameter_list { $$ = $1; }
         |    /* empty */ {$$=ASTNode::create("function_call_parameter_list");}
 ;
 
@@ -546,8 +550,8 @@ non_empty_function_call_parameter_list:
 ;
 
 global_var_list:
-                global_var_list ',' global_var
-        |    global_var
+                global_var_list ',' global_var { $$ = $1; }
+        |    global_var { $$ = $1; }
 ;
 
 
@@ -559,10 +563,10 @@ global_var:
 
 
 static_var_list:
-                static_var_list ',' T_VARIABLE
-        |    static_var_list ',' T_VARIABLE '=' static_scalar
-        |    T_VARIABLE
-        |    T_VARIABLE '=' static_scalar
+                static_var_list ',' T_VARIABLE { $$ = $1; }
+        |    static_var_list ',' T_VARIABLE '=' static_scalar { $$ = $1; }
+        |    T_VARIABLE { $$ = $1; }
+        |    T_VARIABLE '=' static_scalar { $$ = $1; }
 
 ;
 
@@ -574,52 +578,52 @@ class_statement_list:
 
 
 class_statement:
-                variable_modifiers  class_variable_declaration ';'
-        |    class_constant_declaration ';'
+                variable_modifiers  class_variable_declaration ';' { $$ = $1; }
+        |    class_constant_declaration ';' { $$ = $1; }
         |    method_modifiers T_FUNCTION is_reference T_STRING  '('
-                        parameter_list ')' method_body
+                        parameter_list ')' method_body { $$ = $1; }
 ;
 
 
 method_body:
-                ';' /* abstract method */
-        |    '{' inner_statement_list '}'
+                ';' /* abstract method */ { $$ = $1; }
+        |    '{' inner_statement_list '}' { $$ = $1; }
 ;
 
 variable_modifiers:
-                non_empty_member_modifiers
-        |    T_VAR
+                non_empty_member_modifiers { $$ = $1; }
+        |    T_VAR { $$ = $1; }
 ;
 
 method_modifiers:
-                /* empty */
-        |    non_empty_member_modifiers
+                /* empty */ {}
+        |    non_empty_member_modifiers { $$ = $1; }
 ;
 
 non_empty_member_modifiers:
-                member_modifier
-        |    non_empty_member_modifiers member_modifier
+                member_modifier { $$ = $1; }
+        |    non_empty_member_modifiers member_modifier { $$ = $1; }
 ;
 
 member_modifier:
-                T_PUBLIC
-        |    T_PROTECTED
-        |    T_PRIVATE
-        |    T_STATIC
-        |    T_ABSTRACT
-        |    T_FINAL
+                T_PUBLIC { $$ = $1; }
+        |    T_PROTECTED { $$ = $1; }
+        |    T_PRIVATE { $$ = $1; }
+        |    T_STATIC { $$ = $1; }
+        |    T_ABSTRACT { $$ = $1; }
+        |    T_FINAL { $$ = $1; }
 ;
 
 class_variable_declaration:
-                class_variable_declaration ',' T_VARIABLE
-        |    class_variable_declaration ',' T_VARIABLE '=' static_scalar
-        |    T_VARIABLE
-        |    T_VARIABLE '=' static_scalar
+                class_variable_declaration ',' T_VARIABLE { $$ = $1; }
+        |    class_variable_declaration ',' T_VARIABLE '=' static_scalar { $$ = $1; }
+        |    T_VARIABLE { $$ = $1; }
+        |    T_VARIABLE '=' static_scalar { $$ = $1; }
 ;
 
 class_constant_declaration:
-                class_constant_declaration ',' T_STRING '=' static_scalar
-        |    T_CONST T_STRING '=' static_scalar
+                class_constant_declaration ',' T_STRING '=' static_scalar { $$ = $1; }
+        |    T_CONST T_STRING '=' static_scalar { $$ = $1; }
 ;
 
 echo_expr_list:
@@ -630,12 +634,12 @@ echo_expr_list:
 
 for_expr:
                 /* empty */
-        |    non_empty_for_expr
+        |    non_empty_for_expr { $$ = $1; }
 ;
 
 non_empty_for_expr:
-                non_empty_for_expr ','     expr
-        |    expr
+                non_empty_for_expr ','     expr { $$ = $1; }
+        |    expr { $$ = $1; }
 ;
 
 expr_without_variable:
@@ -679,8 +683,8 @@ expr_without_variable:
         |    expr '%' expr                 {$$=ASTNode::create("T_MOD")->addChild($1)->addChild($3);}
         |    expr T_SL expr                {$$=ASTNode::create("T_SHIFT_LEFT")->addChild($1)->addChild($3);}
         |    expr T_SR expr                {$$=ASTNode::create("T_SHIFT_RIGHT")->addChild($1)->addChild($3);}
-        |    '+' expr %prec T_INC
-        |    '-' expr %prec T_INC
+        |    '+' expr %prec T_INC { $$ = $1; }
+        |    '-' expr %prec T_INC { $$ = $1; }
         |    '!' expr                      {$$=ASTNode::create("T_NEGATE")->addChild($2);}
         |    '~' expr                      {$$=ASTNode::create("T_INVERSE")->addChild($2);}
         |    expr T_IS_IDENTICAL expr      {$$=ASTNode::create("T_IS_IDENTICAL")->addChild($1)->addChild($3);}
@@ -708,7 +712,7 @@ expr_without_variable:
         |    T_UNSET_CAST expr             {$$=ASTNode::create("T_UNSET_CAST")->addChild($2);}
         |    T_EXIT exit_expr              {$$=ASTNode::create("T_EXIT")->addChild($2);}
         |    '@'  expr                     {$$=ASTNode::create("SILENCE")->addChild($2);}
-        |    scalar
+        |    scalar { $$ = $1; }
         |    T_ARRAY '(' array_pair_list ')' { $$ = ASTNode::create("T_ARRAY")->addChild($3); }
         |    '`' backticks_expr '`'        { $$ = ASTNode::create("BACKTICKS")->addChild($2); }
         |    T_PRINT expr                  {$$=ASTNode::create("T_PRINT")->addChild($2);}
@@ -745,63 +749,69 @@ function_call:
         |    T_NAMESPACE T_NS_SEPARATOR namespace_name '('
                                 function_call_parameter_list
                                 ')'
+                { $$ = $1; }
         |    T_NS_SEPARATOR namespace_name '('
                                 function_call_parameter_list
                                 ')'
+                 { $$ = $1; }
         |    class_name T_DOUBLE_COLON T_STRING '('
                         function_call_parameter_list
                         ')'
+                 { $$ = $1; }
         |    class_name T_DOUBLE_COLON variable_without_objects '('
                         function_call_parameter_list
                         ')'
+                 { $$ = $1; }
         |    variable_class_name T_DOUBLE_COLON T_STRING '('
                         function_call_parameter_list
                         ')'
+                 { $$ = $1; }
         |    variable_class_name T_DOUBLE_COLON variable_without_objects '('
                         function_call_parameter_list
                         ')'
+                 { $$ = $1; }
         |    variable_without_objects  '('
                         function_call_parameter_list ')'
+                 { $$ = $1; }
 
 ;
 
 class_name:
-                T_STATIC
+                T_STATIC { $$ = $1; }
         |    namespace_name { $$ = $1; }
-        |    T_NAMESPACE T_NS_SEPARATOR namespace_name
-        |    T_NS_SEPARATOR namespace_name
+        |    T_NAMESPACE T_NS_SEPARATOR namespace_name { $$ = $1; }
+        |    T_NS_SEPARATOR namespace_name { $$ = $1; }
 ;
 
 fully_qualified_class_name:
-                namespace_name
-        |    T_NAMESPACE T_NS_SEPARATOR namespace_name
-        |    T_NS_SEPARATOR namespace_name
+                namespace_name { $$ = $1; }
+        |    T_NAMESPACE T_NS_SEPARATOR namespace_name { $$ = $1; }
+        |    T_NS_SEPARATOR namespace_name { $$ = $1; }
 ;
 
 
 
 class_name_reference:
-                class_name
-        |    dynamic_class_name_reference
+                class_name { $$ = $1; }
+        |    dynamic_class_name_reference { $$ = $1; }
 ;
 
 
 dynamic_class_name_reference:
                 base_variable T_OBJECT_OPERATOR
-                        object_property  dynamic_class_name_variable_properties
-
+                        object_property  dynamic_class_name_variable_properties { $$ = $1; }
         |    base_variable { $$ = $1; }
 ;
 
 
 dynamic_class_name_variable_properties:
-                dynamic_class_name_variable_properties dynamic_class_name_variable_property
+                dynamic_class_name_variable_properties dynamic_class_name_variable_property { $$ = $1; }
         |    /* empty */
 ;
 
 
 dynamic_class_name_variable_property:
-                T_OBJECT_OPERATOR object_property
+                T_OBJECT_OPERATOR object_property { $$ = $1; }
 ;
 
 exit_expr:
@@ -824,16 +834,16 @@ ctor_arguments:
 
 
 common_scalar:
-                T_LNUMBER
-        |    T_DNUMBER
-        |    T_CONSTANT_ENCAPSED_STRING
-        |    T_LINE
-        |    T_FILE
-        |    T_DIR
-        |    T_CLASS_C
-        |    T_METHOD_C
-        |    T_FUNC_C
-        |    T_NS_C
+                T_LNUMBER { $$ = $1; }
+        |    T_DNUMBER { $$ = $1; }
+        |    T_CONSTANT_ENCAPSED_STRING { $$ = $1; }
+        |    T_LINE { $$ = $1; }
+        |    T_FILE { $$ = $1; }
+        |    T_DIR { $$ = $1; }
+        |    T_CLASS_C { $$ = $1; }
+        |    T_METHOD_C { $$ = $1; }
+        |    T_FUNC_C { $$ = $1; }
+        |    T_NS_C { $$ = $1; }
         |    T_START_HEREDOC T_ENCAPSED_AND_WHITESPACE { $$ = $2; }
         //|    T_START_HEREDOC T_END_HEREDOC
 ;
@@ -841,25 +851,25 @@ common_scalar:
 
 static_scalar: /* compile-time evaluated scalars */
                 common_scalar    	{ $$ = $1; }
-        |    namespace_name
-        |    T_NAMESPACE T_NS_SEPARATOR namespace_name
-        |    T_NS_SEPARATOR namespace_name
-        |    '+' static_scalar
-        |    '-' static_scalar
-        |    T_ARRAY '(' static_array_pair_list ')'
+        |    namespace_name { $$ = $1; }
+        |    T_NAMESPACE T_NS_SEPARATOR namespace_name { $$ = $1; }
+        |    T_NS_SEPARATOR namespace_name { $$ = $1; }
+        |    '+' static_scalar { $$ = $1; }
+        |    '-' static_scalar { $$ = $1; }
+        |    T_ARRAY '(' static_array_pair_list ')' { $$ = $1; }
         |    static_class_constant { $$ = $1; }
 ;
 
 static_class_constant:
-                class_name T_DOUBLE_COLON T_STRING
+                class_name T_DOUBLE_COLON T_STRING { $$ = $1; }
 ;
 
 scalar:
                 T_STRING_VARNAME    	{ $$ = $1; }
         |    class_constant    	{ $$ = $1; }
-        |    namespace_name
-        |    T_NAMESPACE T_NS_SEPARATOR namespace_name
-        |    T_NS_SEPARATOR namespace_name
+        |    namespace_name { $$ = $1; }
+        |    T_NAMESPACE T_NS_SEPARATOR namespace_name { $$ = $1; }
+        |    T_NS_SEPARATOR namespace_name { $$ = $1; }
         |    common_scalar    	    { $$ = $1; }
         |    '"' encaps_list '"'     { $$ = ASTNode::create("doubleQuotes")->addChild($2); }
         |    T_START_HEREDOC encaps_list { $$ = ASTNode::create("hereDoc")->addChild($2); }
@@ -873,40 +883,40 @@ static_array_pair_list:
 
 possible_comma:
                 /* empty */
-        |    ','
+        |    ',' { $$ = $1; }
 ;
 
 non_empty_static_array_pair_list:
-                non_empty_static_array_pair_list ',' static_scalar T_DOUBLE_ARROW static_scalar
-        |    non_empty_static_array_pair_list ',' static_scalar
-        |    static_scalar T_DOUBLE_ARROW static_scalar
-        |    static_scalar
+                non_empty_static_array_pair_list ',' static_scalar T_DOUBLE_ARROW static_scalar { $$ = $1; }
+        |    non_empty_static_array_pair_list ',' static_scalar { $$ = $1; }
+        |    static_scalar T_DOUBLE_ARROW static_scalar { $$ = $1; }
+        |    static_scalar { $$ = $1; }
 ;
 
 expr:
-                r_variable
-        |    expr_without_variable
+                r_variable { $$ = $1; }
+        |    expr_without_variable { $$ = $1; }
 ;
 
 
 r_variable:
-        variable
+        variable { $$ = $1; }
 ;
 
 
 w_variable:
-        variable
+        variable { $$ = $1; }
 ;
 
 rw_variable:
-        variable
+        variable { $$ = $1; }
 ;
 
 variable:
                 base_variable_with_function_calls T_OBJECT_OPERATOR
                         object_property  method_or_not variable_properties
                 { $$ = ASTNode::create("T_OBJECT_OPERATOR")->addChild($1)->addChild($3)->addChild($4)->addChild($5); }
-        |    base_variable_with_function_calls
+        |    base_variable_with_function_calls { $$ = $1; }
 ;
 
 variable_properties:
@@ -929,68 +939,68 @@ method_or_not:
 
 variable_without_objects:
                 reference_variable { $$ = $1; }
-        |    simple_indirect_reference reference_variable
+        |    simple_indirect_reference reference_variable { $$ = $1; }
 ;
 
 static_member:
-                class_name T_DOUBLE_COLON variable_without_objects
-        |    variable_class_name T_DOUBLE_COLON variable_without_objects
+                class_name T_DOUBLE_COLON variable_without_objects { $$ = $1; }
+        |    variable_class_name T_DOUBLE_COLON variable_without_objects { $$ = $1; }
 
 ;
 
 variable_class_name:
-                reference_variable
+                reference_variable { $$ = $1; }
 ;
 
 base_variable_with_function_calls:
-                base_variable
-        |    function_call
+                base_variable { $$ = $1; }
+        |    function_call { $$ = $1; }
 ;
 
 
 base_variable:
-                reference_variable
-        |    simple_indirect_reference reference_variable
-        |    static_member
+                reference_variable { $$ = $1; }
+        |    simple_indirect_reference reference_variable { $$ = $1; }
+        |    static_member { $$ = $1; }
 ;
 
 reference_variable:
                 reference_variable '[' dim_offset ']' { $$ = ASTNode::create("offset")->addChild($1)->addChild($3); }
         |    reference_variable '{' expr '}'          { $$ = ASTNode::create("str_offset")->addChild($1)->addChild($3); }
-        |    compound_variable
+        |    compound_variable { $$ = $1; }
 ;
 
 
 compound_variable:
-                T_VARIABLE
+                T_VARIABLE { $$ = $1; }
         |    '$' '{' expr '}'    { $$ = $3; }
 ;
 
 dim_offset:
                 /* empty */
-        |    expr
+        |    expr { $$ = $1; }
 ;
 
 
 object_property:
                 object_dim_list { $$ = $1; }
-        |    variable_without_objects
+        |    variable_without_objects { $$ = $1; }
 ;
 
 object_dim_list:
-                object_dim_list '[' dim_offset ']'
-        |    object_dim_list '{' expr '}'
-        |    variable_name
+                object_dim_list '[' dim_offset ']' { $$ = $1; }
+        |    object_dim_list '{' expr '}' { $$ = $1; }
+        |    variable_name { $$ = $1; }
 ;
 
 variable_name:
-                T_STRING
+                T_STRING { $$ = $1; }
         |    '{' expr '}'    { $$ = $2; }
 ;
 
 simple_indirect_reference:
-                '$'
-        |    simple_indirect_reference '$'
+                '$' { $$ = $1; }
+        |    simple_indirect_reference '$' { $$ = $1; }
 ;
 
 assignment_list:
@@ -1000,15 +1010,15 @@ assignment_list:
 
 
 assignment_list_element:
-                variable
-        |    T_LIST '('  assignment_list ')'
+                variable { $$ = $1; }
+        |    T_LIST '('  assignment_list ')' { $$ = $1; }
         |    /* empty */
 ;
 
 
 array_pair_list:
                 /* empty */ {$$ = ASTNode::create("array_pair_list");}
-        |    non_empty_array_pair_list possible_comma
+        |    non_empty_array_pair_list possible_comma { $$ = $1; }
 ;
 
 non_empty_array_pair_list:
@@ -1092,7 +1102,7 @@ encaps_list:
 
 
 encaps_var:
-                T_VARIABLE
+                T_VARIABLE { $$ = $1; }
         |    T_VARIABLE '['  encaps_var_offset ']' {$$ = ASTNode::create("offset")->addChild($1)->addChild($3);}
         |    T_VARIABLE T_OBJECT_OPERATOR T_STRING {$$ = ASTNode::create("T_OBJECT_OPERATOR")->addChild($1)->addChild($3);}
         |    T_DOLLAR_OPEN_CURLY_BRACES expr '}'   {$$ = $2;}
@@ -1104,36 +1114,29 @@ encaps_var:
 encaps_var_offset:
                 T_STRING    	{ $$ = $1; }
         |    T_NUM_STRING    { $$ = $1; }
-        |    T_VARIABLE
+        |    T_VARIABLE { $$ = $1; }
 ;
 
 
 internal_functions:
                 T_ISSET '(' isset_variables ')' { $$ = $3; }
-        |    T_EMPTY '(' variable ')'
-        |    T_INCLUDE expr
-        |    T_INCLUDE_ONCE expr
-        |    T_EVAL '(' expr ')'
-        |    T_REQUIRE expr
-        |    T_REQUIRE_ONCE expr
+        |    T_EMPTY '(' variable ')' { $$ = $1; }
+        |    T_INCLUDE expr { $$ = $1; }
+        |    T_INCLUDE_ONCE expr { $$ = $1; }
+        |    T_EVAL '(' expr ')' { $$ = $1; }
+        |    T_REQUIRE expr { $$ = $1; }
+        |    T_REQUIRE_ONCE expr { $$ = $1; }
 ;
 
 isset_variables:
-                variable
-        |    isset_variables ','  variable
+                variable { $$ = $1; }
+        |    isset_variables ','  variable { $$ = $1; }
 ;
 
 class_constant:
-                class_name T_DOUBLE_COLON T_STRING
-        |    variable_class_name T_DOUBLE_COLON T_STRING
+                class_name T_DOUBLE_COLON T_STRING { $$ = $1; }
+        |    variable_class_name T_DOUBLE_COLON T_STRING { $$ = $1; }
 ;
 
 %%
 
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * indent-tabs-mode: s
- * End:
- */
