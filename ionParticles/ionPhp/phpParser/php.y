@@ -312,8 +312,8 @@ is_reference:
 
 class_entry_type:
                 T_CLASS
-        |    T_ABSTRACT T_CLASS { $$ = $2; }
-        |    T_FINAL T_CLASS    { $$ = $2; }
+        |    T_ABSTRACT T_CLASS { $$ = $2; $$->setData("type", "abstract"); }
+        |    T_FINAL T_CLASS    { $$ = $2; $$->setData("type", "final"); }
 ;
 
 extends_from:

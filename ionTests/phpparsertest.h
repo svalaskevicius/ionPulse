@@ -584,6 +584,14 @@ private Q_SLOTS:
         "<?php class A implements I { }",
         "top_statement_list(class_declaration(class; T_STRING [text:A]; extends; implements(namespace_name(T_STRING [text:I])); class_statement_list))"
     );}
+    void test_abstractClassDefinition() { TEST_PHP_PARSER(
+        "<?php abstract class A { }",
+        "top_statement_list(class_declaration(class [type:abstract]; T_STRING [text:A]; extends; implements; class_statement_list))"
+    );}
+    void test_finalClassDefinition() { TEST_PHP_PARSER(
+        "<?php final class A { }",
+        "top_statement_list(class_declaration(class [type:final]; T_STRING [text:A]; extends; implements; class_statement_list))"
+    );}
 };
 
 #endif // PHPPARSERTEST_H
