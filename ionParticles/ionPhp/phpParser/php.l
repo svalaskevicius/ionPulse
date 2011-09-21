@@ -520,30 +520,37 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING>"__CLASS__" {
+        *astNode = ASTNode::create("__CLASS__");
         return T_CLASS_C;
 }
 
 <ST_IN_SCRIPTING>"__FUNCTION__" {
+        *astNode = ASTNode::create("__FUNCTION__");
         return T_FUNC_C;
 }
 
 <ST_IN_SCRIPTING>"__METHOD__" {
+        *astNode = ASTNode::create("__METHOD__");
         return T_METHOD_C;
 }
 
 <ST_IN_SCRIPTING>"__LINE__" {
+        *astNode = ASTNode::create("__LINE__");
         return T_LINE;
 }
 
 <ST_IN_SCRIPTING>"__FILE__" {
+        *astNode = ASTNode::create("__FILE__");
         return T_FILE;
 }
 
 <ST_IN_SCRIPTING>"__DIR__" {
+        *astNode = ASTNode::create("__DIR__");
         return T_DIR;
 }
 
 <ST_IN_SCRIPTING>"__NAMESPACE__" {
+        *astNode = ASTNode::create("__NAMESPACE__");
         return T_NS_C;
 }
 

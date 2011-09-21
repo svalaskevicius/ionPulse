@@ -30,10 +30,10 @@ SOURCES += \
     plugin.cpp \
     editorwidgetfactory.cpp \
     highlighter.cpp \
-    phpparser.cpp \
-    phpParser/ionParserLib.cpp \
     gen_php_parser.cpp \
-    gen_php_scanner.cpp
+    gen_php_scanner.cpp \
+    phpparser.cpp \
+    phpParser/ionParserLib.cpp
 
 
 target.path += "$${INSTALL_DIR}/plugins/"

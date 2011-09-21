@@ -521,7 +521,57 @@ private Q_SLOTS:
         "<?php /** lala */ ",
         "top_statement_list"
     ); }
-
+    void test_numbers() { TEST_PHP_PARSER(
+        "<?php $a=12+12.2+.2+0x02+0123+2e1;",
+        "top_statement_list("
+            "assignment("
+                "T_VARIABLE [text:$a]; "
+                "T_PLUS("
+                    "T_PLUS("
+                        "T_PLUS("
+                            "T_PLUS("
+                                "T_PLUS("
+                                    "T_LNUMBER [text:12]; "
+                                    "T_DNUMBER [text:12.2]"
+                                "); "
+                                "T_DNUMBER [text:.2]"
+                            "); "
+                            "T_LNUMBER [text:0x02]"
+                        "); "
+                        "T_LNUMBER [text:0123]"
+                    "); "
+                    "T_DNUMBER [text:2e1]"
+                ")"
+            ")"
+        ")"
+    ); }
+    void test_phpConstants() { TEST_PHP_PARSER(
+        "<?php $a=__CLASS__.__FUNCTION__.__METHOD__.__LINE__.__FILE__.__DIR__.__NAMESPACE__;",
+        "top_statement_list("
+            "assignment("
+                "T_VARIABLE [text:$a]; "
+                "T_CONCAT("
+                    "T_CONCAT("
+                        "T_CONCAT("
+                            "T_CONCAT("
+                                "T_CONCAT("
+                                    "T_CONCAT("
+                                        "__CLASS__; "
+                                        "__FUNCTION__"
+                                    "); "
+                                    "__METHOD__"
+                                "); "
+                                "__LINE__"
+                            "); "
+                            "__FILE__"
+                        "); "
+                        "__DIR__"
+                    "); "
+                    "__NAMESPACE__"
+                ")"
+            ")"
+        ")"
+    ); }
     /*
         |    internal_functions { $$ = $1; }
         |    scalar    	    	{ $$ = $1; }

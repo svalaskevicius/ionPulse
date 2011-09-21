@@ -624,10 +624,10 @@ non_empty_for_expr:
 ;
 
 expr_without_variable:
-                T_LIST '('  assignment_list ')' '=' expr
-                {
-                    $$=ASTNode::create("assignment")->addChild($3)->addChild($6);
-                }
+            T_LIST '('  assignment_list ')' '=' expr
+            {
+                $$=ASTNode::create("assignment")->addChild($3)->addChild($6);
+            }
         |    variable '=' expr {$$=ASTNode::create("assignment")->addChild($1)->addChild($3);}
         |    variable '=' '&' variable {$$=ASTNode::create("assignment")->addChild($1)->addChild($4)->setData("is_reference", "1");}
         |    variable '=' '&' T_NEW class_name_reference    { $$ = ASTNode::create("assignment")->addChild($1)->addChild(ASTNode::create("T_NEW")->addChild($5))->setData("is_reference", "1");}
@@ -809,16 +809,16 @@ ctor_arguments:
 
 
 common_scalar:
-                T_LNUMBER     	    	    { $$ = $1; }
-        |    T_DNUMBER     	    	    { $$ = $1; }
-        |    T_CONSTANT_ENCAPSED_STRING    { $$ = $1; }
-        |    T_LINE     	    	    	{ $$ = $1; }
-        |    T_FILE     	    	    	{ $$ = $1; }
-        |    T_DIR       	    	    { $$ = $1; }
-        |    T_CLASS_C    	    	    { $$ = $1; }
-        |    T_METHOD_C    	    	    { $$ = $1; }
-        |    T_FUNC_C    	    	    { $$ = $1; }
-        |    T_NS_C    	    	    	{ $$ = $1; }
+                T_LNUMBER
+        |    T_DNUMBER
+        |    T_CONSTANT_ENCAPSED_STRING
+        |    T_LINE
+        |    T_FILE
+        |    T_DIR
+        |    T_CLASS_C
+        |    T_METHOD_C
+        |    T_FUNC_C
+        |    T_NS_C
         |    T_START_HEREDOC T_ENCAPSED_AND_WHITESPACE { $$ = $2; }
         //|    T_START_HEREDOC T_END_HEREDOC
 ;
