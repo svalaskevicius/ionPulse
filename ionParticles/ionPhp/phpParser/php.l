@@ -180,18 +180,22 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING>"class" {
+        *astNode = ASTNode::create("class");
         return T_CLASS;
 }
 
 <ST_IN_SCRIPTING>"interface" {
+        *astNode = ASTNode::create("interface");
         return T_INTERFACE;
 }
 
 <ST_IN_SCRIPTING>"extends" {
+        *astNode = ASTNode::create("extends");
         return T_EXTENDS;
 }
 
 <ST_IN_SCRIPTING>"implements" {
+        *astNode = ASTNode::create("implements");
         return T_IMPLEMENTS;
 }
 

@@ -572,12 +572,18 @@ private Q_SLOTS:
             ")"
         ")"
     ); }
-    /*
-        |    internal_functions { $$ = $1; }
-        |    scalar    	    	{ $$ = $1; }
-        | statements
-
-*/
+    void test_classDefinition() { TEST_PHP_PARSER(
+        "<?php class A { }",
+        "top_statement_list(class_declaration(class; T_STRING [text:A]; extends; implements; class_statement_list))"
+    );}
+    void test_classExtendingOtherDefinition() { TEST_PHP_PARSER(
+        "<?php class A extends B { }",
+        "top_statement_list(class_declaration(class; T_STRING [text:A]; extends(namespace_name(T_STRING [text:B])); implements; class_statement_list))"
+    );}
+    void test_classImplementingInterfaceDefinition() { TEST_PHP_PARSER(
+        "<?php class A implements I { }",
+        "top_statement_list(class_declaration(class; T_STRING [text:A]; extends; implements(namespace_name(T_STRING [text:I])); class_statement_list))"
+    );}
 };
 
 #endif // PHPPARSERTEST_H

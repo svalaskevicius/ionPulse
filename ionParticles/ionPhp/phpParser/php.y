@@ -286,6 +286,15 @@ class_declaration_statement:
                         '{'
                                 class_statement_list
                         '}'
+                {
+                   $$ = ASTNode::create("class_declaration")
+                       ->addChild($1)
+                       ->addChild($2)
+                       ->addChild($3)
+                       ->addChild($4)
+                       ->addChild($6)
+                   ;
+                }
         |    interface_entry T_STRING
 
                         interface_extends_list
@@ -303,13 +312,13 @@ is_reference:
 
 class_entry_type:
                 T_CLASS
-        |    T_ABSTRACT T_CLASS
-        |    T_FINAL T_CLASS
+        |    T_ABSTRACT T_CLASS { $$ = $2; }
+        |    T_FINAL T_CLASS    { $$ = $2; }
 ;
 
 extends_from:
-                /* empty */
-        |    T_EXTENDS fully_qualified_class_name
+                /* empty */ { $$ = ASTNode::create("extends"); }
+        |    T_EXTENDS fully_qualified_class_name { $$ = ASTNode::create("extends")->addChild($2); }
 ;
 
 interface_entry:
@@ -322,8 +331,8 @@ interface_extends_list:
 ;
 
 implements_list:
-                /* empty */
-        |    T_IMPLEMENTS interface_list
+                /* empty */  { $$ = ASTNode::create("implements"); }
+        |    T_IMPLEMENTS interface_list { $$ = ASTNode::create("implements")->addChild($2); }
 ;
 
 interface_list:
@@ -553,8 +562,8 @@ static_var_list:
 
 
 class_statement_list:
-                class_statement_list class_statement
-        |    /* empty */
+                class_statement_list class_statement { $1->addChild($2); }
+        |    /* empty */  {$$=ASTNode::create("class_statement_list");}
 ;
 
 
