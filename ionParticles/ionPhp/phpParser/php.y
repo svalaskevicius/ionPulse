@@ -269,13 +269,11 @@ function_declaration_statement:
                         '(' parameter_list ')' '{' inner_statement_list '}'
                 {
                     $$ = ASTNode::create("function_declaration")
+                        ->addChild($2)
                         ->addChild($3)
                         ->addChild($5)
                         ->addChild($8)
                     ;
-                   /* if ('&' == $2) {
-                        $$->setData("is_reference", "1");
-                    }*/
                 }
 ;
 
@@ -313,8 +311,8 @@ class_declaration_statement:
 
 
 is_reference:
-                /* empty */
-        |    '&'
+                /* empty */ { $$ = ASTNode::create("is_reference")->setData("is_reference", "0"); }
+        |    '&'            { $$ = ASTNode::create("is_reference")->setData("is_reference", "1"); }
 ;
 
 
@@ -718,11 +716,11 @@ expr_without_variable:
                         parameter_list ')' lexical_vars '{' inner_statement_list '}'
              {
                 $$=ASTNode::create("LAMBDA_FUNCTION")
+                    ->addChild($2)
                     ->addChild($4)
                     ->addChild($6)
                     ->addChild($8)
                 ;
-                /* handle ref! is_reference */
              }
 ;
 

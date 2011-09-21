@@ -75,7 +75,7 @@ private Q_SLOTS:
     void test_functionDefinition() {
         TEST_PHP_PARSER(
             "<?php function myfnc() {}",
-            "top_statement_list(function_declaration(T_STRING [text:myfnc]; parameter_list; inner_statement_list))"
+            "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING [text:myfnc]; parameter_list; inner_statement_list))"
         );
     }
     void test_listDefinition() { TEST_PHP_PARSER(
@@ -352,15 +352,15 @@ private Q_SLOTS:
     ); }
     void test_lambdaFncDefinition() { TEST_PHP_PARSER(
         "<?php function ($a) { return $c; } ;",
-        "top_statement_list(LAMBDA_FUNCTION(parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE [text:$a])); T_USE; inner_statement_list(return(T_VARIABLE [text:$c]))))"
+        "top_statement_list(LAMBDA_FUNCTION(is_reference [is_reference:0]; parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE [text:$a])); T_USE; inner_statement_list(return(T_VARIABLE [text:$c]))))"
     ); }
     void test_lambdaFncUseDefinition() { TEST_PHP_PARSER(
         "<?php function ($a) use ($b) { return $c; } ;",
-        "top_statement_list(LAMBDA_FUNCTION(parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE [text:$a])); T_USE(lexical_var_list(T_VARIABLE [text:$b])); inner_statement_list(return(T_VARIABLE [text:$c]))))"
+        "top_statement_list(LAMBDA_FUNCTION(is_reference [is_reference:0]; parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE [text:$a])); T_USE(lexical_var_list(T_VARIABLE [text:$b])); inner_statement_list(return(T_VARIABLE [text:$c]))))"
     ); }
     void test_lambdaFncRefDefinition() { TEST_PHP_PARSER(
         "<?php function & ($a) use ($b, &$c) { return $c; } ;",
-        "top_statement_list(LAMBDA_FUNCTION(parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE [text:$a])); T_USE(lexical_var_list(T_VARIABLE [text:$b]; T_VARIABLE [is_reference:1, text:$c])); inner_statement_list(return(T_VARIABLE [text:$c]))))"
+        "top_statement_list(LAMBDA_FUNCTION(is_reference [is_reference:1]; parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE [text:$a])); T_USE(lexical_var_list(T_VARIABLE [text:$b]; T_VARIABLE [is_reference:1, text:$c])); inner_statement_list(return(T_VARIABLE [text:$c]))))"
     ); }
     void test_doubleQuotesConst() { TEST_PHP_PARSER(
         "<?php $a = \"\\rtest $ {} string\\n\" ;",
