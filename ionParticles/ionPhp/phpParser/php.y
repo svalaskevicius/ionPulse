@@ -301,6 +301,14 @@ class_declaration_statement:
                         '{'
                                 class_statement_list
                         '}'
+                {
+                   $$ = ASTNode::create("interface_declaration")
+                       ->addChild($1)
+                       ->addChild($2)
+                       ->addChild($3)
+                       ->addChild($5)
+                   ;
+                }
 ;
 
 
@@ -326,8 +334,8 @@ interface_entry:
 ;
 
 interface_extends_list:
-                /* empty */
-        |    T_EXTENDS interface_list
+                /* empty */ { $$ = ASTNode::create("extends"); }
+        |    T_EXTENDS interface_list { $$ = ASTNode::create("extends")->addChild($2); }
 ;
 
 implements_list:
@@ -336,8 +344,8 @@ implements_list:
 ;
 
 interface_list:
-                fully_qualified_class_name
-        |    interface_list ',' fully_qualified_class_name
+                fully_qualified_class_name { $$ = ASTNode::create("interfaceList")->addChild($1); }
+        |    interface_list ',' fully_qualified_class_name { $1->addChild($3); }
 ;
 
 foreach_optional_arg:
@@ -767,7 +775,7 @@ class_name:
 ;
 
 fully_qualified_class_name:
-                namespace_name { $$ = $1; }
+                namespace_name
         |    T_NAMESPACE T_NS_SEPARATOR namespace_name
         |    T_NS_SEPARATOR namespace_name
 ;

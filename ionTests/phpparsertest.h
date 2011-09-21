@@ -582,7 +582,7 @@ private Q_SLOTS:
     );}
     void test_classImplementingInterfaceDefinition() { TEST_PHP_PARSER(
         "<?php class A implements I { }",
-        "top_statement_list(class_declaration(class; T_STRING [text:A]; extends; implements(namespace_name(T_STRING [text:I])); class_statement_list))"
+        "top_statement_list(class_declaration(class; T_STRING [text:A]; extends; implements(interfaceList(namespace_name(T_STRING [text:I]))); class_statement_list))"
     );}
     void test_abstractClassDefinition() { TEST_PHP_PARSER(
         "<?php abstract class A { }",
@@ -591,6 +591,14 @@ private Q_SLOTS:
     void test_finalClassDefinition() { TEST_PHP_PARSER(
         "<?php final class A { }",
         "top_statement_list(class_declaration(class [type:final]; T_STRING [text:A]; extends; implements; class_statement_list))"
+    );}
+    void test_interfaceDefinition() { TEST_PHP_PARSER(
+        "<?php interface A { }",
+        "top_statement_list(interface_declaration(interface; T_STRING [text:A]; extends; class_statement_list))"
+    );}
+    void test_interfaceInheritanceDefinition() { TEST_PHP_PARSER(
+        "<?php interface A extends B, C { }",
+        "top_statement_list(interface_declaration(interface; T_STRING [text:A]; extends(interfaceList(namespace_name(T_STRING [text:B]); namespace_name(T_STRING [text:C]))); class_statement_list))"
     );}
 };
 
