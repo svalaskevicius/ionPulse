@@ -42,27 +42,27 @@ class PhpParserTest : public QObject
 private Q_SLOTS:
     void test_openCloseNoEnd() { TEST_PHP_PARSER(
         "<?php ?><?php ?><?php ",
-        "top_statement_list"
+        "top_statement_list(empty statement; empty statement)"
     ); }
     void test_openCloseEnd() { TEST_PHP_PARSER(
         "<?php ?><?php ?><?php ?>",
-        "top_statement_list"
+        "top_statement_list(empty statement; empty statement; empty statement)"
     ); }
     void test_inlineHtml() { TEST_PHP_PARSER(
         "<?php ?>asd1<?php ?>asd2",
-        "top_statement_list(T_INLINE_HTML [text:asd1]; T_INLINE_HTML [text:asd2])"
+        "top_statement_list(empty statement; T_INLINE_HTML [text:asd1]; empty statement; T_INLINE_HTML [text:asd2])"
     ); }
     void test_scriptOpenTag() { TEST_PHP_PARSER(
         " <?<%<?php ?>asd?%<script language=\"php\">echo $d</script> asd",
-        "top_statement_list(T_INLINE_HTML [text: <?<%]; T_INLINE_HTML [text:asd?%]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
+        "top_statement_list(T_INLINE_HTML [text: <?<%]; empty statement; T_INLINE_HTML [text:asd?%]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
     ); }
     void test_scriptOpenTagWOQuotes() { TEST_PHP_PARSER(
         "<?php ?>asd<script language=php>echo $d</script> asd",
-        "top_statement_list(T_INLINE_HTML [text:asd]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
+        "top_statement_list(empty statement; T_INLINE_HTML [text:asd]; echo(echo_expr_list(T_VARIABLE [text:$d])); T_INLINE_HTML [text: asd])"
     ); }
     void test_scriptOpenTagWrong() { TEST_PHP_PARSER(
         "<?php ?>asd<script language=notphp>echo $d</script> asd",
-        "top_statement_list(T_INLINE_HTML [text:asd<script language=notphp>echo $d</script> asd])"
+        "top_statement_list(empty statement; T_INLINE_HTML [text:asd<script language=notphp>echo $d</script> asd])"
     ); }
     void test_variableAssignmentFromFncCall() { TEST_PHP_PARSER(
         "<?php $a = moo();",
@@ -507,7 +507,7 @@ private Q_SLOTS:
     ); }
     void test_singleLineCommentScriptStop() { TEST_PHP_PARSER(
         "<?php //$a =? <<<'MYDOC'?>$s=1; // asd \n // //..  ",
-        "top_statement_list(T_INLINE_HTML [text:$s=1; // asd \n // //..  ])"
+        "top_statement_list(empty statement; T_INLINE_HTML [text:$s=1; // asd \n // //..  ])"
     ); }
     void test_singleLineHashComment() { TEST_PHP_PARSER(
         "<?php #$a = <<<'MYDOC'\n$s=1; # asd \n # /..  ",
@@ -600,6 +600,73 @@ private Q_SLOTS:
         "<?php interface A extends B, C { }",
         "top_statement_list(interface_declaration(interface; T_STRING [text:A]; extends(interfaceList(namespace_name(T_STRING [text:B]); namespace_name(T_STRING [text:C]))); class_statement_list))"
     );}
+
+    void test_statementIf() { TEST_PHP_PARSER(
+        "<?php if(1) {echo 'x';} elseif (2) { echo 'y'; } else echo 'z';",
+        "top_statement_list("
+            "if("
+                "T_LNUMBER [text:1]; "
+                "inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x]))); "
+                "elseif_list("
+                    "elseif("
+                        "T_LNUMBER [text:2]; "
+                        "inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:y])))"
+                    ")"
+                "); "
+                "else("
+                    "echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:z]))"
+                ")"
+            ")"
+        ")"
+    );}
+//    void test_statementWhile() { TEST_PHP_PARSER(
+//        "<?php while(1) {echo 'x';}",
+//        ""
+//    );}
+//    void test_statementDoWhile() { TEST_PHP_PARSER(
+//        "<?php do {echo 'x';} while(1);",
+//        ""
+//    );}
+//    void test_statementFor() { TEST_PHP_PARSER(
+//        "<?php for($i=0;$i<1;$i++) {echo 'x';}",
+//        ""
+//    );}
+//    void test_statementSwitch() { TEST_PHP_PARSER(
+//        "<?php switch($i) {case 'x': echo 'y'; default: echo 'z';}",
+//        ""
+//    );}
+//    void test_statementBreak() { TEST_PHP_PARSER(
+//        "<?php break;",
+//        ""
+//    );}
+//    void test_statementContinue() { TEST_PHP_PARSER(
+//        "<?php continue;",
+//        ""
+//    );}
+//    void test_statementReturn() { TEST_PHP_PARSER(
+//        "<?php funtion x(){return 2;}",
+//        ""
+//    );}
+//    void test_statementStaticVars() { TEST_PHP_PARSER(
+//        "<?php funtion x(){static $a = 2; return $a;}",
+//        ""
+//    );}
+//    void test_statementForeach() { TEST_PHP_PARSER(
+//        "<?php foreach($ar as $a=>$v) {echo 'x';}",
+//        ""
+//    );}
+//    void test_statementForeachRef() { TEST_PHP_PARSER(
+//        "<?php foreach($ar as $a=>&$v) {echo 'x';}",
+//        ""
+//    );}
+//    void test_statementThrow() { TEST_PHP_PARSER(
+//        "<?php throw new Exception();",
+//        ""
+//    );}
+//    void test_statementThyCatchCatch() { TEST_PHP_PARSER(
+//        "<?php try {echo 'x';} catch (MyException $e) {} catch (Exception $e) {}",
+//        ""
+//    );}
 };
 
 #endif // PHPPARSERTEST_H

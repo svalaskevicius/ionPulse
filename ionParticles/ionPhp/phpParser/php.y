@@ -131,8 +131,8 @@
 start: top_statement_list {context->__result = $1;};
 
 top_statement_list:
-                top_statement_list top_statement {if ($2) { $1->addChild($2);}}
-        |    /* empty */ {$$ = ASTNode::create("top_statement_list");}
+        /* empty */ {$$ = ASTNode::create("top_statement_list");}
+        | top_statement_list top_statement {$1->addChild($2);}
 ;
 
 namespace_name:
@@ -172,7 +172,7 @@ constant_declaration:
 ;
 
 inner_statement_list:
-                inner_statement_list  inner_statement  { $1->addChild($2); }
+                inner_statement_list  inner_statement  { $1->addChild($2); $$=$1; }
         |    /* empty */ { $$ = ASTNode::create("inner_statement_list"); }
 ;
 
@@ -191,7 +191,7 @@ statement:
 
 unticked_statement:
                 '{' inner_statement_list '}'           {$$=$2;}
-        |    T_IF '(' expr ')'  statement  elseif_list else_single { $$ = $1; }
+        |    T_IF '(' expr ')'  statement  elseif_list else_single { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild($6)->addChild($7); }
         |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';' { $$ = $1; }
         |    T_WHILE '('  expr  ')' while_statement { $$ = $1; }
         |    T_DO  statement T_WHILE '(' expr ')' ';' { $$ = $1; }
@@ -205,9 +205,9 @@ unticked_statement:
                         ')'
                         for_statement
                 { $$ = $1; }
-        |    T_SWITCH '(' expr ')'     switch_case_list { $$ = $1; }
-        |    T_BREAK ';' { $$ = $1; }
-        |    T_BREAK expr ';' { $$ = $1; }
+        |    T_SWITCH '(' expr ')' switch_case_list { $$ = ASTNode::create("switch")->addChild($3)->addChild($5); }
+        |    T_BREAK ';' { $$ = ASTNode::create("break"); }
+        |    T_BREAK expr ';' { $$ = ASTNode::create("break")->addChild($2); }
         |    T_CONTINUE ';' { $$ = $1; }
         |    T_CONTINUE expr ';' { $$ = $1; }
         |    T_RETURN ';' { $$ = $1; }
@@ -230,7 +230,7 @@ unticked_statement:
                 foreach_statement
              { $$ = $1; }
         |    T_DECLARE  '(' declare_list ')' declare_statement { $$ = $1; }
-        |    ';'    	/* empty statement */ { $$ = $1; }
+        |    ';'    	/* empty statement */ { $$ = ASTNode::create("empty statement"); }
         |    T_TRY  '{' inner_statement_list '}'
                 T_CATCH '('
                 fully_qualified_class_name
@@ -394,9 +394,9 @@ switch_case_list:
 
 
 case_list:
-                /* empty */ {}
-        |    case_list T_CASE expr case_separator  inner_statement_list { $$ = $1; }
-        |    case_list T_DEFAULT case_separator  inner_statement_list { $$ = $1; }
+                /* empty */ { $$ = ASTNode::create("case_list"); }
+        |    case_list T_CASE expr case_separator  inner_statement_list { $1->addChild(ASTNode::create("case")->addChild($3)->addChild($5)); $$=$1; }
+        |    case_list T_DEFAULT case_separator  inner_statement_list   { $1->addChild(ASTNode::create("default_case")->addChild($4)); $$=$1; }
 ;
 
 
@@ -414,8 +414,8 @@ while_statement:
 
 
 elseif_list:
-                /* empty */ { }
-        |    elseif_list T_ELSEIF '(' expr ')'  statement { $$ = $1; }
+                /* empty */ {  $$ = ASTNode::create("elseif_list"); }
+        |    elseif_list T_ELSEIF '(' expr ')'  statement { $1->addChild(ASTNode::create("elseif")->addChild($4)->addChild($6)); $$ = $1; }
 ;
 
 
@@ -426,14 +426,14 @@ new_elseif_list:
 
 
 else_single:
-                /* empty */ {}
-        |    T_ELSE statement { $$ = $1; }
+                /* empty */ { $$ = ASTNode::create("else"); }
+        |    T_ELSE statement { $$ = ASTNode::create("else")->addChild($2); }
 ;
 
 
 new_else_single:
-                /* empty */ {}
-        |    T_ELSE ':' inner_statement_list { $$ = $1; }
+                /* empty */ { $$ = ASTNode::create("else"); }
+        |    T_ELSE ':' inner_statement_list { $$ = ASTNode::create("else")->addChild($3); }
 ;
 
 
