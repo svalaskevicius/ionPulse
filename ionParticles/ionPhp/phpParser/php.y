@@ -204,7 +204,7 @@ unticked_statement:
                                 for_expr
                         ')'
                         for_statement
-                { $$ = $1; }
+                { $$ = ASTNode::create("for")->addChild($3)->addChild($5)->addChild($7)->addChild($9); }
         |    T_SWITCH '(' expr ')' switch_case_list { $$ = ASTNode::create("switch")->addChild($3)->addChild($5); }
         |    T_BREAK ';' { $$ = ASTNode::create("break"); }
         |    T_BREAK expr ';' { $$ = ASTNode::create("break")->addChild($2); }

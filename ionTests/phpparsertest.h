@@ -627,10 +627,17 @@ private Q_SLOTS:
         "<?php do {echo 'x';} while(1);",
         "top_statement_list(dowhile(inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x]))); T_LNUMBER [text:1]))"
     );}
-//    void test_statementFor() { TEST_PHP_PARSER(
-//        "<?php for($i=0;$i<1;$i++) {echo 'x';}",
-//        ""
-//    );}
+    void test_statementFor() { TEST_PHP_PARSER(
+        "<?php for($i=0;$i<1;$i++) {echo 'x';}",
+        "top_statement_list("
+            "for("
+                "assignment(T_VARIABLE [text:$i]; T_LNUMBER [text:0]); "
+                "T_LESSTHAN(T_VARIABLE [text:$i]; T_LNUMBER [text:1]); "
+                "POSTINC(T_VARIABLE [text:$i]); "
+                "inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x])))"
+            ")"
+        ")"
+    );}
 //    void test_statementSwitch() { TEST_PHP_PARSER(
 //        "<?php switch($i) {case 'x': echo 'y'; default: echo 'z';}",
 //        ""
