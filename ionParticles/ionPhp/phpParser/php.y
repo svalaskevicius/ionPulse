@@ -208,14 +208,14 @@ unticked_statement:
         |    T_SWITCH '(' expr ')' switch_case_list { $$ = ASTNode::create("switch")->addChild($3)->addChild($5); }
         |    T_BREAK ';' { $$ = ASTNode::create("break"); }
         |    T_BREAK expr ';' { $$ = ASTNode::create("break")->addChild($2); }
-        |    T_CONTINUE ';' { $$ = $1; }
-        |    T_CONTINUE expr ';' { $$ = $1; }
-        |    T_RETURN ';' { $$ = $1; }
-        |    T_RETURN expr_without_variable ';' { $$ = $1; }
+        |    T_CONTINUE ';' { $$ = ASTNode::create("continue"); }
+        |    T_CONTINUE expr ';' { $$ = ASTNode::create("continue")->addChild($2); }
+        |    T_RETURN ';' { $$ = ASTNode::create("return"); }
+        |    T_RETURN expr_without_variable ';' { $$ = ASTNode::create("return")->addChild($2); }
         |    T_RETURN variable ';'          { $$ = ASTNode::create("return")->addChild($2);}
         |    T_GLOBAL global_var_list ';' { $$ = $1; }
-        |    T_STATIC static_var_list ';' { $$ = $1; }
-        |    T_ECHO echo_expr_list ';'      { $$ = ASTNode::create("echo")->addChild($2);}
+        |    T_STATIC static_var_list ';' { $$ = ASTNode::create("static")->addChild($2); }
+        |    T_ECHO echo_expr_list ';'    { $$ = ASTNode::create("echo")->addChild($2);}
         |    T_INLINE_HTML { $$ = $1; }
         |    expr ';' { $$ = $1; }
         |    T_UNSET '(' unset_variables ')' ';' { $$ = $1; }
@@ -223,12 +223,12 @@ unticked_statement:
 
                 foreach_variable foreach_optional_arg ')'
                 foreach_statement
-            { $$ = $1; }
-        |    T_FOREACH '(' expr_without_variable T_AS
+            { $$ = ASTNode::create("foreach")->addChild($3)->addChild($5)->addChild($6)->addChild($8);}
+/*        |    T_FOREACH '(' expr_without_variable T_AS
 
                 variable foreach_optional_arg ')'
                 foreach_statement
-             { $$ = $1; }
+             { $$ = $1; }*/
         |    T_DECLARE  '(' declare_list ')' declare_statement { $$ = $1; }
         |    ';'    	/* empty statement */ { $$ = ASTNode::create("empty statement"); }
         |    T_TRY  '{' inner_statement_list '}'
@@ -351,14 +351,14 @@ interface_list:
 ;
 
 foreach_optional_arg:
-                /* empty */ {}
-        |    T_DOUBLE_ARROW foreach_variable    { $$ = $2; }
+                /* empty */ { $$ = ASTNode::create("foreach_optional_arg"); }
+        |    T_DOUBLE_ARROW foreach_variable    { $$ = ASTNode::create("foreach_optional_arg")->addChild($2);  }
 ;
 
 
 foreach_variable:
                 variable { $$ = $1; }
-        |    '&' variable { $$ = $1; }
+        |    '&' variable { $$ = $2; $2->setData("is_reference", "1"); }
 ;
 
 for_statement:
@@ -369,7 +369,7 @@ for_statement:
 
 foreach_statement:
                 statement { $$ = $1; }
-        |    ':' inner_statement_list T_ENDFOREACH ';' { $$ = $1; }
+        |    ':' inner_statement_list T_ENDFOREACH ';' { $$ = $2; }
 ;
 
 

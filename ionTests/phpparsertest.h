@@ -653,30 +653,30 @@ private Q_SLOTS:
             ")"
         ")"
     );}
-//    void test_statementBreak() { TEST_PHP_PARSER(
-//        "<?php break;",
-//        ""
-//    );}
-//    void test_statementContinue() { TEST_PHP_PARSER(
-//        "<?php continue;",
-//        ""
-//    );}
-//    void test_statementReturn() { TEST_PHP_PARSER(
-//        "<?php funtion x(){return 2;}",
-//        ""
-//    );}
-//    void test_statementStaticVars() { TEST_PHP_PARSER(
-//        "<?php funtion x(){static $a = 2; return $a;}",
-//        ""
-//    );}
-//    void test_statementForeach() { TEST_PHP_PARSER(
-//        "<?php foreach($ar as $a=>$v) {echo 'x';}",
-//        ""
-//    );}
-//    void test_statementForeachRef() { TEST_PHP_PARSER(
-//        "<?php foreach($ar as $a=>&$v) {echo 'x';}",
-//        ""
-//    );}
+    void test_statementBreak() { TEST_PHP_PARSER(
+        "<?php break;",
+        "top_statement_list(break)"
+    );}
+    void test_statementContinue() { TEST_PHP_PARSER(
+        "<?php continue;",
+        "top_statement_list(continue)"
+    );}
+    void test_statementReturn() { TEST_PHP_PARSER(
+        "<?php function x(){return 2;}",
+        "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING [text:x]; parameter_list; inner_statement_list(return(T_LNUMBER [text:2]))))"
+    );}
+    void test_statementStaticVars() { TEST_PHP_PARSER(
+        "<?php function x(){static $a = 2; return $a;}",
+        "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING [text:x]; parameter_list; inner_statement_list(static(T_VARIABLE [text:$a]); return(T_VARIABLE [text:$a]))))"
+    );}
+    void test_statementForeach() { TEST_PHP_PARSER(
+        "<?php foreach($ar as $a=>$v) {echo 'x';}",
+        "top_statement_list(foreach(T_VARIABLE [text:$ar]; T_VARIABLE [text:$a]; foreach_optional_arg(T_VARIABLE [text:$v]); inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x])))))"
+    );}
+    void test_statementForeachRef() { TEST_PHP_PARSER(
+        "<?php foreach($ar as $a=>&$v) {echo 'x';}",
+        "top_statement_list(foreach(T_VARIABLE [text:$ar]; T_VARIABLE [text:$a]; foreach_optional_arg(T_VARIABLE [is_reference:1, text:$v]); inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x])))))"
+    );}
 //    void test_statementThrow() { TEST_PHP_PARSER(
 //        "<?php throw new Exception();",
 //        ""
