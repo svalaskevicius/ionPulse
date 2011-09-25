@@ -623,10 +623,10 @@ private Q_SLOTS:
         "<?php while(1) {echo 'x';}",
         "top_statement_list(while(T_LNUMBER [text:1]; inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x])))))"
     );}
-//    void test_statementDoWhile() { TEST_PHP_PARSER(
-//        "<?php do {echo 'x';} while(1);",
-//        ""
-//    );}
+    void test_statementDoWhile() { TEST_PHP_PARSER(
+        "<?php do {echo 'x';} while(1);",
+        "top_statement_list(dowhile(inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x]))); T_LNUMBER [text:1]))"
+    );}
 //    void test_statementFor() { TEST_PHP_PARSER(
 //        "<?php for($i=0;$i<1;$i++) {echo 'x';}",
 //        ""
