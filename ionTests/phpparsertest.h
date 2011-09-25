@@ -638,10 +638,21 @@ private Q_SLOTS:
             ")"
         ")"
     );}
-//    void test_statementSwitch() { TEST_PHP_PARSER(
-//        "<?php switch($i) {case 'x': echo 'y'; default: echo 'z';}",
-//        ""
-//    );}
+    void test_statementSwitch() { TEST_PHP_PARSER(
+        "<?php switch($i) {case 'x': echo 'y'; default: echo 'z';}",
+        "top_statement_list("
+            "switch("
+                "T_VARIABLE [text:$i]; "
+                "case_list("
+                    "case("
+                        "T_CONSTANT_ENCAPSED_STRING [text:x]; "
+                        "inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:y])))"
+                    "); "
+                    "default_case(inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:z]))))"
+                ")"
+            ")"
+        ")"
+    );}
 //    void test_statementBreak() { TEST_PHP_PARSER(
 //        "<?php break;",
 //        ""
