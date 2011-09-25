@@ -193,7 +193,7 @@ unticked_statement:
                 '{' inner_statement_list '}'           {$$=$2;}
         |    T_IF '(' expr ')'  statement  elseif_list else_single { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild($6)->addChild($7); }
         |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';' { $$ = $1; }
-        |    T_WHILE '('  expr  ')' while_statement { $$ = $1; }
+        |    T_WHILE '('  expr  ')' while_statement  { $$ = ASTNode::create("while")->addChild($3)->addChild($5); }
         |    T_DO  statement T_WHILE '(' expr ')' ';' { $$ = $1; }
         |    T_FOR
                         '('
