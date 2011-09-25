@@ -677,14 +677,30 @@ private Q_SLOTS:
         "<?php foreach($ar as $a=>&$v) {echo 'x';}",
         "top_statement_list(foreach(T_VARIABLE [text:$ar]; T_VARIABLE [text:$a]; foreach_optional_arg(T_VARIABLE [is_reference:1, text:$v]); inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x])))))"
     );}
-//    void test_statementThrow() { TEST_PHP_PARSER(
-//        "<?php throw new Exception();",
-//        ""
-//    );}
-//    void test_statementThyCatchCatch() { TEST_PHP_PARSER(
-//        "<?php try {echo 'x';} catch (MyException $e) {} catch (Exception $e) {}",
-//        ""
-//    );}
+    void test_statementThrow() { TEST_PHP_PARSER(
+        "<?php throw new Exception();",
+        "top_statement_list(throw(T_NEW(namespace_name(T_STRING [text:Exception]); function_call_parameter_list)))"
+    );}
+    void test_statementThyCatchCatch() { TEST_PHP_PARSER(
+        "<?php try {echo 'x';} catch (MyException $e) {} catch (Exception $e) {}",
+        "top_statement_list("
+            "try("
+                "inner_statement_list(echo(echo_expr_list(T_CONSTANT_ENCAPSED_STRING [text:x]))); "
+                "catch("
+                    "namespace_name(T_STRING [text:MyException]); "
+                    "T_VARIABLE [text:$e]; "
+                    "inner_statement_list"
+                "); "
+                "additional_catches("
+                    "catch("
+                        "namespace_name(T_STRING [text:Exception]); "
+                        "T_VARIABLE [text:$e]; "
+                        "inner_statement_list"
+                    ")"
+                ")"
+            ")"
+        ")"
+    );}
 };
 
 #endif // PHPPARSERTEST_H

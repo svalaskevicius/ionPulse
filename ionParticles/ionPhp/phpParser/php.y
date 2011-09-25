@@ -237,25 +237,26 @@ unticked_statement:
                 T_VARIABLE ')'
                 '{' inner_statement_list '}'
                 additional_catches
-             { $$ = $1; }
-        |    T_THROW expr ';' { $$ = $1; }
+             { $$ = ASTNode::create("try")->addChild($3)->addChild( ASTNode::create("catch")->addChild($7)->addChild($8)->addChild($11) )->addChild($13); }
+        |    T_THROW expr ';' { $$ = ASTNode::create("throw")->addChild($2); }
         |    T_GOTO T_STRING ';' { $$ = $1; }
 ;
 
 
 additional_catches:
                 non_empty_additional_catches { $$ = $1; }
-        |    /* empty */ {}
+        |    /* empty */ { $$ = ASTNode::create("additional_catches"); }
 ;
 
 non_empty_additional_catches:
-                additional_catch { $$ = $1; }
-        |    non_empty_additional_catches additional_catch { $$ = $2; }
+                additional_catch { $$ = ASTNode::create("additional_catches")->addChild($1); }
+        |    non_empty_additional_catches additional_catch { $1->addChild($2); $$ = $1; }
 ;
 
 
 additional_catch:
-        T_CATCH '(' fully_qualified_class_name  T_VARIABLE ')'  '{' inner_statement_list '}' { $$ = $1; }
+        T_CATCH '(' fully_qualified_class_name  T_VARIABLE ')'  '{' inner_statement_list '}'
+        { $$ = ASTNode::create("catch")->addChild($3)->addChild($4)->addChild($7); }
 ;
 
 
