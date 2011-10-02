@@ -13,13 +13,16 @@
 #define appendSpaces(w, l) { for(int _i=l;_i>0;_i--) w+=" ";}
 
 
-QString ASTNode::toMlString(int indentLevel)
+QString ASTNode::toMlString(int indentLevel, bool printPosition)
 {
     QString ret;
     if (indentLevel > 0) {
         appendSpaces(ret, indentLevel*4);
     }
     ret += name;
+    if ((lineNr>=0) && (columnNr>=0)) {
+        ret += QString(" (@ %1:%2)").arg(lineNr).arg(columnNr);
+    }
     if (strdata.count()) {
         ret += " [";
         QMap<QString, QString>::const_iterator i = strdata.begin();
@@ -51,7 +54,7 @@ QString ASTNode::toMlString(int indentLevel)
             } else {
                 _1st = false;
             }
-            ret += child->toMlString(indentLevel<0?indentLevel:indentLevel+1);
+            ret += child->toMlString(indentLevel<0?indentLevel:indentLevel+1, printPosition);
         }
         if (indentLevel >= 0) {
             ret += "\n";

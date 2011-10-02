@@ -15,10 +15,28 @@
  */
 #define YY_INPUT(buf,result,max_size) \
                 result = 0;
-
+#define YY_USER_ACTION \
+        {  \
+            yyextra->__line = yyextra->__posLine;\
+            yyextra->__col = yyextra->__posCol;\
+            for(char *c=yytext; *c; c++) {\
+                switch (*c) { \
+                    case '\n': \
+                        yyextra->__posLine++;\
+                        yyextra->__posCol = 0; \
+                        break; \
+                    default:\
+                        yyextra->__posCol++;\
+                }\
+            }\
+        }
 #define yylval_param astNode
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
 #define YY_EXTRA_TYPE IonPhp::phpParser*
+#define CREATE_AST_NODE(node) ASTNode::create(node)->setPosition(yyextra->__line, yyextra->__col)
+
+char ionInput(yyscan_t yyscanner);
+void ionUnput(char c, yyscan_t yyscanner);
 
 char lookupChar(yyscan_t yyscanner);
 QString lookupChars(int numberOfChars, yyscan_t yyscanner);
@@ -180,22 +198,22 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING>"class" {
-        *astNode = ASTNode::create("class");
+        *astNode = CREATE_AST_NODE("class");
         return T_CLASS;
 }
 
 <ST_IN_SCRIPTING>"interface" {
-        *astNode = ASTNode::create("interface");
+        *astNode = CREATE_AST_NODE("interface");
         return T_INTERFACE;
 }
 
 <ST_IN_SCRIPTING>"extends" {
-        *astNode = ASTNode::create("extends");
+        *astNode = CREATE_AST_NODE("extends");
         return T_EXTENDS;
 }
 
 <ST_IN_SCRIPTING>"implements" {
-        *astNode = ASTNode::create("implements");
+        *astNode = CREATE_AST_NODE("implements");
         return T_IMPLEMENTS;
 }
 
@@ -205,7 +223,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING,ST_LOOKING_FOR_PROPERTY>{WHITESPACE}+ {
-        // *astNode = ASTNode::create("T_WHITESPACE")->setData("text", yytext);
+        // *astNode = CREATE_AST_NODE("T_WHITESPACE")->setData("text", yytext);
         return T_WHITESPACE;
 }
 
@@ -215,7 +233,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 <ST_LOOKING_FOR_PROPERTY>{LABEL} {
         yy_pop_state(yyscanner);
-        *astNode = ASTNode::create("T_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_STRING")->setData("text", yytext);
         return T_STRING;
 }
 
@@ -489,7 +507,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_LOOKING_FOR_VARNAME>{LABEL} {
-        *astNode = ASTNode::create("T_STRING_VARNAME")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_STRING_VARNAME")->setData("text", yytext);
         yy_pop_state(yyscanner);
         yy_push_state(ST_IN_SCRIPTING, yyscanner);
         return T_STRING_VARNAME;
@@ -504,57 +522,57 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_IN_SCRIPTING>{LNUM}|{HNUM} {
-        *astNode = ASTNode::create("T_LNUMBER")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_LNUMBER")->setData("text", yytext);
         return T_LNUMBER;
 }
 
 <ST_VAR_OFFSET>[0]|([1-9][0-9]*) { /* Offset could be treated as a long */
-        *astNode = ASTNode::create("T_NUM_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_NUM_STRING")->setData("text", yytext);
         return T_NUM_STRING;
 }
 
 <ST_VAR_OFFSET>{LNUM}|{HNUM} { /* Offset must be treated as a string */
-        *astNode = ASTNode::create("T_NUM_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_NUM_STRING")->setData("text", yytext);
         return T_NUM_STRING;
 }
 
 <ST_IN_SCRIPTING>{DNUM}|{EXPONENT_DNUM} {
-        *astNode = ASTNode::create("T_DNUMBER")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_DNUMBER")->setData("text", yytext);
         return T_DNUMBER;
 }
 
 <ST_IN_SCRIPTING>"__CLASS__" {
-        *astNode = ASTNode::create("__CLASS__");
+        *astNode = CREATE_AST_NODE("__CLASS__");
         return T_CLASS_C;
 }
 
 <ST_IN_SCRIPTING>"__FUNCTION__" {
-        *astNode = ASTNode::create("__FUNCTION__");
+        *astNode = CREATE_AST_NODE("__FUNCTION__");
         return T_FUNC_C;
 }
 
 <ST_IN_SCRIPTING>"__METHOD__" {
-        *astNode = ASTNode::create("__METHOD__");
+        *astNode = CREATE_AST_NODE("__METHOD__");
         return T_METHOD_C;
 }
 
 <ST_IN_SCRIPTING>"__LINE__" {
-        *astNode = ASTNode::create("__LINE__");
+        *astNode = CREATE_AST_NODE("__LINE__");
         return T_LINE;
 }
 
 <ST_IN_SCRIPTING>"__FILE__" {
-        *astNode = ASTNode::create("__FILE__");
+        *astNode = CREATE_AST_NODE("__FILE__");
         return T_FILE;
 }
 
 <ST_IN_SCRIPTING>"__DIR__" {
-        *astNode = ASTNode::create("__DIR__");
+        *astNode = CREATE_AST_NODE("__DIR__");
         return T_DIR;
 }
 
 <ST_IN_SCRIPTING>"__NAMESPACE__" {
-        *astNode = ASTNode::create("__NAMESPACE__");
+        *astNode = CREATE_AST_NODE("__NAMESPACE__");
         return T_NS_C;
 }
 
@@ -609,7 +627,7 @@ inline_char_handler:
         // will eat at least one char to avoid endless wandering in this loop
         QString result = "";
         result += (char)yytext[0];
-        char c = yyinput(yyscanner);
+        char c = ionInput(yyscanner);
         while (c) {
             if ('<' == c) {
                 switch (lookupChar(yyscanner)) {
@@ -619,46 +637,46 @@ inline_char_handler:
                     case '?':
                             if (0) {
                                 // allow shorttags?
-                                unput(c);
+                                ionUnput(c, yyscanner);
                                 break;
                             }
                             {
                                 if ( matchesRegexp(lookupChars(5, yyscanner), "^\\?php\\s$") ) {
-                                    unput(c);
+                                    ionUnput(c, yyscanner);
                                     break;
                                 }
                                 result += c;
-                                c = yyinput(yyscanner);
+                                c = ionInput(yyscanner);
                                 continue;
                             }
                         case '%':
                                 if (0) {
                                 //  allow asp tags?
-                                    unput(c);
+                                    ionUnput(c, yyscanner);
                                         break;
                                 }
                                 result += c;
-                                c = yyinput(yyscanner);
+                                c = ionInput(yyscanner);
                                 continue;
                         case 's':
                         case 'S':
                                 /* Probably NOT an opening PHP <script> tag, so don't end the HTML chunk yet
                                  * If it is, the PHP <script> tag rule checks for any HTML scanned before it */
-                                unput(c);
+                                ionUnput(c, yyscanner);
                                 break;
                         default:
                                 result += c;
-                                c = yyinput(yyscanner);
+                                c = ionInput(yyscanner);
                                 continue;
                 }
                 break;
             } else {
                 result += c;
-                c = yyinput(yyscanner);
+                c = ionInput(yyscanner);
             }
         }
         if (result.length()) {
-            *astNode = ASTNode::create("T_INLINE_HTML")->setData("text", result);
+            *astNode = CREATE_AST_NODE("T_INLINE_HTML")->setData("text", result);
         }
         return T_INLINE_HTML;
 }
@@ -669,7 +687,7 @@ inline_char_handler:
              */
         yyless(yyleng - 3);
         yy_push_state(ST_LOOKING_FOR_PROPERTY, yyscanner);
-        *astNode = ASTNode::create("T_VARIABLE")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_VARIABLE")->setData("text", yytext);
         return T_VARIABLE;
 }
 
@@ -678,12 +696,12 @@ inline_char_handler:
          */
         yyless(yyleng - 1);
         yy_push_state(ST_VAR_OFFSET, yyscanner);
-        *astNode = ASTNode::create("T_VARIABLE")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_VARIABLE")->setData("text", yytext);
         return T_VARIABLE;
 }
 
 <ST_IN_SCRIPTING,ST_DOUBLE_QUOTES,ST_HEREDOC,ST_BACKQUOTE,ST_VAR_OFFSET>"$"{LABEL} {
-        *astNode = ASTNode::create("T_VARIABLE")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_VARIABLE")->setData("text", yytext);
         return T_VARIABLE;
 }
 
@@ -705,7 +723,7 @@ inline_char_handler:
 }
 
 <ST_IN_SCRIPTING,ST_VAR_OFFSET>{LABEL} {
-        *astNode = ASTNode::create("T_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_STRING")->setData("text", yytext);
         return T_STRING;
 }
 
@@ -714,12 +732,12 @@ inline_char_handler:
 
     bool stop = false;
     char c;
-    while(!stop && ((c = yyinput(yyscanner)) != 0)) {
+    while(!stop && ((c = ionInput(yyscanner)) != 0)) {
         switch (c) {
             case '\r':
-                    c = yyinput(yyscanner);
+                    c = ionInput(yyscanner);
                     if (c != '\n') {
-                        unput(c);
+                        ionUnput(c, yyscanner);
                     }
                     /* fall through */
             case '\n':
@@ -733,7 +751,7 @@ inline_char_handler:
             case '?':
                     {
                         if (lookupChar(yyscanner) == '>') {
-                                unput(c);
+                                ionUnput(c, yyscanner);
                                 stop = true;
                                 break;
                         }
@@ -744,7 +762,7 @@ inline_char_handler:
         }
     }
 
-    *astNode = ASTNode::create("T_COMMENT")->setData("text", yytext);
+    *astNode = CREATE_AST_NODE("T_COMMENT")->setData("text", yytext);
     return T_COMMENT;
 }
 
@@ -759,23 +777,23 @@ inline_char_handler:
 
         char c;
 
-        while ( (c = yyinput(yyscanner)) ) {
+        while ( (c = ionInput(yyscanner)) ) {
             if (c == '*') {
-                char nc = yyinput(yyscanner);
+                char nc = ionInput(yyscanner);
                 if (nc == '/') {
                     break;
                 } else {
-                    unput(nc);
+                    ionUnput(nc, yyscanner);
                 }
             }
         }
 
         if (doc_com) {
-            *astNode = ASTNode::create("T_DOC_COMMENT")->setData("text", yytext);
+            *astNode = CREATE_AST_NODE("T_DOC_COMMENT")->setData("text", yytext);
             return T_DOC_COMMENT;
         }
 
-        *astNode = ASTNode::create("T_COMMENT")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("T_COMMENT")->setData("text", yytext);
         return T_COMMENT;
 }
 
@@ -799,17 +817,17 @@ inline_char_handler:
 <ST_IN_SCRIPTING>"'" {
         char c;
         QString result = "";
-        while ( (c = yyinput(yyscanner)) )  {
+        while ( (c = ionInput(yyscanner)) )  {
             if (c == '\'') {
                 break;
             } else {
                 result += c;
                 if (c == '\\') {
-                    result += yyinput(yyscanner); // consume one more char
+                    result += ionInput(yyscanner); // consume one more char
                 }
             }
         }
-        *astNode = ASTNode::create("T_CONSTANT_ENCAPSED_STRING")->setData("text", result);
+        *astNode = CREATE_AST_NODE("T_CONSTANT_ENCAPSED_STRING")->setData("text", result);
         return T_CONSTANT_ENCAPSED_STRING;
 }
 
@@ -817,20 +835,20 @@ inline_char_handler:
 <ST_IN_SCRIPTING>"\"" {
         char c;
         QString result;
-        while ( (c = yyinput(yyscanner)) )  {
+        while ( (c = ionInput(yyscanner)) )  {
             switch (c) {
                 case '"':
-                    *astNode = ASTNode::create("T_CONSTANT_ENCAPSED_STRING")->setData("text", result);
+                    *astNode = CREATE_AST_NODE("T_CONSTANT_ENCAPSED_STRING")->setData("text", result);
                     return T_CONSTANT_ENCAPSED_STRING;
                 case '\\':
                     result += c;
-                    c = yyinput(yyscanner); // consume one more char
+                    c = ionInput(yyscanner); // consume one more char
                     result += c;
                     continue;
                 case '$':
                     {
                         if ( isStartOfLabel(yyscanner) ) {
-                            unput(c);
+                            ionUnput(c, yyscanner);
                             break;
                         }
                         result += c;
@@ -839,7 +857,7 @@ inline_char_handler:
                 case '{':
                     {
                         if ( lookupChar(yyscanner) == '$') {
-                            unput(c);
+                            ionUnput(c, yyscanner);
                             break;
                         }
                     }
@@ -853,7 +871,7 @@ inline_char_handler:
 
         // rewind scanned data - it will be scanned properly in string scanner
         for (int i = result.length()-1; i>=0; i--) {
-            unput(result[i].toAscii());
+            ionUnput(result[i].toAscii(), yyscanner);
         }
         BEGIN(ST_DOUBLE_QUOTES);
         return '"';
@@ -928,23 +946,23 @@ inline_char_handler:
         QString result;
         result += yytext[0];
         if (yytext[0] == '\\') {
-            result += yyinput(yyscanner);
+            result += ionInput(yyscanner);
         }
 
         char c;
-        while ( (c = yyinput(yyscanner)) ) {
+        while ( (c = ionInput(yyscanner)) ) {
             switch (c) {
                 case '"':
-                    unput(c);
+                    ionUnput(c, yyscanner);
                     break;
                 case '\\':
                     result += '\\';
-                    result += yyinput(yyscanner); // consume one more char
+                    result += ionInput(yyscanner); // consume one more char
                     continue;
                 case '$':
                     {
                         if ( isStartOfLabel(yyscanner) ) {
-                            unput(c);
+                            ionUnput(c, yyscanner);
                             break;
                         }
                         result += c;
@@ -953,7 +971,7 @@ inline_char_handler:
                 case '{':
                     {
                         if ( (lookupChar(yyscanner) == '$') ) {
-                            unput(c);
+                            ionUnput(c, yyscanner);
                             break;
                         }
                     }
@@ -965,7 +983,7 @@ inline_char_handler:
             break;
         }
 
-        *astNode = ASTNode::create("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+        *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -978,23 +996,23 @@ inline_char_handler:
             QString result;
             result += yytext[0];
             if (yytext[0] == '\\') {
-                result += yyinput(yyscanner);
+                result += ionInput(yyscanner);
             }
 
             char c;
-            while ( (c = yyinput(yyscanner)) ) {
+            while ( (c = ionInput(yyscanner)) ) {
                 switch (c) {
                     case '`':
-                        unput(c);
+                        ionUnput(c, yyscanner);
                         break;
                     case '\\':
                         result += '\\';
-                        result += yyinput(yyscanner); // consume one more char
+                        result += ionInput(yyscanner); // consume one more char
                         continue;
                     case '$':
                         {
                             if ( isStartOfLabel(yyscanner) ) {
-                                unput(c);
+                                ionUnput(c, yyscanner);
                                 break;
                             }
                             result += c;
@@ -1003,7 +1021,7 @@ inline_char_handler:
                     case '{':
                         {
                             if ( lookupChar(yyscanner) == '$')  {
-                                unput(c);
+                                ionUnput(c, yyscanner);
                                 break;
                             }
                         }
@@ -1015,7 +1033,7 @@ inline_char_handler:
                 break;
             }
 
-            *astNode = ASTNode::create("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+            *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
             return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1028,9 +1046,9 @@ inline_char_handler:
                 switch (c) {
                         case '\r':
                                 {
-                                    char nc = yyinput(yyscanner);
+                                    char nc = ionInput(yyscanner);
                                     if (nc != '\n') {
-                                        unput(nc);
+                                        ionUnput(nc, yyscanner);
                                     }
                                     if (scanForHereDocEnd(yyscanner)) {
                                         BEGIN(ST_IN_SCRIPTING);
@@ -1040,7 +1058,7 @@ inline_char_handler:
                                     if (nc == '\n') {
                                         result += nc;
                                     }
-                                    c = yyinput(yyscanner);
+                                    c = ionInput(yyscanner);
                                 }
                                 continue;
                         case '\n':
@@ -1049,34 +1067,34 @@ inline_char_handler:
                                     break;
                                 }
                                 result += c;
-                                c = yyinput(yyscanner);
+                                c = ionInput(yyscanner);
                                 continue;
                         case '$':
                             {
                                 if ( isStartOfLabel(yyscanner) ) {
-                                    unput(c);
+                                    ionUnput(c, yyscanner);
                                     break;
                                 }
                                 result += c;
-                                c = yyinput(yyscanner);
+                                c = ionInput(yyscanner);
                                 continue;
                             }
                         case '{':
                             {
                                 if ( lookupChar(yyscanner) == '$') {
-                                    unput(c);
+                                    ionUnput(c, yyscanner);
                                     break;
                                 }
                             }
                             /* fall through */
                         default:
                             result += c;
-                            c = yyinput(yyscanner);
+                            c = ionInput(yyscanner);
                             continue;
                 }
                 break;
         }
-        *astNode = ASTNode::create("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+        *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1089,9 +1107,9 @@ inline_char_handler:
                 switch (c) {
                         case '\r':
                                 {
-                                    char nc = yyinput(yyscanner);
+                                    char nc = ionInput(yyscanner);
                                     if (nc != '\n') {
-                                        unput(nc);
+                                        ionUnput(nc, yyscanner);
                                     }
                                     if (scanForHereDocEnd(yyscanner)) {
                                         BEGIN(ST_IN_SCRIPTING);
@@ -1101,7 +1119,7 @@ inline_char_handler:
                                     if (nc == '\n') {
                                         result += nc;
                                     }
-                                    c = yyinput(yyscanner);
+                                    c = ionInput(yyscanner);
                                 }
                                 continue;
                         case '\n':
@@ -1110,28 +1128,65 @@ inline_char_handler:
                                     break;
                                 }
                                 result += c;
-                                c = yyinput(yyscanner);
+                                c = ionInput(yyscanner);
                                 continue;
                         default:
                             result += c;
-                            c = yyinput(yyscanner);
+                            c = ionInput(yyscanner);
                             continue;
                 }
                 break;
         }
-        *astNode = ASTNode::create("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+        *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
 %%
 #include <QRegExp>
 
+char ionInput(yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+    char c = yyinput(yyscanner);
+    switch (c) {
+        case '\n':
+            yyextra->__posLine++;
+            yyextra->__posColHistory.append(yyextra->__posCol);
+            yyextra->__posCol = 0;
+            break;
+        default:
+            yyextra->__posCol++;
+    }
+    return c;
+}
+
+void ionUnput(char c, yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+    unput(c);
+    switch (c) {
+        case '\n':
+            if (yyextra->__posLine > 0) {
+                yyextra->__posLine--;
+                if (yyextra->__posColHistory.size()) {
+                    yyextra->__posCol = yyextra->__posColHistory.back();
+                    yyextra->__posColHistory.pop_back();
+                }
+            }
+            break;
+        default:
+            if (yyextra->__posCol > 0) {
+                yyextra->__posCol--;
+            }
+    }
+}
+
 QString retrieveChars(int numberOfChars, yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     QString result;
     char c;
-    while (numberOfChars-- && (c = yyinput(yyscanner))) {
+    while (numberOfChars-- && (c = ionInput(yyscanner))) {
         result += c;
     }
     return result;
@@ -1142,7 +1197,7 @@ void putCharsBack(QString chars, yyscan_t yyscanner)
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     int i = chars.length();
     while (i--) {
-        unput(chars[i].toAscii());
+        ionUnput(chars[i].toAscii(), yyscanner);
     }
 }
 QString lookupChars(int numberOfChars, yyscan_t yyscanner)
@@ -1155,8 +1210,8 @@ QString lookupChars(int numberOfChars, yyscan_t yyscanner)
 char lookupChar(yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    char c = yyinput(yyscanner);
-    unput(c);
+    char c = ionInput(yyscanner);
+    ionUnput(c, yyscanner);
     return c;
 }
 bool matchesRegexp(QString input, QString regex)
@@ -1198,6 +1253,7 @@ namespace IonPhp {
         {
             YY_BUFFER_STATE b = _impl_ionPhp__scan_string(data, __scanner);
             b->yy_fill_buffer = 0;
+            this->__col = this->__line = this->__posCol = this->__posLine = 0;
             return b;
         }
         void phpParser::delBuf(void *buf)

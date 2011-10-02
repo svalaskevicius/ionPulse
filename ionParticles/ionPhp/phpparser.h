@@ -10,6 +10,7 @@
 #define PHPPARSER_H
 
 #include <QString>
+#include <QList>
 #include "phpParser/ionParserLib.h"
 
 typedef void * yyscan_t;
@@ -30,6 +31,8 @@ protected:
 public:
     void* __scanner;
     pASTNode __result;
+    int __line, __col, __posLine, __posCol;
+    QList<int> __posColHistory;
     void __error(phpParser *myself, const char *error);
     int  __lex(pASTNode *astNode, yyscan_t yyscanner);
     QString currentHeredocLabel;
