@@ -14,11 +14,9 @@
 namespace IonProject {
 namespace Private {
 
-TreeWidget::TreeWidget(QWidget *parent) :
-    QTreeView(parent), _fiModel(NULL)
+TreeWidget::TreeWidget(TreeModel *dataModel, QWidget *parent) :
+    QTreeView(parent), _fiModel(dataModel)
 {
-    DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/warner.development.local");
-    _fiModel = new TreeModel(&dirTreeSource);
     this->setModel(_fiModel);
 
     _filterInputField = new QLineEdit(this);

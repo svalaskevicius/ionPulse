@@ -86,7 +86,6 @@ TreeItem *TreeBranch::getChild(int row)
         }
     }
     throw std::out_of_range("children size reached");
-//    return childItems.value(row);
 }
 
 int TreeBranch::childrenCount() const
@@ -98,8 +97,8 @@ int TreeBranch::childrenCount() const
         }
     }
     return current;
-//    return childItems.count();
 }
+
 int TreeBranch::getChildRowNr(TreeItem *child)
 {
     int current = 0;
@@ -112,8 +111,8 @@ int TreeBranch::getChildRowNr(TreeItem *child)
         }
     }
     throw std::out_of_range("children size reached");
-    //return childItems.indexOf(child);
 }
+
 void TreeBranch::filter(QString const filter)
 {
     visible = false;

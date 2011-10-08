@@ -11,6 +11,7 @@
 #include <QtPlugin>
 #include <ionHeart/shared.h>
 #include "treewidget.h"
+#include "treemodel.h"
 
 namespace IonProject {
 
@@ -22,7 +23,10 @@ Plugin::Plugin(QObject *parent) :
 void Plugin::postLoad()
 {
     Q_ASSERT(editorPlugin);
-    Private::TreeWidget *fileTree = new Private::TreeWidget();
+
+    Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/warner.development.local");
+    Private::TreeWidget *fileTree = new Private::TreeWidget(new Private::TreeModel(&dirTreeSource));
+
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
 }
