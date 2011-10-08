@@ -13,6 +13,7 @@
 #include <ionHeart/plugin.h>
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionLayout/layoutapi.h>
+#include "projectapi.h"
 
 #define PROJECT_PLUGIN_NAME "ionProject"
 
@@ -21,7 +22,7 @@ namespace IonProject {
 
 class TreeModel;
 
-class Plugin : public QObject, public IonHeart::BasicPlugin
+class Plugin : public QObject, public ProjectPlugin
 {
     Q_OBJECT
     Q_INTERFACES(IonHeart::BasicPlugin)
@@ -38,7 +39,7 @@ public:
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
-    TreeModel *getProjectTreeModel();
+    TreeModel *getProjectFileTreeModel();
 private:
     IonEditor::EditorPlugin *editorPlugin;
     IonLayout::LayoutManager *layoutManager;

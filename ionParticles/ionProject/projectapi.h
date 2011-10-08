@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include <ionHeart/plugin.h>
 
 
 namespace IonProject {
@@ -10,6 +11,11 @@ public:
     virtual ~TreeModel() {}
     virtual void filter(QString filter) = 0;
     virtual QString getPath(const QModelIndex &index) const = 0;
+};
+
+class ProjectPlugin : public IonHeart::BasicPlugin {
+public:
+    virtual TreeModel *getProjectFileTreeModel() = 0;
 };
 
 }

@@ -24,7 +24,7 @@ void Plugin::postLoad()
 {
     Q_ASSERT(editorPlugin);
 
-    Private::TreeWidget *fileTree = new Private::TreeWidget(getProjectTreeModel());
+    Private::TreeWidget *fileTree = new Private::TreeWidget(getProjectFileTreeModel());
 
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
@@ -47,7 +47,7 @@ void Plugin::openFile(QString path)
     layoutManager->add(editorPlugin->getEditorWidgetBuilder()->createEditor(path));
 }
 
-TreeModel *Plugin::getProjectTreeModel()
+TreeModel *Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
         Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/warner.development.local");
