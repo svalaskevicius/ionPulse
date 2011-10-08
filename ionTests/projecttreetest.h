@@ -14,7 +14,7 @@
 #include <iostream>
 
 #include <ionParticles/ionProject/treeitem.h>
-#include <ionParticles/ionProject/treemodel.h>
+#include <ionParticles/ionProject/filetreemodel.h>
 
 using namespace IonProject::Private;
 
@@ -42,7 +42,7 @@ class ProjectTreeTest : public QObject
 private Q_SLOTS:
     void test_treeModel_dataDimensions() {
         MockTreeSource source;
-        TreeModel model(&source, NULL);
+        FileTreeModel model(&source);
 
         QCOMPARE(model.rowCount(), 2);
         QCOMPARE(model.rowCount(model.index(0, 0)), 1);
@@ -51,14 +51,14 @@ private Q_SLOTS:
 
     void test_treeModel_structureBetweenParentAndChild() {
         MockTreeSource source;
-        TreeModel model(&source, NULL);
+        FileTreeModel model(&source);
 
         QCOMPARE(model.parent(model.index(0, 0, model.index(0, 0))), model.index(0, 0));
     }
 
     void test_treeModel_dataContainsCorrectFixtures() {
         MockTreeSource source;
-        TreeModel model(&source, NULL);
+        FileTreeModel model(&source);
 
         QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir1"));
         QCOMPARE(model.data(model.index(1, 0), Qt::DisplayRole).toString(), QString("fileName2"));
@@ -67,7 +67,7 @@ private Q_SLOTS:
 
     void test_treeModel_dataIsReducedByFilter() {
         MockTreeSource source;
-        TreeModel model(&source, NULL);
+        FileTreeModel model(&source);
 
         model.filter("2");
 
@@ -84,7 +84,7 @@ private Q_SLOTS:
 
     void test_treeModel_filterWorksForPathBasis() {
         MockTreeSource source;
-        TreeModel model(&source, NULL);
+        FileTreeModel model(&source);
 
         model.filter("1/f");
 
@@ -98,7 +98,7 @@ private Q_SLOTS:
 
     void test_treeModel_getPath() {
         MockTreeSource source;
-        TreeModel model(&source, NULL);
+        FileTreeModel model(&source);
 
         model.filter("1/f");
 

@@ -18,16 +18,22 @@ HEADERS += \
     plugin.h \
     treeitem.h \
     treewidget.h \
-    treemodel.h
+    projectapi.h \
+    filetreemodel.h
 
 SOURCES += \
     plugin.cpp \
     treeitem.cpp \
     treewidget.cpp \
-    treemodel.cpp
+    filetreemodel.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
+
+
+
 
 
 

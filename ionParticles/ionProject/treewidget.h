@@ -14,23 +14,24 @@
 #include <ionParticles/ionLayout/layoutapi.h>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include "projectapi.h"
 
 namespace IonProject {
 
 namespace Private {
 
-class TreeModel;
+class FileTreeModel;
 
 class TreeWidget : public QTreeView, public IonLayout::PanelWidget
 {
     Q_OBJECT
 protected:
-    TreeModel *_fiModel;
+    IonProject::TreeModel *_fiModel;
     QLineEdit *_filterInputField;
 
     virtual void keyPressEvent ( QKeyEvent * event );
 public:
-    explicit TreeWidget(TreeModel *dataModel, QWidget *parent = 0);
+    explicit TreeWidget(IonProject::TreeModel *dataModel, QWidget *parent = 0);
     virtual ~TreeWidget();
     virtual QWidget *getWidget() {return this;}
     virtual QString getPanelTitle() {return "Project Browser";}

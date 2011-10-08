@@ -10,28 +10,27 @@
 #include <QDir>
 
 #include "treeitem.h"
-#include "treemodel.h"
+#include "filetreemodel.h"
 
 namespace IonProject {
 namespace Private {
 
-TreeModel::TreeModel(TreeModelSource *source, QObject *parent)
-    : QAbstractItemModel(parent)
+FileTreeModel::FileTreeModel(TreeModelSource *source)
 {
     rootItem = source->setupData();
 }
 
-TreeModel::~TreeModel()
+FileTreeModel::~FileTreeModel()
 {
     delete rootItem;
 }
 
-int TreeModel::columnCount(const QModelIndex &) const
+int FileTreeModel::columnCount(const QModelIndex &) const
 {
     return 1;
 }
 
-QVariant TreeModel::data(const QModelIndex &index, int role) const
+QVariant FileTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -44,7 +43,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     return item->data(index.column());
 }
 
-Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags FileTreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return 0;
@@ -52,7 +51,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
+QVariant FileTreeModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -61,7 +60,7 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
+QModelIndex FileTreeModel::index(int row, int column, const QModelIndex &parent)
 const
 {
     if (!hasIndex(row, column, parent))
@@ -81,7 +80,7 @@ const
         return QModelIndex();
 }
 
-QModelIndex TreeModel::parent(const QModelIndex &index) const
+QModelIndex FileTreeModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
         return QModelIndex();
@@ -95,7 +94,7 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
     return createIndex(parentItem->getRowNr(), 0, parentItem);
 }
 
-int TreeModel::rowCount(const QModelIndex &parent) const
+int FileTreeModel::rowCount(const QModelIndex &parent) const
 {
     TreeItem *parentItem;
     if (parent.column() > 0)
@@ -109,12 +108,12 @@ int TreeModel::rowCount(const QModelIndex &parent) const
     return parentItem->childrenCount();
 }
 
-void TreeModel::filter(QString filter) {
+void FileTreeModel::filter(QString filter) {
     rootItem->filter(filter);
     reset();
 }
 
-QString TreeModel::getPath(const QModelIndex &index) const {
+QString FileTreeModel::getPath(const QModelIndex &index) const {
     if (!index.isValid())
         return "";
 

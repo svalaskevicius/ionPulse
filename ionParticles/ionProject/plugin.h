@@ -16,8 +16,10 @@
 
 #define PROJECT_PLUGIN_NAME "ionProject"
 
+
 namespace IonProject {
 
+class TreeModel;
 
 class Plugin : public QObject, public IonHeart::BasicPlugin
 {
@@ -36,9 +38,11 @@ public:
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
+    TreeModel *getProjectTreeModel();
 private:
     IonEditor::EditorPlugin *editorPlugin;
     IonLayout::LayoutManager *layoutManager;
+    TreeModel *projectTreeModel;
 signals:
 
 public slots:

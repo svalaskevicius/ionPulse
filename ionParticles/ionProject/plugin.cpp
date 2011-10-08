@@ -11,12 +11,12 @@
 #include <QtPlugin>
 #include <ionHeart/shared.h>
 #include "treewidget.h"
-#include "treemodel.h"
+#include "filetreemodel.h"
 
 namespace IonProject {
 
 Plugin::Plugin(QObject *parent) :
-    QObject(parent), editorPlugin(NULL), layoutManager(NULL)
+    QObject(parent), editorPlugin(NULL), layoutManager(NULL), projectTreeModel(NULL)
 {
 }
 
@@ -24,8 +24,7 @@ void Plugin::postLoad()
 {
     Q_ASSERT(editorPlugin);
 
-    Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/warner.development.local");
-    Private::TreeWidget *fileTree = new Private::TreeWidget(new Private::TreeModel(&dirTreeSource));
+    Private::TreeWidget *fileTree = new Private::TreeWidget(getProjectTreeModel());
 
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
@@ -46,6 +45,15 @@ void Plugin::openFile(QString path)
 {
     Q_ASSERT(editorPlugin);
     layoutManager->add(editorPlugin->getEditorWidgetBuilder()->createEditor(path));
+}
+
+TreeModel *Plugin::getProjectTreeModel()
+{
+    if (!projectTreeModel) {
+        Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/warner.development.local");
+        projectTreeModel = new Private::FileTreeModel(&dirTreeSource);
+    }
+    return projectTreeModel;
 }
 
 }

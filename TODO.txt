@@ -61,7 +61,9 @@
 
 === dynamic class rewrite rules for type hinting ===
 
+=== improve Treemodel to provide icons and fonts for dir view ===
 
+=== project: move TreeModel to overridable factory, make php project override it and add decorators for tree model getData to provide icons, font sizes etc ===
 
 
 

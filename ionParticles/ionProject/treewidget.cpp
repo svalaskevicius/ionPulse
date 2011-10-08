@@ -7,14 +7,14 @@
 */
 
 #include "treewidget.h"
-#include "treemodel.h"
+#include "filetreemodel.h"
 #include <QVBoxLayout>
 #include <QFileInfo>
 
 namespace IonProject {
 namespace Private {
 
-TreeWidget::TreeWidget(TreeModel *dataModel, QWidget *parent) :
+TreeWidget::TreeWidget(IonProject::TreeModel *dataModel, QWidget *parent) :
     QTreeView(parent), _fiModel(dataModel)
 {
     this->setModel(_fiModel);

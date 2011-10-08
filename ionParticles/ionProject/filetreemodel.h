@@ -9,9 +9,9 @@
 #ifndef PROJECT_TREEMODEL_H
 #define PROJECT_TREEMODEL_H
 
-#include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
+#include "projectapi.h"
 
 namespace IonProject {
 namespace Private {
@@ -34,13 +34,13 @@ private:
 };
 
 
-class TreeModel : public QAbstractItemModel
+class FileTreeModel : public IonProject::TreeModel
 {
     Q_OBJECT
 
 public:
-    TreeModel(TreeModelSource *source, QObject *parent = 0);
-    ~TreeModel();
+    FileTreeModel(TreeModelSource *source);
+    ~FileTreeModel();
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -53,7 +53,6 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
     void filter(QString filter);
-
     QString getPath(const QModelIndex &index) const;
 private:
     TreeBranch *rootItem;
