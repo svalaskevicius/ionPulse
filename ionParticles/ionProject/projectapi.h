@@ -16,6 +16,7 @@ public:
 class ProjectPlugin : public IonHeart::BasicPlugin {
 public:
     virtual TreeModel *getProjectFileTreeModel() = 0;
+    static QString name() {return "ionProject";}
 };
 
 }

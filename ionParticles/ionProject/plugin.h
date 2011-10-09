@@ -15,8 +15,6 @@
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "projectapi.h"
 
-#define PROJECT_PLUGIN_NAME "ionProject"
-
 
 namespace IonProject {
 
@@ -30,12 +28,12 @@ public:
     explicit Plugin(QObject *parent = 0);
     void postLoad();
     QString getName() {
-        return PROJECT_PLUGIN_NAME;
+        return ProjectPlugin::name();
     }
     virtual QList<QString> getDependencies() {
         QList<QString> ret;
-        ret.append(LAYOUT_PLUGIN_NAME);
-        ret.append(EDITOR_PLUGIN_NAME);
+        ret.append(IonLayout::LayoutPlugin::name());
+        ret.append(IonEditor::EditorPlugin::name());
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);

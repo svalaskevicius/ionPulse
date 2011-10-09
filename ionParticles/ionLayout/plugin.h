@@ -28,7 +28,7 @@ public:
     }
     void preLoad();
     QString getName() {
-        return LAYOUT_PLUGIN_NAME;
+        return IonLayout::LayoutPlugin::name();
     }
     virtual LayoutManager *getLayoutManager();
 private:

@@ -31,14 +31,8 @@ void Plugin::postLoad()
 }
 
 void Plugin::addParent(BasicPlugin *parent) {
-    if (EDITOR_PLUGIN_NAME == parent->getName()) {
-        editorPlugin = static_cast<IonEditor::EditorPlugin *>(parent);
-    } else if (LAYOUT_PLUGIN_NAME == parent->getName()) {
-        IonLayout::LayoutPlugin *layoutPlugin = static_cast<IonLayout::LayoutPlugin *>(parent);
-        Q_ASSERT(layoutPlugin);
-        layoutManager = layoutPlugin->getLayoutManager();
-    }
-
+    CHECK_AND_ADD_PARENT(parent, IonEditor::EditorPlugin, editorPlugin = target);
+    CHECK_AND_ADD_PARENT(parent, IonLayout::LayoutPlugin, layoutManager = target->getLayoutManager());
 }
 
 void Plugin::openFile(QString path)

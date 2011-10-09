@@ -12,8 +12,6 @@
 #include <QWidget>
 #include <ionHeart/plugin.h>
 
-#define LAYOUT_PLUGIN_NAME "ionLayout"
-
 namespace IonLayout {
 
 struct ZoneDefinition {
@@ -44,6 +42,7 @@ public:
 class LayoutPlugin : public IonHeart::BasicPlugin {
 public:
     virtual LayoutManager *getLayoutManager() = 0;
+    static QString name() {return "ionLayout";}
 };
 
 }

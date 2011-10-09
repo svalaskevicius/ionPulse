@@ -24,22 +24,24 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::postLoad()
 {
+
 }
 
 void Plugin::addParent(BasicPlugin *parent) {
-    if (EDITOR_PLUGIN_NAME == parent->getName()) {
-        IonEditor::EditorPlugin *editorPlugin = static_cast<IonEditor::EditorPlugin *>(parent);
-        Q_ASSERT(editorPlugin);
+    CHECK_AND_ADD_PARENT(parent, IonEditor::EditorPlugin, addEditorParent(target));
+    CHECK_AND_ADD_PARENT(parent, IonProject::ProjectPlugin, projectPlugin = target);
+}
 
-        IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
-        Q_ASSERT(wf);
+void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
+{
+    IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
+    Q_ASSERT(wf);
 
-        wf->registerHighlighterFactory("php", new HighlighterFactory());
+    wf->registerHighlighterFactory("php", new HighlighterFactory());
 
-        wf->registerFileType("php", "php");
-        wf->registerFileType("php3", "php");
-        wf->registerFileType("phtml", "php");
-    }
+    wf->registerFileType("php", "php");
+    wf->registerFileType("php3", "php");
+    wf->registerFileType("phtml", "php");
 }
 
 }

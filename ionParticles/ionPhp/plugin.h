@@ -13,6 +13,7 @@
 #include <ionHeart/plugin.h>
 
 #include <ionParticles/ionEditor/editorapi.h>
+#include <ionParticles/ionProject/projectapi.h>
 
 #define PHP_PLUGIN_NAME "ionPhp"
 
@@ -31,11 +32,14 @@ public:
     }
     virtual QList<QString> getDependencies() {
         QList<QString> ret;
-        ret.append(EDITOR_PLUGIN_NAME);
+        ret.append(IonEditor::EditorPlugin::name());
+        ret.append(IonProject::ProjectPlugin::name());
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
-
+protected:
+    IonProject::ProjectPlugin *projectPlugin;
+    void addEditorParent(IonEditor::EditorPlugin *editorPlugin);
 signals:
 
 public slots:

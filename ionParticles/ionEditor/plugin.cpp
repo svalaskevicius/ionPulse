@@ -17,6 +17,7 @@
 #include <QBoxLayout>
 #include "filetreewidget.h"
 
+#include <ionHeart/shared.h>
 
 namespace IonEditor {
 
@@ -33,11 +34,7 @@ Plugin::~Plugin()
 }
 
 void Plugin::addParent(BasicPlugin *parent) {
-    if (LAYOUT_PLUGIN_NAME == parent->getName()) {
-        IonLayout::LayoutPlugin *layoutPlugin = static_cast<IonLayout::LayoutPlugin *>(parent);
-        Q_ASSERT(layoutPlugin);
-        layoutManager = layoutPlugin->getLayoutManager();
-    }
+    CHECK_AND_ADD_PARENT(parent, IonLayout::LayoutPlugin, layoutManager = target->getLayoutManager());
 }
 
 

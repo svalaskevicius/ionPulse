@@ -12,6 +12,16 @@
 #include <iostream>
 
 
+#define CHECK_AND_ADD_PARENT(parent, className, codeToAdd) \
+                {\
+                    if (className::name() == parent->getName() ) {\
+                        className *target = static_cast<className *>(parent);\
+                        Q_ASSERT(target);\
+                        codeToAdd;\
+                    }\
+                }
+
+
 #define DEBUG_MSG(str) { std::cerr << str << " " << std::endl; }
 
 #endif // IONSHARED_H

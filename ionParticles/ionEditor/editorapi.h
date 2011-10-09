@@ -16,8 +16,6 @@
 #include <ionParticles/ionLayout/layoutapi.h>
 #include <ionHeart/plugin.h>
 
-#define EDITOR_PLUGIN_NAME "ionEditor"
-
 namespace IonEditor {
 
 class EditorComponentInfo {
@@ -66,6 +64,7 @@ public:
 
 class EditorPlugin : public IonHeart::BasicPlugin {
 public:
+    static QString name() {return "ionEditor";}
     virtual EditorWidgetBuilder *getEditorWidgetBuilder() = 0;
 };
 

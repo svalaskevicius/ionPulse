@@ -31,11 +31,11 @@ public:
     ~Plugin();
     void postLoad();
     QString getName() {
-        return EDITOR_PLUGIN_NAME;
+        return EditorPlugin::name();
     }
     virtual QList<QString> getDependencies() {
         QList<QString> ret;
-        ret.append(LAYOUT_PLUGIN_NAME);
+        ret.append(IonLayout::LayoutPlugin::name());
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
