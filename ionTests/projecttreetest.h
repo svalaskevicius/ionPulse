@@ -13,9 +13,11 @@
 #include <QtTest/QtTest>
 #include <iostream>
 
+#include <ionParticles/ionProject/projectapi.h>
 #include <ionParticles/ionProject/treeitem.h>
 #include <ionParticles/ionProject/filetreemodel.h>
 
+using namespace IonProject;
 using namespace IonProject::Private;
 
 namespace IonTests {
@@ -23,14 +25,14 @@ namespace IonTests {
 class MockTreeSource : public TreeModelSource {
 public:
     virtual TreeBranch * setupData() {
-        TreeBranch* parent = new TreeBranch("name", "path", NULL);
+        TreeBranch* parent = new TreeBranchImpl("name", "path", NULL);
 
-        TreeBranch* level1 = new TreeBranch("dir1", "path1", parent);
+        TreeBranch* level1 = new TreeBranchImpl("dir1", "path1", parent);
         parent->appendChild(level1);
 
-        level1->appendChild(new TreeItem("fileName1", "path1/fileName1", level1));
+        level1->appendChild(new TreeItemImpl("fileName1", "path1/fileName1", level1));
 
-        parent->appendChild(new TreeItem("fileName2", "fileName2", parent));
+        parent->appendChild(new TreeItemImpl("fileName2", "fileName2", parent));
 
         return parent;
     }

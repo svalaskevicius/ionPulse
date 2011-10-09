@@ -16,13 +16,6 @@
 namespace IonProject {
 namespace Private {
 
-class TreeBranch;
-
-class TreeModelSource {
-public:
-    virtual TreeBranch * setupData() = 0;
-};
-
 class DirectoryTreeSource : public TreeModelSource {
 public:
     DirectoryTreeSource(const QString &initialDir)

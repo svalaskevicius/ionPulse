@@ -24,7 +24,7 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::postLoad()
 {
-
+    projectPlugin->getProjectFileTreeModel();
 }
 
 void Plugin::addParent(BasicPlugin *parent) {

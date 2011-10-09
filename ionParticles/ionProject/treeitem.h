@@ -11,21 +11,19 @@
 
 #include <QList>
 #include <QVariant>
+#include "projectapi.h"
 
 namespace IonProject {
 namespace Private {
 
-class TreeBranch;
-class TreeItem;
-
-struct TreeItem
+class TreeItemImpl : virtual public TreeItem
 {
 public:
-    TreeItem(QString const name, QString const path, TreeBranch *parent);
-    virtual ~TreeItem();
+    TreeItemImpl(QString const name, QString const path, TreeBranch *parent);
+    virtual ~TreeItemImpl();
     QVariant data(int column) const;
     int getRowNr();
-    TreeItem *parent();
+    TreeBranch *parent();
     virtual int childrenCount() const;
     virtual void filter(QString const filter);
     bool isVisible() const {return visible;}
@@ -37,11 +35,11 @@ protected:
     bool visible;
 };
 
-struct TreeBranch : public TreeItem
+class TreeBranchImpl : public TreeItemImpl, public TreeBranch
 {
 public:
-    TreeBranch(QString const name, QString const path, TreeBranch *parent);
-    ~TreeBranch();
+    TreeBranchImpl(QString const name, QString const path, TreeBranch *parent);
+    ~TreeBranchImpl();
 
     void appendChild(TreeItem *getChild);
     TreeItem *getChild(int getRowNr);

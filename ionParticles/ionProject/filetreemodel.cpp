@@ -38,7 +38,7 @@ QVariant FileTreeModel::data(const QModelIndex &index, int role) const
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+    TreeItemImpl *item = static_cast<TreeItemImpl*>(index.internalPointer());
 
     return item->data(index.column());
 }
@@ -86,7 +86,7 @@ QModelIndex FileTreeModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     TreeItem *childItem = static_cast<TreeItem*>(index.internalPointer());
-    TreeItem *parentItem = childItem->parent();
+    TreeBranch *parentItem = childItem->parent();
 
     if (parentItem == rootItem)
         return QModelIndex();
@@ -96,14 +96,14 @@ QModelIndex FileTreeModel::parent(const QModelIndex &index) const
 
 int FileTreeModel::rowCount(const QModelIndex &parent) const
 {
-    TreeItem *parentItem;
+    TreeBranch *parentItem;
     if (parent.column() > 0)
         return 0;
 
     if (!parent.isValid())
         parentItem = rootItem;
     else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        parentItem = static_cast<TreeBranch*>(parent.internalPointer());
 
     return parentItem->childrenCount();
 }
@@ -117,7 +117,7 @@ QString FileTreeModel::getPath(const QModelIndex &index) const {
     if (!index.isValid())
         return "";
 
-    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+    TreeItemImpl *item = static_cast<TreeItemImpl*>(index.internalPointer());
     return item->getPath();
 }
 
@@ -127,9 +127,9 @@ QString FileTreeModel::getPath(const QModelIndex &index) const {
 
 TreeBranch *DirectoryTreeSource::setupData()
 {
-    TreeBranch* parent = new TreeBranch("Name", "", NULL);
+    TreeBranchImpl* parent = new TreeBranchImpl("Name", "", NULL);
 
-    QList<TreeBranch*> parents;
+    QList<TreeBranchImpl*> parents;
     QList<QString> directoryNames;
     parents << parent;
     directoryNames << initialDir;
@@ -138,12 +138,12 @@ TreeBranch *DirectoryTreeSource::setupData()
         QString currentDirName = directoryNames.back();
         directoryNames.pop_back();
         QDir currentDir(currentDirName);
-        TreeBranch* currentTreeItemsParent = parents.last();
+        TreeBranchImpl* currentTreeItemsParent = parents.last();
         parents.pop_back();
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+subDirName;
-            TreeBranch* newTreeItem = new TreeBranch(subDirName, fullPath, currentTreeItemsParent);
+            TreeBranchImpl* newTreeItem = new TreeBranchImpl(subDirName, fullPath, currentTreeItemsParent);
             currentTreeItemsParent->appendChild(newTreeItem);
 
             directoryNames.append(fullPath);
@@ -152,7 +152,7 @@ TreeBranch *DirectoryTreeSource::setupData()
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            currentTreeItemsParent->appendChild(new TreeItem(fileName, fullPath, currentTreeItemsParent));
+            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, currentTreeItemsParent));
         }
     }
     return parent;

@@ -23,7 +23,8 @@ HEADERS += \
     editorwidgetfactory.h \
     highlighter.h \
     phpparser.h \
-    phpParser/ionParserLib.h
+    phpParser/ionParserLib.h \
+    phptreemodel.h
 
 
 SOURCES += \
@@ -33,7 +34,8 @@ SOURCES += \
     gen_php_parser.cpp \
     gen_php_scanner.cpp \
     phpparser.cpp \
-    phpParser/ionParserLib.cpp
+    phpParser/ionParserLib.cpp \
+    phptreemodel.cpp
 
 
 target.path += "$${INSTALL_DIR}/plugins/"
@@ -69,6 +71,8 @@ QMAKE_EXTRA_TARGETS += gen_php_scanner_dep
 OTHER_FILES += \
     phpParser/php.y \
     phpParser/php.l
+
+
 
 
 

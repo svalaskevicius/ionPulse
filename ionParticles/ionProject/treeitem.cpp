@@ -15,18 +15,18 @@ namespace IonProject {
 
 namespace Private {
 
-TreeItem::TreeItem(QString const name, QString const path, TreeBranch *parent)
+TreeItemImpl::TreeItemImpl(QString const name, QString const path, TreeBranch *parent)
     : name(name), path(path), parentItem(parent)
 {
     visible = true;
 }
-TreeItem::~TreeItem()
+TreeItemImpl::~TreeItemImpl()
 {
 }
 
 
 
-QVariant TreeItem::data(int column) const
+QVariant TreeItemImpl::data(int column) const
 {
     if (0 == column) {
         return QVariant(name);
@@ -34,24 +34,24 @@ QVariant TreeItem::data(int column) const
     return QVariant();
 }
 
-TreeItem *TreeItem::parent()
+TreeBranch *TreeItemImpl::parent()
 {
     return parentItem;
 }
 
-int TreeItem::getRowNr()
+int TreeItemImpl::getRowNr()
 {
     if (parentItem)
         return parentItem->getChildRowNr(this);
 
     return 0;
 }
-int TreeItem::childrenCount() const
+int TreeItemImpl::childrenCount() const
 {
        return 0;
 }
 
-void TreeItem::filter(QString const filter)
+void TreeItemImpl::filter(QString const filter)
 {
     visible = path.toLower().contains(filter.toLower());
 }
@@ -60,21 +60,21 @@ void TreeItem::filter(QString const filter)
 
 
 
-TreeBranch::TreeBranch(QString const name, QString const path, TreeBranch *parent)
-    :TreeItem(name, path, parent), childItems()
+TreeBranchImpl::TreeBranchImpl(QString const name, QString const path, TreeBranch *parent)
+    :TreeItemImpl(name, path, parent), childItems()
 {
 }
-TreeBranch::~TreeBranch()
+TreeBranchImpl::~TreeBranchImpl()
 {
     qDeleteAll(childItems);
 }
 
-void TreeBranch::appendChild(TreeItem *item)
+void TreeBranchImpl::appendChild(TreeItem *item)
 {
     childItems.append(item);
 }
 
-TreeItem *TreeBranch::getChild(int row)
+TreeItem *TreeBranchImpl::getChild(int row)
 {
     int current = 0;
     foreach (TreeItem* child, childItems) {
@@ -88,7 +88,7 @@ TreeItem *TreeBranch::getChild(int row)
     throw std::out_of_range("children size reached");
 }
 
-int TreeBranch::childrenCount() const
+int TreeBranchImpl::childrenCount() const
 {
     int current = 0;
     foreach (TreeItem* child, childItems) {
@@ -99,7 +99,7 @@ int TreeBranch::childrenCount() const
     return current;
 }
 
-int TreeBranch::getChildRowNr(TreeItem *child)
+int TreeBranchImpl::getChildRowNr(TreeItem *child)
 {
     int current = 0;
     foreach (TreeItem* cchild, childItems) {
@@ -113,7 +113,7 @@ int TreeBranch::getChildRowNr(TreeItem *child)
     throw std::out_of_range("children size reached");
 }
 
-void TreeBranch::filter(QString const filter)
+void TreeBranchImpl::filter(QString const filter)
 {
     visible = false;
     foreach (TreeItem* child, childItems) {
