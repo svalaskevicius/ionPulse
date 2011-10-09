@@ -15,6 +15,8 @@
 #include <QVector>
 #include <QSharedPointer>
 
+namespace IonPhp {
+
 class ASTNode;
 typedef ASTNode *pASTNode;
 typedef QSharedPointer<ASTNode> ASTRoot;
@@ -37,5 +39,7 @@ public:
     QString toMlString(int indentLevel = 0, bool printPosition = false);
     QString toString() {return toMlString(-1, false);}
 };
+
+}
 
 #endif // IONPARSERLIB_H

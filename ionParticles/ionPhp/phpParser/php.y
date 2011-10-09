@@ -17,6 +17,8 @@
 #define yydebug ion_php_debug
 #define yynerrs ion_php_nerrs
 
+using namespace IonPhp;
+
 %}
 
 %pure_parser

@@ -10,6 +10,9 @@
 #include "phpParser/ionParserLib.h"
 #include "gen_php_parser.hpp"
 
+using namespace IonPhp;
+
+
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
  * is returned in "result".
  */

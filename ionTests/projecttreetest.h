@@ -18,6 +18,8 @@
 
 using namespace IonProject::Private;
 
+namespace IonTests {
+
 class MockTreeSource : public TreeModelSource {
 public:
     virtual TreeBranch * setupData() {
@@ -105,5 +107,7 @@ private Q_SLOTS:
         QCOMPARE(model.getPath(model.index(0, 0, model.index(0, 0))), QString("path1/fileName1"));
     }
 };
+
+}
 
 #endif // ProjectTreeTest_H

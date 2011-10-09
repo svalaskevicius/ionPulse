@@ -16,6 +16,9 @@
 
 #define ADD_TEST_CLASS(className) { className tc; ret |= QTest::qExec(&tc, argc, argv); }
 
+using namespace IonTests;
+
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

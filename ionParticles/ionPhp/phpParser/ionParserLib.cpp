@@ -9,6 +9,7 @@
 #include "ionParserLib.h"
 #include <iostream>
 
+namespace IonPhp {
 
 #define appendSpaces(w, l) { for(int _i=l;_i>0;_i--) w+=" ";}
 
@@ -63,4 +64,6 @@ QString ASTNode::toMlString(int indentLevel, bool printPosition)
         ret += ")";
     }
     return ret;
+}
+
 }

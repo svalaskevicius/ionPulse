@@ -20,6 +20,7 @@ USING_MOCKCPP_NS
 using namespace IonLayout;
 using namespace IonLayout::Private;
 
+namespace IonTests {
 
 class LayoutManagerTest : public QObject
 {
@@ -191,3 +192,4 @@ private Q_SLOTS:
 
 };
 
+}

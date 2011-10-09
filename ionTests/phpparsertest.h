@@ -15,6 +15,9 @@
 
 #include <ionParticles/ionPhp/phpparser.h>
 
+namespace IonTests {
+
+using namespace IonPhp;
 
 #define QCOMPARE_3(actual, expected, actions) \
 do {\
@@ -702,5 +705,7 @@ private Q_SLOTS:
         ")"
     );}
 };
+
+}
 
 #endif // PHPPARSERTEST_H
