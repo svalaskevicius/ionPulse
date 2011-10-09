@@ -35,16 +35,16 @@ protected:
     bool visible;
 };
 
-class TreeBranchImpl : public TreeItemImpl, public TreeBranch
+class TreeBranchImpl : virtual public TreeBranch, public TreeItemImpl
 {
 public:
     TreeBranchImpl(QString const name, QString const path, TreeBranch *parent);
     ~TreeBranchImpl();
 
-    void appendChild(TreeItem *getChild);
-    TreeItem *getChild(int getRowNr);
+    virtual void appendChild(TreeItem *getChild);
+    virtual TreeItem *getChild(int getRowNr);
     virtual int childrenCount() const;
-    int getChildRowNr(TreeItem *getChild);
+    virtual int getChildRowNr(TreeItem *getChild);
     virtual void filter(QString const filter);
 private:
     QList<TreeItem*> childItems;
