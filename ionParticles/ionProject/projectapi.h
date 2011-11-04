@@ -26,10 +26,10 @@ class TreeBranch : virtual public TreeItem
 public:
     virtual ~TreeBranch() {}
 
-    virtual void appendChild(TreeItem *getChild) = 0;
-    virtual TreeItem *getChild(int getRowNr) = 0;
+    virtual void appendChild(TreeItem *child) = 0;
+    virtual TreeItem *getChild(int rowNr) = 0;
     virtual int childrenCount() const = 0;
-    virtual int getChildRowNr(TreeItem *getChild) = 0;
+    virtual int getChildRowNr(TreeItem *child) = 0;
     virtual void filter(QString const filter) = 0;
 };
 
