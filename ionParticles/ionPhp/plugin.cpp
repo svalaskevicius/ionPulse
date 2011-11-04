@@ -14,6 +14,7 @@
 #include "ionHeart/shared.h"
 
 #include "editorwidgetfactory.h"
+#include "phptreemodel.h"
 
 namespace IonPhp {
 
@@ -24,8 +25,10 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::postLoad()
 {
-    projectPlugin->getProjectFileTreeModel();
+    PhpTreeSource source(*projectPlugin->getProjectFileTreeModel());
+    projectPlugin->addTreeWidget(&source);
 }
+
 
 void Plugin::addParent(BasicPlugin *parent) {
     CHECK_AND_ADD_PARENT(parent, IonEditor::EditorPlugin, addEditorParent(target));

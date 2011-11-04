@@ -22,6 +22,7 @@ public:
         : initialDir(initialDir) {
     }
     virtual TreeBranch * setupData();
+    virtual QString getTitle() const {return "Project Browser";}
 private:
     QString initialDir;
 };
@@ -47,8 +48,12 @@ public:
 
     void filter(QString filter);
     QString getPath(const QModelIndex &index) const;
+    QString getTitle() const {return modelTitle;}
+    TreeBranch *getRoot() const {return rootItem;}
+
 private:
     TreeBranch *rootItem;
+    QString modelTitle;
 };
 
 }

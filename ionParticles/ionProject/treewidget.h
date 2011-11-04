@@ -34,7 +34,7 @@ public:
     explicit TreeWidget(IonProject::TreeModel *dataModel, QWidget *parent = 0);
     virtual ~TreeWidget();
     virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelTitle() {return "Project Browser";}
+    virtual QString getPanelTitle() {return _fiModel->getTitle();}
     virtual QString getPanelZone() {return "left";}
 
 signals:

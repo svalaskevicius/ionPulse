@@ -31,7 +31,6 @@ TreeWidget::TreeWidget(IonProject::TreeModel *dataModel, QWidget *parent) :
 }
 
 TreeWidget::~TreeWidget() {
-    delete _fiModel;
 }
 
 void TreeWidget::onItemActivated(const QModelIndex &index )

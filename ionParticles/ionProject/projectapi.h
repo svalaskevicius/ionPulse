@@ -36,6 +36,7 @@ public:
 class TreeModelSource {
 public:
     virtual TreeBranch * setupData() = 0;
+    virtual QString getTitle() const = 0;
 };
 
 
@@ -44,10 +45,14 @@ public:
     virtual ~TreeModel() {}
     virtual void filter(QString filter) = 0;
     virtual QString getPath(const QModelIndex &index) const = 0;
+    virtual QString getTitle() const = 0;
+    virtual TreeBranch *getRoot() const = 0;
 };
 
 class ProjectPlugin : public IonHeart::BasicPlugin {
 public:
+    virtual void addTreeWidget(TreeModel *model) = 0;
+    virtual void addTreeWidget(TreeModelSource *modelSource) = 0;
     virtual TreeModel *getProjectFileTreeModel() = 0;
     static QString name() {return "ionProject";}
 };

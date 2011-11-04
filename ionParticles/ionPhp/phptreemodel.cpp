@@ -1,5 +1,7 @@
 #include "phptreemodel.h"
 
-PhpTreeModel::PhpTreeModel()
+
+IonProject::TreeBranch *PhpTreeSource::setupData()
 {
+    return fileSource.getRoot();
 }

@@ -18,6 +18,7 @@ namespace Private {
 FileTreeModel::FileTreeModel(TreeModelSource *source)
 {
     rootItem = source->setupData();
+    modelTitle = source->getTitle();
 }
 
 FileTreeModel::~FileTreeModel()
@@ -127,11 +128,11 @@ QString FileTreeModel::getPath(const QModelIndex &index) const {
 
 TreeBranch *DirectoryTreeSource::setupData()
 {
-    TreeBranchImpl* parent = new TreeBranchImpl("Name", "", NULL);
+    TreeBranchImpl* root = new TreeBranchImpl("Name", "", NULL);
 
     QList<TreeBranchImpl*> parents;
     QList<QString> directoryNames;
-    parents << parent;
+    parents << root;
     directoryNames << initialDir;
 
     while (directoryNames.count()) {
@@ -155,7 +156,7 @@ TreeBranch *DirectoryTreeSource::setupData()
             currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, currentTreeItemsParent));
         }
     }
-    return parent;
+    return root;
 }
 
 }

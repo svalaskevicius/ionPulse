@@ -23,11 +23,7 @@ Plugin::Plugin(QObject *parent) :
 void Plugin::postLoad()
 {
     Q_ASSERT(editorPlugin);
-
-    Private::TreeWidget *fileTree = new Private::TreeWidget(getProjectFileTreeModel());
-
-    layoutManager->add(fileTree);
-    connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
+    addTreeWidget(getProjectFileTreeModel());
 }
 
 void Plugin::addParent(BasicPlugin *parent) {
@@ -49,6 +45,20 @@ TreeModel *Plugin::getProjectFileTreeModel()
     }
     return projectTreeModel;
 }
+
+void Plugin::addTreeWidget(TreeModel *model)
+{
+    Private::TreeWidget *fileTree = new Private::TreeWidget(model);
+    layoutManager->add(fileTree);
+    connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
+}
+
+void Plugin::addTreeWidget(TreeModelSource *modelSource)
+{
+    Private::FileTreeModel *model = new Private::FileTreeModel(modelSource);
+    addTreeWidget(model);
+}
+
 
 }
 

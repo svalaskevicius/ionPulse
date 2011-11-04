@@ -26,6 +26,7 @@ class Plugin : public QObject, public ProjectPlugin
     Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
+    ~Plugin() {delete projectTreeModel;}
     void postLoad();
     QString getName() {
         return ProjectPlugin::name();
@@ -38,6 +39,9 @@ public:
     }
     virtual void addParent(BasicPlugin *parent);
     TreeModel *getProjectFileTreeModel();
+    virtual void addTreeWidget(TreeModel *model);
+    virtual void addTreeWidget(TreeModelSource *modelSource);
+
 private:
     IonEditor::EditorPlugin *editorPlugin;
     IonLayout::LayoutManager *layoutManager;
