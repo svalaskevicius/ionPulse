@@ -95,7 +95,11 @@ private Q_SLOTS:
     ); }
     void test_assignRefNewClassDefinition() { TEST_PHP_PARSER(
         "<?php $a = & new asd;",
-        "top_statement_list(assignment [is_reference:1](T_VARIABLE (@ 0:6) [text:$a]; T_NEW(namespace_name(T_STRING (@ 0:17) [text:asd]))))"
+        "top_statement_list(assignment [is_reference:1](T_VARIABLE (@ 0:6) [text:$a]; T_NEW(namespace_name(T_STRING (@ 0:17) [text:asd]); VOID)))"
+    ); }
+    void test_assignRefNewClassWithParamsDefinition() { TEST_PHP_PARSER(
+        "<?php $a = & new asd(1);",
+        "top_statement_list(assignment [is_reference:1](T_VARIABLE (@ 0:6) [text:$a]; T_NEW(namespace_name(T_STRING (@ 0:17) [text:asd]); function_call_parameter_list(T_LNUMBER (@ 0:21) [text:1]))))"
     ); }
     void test_newClassDefinition() { TEST_PHP_PARSER(
         "<?php new asd(1, '2');",
@@ -791,21 +795,50 @@ private Q_SLOTS:
         "<?php $object->{$methodName}();",
         "top_statement_list(T_OBJECT_OPERATOR(T_VARIABLE (@ 0:6) [text:$object]; T_VARIABLE (@ 0:17) [text:$methodName]; method_or_not(function_call_parameter_list); variable_properties))"
     );}
+    void test_listWithEmptyVariables() { TEST_PHP_PARSER(
+        "<?php list(,,$x) = $y;",
+        "top_statement_list(assignment(assignment_list(VOID; VOID; T_VARIABLE (@ 0:13) [text:$x]); T_VARIABLE (@ 0:19) [text:$y]))"
+    );}
+    void test_variableRefByVariable() { TEST_PHP_PARSER(
+        "<?php $$x;",
+        "top_statement_list(simple_indirect_reference(T_VARIABLE (@ 0:7) [text:$x]))"
+    );}
+    void test_whitespaceInHeredocStart() { TEST_PHP_PARSER(
+        "<?php \n"
+        "$x = <<< XXX\n"
+        "asd\n"
+        "XXX;\n",
+        "top_statement_list(assignment(T_VARIABLE (@ 1:0) [text:$x]; T_ENCAPSED_AND_WHITESPACE (@ 2:0) [text:asd]))"
+    );}
+    void test_alternativeIfElseEndifSyntax() { TEST_PHP_PARSER(
+        "<?php if (1): echo $x; elseif (2): echo $z; else: echo $y; endif;",
+        "top_statement_list(if(T_LNUMBER (@ 0:10) [text:1]; inner_statement_list(echo(echo_expr_list(T_VARIABLE (@ 0:19) [text:$x]))); elseif_list(elseif(T_LNUMBER (@ 0:31) [text:2]; inner_statement_list(echo(echo_expr_list(T_VARIABLE (@ 0:40) [text:$z]))))); else(inner_statement_list(echo(echo_expr_list(T_VARIABLE (@ 0:55) [text:$y]))))))"
+    );}
+    void test_globalsUsage() { TEST_PHP_PARSER(
+        "<?php function x() {global $x, $y;}",
+        "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING (@ 0:15) [text:x]; parameter_list; inner_statement_list(global(global_var_list(T_VARIABLE (@ 0:27) [text:$x]; T_VARIABLE (@ 0:31) [text:$y])))))"
+    );}
+    void test_forWithEmptySpecifications() { TEST_PHP_PARSER(
+        "<?php for(;;) ;",
+        "top_statement_list(for(VOID; VOID; VOID; empty statement))"
+    );}
+    void test_hereDocAsArgument() { TEST_PHP_PARSER(
+        "<?php array('x'=> <<<XX\nasd\nXX\n) ;",
+        "top_statement_list(T_ARRAY(array_pair_list(array_pair(array_key(T_CONSTANT_ENCAPSED_STRING (@ 0:12) [text:x]); array_value(T_ENCAPSED_AND_WHITESPACE (@ 1:0) [text:asd])))))"
+    );}
+    void test_danglingElse() { TEST_PHP_PARSER(
+        "<?php if(1) if (2) {echo $y;} else {echo $z;}",
+        ""
+    );}
+    void test_danglingElseIf() { TEST_PHP_PARSER(
+        "<?php if(1) if (2) {echo $y;} elseif (3) {echo $z;}",
+        ""
+    );}
 
 //    void test_asd() { TEST_PHP_PARSER(
-//        "<?php \n"
-////        "            class Enterprise_CatalogPermissions_Model_Permission extends Mage_Core_Model_Abstract\n"
-////        "            {\n"
-//        "                const PERMISSION_ALLOW = -1;\n"
-////        "                const PERMISSION_DENY = -2;\n"
-////        "                const PERMISSION_PARENT = 0;\n"
-////        "            }\n"
-////        "            \n"
-//                    ,
+//        "<?php if (1): echo $x; else: echo $y; endif;",
 //        ""
 //    );}
-
-
 };
 
 }

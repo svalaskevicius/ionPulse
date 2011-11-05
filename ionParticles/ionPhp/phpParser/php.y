@@ -189,10 +189,11 @@ statement:
         |    T_STRING ':' { $$ = $1; }
 ;
 
+
 unticked_statement:
                 '{' inner_statement_list '}'           {$$=$2;}
         |    T_IF '(' expr ')'  statement  elseif_list else_single { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild($6)->addChild($7); }
-        |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';' { $$ = $1; }
+        |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';' { $$ = ASTNode::create("if")->addChild($3)->addChild($6)->addChild($7)->addChild($8); }
         |    T_WHILE '('  expr  ')' while_statement  { $$ = ASTNode::create("while")->addChild($3)->addChild($5); }
         |    T_DO  statement T_WHILE '(' expr ')' ';' { $$ = ASTNode::create("dowhile")->addChild($2)->addChild($5); }
         |    T_FOR
@@ -213,7 +214,7 @@ unticked_statement:
         |    T_RETURN ';' { $$ = ASTNode::create("return"); }
         |    T_RETURN expr_without_variable ';' { $$ = ASTNode::create("return")->addChild($2); }
         |    T_RETURN variable ';'          { $$ = ASTNode::create("return")->addChild($2);}
-        |    T_GLOBAL global_var_list ';' { $$ = $1; }
+        |    T_GLOBAL global_var_list ';' { $$ = ASTNode::create("global")->addChild($2);}
         |    T_STATIC static_var_list ';' { $$ = ASTNode::create("static")->addChild($2); }
         |    T_ECHO echo_expr_list ';'    { $$ = ASTNode::create("echo")->addChild($2);}
         |    T_INLINE_HTML { $$ = $1; }
@@ -409,8 +410,8 @@ elseif_list:
 
 
 new_elseif_list:
-                /* empty */ {}
-        |    new_elseif_list T_ELSEIF '(' expr ')' ':'  inner_statement_list { $$ = $1; }
+                /* empty */ {  $$ = ASTNode::create("elseif_list"); }
+        |    new_elseif_list T_ELSEIF '(' expr ')' ':'  inner_statement_list { $1->addChild(ASTNode::create("elseif")->addChild($4)->addChild($7)); $$ = $1; }
 ;
 
 
@@ -539,8 +540,8 @@ non_empty_function_call_parameter_list:
 ;
 
 global_var_list:
-                global_var_list ',' global_var { $$ = $1; }
-        |    global_var { $$ = $1; }
+                global_var_list ',' global_var { $1->addChild($3); }
+        |    global_var { $$ = ASTNode::create("global_var_list")->addChild($1);}
 ;
 
 
@@ -637,7 +638,7 @@ echo_expr_list:
 
 
 for_expr:
-                /* empty */
+                /* empty */ {$$ = ASTNode::create("VOID");}
         |    non_empty_for_expr { $$ = $1; }
 ;
 
@@ -653,7 +654,7 @@ expr_without_variable:
             }
         |    variable '=' expr {$$=ASTNode::create("assignment")->addChild($1)->addChild($3);}
         |    variable '=' '&' variable {$$=ASTNode::create("assignment")->addChild($1)->addChild($4)->setData("is_reference", "1");}
-        |    variable '=' '&' T_NEW class_name_reference    { $$ = ASTNode::create("assignment")->addChild($1)->addChild(ASTNode::create("T_NEW")->addChild($5))->setData("is_reference", "1");}
+        |    variable '=' '&' T_NEW class_name_reference ctor_arguments   { $$ = ASTNode::create("assignment")->addChild($1)->addChild(ASTNode::create("T_NEW")->addChild($5)->addChild($6))->setData("is_reference", "1");}
         |    T_NEW class_name_reference  ctor_arguments     { $$ = ASTNode::create("T_NEW")->addChild($2)->addChild($3);}
         |    T_CLONE expr {$$=ASTNode::create("clone")->addChild($2);}
         |    variable T_PLUS_EQUAL expr    {$$=ASTNode::create("T_PLUS_EQUAL")->addChild($1)->addChild($3);}
@@ -688,7 +689,7 @@ expr_without_variable:
         |    expr T_SL expr                {$$=ASTNode::create("T_SHIFT_LEFT")->addChild($1)->addChild($3);}
         |    expr T_SR expr                {$$=ASTNode::create("T_SHIFT_RIGHT")->addChild($1)->addChild($3);}
         |    '+' expr %prec T_INC { $$=ASTNode::create("T_POSITIVE")->addChild($2); }
-        |    '-' expr %prec T_INC { $$=ASTNode::create("T_NEGATIVE")->addChild($2); }
+        |    '-' expr %prec T_DEC { $$=ASTNode::create("T_NEGATIVE")->addChild($2); }
         |    '!' expr                      {$$=ASTNode::create("T_NEGATE")->addChild($2);}
         |    '~' expr                      {$$=ASTNode::create("T_INVERSE")->addChild($2);}
         |    expr T_IS_IDENTICAL expr      {$$=ASTNode::create("T_IS_IDENTICAL")->addChild($1)->addChild($3);}
@@ -931,7 +932,7 @@ method_or_not:
 
 variable_without_objects:
                 reference_variable { $$ = $1; }
-        |    simple_indirect_reference reference_variable { $$ = $2; }
+        |    simple_indirect_reference reference_variable { $1->addChild($2); }
 ;
 
 static_member:
@@ -952,7 +953,7 @@ base_variable_with_function_calls:
 
 base_variable:
                 reference_variable { $$ = $1; }
-        |    simple_indirect_reference reference_variable { $$ = $1; }
+        |    simple_indirect_reference reference_variable { $1->addChild($2); }
         |    static_member { $$ = $1; }
 ;
 
@@ -991,7 +992,7 @@ variable_name:
 ;
 
 simple_indirect_reference:
-                '$' { $$ = $1; }
+                '$' { $$ = ASTNode::create("simple_indirect_reference"); }
         |    simple_indirect_reference '$' { $$ = $1; }
 ;
 
@@ -1003,8 +1004,8 @@ assignment_list:
 
 assignment_list_element:
                 variable { $$ = $1; }
-        |    T_LIST '('  assignment_list ')' { $$ = $1; }
-        |    /* empty */
+        |    T_LIST '('  assignment_list ')' { $$ = $3; }
+        |    /* empty */ {$$ = ASTNode::create("VOID");}
 ;
 
 

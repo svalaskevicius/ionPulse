@@ -878,9 +878,9 @@ inline_char_handler:
 
 <ST_IN_SCRIPTING>"<<<"{TABS_AND_SPACES}({LABEL}|([']{LABEL}['])|(["]{LABEL}["])){NEWLINE} {
         char *s = yytext + 3;
-//        while ((*s == ' ') || (*s == '\t')) {
-//            s++;
-//        }
+        while ((*s == ' ') || (*s == '\t')) {
+            s++;
+        }
 
         if (*s == '\'') {
             s++;
@@ -1228,8 +1228,14 @@ bool scanForHereDocEnd(yyscan_t yyscanner)
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     QString nextText = retrieveChars(yyextra->currentHeredocLabel.length(), yyscanner);
     if (nextText == yyextra->currentHeredocLabel) {
-        if (lookupChar(yyscanner) == ';') {
-            return true;
+        switch (lookupChar(yyscanner)) {
+            case ';':
+            case '\n':
+                return true;
+            case '\r':
+                if ("\r\n" == lookupChars(2, yyscanner)) {
+                    return true;
+                }
         }
     }
     putCharsBack(nextText, yyscanner);
