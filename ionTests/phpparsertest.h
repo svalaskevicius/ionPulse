@@ -785,11 +785,11 @@ private Q_SLOTS:
     );}
     void test_callMethodFromString() { TEST_PHP_PARSER(
         "<?php $object->$methodName();",
-        ""
+        "top_statement_list(T_OBJECT_OPERATOR(T_VARIABLE (@ 0:6) [text:$object]; T_VARIABLE (@ 0:16) [text:$methodName]; method_or_not(function_call_parameter_list); variable_properties))"
     );}
     void test_callMethodFromStringWrapped() { TEST_PHP_PARSER(
         "<?php $object->{$methodName}();",
-        ""
+        "top_statement_list(T_OBJECT_OPERATOR(T_VARIABLE (@ 0:6) [text:$object]; T_VARIABLE (@ 0:17) [text:$methodName]; method_or_not(function_call_parameter_list); variable_properties))"
     );}
 
 //    void test_asd() { TEST_PHP_PARSER(

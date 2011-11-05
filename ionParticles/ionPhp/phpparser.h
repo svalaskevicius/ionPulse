@@ -35,6 +35,7 @@ public:
     QList<int> __posColHistory;
     void __error(phpParser *myself, const char *error);
     int  __lex(pASTNode *astNode, yyscan_t yyscanner);
+    void __echo(const char *text, int size);
     QString currentHeredocLabel;
 };
 

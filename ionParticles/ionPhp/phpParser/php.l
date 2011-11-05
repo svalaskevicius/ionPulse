@@ -37,7 +37,7 @@ using namespace IonPhp;
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
 #define YY_EXTRA_TYPE IonPhp::phpParser*
 #define YY_FATAL_ERROR(msg) throw std::logic_error(msg)
-
+#define ECHO yyextra->__echo(yytext, yyleng)
 
 #define CREATE_AST_NODE(node) ASTNode::create(node)->setPosition(yyextra->__line, yyextra->__col)
 
@@ -60,7 +60,6 @@ LABEL	[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*
 WHITESPACE [ \n\r\t]+
 TABS_AND_SPACES [ \t]*
 TOKENS [;:,.\[\]()|^&+/=*%!~$<>?@-]
-ANY_CHAR [.]
 NEWLINE ("\r"|"\n"|"\r\n")
 
 %x ST_IN_SCRIPTING
@@ -242,7 +241,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
         *astNode = CREATE_AST_NODE("T_STRING")->setData("text", yytext);
         return T_STRING;
 }
-<ST_LOOKING_FOR_PROPERTY>{ANY_CHAR} {
+<ST_LOOKING_FOR_PROPERTY>.|[\n\r] {
         yyless(0);
         yy_pop_state(yyscanner);
 }
@@ -514,7 +513,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 
-<ST_LOOKING_FOR_VARNAME>{ANY_CHAR} {
+<ST_LOOKING_FOR_VARNAME>.|[\n\r] {
         yyless(0);
         yy_pop_state(yyscanner);
         yy_push_state(ST_IN_SCRIPTING, yyscanner);

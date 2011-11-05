@@ -61,7 +61,7 @@ void phpParser::__error(phpParser *myself, const char *error) {
     throw std::logic_error(error);
 }
 
-int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
+int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
 {
     while(1) {
         pASTNode lastNode = *astNode;
@@ -93,6 +93,17 @@ int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
   */                return ret;
         }
     }
+}
+/**
+ * invoked by scanner on failure to match tokens
+ */
+void phpParser::__echo(const char *text, int size)
+{
+    QString txt;
+    for (int i=0;i<size;i++) {
+        txt += text[i];
+    }
+    throw std::logic_error("failed to match in scanner: "+txt.toStdString());
 }
 
 }
