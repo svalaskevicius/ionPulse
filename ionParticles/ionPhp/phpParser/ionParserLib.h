@@ -15,6 +15,8 @@
 #include <QVector>
 #include <QSharedPointer>
 
+#include <stdexcept>
+
 namespace IonPhp {
 
 class ASTNode;
@@ -32,7 +34,7 @@ public:
     ~ASTNode() {foreach (pASTNode n, children) delete n; children.clear();}
     QString getName() {return name;}
     pASTNode setPosition(int lineNr, int columnNr) {this->lineNr = lineNr; this->columnNr = columnNr; return this;}
-    pASTNode addChild(pASTNode child) {Q_ASSERT(child); children.append(child);return this;}
+    pASTNode addChild(pASTNode child) {if(!child) {throw std::invalid_argument( "child must be set" );}; children.append(child);return this;}
     pASTNode setData(QString name, QString data) {strdata[name]=data; return this;}
     QString getStrData(QString name) {return strdata[name];}
     static pASTNode create(QString name) {return new ASTNode(name);}

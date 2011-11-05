@@ -704,6 +704,108 @@ private Q_SLOTS:
             ")"
         ")"
     );}
+    void test_parsingRequire() { TEST_PHP_PARSER(
+        "<?php require 'file.php';\n",
+        "top_statement_list(require(T_CONSTANT_ENCAPSED_STRING (@ 0:14) [text:file.php]))"
+    );}
+    void test_classMethod() { TEST_PHP_PARSER(
+        "<?php\n"
+        "class my_class\n"
+        "{\n"
+        "    public function my_method()\n"
+        "    {\n"
+        "    }\n"
+        "}",
+        "top_statement_list(class_declaration(class (@ 1:0); T_STRING (@ 1:6) [text:my_class]; extends; implements; class_statement_list(METHOD(MODIFIERS(T_PUBLIC); is_reference [is_reference:0]; T_STRING (@ 3:20) [text:my_method]; parameter_list; METHOD_BODY(inner_statement_list)))))"
+    );}
+    void test_classProperty() { TEST_PHP_PARSER(
+        "<?php\n"
+        "class my_class\n"
+        "{\n"
+        "    public $prop = 1;\n"
+        "}",
+        "top_statement_list(class_declaration(class (@ 1:0); T_STRING (@ 1:6) [text:my_class]; extends; implements; class_statement_list(PROPERTY(MODIFIERS(T_PUBLIC); class_properties(T_VARIABLE (@ 3:11) [text:$prop](T_LNUMBER (@ 3:19) [text:1]))))))"
+    );}
+    void test_classPropertyList() { TEST_PHP_PARSER(
+        "<?php\n"
+        "class my_class\n"
+        "{\n"
+        "    private final $prop = 1, $x, $y = array('c'=>3,);\n"
+        "}",
+        "top_statement_list(class_declaration(class (@ 1:0); T_STRING (@ 1:6) [text:my_class]; extends; implements; class_statement_list("
+            "PROPERTY(MODIFIERS(T_PRIVATE; T_FINAL); class_properties("
+                "T_VARIABLE (@ 3:18) [text:$prop](T_LNUMBER (@ 3:26) [text:1]); "
+                "T_VARIABLE (@ 3:29) [text:$x]; "
+                "T_VARIABLE (@ 3:33) [text:$y](T_ARRAY(array_pair_list(array_pair(array_key(T_CONSTANT_ENCAPSED_STRING (@ 3:44) [text:c]); array_value(T_LNUMBER (@ 3:49) [text:3]))))))))))"
+    );}
+    void test_classConstant() { TEST_PHP_PARSER(
+        "<?php\n"
+        "class my_class\n"
+        "{\n"
+        "    const MYCONST = 1, OTHER=2;\n"
+        "}",
+        "top_statement_list(class_declaration(class (@ 1:0); T_STRING (@ 1:6) [text:my_class]; extends; implements; class_statement_list(class_constants(T_STRING (@ 3:10) [text:MYCONST](T_LNUMBER (@ 3:20) [text:1]); T_STRING (@ 3:23) [text:OTHER](T_LNUMBER (@ 3:29) [text:2])))))"
+    );}
+    void test_methodCallWithNegativeNumber() { TEST_PHP_PARSER(
+        "<?php $object->method(-2);",
+        "top_statement_list(T_OBJECT_OPERATOR(T_VARIABLE (@ 0:6) [text:$object]; T_STRING (@ 0:15) [text:method]; method_or_not(function_call_parameter_list(T_NEGATIVE(T_LNUMBER (@ 0:23) [text:2]))); variable_properties))"
+    );}
+    void test_negativeNrAsOperation() { TEST_PHP_PARSER(
+        "<?php $x-1;",
+        "top_statement_list(T_MINUS(T_VARIABLE (@ 0:6) [text:$x]; T_LNUMBER (@ 0:9) [text:1]))"
+    );}
+    void test_addToArray() { TEST_PHP_PARSER(
+        "<?php $array[] = $x;",
+        "top_statement_list(assignment(offset(T_VARIABLE (@ 0:6) [text:$array]; empty_offset); T_VARIABLE (@ 0:17) [text:$x]))"
+    );}
+    void test_exitWithoutParameters() { TEST_PHP_PARSER(
+        "<?php exit;",
+        "top_statement_list(T_EXIT(VOID))"
+    );}
+
+    void test_functionParametersDefinitionAllowsDefaults() { TEST_PHP_PARSER(
+        "<?php function method($parameter, $type = null) {}",
+        "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING (@ 0:15) [text:method]; parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE (@ 0:22) [text:$parameter]); parameter(__ANY_CLASS_TYPE__; T_VARIABLE (@ 0:34) [text:$type]; namespace_name(T_STRING (@ 0:42) [text:null]))); inner_statement_list))"
+    );}
+    void test_functionParametersDefinitionAllowsReference() { TEST_PHP_PARSER(
+        "<?php function method($parameter, &$variable) {}",
+        "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING (@ 0:15) [text:method]; parameter_list(parameter(__ANY_CLASS_TYPE__; T_VARIABLE (@ 0:22) [text:$parameter]); parameter [is_reference:1](__ANY_CLASS_TYPE__; T_VARIABLE (@ 0:35) [text:$variable])); inner_statement_list))"
+    );}
+    void test_instantiateObjectWithoutParameters() { TEST_PHP_PARSER(
+        "<?php new classname;",
+        "top_statement_list(T_NEW(namespace_name(T_STRING (@ 0:10) [text:classname]); VOID))"
+    );}
+    void test_arrayDefinitionInsideForeach() { TEST_PHP_PARSER(
+        "<?php foreach(array('x') as $x);",
+        "top_statement_list(foreach(T_ARRAY(array_pair_list(array_pair(array_key; array_value(T_CONSTANT_ENCAPSED_STRING (@ 0:20) [text:x])))); T_VARIABLE (@ 0:28) [text:$x]; foreach_optional_arg; empty statement))"
+    );}
+    void test_negativeConstant() { TEST_PHP_PARSER(
+        "<?php class classname { const constname = -1; }",
+        "top_statement_list(class_declaration(class (@ 0:6); T_STRING (@ 0:12) [text:classname]; extends; implements; class_statement_list(class_constants(T_STRING (@ 0:30) [text:constname](T_NEGATIVE(T_LNUMBER (@ 0:43) [text:1]))))))"
+    );}
+    void test_callMethodFromString() { TEST_PHP_PARSER(
+        "<?php $object->$methodName();",
+        ""
+    );}
+    void test_callMethodFromStringWrapped() { TEST_PHP_PARSER(
+        "<?php $object->{$methodName}();",
+        ""
+    );}
+
+//    void test_asd() { TEST_PHP_PARSER(
+//        "<?php \n"
+////        "            class Enterprise_CatalogPermissions_Model_Permission extends Mage_Core_Model_Abstract\n"
+////        "            {\n"
+//        "                const PERMISSION_ALLOW = -1;\n"
+////        "                const PERMISSION_DENY = -2;\n"
+////        "                const PERMISSION_PARENT = 0;\n"
+////        "            }\n"
+////        "            \n"
+//                    ,
+//        ""
+//    );}
+
+
 };
 
 }

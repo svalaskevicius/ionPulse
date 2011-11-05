@@ -35,7 +35,12 @@ ASTRoot phpParser::parse(QString doc)
 {
     void * buf = setBuf(doc.toAscii().constData());
     __result = NULL;
-    int ret = ion_php_parse(this);
+    int ret = 1;
+    try {
+        ret = ion_php_parse(this);
+    } catch (std::exception& e) {
+        std::cout << "exception while parsing: " << e.what() << " at: " << __line << ", "<< __col<< ", "<< __posLine<< ", "<< __posCol<< std::endl;
+    }
     delBuf(buf);
 
     //std::cout << ret << std::endl;
@@ -53,7 +58,7 @@ ASTRoot phpParser::parse(QString doc)
 
 void phpParser::__error(phpParser *myself, const char *error) {
     Q_ASSERT(this == myself);
-    std::cerr << "error: " << error << "\n";
+    throw std::logic_error(error);
 }
 
 int  phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)

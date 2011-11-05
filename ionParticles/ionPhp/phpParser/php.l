@@ -36,6 +36,9 @@ using namespace IonPhp;
 #define yylval_param astNode
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
 #define YY_EXTRA_TYPE IonPhp::phpParser*
+#define YY_FATAL_ERROR(msg) throw std::logic_error(msg)
+
+
 #define CREATE_AST_NODE(node) ASTNode::create(node)->setPosition(yyextra->__line, yyextra->__col)
 
 char ionInput(yyscan_t yyscanner);
@@ -239,12 +242,10 @@ NEWLINE ("\r"|"\n"|"\r\n")
         *astNode = CREATE_AST_NODE("T_STRING")->setData("text", yytext);
         return T_STRING;
 }
-
 <ST_LOOKING_FOR_PROPERTY>{ANY_CHAR} {
         yyless(0);
         yy_pop_state(yyscanner);
 }
-
 <ST_IN_SCRIPTING>"::" {
         return T_DOUBLE_COLON;
 }
@@ -363,10 +364,6 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 <ST_IN_SCRIPTING>"public" {
         return T_PUBLIC;
-}
-
-<ST_IN_SCRIPTING>"unset" {
-        return T_UNSET;
 }
 
 <ST_IN_SCRIPTING>"=>" {

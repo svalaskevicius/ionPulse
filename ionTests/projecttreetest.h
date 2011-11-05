@@ -24,6 +24,7 @@ namespace IonTests {
 
 class MockTreeSource : public TreeModelSource {
 public:
+    virtual QString getTitle() const {return "test";}
     virtual TreeBranch * setupData() {
         TreeBranch* parent = new TreeBranchImpl("name", "path", NULL);
 

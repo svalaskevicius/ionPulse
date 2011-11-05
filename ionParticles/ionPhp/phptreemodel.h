@@ -2,6 +2,11 @@
 #define PHPTREEMODEL_H
 
 #include <ionParticles/ionProject/projectapi.h>
+#include <QVector>
+#include <QString>
+
+
+namespace IonPhp {
 
 class PhpTreeSource : public IonProject::TreeModelSource {
 public:
@@ -11,9 +16,13 @@ public:
     virtual IonProject::TreeBranch * setupData();
     QString getTitle() const {return "Class browser";}
 
+protected:
+    QVector<QString> getPhpFileList();
 private:
+
     const IonProject::TreeModel &fileSource;
 };
 
+}
 
 #endif // PHPTREEMODEL_H

@@ -25,6 +25,7 @@ public:
     int getRowNr();
     TreeBranch *parent();
     virtual int childrenCount() const;
+    virtual QList<TreeItem*> getChildren() const {return QList<TreeItem*>();}
     virtual void filter(QString const filter);
     bool isVisible() const {return visible;}
     QString getPath() const {return path;}
@@ -44,6 +45,7 @@ public:
     virtual void appendChild(TreeItem *getChild);
     virtual TreeItem *getChild(int getRowNr);
     virtual int childrenCount() const;
+    virtual QList<TreeItem*> getChildren() const {return childItems;}
     virtual int getChildRowNr(TreeItem *getChild);
     virtual void filter(QString const filter);
 private:
