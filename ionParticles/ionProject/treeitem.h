@@ -19,7 +19,7 @@ namespace Private {
 class TreeItemImpl : virtual public TreeItem
 {
 public:
-    TreeItemImpl(QString const name, QString const path, TreeBranch *parent);
+    TreeItemImpl(QString const name, QString const path, int line, TreeBranch *parent);
     virtual ~TreeItemImpl();
     QVariant data(int column) const;
     int getRowNr();
@@ -29,8 +29,11 @@ public:
     virtual void filter(QString const filter);
     bool isVisible() const {return visible;}
     QString getPath() const {return path;}
+    int getLine() const {return line;}
+
 private:
     QString name, path;
+    int line;
     TreeBranch *parentItem;
 protected:
     bool visible;
@@ -39,7 +42,7 @@ protected:
 class TreeBranchImpl : virtual public TreeBranch, public TreeItemImpl
 {
 public:
-    TreeBranchImpl(QString const name, QString const path, TreeBranch *parent);
+    TreeBranchImpl(QString const name, QString const path, int line, TreeBranch *parent);
     ~TreeBranchImpl();
 
     virtual void appendChild(TreeItem *getChild);
@@ -54,8 +57,8 @@ private:
 
 class TreeItemFactoryImpl : public TreeItemFactory {
 public:
-    virtual TreeItem* createTreeItem(QString const name, QString const path, TreeBranch *parent);
-    virtual TreeBranch* createTreeBranch(QString const name, QString const path, TreeBranch *parent);
+    virtual TreeItem* createTreeItem(QString const name, QString const path, int const line, TreeBranch *parent);
+    virtual TreeBranch* createTreeBranch(QString const name, QString const path, int const line, TreeBranch *parent);
 };
 
 

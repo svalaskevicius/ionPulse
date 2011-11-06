@@ -51,7 +51,7 @@ signals:
 
 public slots:
 protected slots:
-    void openFile(QString path);
+    void openFile(QString path, int);
 
 };
 

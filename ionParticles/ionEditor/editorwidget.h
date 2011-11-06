@@ -21,7 +21,7 @@ namespace IonEditor {
 
 namespace Private {
 
-class EditorWidget : public QPlainTextEdit, public Editor, public IonLayout::PanelWidget
+class EditorWidget : public QPlainTextEdit, public Editor
 {
     Q_OBJECT
 public:
@@ -57,6 +57,7 @@ public:
         resetHighlighter();
         this->highlighter = highlighter;
     }
+    void focusOnLine(int line);
 protected:
     bool event ( QEvent * event );
     void resetComponents();

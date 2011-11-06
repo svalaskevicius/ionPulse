@@ -47,7 +47,7 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
     void filter(QString filter);
-    QString getPath(const QModelIndex &index) const;
+    TreeItem* getItem(const QModelIndex &index) const;
     QString getTitle() const {return modelTitle;}
     TreeBranch *getRoot() const {return rootItem;}
 

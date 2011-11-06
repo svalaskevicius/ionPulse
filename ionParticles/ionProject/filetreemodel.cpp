@@ -8,6 +8,7 @@
 
 #include <QtGui>
 #include <QDir>
+#include <stdexcept>
 
 #include "treeitem.h"
 #include "filetreemodel.h"
@@ -114,12 +115,13 @@ void FileTreeModel::filter(QString filter) {
     reset();
 }
 
-QString FileTreeModel::getPath(const QModelIndex &index) const {
-    if (!index.isValid())
-        return "";
+TreeItem* FileTreeModel::getItem(const QModelIndex &index) const {
+    if (!index.isValid()) {
+        throw std::runtime_error("index is invalid");
+    }
 
     TreeItemImpl *item = static_cast<TreeItemImpl*>(index.internalPointer());
-    return item->getPath();
+    return item;
 }
 
 
@@ -128,7 +130,7 @@ QString FileTreeModel::getPath(const QModelIndex &index) const {
 
 TreeBranch *DirectoryTreeSource::setupData()
 {
-    TreeBranchImpl* root = new TreeBranchImpl("Name", "", NULL);
+    TreeBranchImpl* root = new TreeBranchImpl("Name", "", -1, NULL);
 
     QList<TreeBranchImpl*> parents;
     QList<QString> directoryNames;
@@ -144,7 +146,7 @@ TreeBranch *DirectoryTreeSource::setupData()
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+subDirName;
-            TreeBranchImpl* newTreeItem = new TreeBranchImpl(subDirName, fullPath, currentTreeItemsParent);
+            TreeBranchImpl* newTreeItem = new TreeBranchImpl(subDirName, fullPath, -1, currentTreeItemsParent);
             currentTreeItemsParent->appendChild(newTreeItem);
 
             directoryNames.append(fullPath);
@@ -153,7 +155,7 @@ TreeBranch *DirectoryTreeSource::setupData()
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, currentTreeItemsParent));
+            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, -1, currentTreeItemsParent));
         }
     }
     return root;

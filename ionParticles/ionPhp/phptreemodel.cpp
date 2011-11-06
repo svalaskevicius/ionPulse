@@ -6,7 +6,7 @@ namespace IonPhp {
 
 IonProject::TreeBranch *PhpTreeSource::setupData()
 {
-    IonProject::TreeBranch* root = treeItemFactory.createTreeBranch("Name", "", NULL);
+    IonProject::TreeBranch* root = treeItemFactory.createTreeBranch("Name", "", -1, NULL);
     foreach (QString path, getPhpFileList()) {
         try {
             addFileToTree(path, root);
@@ -22,11 +22,13 @@ void PhpTreeSource::addFileToTree(QString path, IonProject::TreeBranch* root)
     ASTRoot astRoot = phpParser().parseFile(path);
     foreach(pASTNode classDecl, astRoot->findChildren("class_declaration")) {
         try {
-            IonProject::TreeBranch* classNode = treeItemFactory.createTreeBranch(classDecl->getChild(1)->getStrData("text"), path, root);
+            IonPhp::pASTNode classDeclLabel = classDecl->getChild(1);
+            IonProject::TreeBranch* classNode = treeItemFactory.createTreeBranch(classDeclLabel->getStrData("text"), path, classDeclLabel->getLine(), root);
             root->appendChild(classNode);
             foreach(pASTNode classStatementList, classDecl->findChildren("class_statement_list")) {
                 foreach(pASTNode methodDecl, classStatementList->findChildren("METHOD")) {
-                    classNode->appendChild(treeItemFactory.createTreeItem(methodDecl->getChild(2)->getStrData("text"), path, classNode));
+                    IonPhp::pASTNode methodDeclLabel = methodDecl->getChild(2);
+                    classNode->appendChild(treeItemFactory.createTreeItem(methodDeclLabel->getStrData("text"), path, methodDeclLabel->getLine(), classNode));
                 }
             }
         } catch (std::exception &err) {

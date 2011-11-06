@@ -34,7 +34,7 @@ public:
     virtual int getWidth() = 0;
 };
 
-class Editor {
+class Editor : public IonLayout::PanelWidget {
 public:
     virtual ~Editor() {}
     virtual const EditorComponentInfo &getEditorInfo() const = 0;
@@ -42,6 +42,7 @@ public:
     virtual void updateViewportMargins() = 0;
     virtual void setComponents(QList<EditorComponent* > components) = 0;
     virtual QPlainTextEdit* getEditorInstance() = 0;
+    virtual void focusOnLine(int line) = 0;
 };
 
 struct LineNumberAreaFactory {
@@ -55,7 +56,7 @@ class EditorWidgetBuilder
 {
 public:
     virtual ~EditorWidgetBuilder(){}
-    virtual IonLayout::PanelWidget *createEditor(QString path) = 0;
+    virtual Editor *createEditor(QString path) = 0;
 
     virtual void registerFileType(QString fileExt, QString fileType) = 0;
     virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter) = 0;
@@ -66,6 +67,7 @@ class EditorPlugin : public IonHeart::BasicPlugin {
 public:
     static QString name() {return "ionEditor";}
     virtual EditorWidgetBuilder *getEditorWidgetBuilder() = 0;
+    virtual void openFile(QString path, int line) = 0;
 };
 
 

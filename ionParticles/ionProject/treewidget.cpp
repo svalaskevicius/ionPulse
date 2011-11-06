@@ -39,9 +39,10 @@ void TreeWidget::onItemActivated(const QModelIndex &index )
         return;
     }
     Q_ASSERT(_fiModel);
-    QFileInfo fi(_fiModel->getPath(index));
+    TreeItem* item = _fiModel->getItem(index);
+    QFileInfo fi(item->getPath());
     if (fi.isFile()) {
-        emit fileActivated(fi.filePath());
+        emit fileActivated(fi.filePath(), item->getLine());
     }
 }
 

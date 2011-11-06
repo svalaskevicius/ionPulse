@@ -26,14 +26,14 @@ class MockTreeSource : public TreeModelSource {
 public:
     virtual QString getTitle() const {return "test";}
     virtual TreeBranch * setupData() {
-        TreeBranch* parent = new TreeBranchImpl("name", "path", NULL);
+        TreeBranch* parent = new TreeBranchImpl("name", "path", -1, NULL);
 
-        TreeBranch* level1 = new TreeBranchImpl("dir1", "path1", parent);
+        TreeBranch* level1 = new TreeBranchImpl("dir1", "path1", -1, parent);
         parent->appendChild(level1);
 
-        level1->appendChild(new TreeItemImpl("fileName1", "path1/fileName1", level1));
+        level1->appendChild(new TreeItemImpl("fileName1", "path1/fileName1", -1, level1));
 
-        parent->appendChild(new TreeItemImpl("fileName2", "fileName2", parent));
+        parent->appendChild(new TreeItemImpl("fileName2", "fileName2", -1, parent));
 
         return parent;
     }
@@ -61,7 +61,7 @@ class ProjectTreeItemTest : public QObject
 private Q_SLOTS:
     void test_if_treeItem_getChildren_returnsEmptyList() {
         TreeItemFactoryImpl factory;
-        TreeItem* item = factory.createTreeItem("", "", NULL);
+        TreeItem* item = factory.createTreeItem("", "", -1, NULL);
         QList<TreeItem*> list = item->getChildren();
         delete item;
 
@@ -69,7 +69,7 @@ private Q_SLOTS:
     }
     void test_if_treeBranch_getChildren_returnsEmptyListIfThereAreNoChildren() {
         TreeItemFactoryImpl factory;
-        TreeBranch* item = factory.createTreeBranch("", "", NULL);
+        TreeBranch* item = factory.createTreeBranch("", "", -1, NULL);
         QList<TreeItem*> list = item->getChildren();
         delete item;
 
@@ -77,8 +77,8 @@ private Q_SLOTS:
     }
     void test_if_treeBranch_getChildren_returnsEmptyListIfThereAreSomeChildren() {
         TreeItemFactoryImpl factory;
-        TreeBranch* item = factory.createTreeBranch("", "", NULL);
-        TreeItem* item2 = factory.createTreeItem("", "", item);
+        TreeBranch* item = factory.createTreeBranch("", "", -1, NULL);
+        TreeItem* item2 = factory.createTreeItem("", "", -1, item);
         item->appendChild(item2);
         QList<TreeItem*> list = item->getChildren();
         delete item;
@@ -156,7 +156,7 @@ private Q_SLOTS:
 
         model.filter("1/f");
 
-        QCOMPARE(model.getPath(model.index(0, 0, model.index(0, 0))), QString("path1/fileName1"));
+        QCOMPARE(model.getItem(model.index(0, 0, model.index(0, 0)))->getPath(), QString("path1/fileName1"));
     }
 
     void test_getTitleReturnsSourceTitle() {

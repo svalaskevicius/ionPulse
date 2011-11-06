@@ -125,6 +125,7 @@ protected:
 public:
     LayoutManagerImpl(QMainWindow *mainWindow);
     virtual void add(PanelWidget *panel);
+    virtual void focus(PanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
 };
 }

@@ -23,7 +23,7 @@ namespace IonEditor {
 
 
 Plugin::Plugin(QObject *parent) :
-    QObject(parent), layoutManager(NULL)
+    QObject(parent), layoutManager(NULL), openedFiles()
 {
 }
 
@@ -82,12 +82,24 @@ void Plugin::postLoad()
 
     Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();
     layoutManager->add(fileTree);
-    connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
+    connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
 
-void Plugin::openFile(QString path)
+void Plugin::openFile(QString path, int line)
 {
-    layoutManager->add(getEditorWidgetBuilder()->createEditor(path));
+    Editor *widget = NULL;
+    QMap<QString, Editor *>::Iterator it = openedFiles.find(path);
+    if (openedFiles.end() == it) {
+        widget = getEditorWidgetBuilder()->createEditor(path);
+        layoutManager->add(widget);
+        openedFiles[path] = widget;
+    } else {
+        widget = it.value();
+        layoutManager->focus(widget);
+    }
+    if (-1 != line) {
+        widget->focusOnLine(line);
+    }
 }
 
 

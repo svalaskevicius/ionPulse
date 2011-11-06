@@ -16,7 +16,7 @@ using namespace IonPhp;
 class MockedTreeModel : public IonProject::TreeModel {
 public:
     MOCK_METHOD1(filter, void (QString filter));
-    MOCK_CONST_METHOD1(getPath, QString (const QModelIndex &index));
+    MOCK_CONST_METHOD1(getItem, IonProject::TreeItem * (const QModelIndex &index));
     MOCK_CONST_METHOD0(getTitle, QString ());
     MOCK_CONST_METHOD0(getRoot, IonProject::TreeBranch * ());
 
@@ -28,8 +28,8 @@ public:
 };
 class MockedTreeItemFactory : public IonProject::TreeItemFactory {
 public:
-    MOCK_METHOD3(createTreeItem, IonProject::TreeItem * (QString, QString, IonProject::TreeBranch*));
-    MOCK_METHOD3(createTreeBranch, IonProject::TreeBranch * (QString, QString, IonProject::TreeBranch*));
+    MOCK_METHOD4(createTreeItem, IonProject::TreeItem * (QString, QString, int const line, IonProject::TreeBranch*));
+    MOCK_METHOD4(createTreeBranch, IonProject::TreeBranch * (QString, QString, int const line, IonProject::TreeBranch*));
 };
 class MockedTreeItem : public IonProject::TreeItem {
 public:
@@ -40,6 +40,7 @@ public:
     MOCK_CONST_METHOD0(getChildren, QList<IonProject::TreeItem*> ());
     MOCK_CONST_METHOD0(isVisible, bool ());
     MOCK_CONST_METHOD0(getPath, QString ());
+    MOCK_CONST_METHOD0(getLine, int ());
     MOCK_METHOD1(filter, void(QString));
 };
 class MockedTreeBranch : public IonProject::TreeBranch {
@@ -51,6 +52,7 @@ public:
     MOCK_CONST_METHOD0(getChildren, QList<IonProject::TreeItem*> ());
     MOCK_CONST_METHOD0(isVisible, bool ());
     MOCK_CONST_METHOD0(getPath, QString ());
+    MOCK_CONST_METHOD0(getLine, int ());
     MOCK_METHOD1(filter, void(QString));
 
     MOCK_METHOD1(appendChild, void(IonProject::TreeItem*));
@@ -81,7 +83,7 @@ private Q_SLOTS:
         MockedTreeItem phpFileMock1;
         MockedTreeItem phpFileMock2;
 
-        EXPECT_CALL(treeItemFactory, createTreeBranch(::testing::_, ::testing::_, ::testing::_))
+        EXPECT_CALL(treeItemFactory, createTreeBranch(::testing::_, ::testing::_, ::testing::_, ::testing::_))
             .WillOnce(::testing::Return((&rootMock)));
         EXPECT_CALL(fileSource, getRoot()).WillOnce(::testing::Return((&fileMock)));
         EXPECT_CALL(fileMock, getChildren()).WillOnce(::testing::Return((QList<IonProject::TreeItem*>() << &phpFileMock1 << &phpFileMock2)));
@@ -96,6 +98,9 @@ private Q_SLOTS:
 
         QCOMPARE(ps.getErrors().size(), 1);
         QCOMPARE(ps.getErrors().front(), QString("parsing of the file failed: file not found: ad.php"));
+
+        QCOMPARE(root, &rootMock);
+
     }
 };
 

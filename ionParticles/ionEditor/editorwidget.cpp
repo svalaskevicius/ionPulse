@@ -111,5 +111,16 @@ void EditorWidget::addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection>
     }
 }
 
+void EditorWidget::focusOnLine(int line)
+{
+    QTextCursor cursor = textCursor();
+    cursor.setPosition(
+        document()->findBlockByLineNumber(line).position(),
+        QTextCursor::MoveAnchor
+    );
+    setTextCursor(cursor);
+}
+
+
 }
 }

@@ -43,10 +43,11 @@ public:
 private:
     QScopedPointer<Private::EditorWidgetBuilderImpl> _editorWidgetFactory;
     IonLayout::LayoutManager *layoutManager;
+    QMap<QString, Editor *> openedFiles;
 signals:
 
 public slots:
-    void openFile(QString path);
+    void openFile(QString path, int line);
 
 private:
     Q_DISABLE_COPY(Plugin)

@@ -256,6 +256,23 @@ void LayoutManagerImpl::add(PanelWidget *panel)
     leaf->show();
 }
 
+void LayoutManagerImpl::focus(PanelWidget *panel)
+{
+    ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
+    Q_ASSERT(leaf);
+    QTabWidget *uiTab = leaf->getZoneContents();
+    Q_ASSERT(uiTab);
+    int idx = uiTab->indexOf(
+        panel->getWidget()
+    );
+    if (-1 == idx) {
+        throw std::runtime_error("widget must be already added to the panel");
+    }
+    uiTab->setCurrentIndex(idx);
+    uiTab->widget(idx)->setFocus();
+    leaf->show();
+}
+
 void LayoutManagerImpl::addZone(ZoneDefinition &zone)
 {
     zonesManager.addZone(zone);

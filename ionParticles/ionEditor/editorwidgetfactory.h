@@ -46,7 +46,7 @@ public:
         typeToHighlighterFactoryMap.clear();
         typeToLineNumberAreaFactoryMap.clear();
     }
-    IonLayout::PanelWidget *createEditor(QString path);
+    Editor *createEditor(QString path);
 
     virtual void registerFileType(QString fileExt, QString fileType);
     virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter);

@@ -35,6 +35,7 @@ class LayoutManager
 {
 public:
     virtual void add(PanelWidget *panel) = 0;
+    virtual void focus(PanelWidget *panel) = 0;
     virtual void addZone(ZoneDefinition &zone) = 0;
 };
 

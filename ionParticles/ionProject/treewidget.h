@@ -38,7 +38,7 @@ public:
     virtual QString getPanelZone() {return "left";}
 
 signals:
-    void fileActivated(QString filename);
+    void fileActivated(QString filename, int line);
 public slots:
 protected slots:
     void onItemActivated(const QModelIndex &index );

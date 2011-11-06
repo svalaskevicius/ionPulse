@@ -20,6 +20,7 @@ public:
     virtual void filter(QString const filter) = 0;
     virtual bool isVisible() const = 0;
     virtual QString getPath() const = 0;
+    virtual int getLine() const = 0;
 };
 
 class TreeBranch : virtual public TreeItem
@@ -35,8 +36,8 @@ public:
 class TreeItemFactory {
 public:
     virtual ~TreeItemFactory() {}
-    virtual TreeItem* createTreeItem(QString const name, QString const path, TreeBranch *parent) = 0;
-    virtual TreeBranch* createTreeBranch(QString const name, QString const path, TreeBranch *parent) = 0;
+    virtual TreeItem* createTreeItem(QString const name, QString const path, int const line, TreeBranch *parent) = 0;
+    virtual TreeBranch* createTreeBranch(QString const name, QString const path, int const line, TreeBranch *parent) = 0;
 };
 
 class TreeModelSource {
@@ -51,7 +52,7 @@ class TreeModel : public QAbstractItemModel {
 public:
     virtual ~TreeModel() {}
     virtual void filter(QString filter) = 0;
-    virtual QString getPath(const QModelIndex &index) const = 0;
+    virtual TreeItem* getItem(const QModelIndex &index) const = 0;
     virtual QString getTitle() const = 0;
     virtual TreeBranch *getRoot() const = 0;
 };

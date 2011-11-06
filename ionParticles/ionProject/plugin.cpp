@@ -32,10 +32,10 @@ void Plugin::addParent(BasicPlugin *parent) {
     CHECK_AND_ADD_PARENT(parent, IonLayout::LayoutPlugin, layoutManager = target->getLayoutManager());
 }
 
-void Plugin::openFile(QString path)
+void Plugin::openFile(QString path, int line)
 {
     Q_ASSERT(editorPlugin);
-    layoutManager->add(editorPlugin->getEditorWidgetBuilder()->createEditor(path));
+    editorPlugin->openFile(path, line);
 }
 
 TreeModel *Plugin::getProjectFileTreeModel()
@@ -51,7 +51,7 @@ void Plugin::addTreeWidget(TreeModel *model)
 {
     Private::TreeWidget *fileTree = new Private::TreeWidget(model);
     layoutManager->add(fileTree);
-    connect(fileTree, SIGNAL(fileActivated(QString)), this, SLOT(openFile(QString)));
+    connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
 
 void Plugin::addTreeWidget(TreeModelSource *modelSource)

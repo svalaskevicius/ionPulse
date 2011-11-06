@@ -36,7 +36,7 @@ void FileTreeWidget::onItemActivated(const QModelIndex &index )
     Q_ASSERT(_fiModel);
     QFileInfo fi = _fiModel->fileInfo(index);
     if (fi.isFile()) {
-        emit fileActivated(fi.filePath());
+        emit fileActivated(fi.filePath(), -1);
     }
 }
 
