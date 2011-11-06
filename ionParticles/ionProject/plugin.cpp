@@ -41,10 +41,10 @@ void Plugin::openFile(QString path)
 TreeModel *Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/");
-        projectTreeModel = new Private::FileTreeModel(&dirTreeSource);
+        Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/codeClubs");
+        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(&dirTreeSource));
     }
-    return projectTreeModel;
+    return projectTreeModel.data();
 }
 
 void Plugin::addTreeWidget(TreeModel *model)

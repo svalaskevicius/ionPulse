@@ -26,7 +26,7 @@ class Plugin : public QObject, public ProjectPlugin
     Q_INTERFACES(IonHeart::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
-    ~Plugin() {delete projectTreeModel;}
+    ~Plugin() {}
     void postLoad();
     QString getName() {
         return ProjectPlugin::name();
@@ -46,7 +46,7 @@ public:
 private:
     IonEditor::EditorPlugin *editorPlugin;
     IonLayout::LayoutManager *layoutManager;
-    TreeModel *projectTreeModel;
+    QSharedPointer<TreeModel> projectTreeModel;
 signals:
 
 public slots:
