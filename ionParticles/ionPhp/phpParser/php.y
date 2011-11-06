@@ -4,6 +4,8 @@
 #include "phpParser/ionParserLib.h"
 #include "phpparser.h"
 
+#define YYDEBUG 1
+#define YYSTACKEXPANDABLE 1
 #define YYERROR_VERBOSE
 #define YYSTYPE pASTNode
 #define ion_php_scanner context->__scanner
@@ -22,7 +24,7 @@ using namespace IonPhp;
 
 %pure_parser
 %glr-parser
-%expect 2
+%expect 4
 %parse-param { IonPhp::phpParser* context }
 %lex-param   { void* ion_php_scanner  }
 
@@ -190,9 +192,22 @@ statement:
 ;
 
 
+elseif_list_non_empty:
+             T_ELSEIF '(' expr ')'  statement {  $$ = ASTNode::create("elseif_list")->addChild(ASTNode::create("elseif")->addChild($3)->addChild($5)); }
+        |    elseif_list_non_empty T_ELSEIF '(' expr ')'  statement { $1->addChild(ASTNode::create("elseif")->addChild($4)->addChild($6)); }
+;
+
+
+classical_if:
+      T_IF '(' expr ')'  statement  elseif_list_non_empty T_ELSE statement %dprec 1 { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild($6)->addChild(ASTNode::create("else")->addChild($8)); }
+    | T_IF '(' expr ')'  statement  elseif_list_non_empty %dprec 2 { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild($6)->addChild(ASTNode::create("else")); }
+    | T_IF '(' expr ')'  statement  T_ELSE statement %dprec 3 { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild(ASTNode::create("elseif_list"))->addChild(ASTNode::create("else")->addChild($7)); }
+    | T_IF '(' expr ')'  statement  %dprec 4 { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild(ASTNode::create("elseif_list"))->addChild(ASTNode::create("else")); }
+;
+
 unticked_statement:
                 '{' inner_statement_list '}'           {$$=$2;}
-        |    T_IF '(' expr ')'  statement  elseif_list else_single { $$ = ASTNode::create("if")->addChild($3)->addChild($5)->addChild($6)->addChild($7); }
+        |    classical_if {$$=$1;}
         |    T_IF '(' expr ')' ':'  inner_statement_list  new_elseif_list new_else_single T_ENDIF ';' { $$ = ASTNode::create("if")->addChild($3)->addChild($6)->addChild($7)->addChild($8); }
         |    T_WHILE '('  expr  ')' while_statement  { $$ = ASTNode::create("while")->addChild($3)->addChild($5); }
         |    T_DO  statement T_WHILE '(' expr ')' ';' { $$ = ASTNode::create("dowhile")->addChild($2)->addChild($5); }
@@ -403,21 +418,9 @@ while_statement:
 
 
 
-elseif_list:
-                /* empty */ {  $$ = ASTNode::create("elseif_list"); }
-        |    elseif_list T_ELSEIF '(' expr ')'  statement { $1->addChild(ASTNode::create("elseif")->addChild($4)->addChild($6)); $$ = $1; }
-;
-
-
 new_elseif_list:
                 /* empty */ {  $$ = ASTNode::create("elseif_list"); }
         |    new_elseif_list T_ELSEIF '(' expr ')' ':'  inner_statement_list { $1->addChild(ASTNode::create("elseif")->addChild($4)->addChild($7)); $$ = $1; }
-;
-
-
-else_single:
-                /* empty */ { $$ = ASTNode::create("else"); }
-        |    T_ELSE statement { $$ = ASTNode::create("else")->addChild($2); }
 ;
 
 
