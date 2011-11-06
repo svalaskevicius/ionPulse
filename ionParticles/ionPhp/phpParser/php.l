@@ -213,12 +213,10 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING>"extends" {
-        *astNode = CREATE_AST_NODE("extends");
         return T_EXTENDS;
 }
 
 <ST_IN_SCRIPTING>"implements" {
-        *astNode = CREATE_AST_NODE("implements");
         return T_IMPLEMENTS;
 }
 
