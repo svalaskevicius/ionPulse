@@ -40,12 +40,61 @@ public:
 };
 
 
-class ProjectTreeTest : public QObject
+class ProjectDirectoryTreeSourceTest : public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
-    void test_treeModel_dataDimensions() {
+    void test_if_getTitleIsForDirectoryTree() {
+        QString path;
+        DirectoryTreeSource ds(path);
+
+        QCOMPARE(ds.getTitle(), QString("Project Browser"));
+    }
+};
+
+
+class ProjectTreeItemTest : public QObject
+{
+    Q_OBJECT
+
+private Q_SLOTS:
+    void test_if_treeItem_getChildren_returnsEmptyList() {
+        TreeItemFactoryImpl factory;
+        TreeItem* item = factory.createTreeItem("", "", NULL);
+        QList<TreeItem*> list = item->getChildren();
+        delete item;
+
+        QCOMPARE(list.size(), 0);
+    }
+    void test_if_treeBranch_getChildren_returnsEmptyListIfThereAreNoChildren() {
+        TreeItemFactoryImpl factory;
+        TreeBranch* item = factory.createTreeBranch("", "", NULL);
+        QList<TreeItem*> list = item->getChildren();
+        delete item;
+
+        QCOMPARE(list.size(), 0);
+    }
+    void test_if_treeBranch_getChildren_returnsEmptyListIfThereAreSomeChildren() {
+        TreeItemFactoryImpl factory;
+        TreeBranch* item = factory.createTreeBranch("", "", NULL);
+        TreeItem* item2 = factory.createTreeItem("", "", item);
+        item->appendChild(item2);
+        QList<TreeItem*> list = item->getChildren();
+        delete item;
+
+        QCOMPARE(list.size(), 1);
+        QCOMPARE(list.front(), item2); // note, item2 is already deleted, compare only the address
+    }
+};
+
+
+class ProjectTreeModelTest : public QObject
+{
+    Q_OBJECT
+
+private Q_SLOTS:
+    void test_dataDimensions() {
         MockTreeSource source;
         FileTreeModel model(&source);
 
@@ -54,14 +103,14 @@ private Q_SLOTS:
         QCOMPARE(model.columnCount(), 1);
     }
 
-    void test_treeModel_structureBetweenParentAndChild() {
+    void test_structureBetweenParentAndChild() {
         MockTreeSource source;
         FileTreeModel model(&source);
 
         QCOMPARE(model.parent(model.index(0, 0, model.index(0, 0))), model.index(0, 0));
     }
 
-    void test_treeModel_dataContainsCorrectFixtures() {
+    void test_dataContainsCorrectFixtures() {
         MockTreeSource source;
         FileTreeModel model(&source);
 
@@ -70,7 +119,7 @@ private Q_SLOTS:
         QCOMPARE(model.data(model.index(0, 0, model.index(0, 0)), Qt::DisplayRole).toString(), QString("fileName1"));
     }
 
-    void test_treeModel_dataIsReducedByFilter() {
+    void test_dataIsReducedByFilter() {
         MockTreeSource source;
         FileTreeModel model(&source);
 
@@ -87,7 +136,7 @@ private Q_SLOTS:
         QCOMPARE(model.columnCount(), 1);
     }
 
-    void test_treeModel_filterWorksForPathBasis() {
+    void test_filterWorksForPathBasis() {
         MockTreeSource source;
         FileTreeModel model(&source);
 
@@ -101,13 +150,28 @@ private Q_SLOTS:
         QCOMPARE(model.data(model.index(0, 0, model.index(0, 0)), Qt::DisplayRole).toString(), QString("fileName1"));
     }
 
-    void test_treeModel_getPath() {
+    void test_getPath() {
         MockTreeSource source;
         FileTreeModel model(&source);
 
         model.filter("1/f");
 
         QCOMPARE(model.getPath(model.index(0, 0, model.index(0, 0))), QString("path1/fileName1"));
+    }
+
+    void test_getTitleReturnsSourceTitle() {
+        MockTreeSource source;
+        FileTreeModel model(&source);
+
+        QCOMPARE(model.getTitle(), QString("test"));
+    }
+
+    void test_getRootReturnsSourceCreatedRoot() {
+        MockTreeSource source;
+        FileTreeModel model(&source);
+
+        TreeBranch *root = model.getRoot();
+        QCOMPARE(root->data(0).toString(), QString("name"));
     }
 };
 

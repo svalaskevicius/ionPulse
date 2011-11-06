@@ -36,12 +36,14 @@ public:
 
 class TreeItemFactory {
 public:
+    virtual ~TreeItemFactory() {}
     virtual TreeItem* createTreeItem(QString const name, QString const path, TreeBranch *parent) = 0;
     virtual TreeBranch* createTreeBranch(QString const name, QString const path, TreeBranch *parent) = 0;
 };
 
 class TreeModelSource {
 public:
+    virtual ~TreeModelSource() {}
     virtual TreeBranch * setupData() = 0;
     virtual QString getTitle() const = 0;
 };

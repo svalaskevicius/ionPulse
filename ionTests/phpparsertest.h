@@ -43,6 +43,19 @@ class PhpParserTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void test_getASTChildren_returnsAListOfMatchedChildren()
+    {
+        ASTRoot ret;
+        QVERIFY((ret = IonPhp::phpParser().parse("<?php $x;$y;")).data());
+
+        QList<pASTNode> children = ret->findChildren("T_VARIABLE");
+
+        QCOMPARE(children.size(), 2);
+        QCOMPARE(children[0]->getStrData("text"), QString("$x"));
+        QCOMPARE(children[1]->getStrData("text"), QString("$y"));
+    }
+
+
     void test_openCloseNoEnd() { TEST_PHP_PARSER(
         "<?php ?><?php ?><?php ",
         "top_statement_list(empty statement; empty statement)"

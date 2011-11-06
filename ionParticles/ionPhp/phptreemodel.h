@@ -14,7 +14,7 @@ public:
         : fileSource(fileSource), treeItemFactory(treeItemFactory) {
     }
     virtual IonProject::TreeBranch * setupData();
-    QString getTitle() const {return "Class browser";}
+    QString getTitle() const {return "Class Browser";}
 
 protected:
     QVector<QString> getPhpFileList();

@@ -13,6 +13,7 @@
 #include "phpparsertest.h"
 #include "projecttreetest.h"
 #include "layouttest.h"
+#include "phpclassbrowsertest.h"
 
 #define ADD_TEST_CLASS(className) { className tc; ret |= QTest::qExec(&tc, argc, argv); }
 
@@ -26,8 +27,15 @@ int main(int argc, char *argv[])
 
     int ret = 0;
     ADD_TEST_CLASS(PhpParserTest);
-    ADD_TEST_CLASS(ProjectTreeTest);
+    ADD_TEST_CLASS(PhpTreeModelSourceTest);
+
     ADD_TEST_CLASS(LayoutManagerTest);
+
+    ADD_TEST_CLASS(ProjectTreeModelTest);
+    ADD_TEST_CLASS(ProjectTreeItemTest);
+    ADD_TEST_CLASS(ProjectDirectoryTreeSourceTest);
+
+
     if (!ret) {
         std::cout << "all tests PASSED\n";
     } else {

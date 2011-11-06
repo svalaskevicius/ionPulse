@@ -37,7 +37,9 @@ INSTALLS += target
 HEADERS += \
     phpparsertest.h \
     projecttreetest.h \
-    layouttest.h
+    layouttest.h \
+    phpclassbrowsertest.h
+
 
 
 
