@@ -29,9 +29,7 @@ public:
 
     virtual void appendChild(TreeItem *child) = 0;
     virtual TreeItem *getChild(int rowNr) = 0;
-    virtual int childrenCount() const = 0;
     virtual int getChildRowNr(TreeItem *child) = 0;
-    virtual void filter(QString const filter) = 0;
 };
 
 class TreeItemFactory {

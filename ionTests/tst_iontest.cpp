@@ -14,16 +14,44 @@
 #include "projecttreetest.h"
 #include "layouttest.h"
 #include "phpclassbrowsertest.h"
+#include <gtest/gtest.h>
 
 #define ADD_TEST_CLASS(className) { className tc; ret |= QTest::qExec(&tc, argc, argv); }
 
 using namespace IonTests;
 
+class GoogleTestEventListener : public ::testing::EmptyTestEventListener {
+   virtual void OnTestStart(const ::testing::TestInfo& test_info) {
+   }
+
+   virtual void OnTestPartResult(const ::testing::TestPartResult& test_part_result) {
+        if (test_part_result.failed()) {
+            QFAIL(
+                QString("mock objects failed with '%1' at %2:%3")
+                    .arg(QString(test_part_result.summary()))
+                    .arg(test_part_result.file_name())
+                    .arg(test_part_result.line_number())
+                    .toAscii().constData()
+            );
+        }
+   }
+
+   // Called after a test ends.
+   virtual void OnTestEnd(const ::testing::TestInfo& test_info) {
+   }
+ };
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QTEST_DISABLE_KEYPAD_NAVIGATION
+
+    ::testing::InitGoogleTest(&argc, argv);
+      // Gets hold of the event listener list.
+      ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+      delete listeners.Release(listeners.default_result_printer());
+      // Adds a listener to the end.  Google Test takes the ownership.
+      listeners.Append(new GoogleTestEventListener);
 
     int ret = 0;
     ADD_TEST_CLASS(PhpParserTest);

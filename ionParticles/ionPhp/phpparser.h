@@ -22,7 +22,8 @@ class phpParser
 public:
     phpParser();
     ~phpParser();
-    ASTRoot parse(QString doc);
+    ASTRoot parseString(QString doc);
+    ASTRoot parseFile(QString path);
 protected:
    void init_scanner();
    void destroy_scanner();

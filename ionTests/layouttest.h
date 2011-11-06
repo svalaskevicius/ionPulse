@@ -13,10 +13,7 @@
 #include <iostream>
 
 #include <ionParticles/ionLayout/layoutmanager.h>
-#include <mockcpp/MockObject.h>
-#include <mockcpp/ChainingMockHelper.h>
 
-USING_MOCKCPP_NS
 using namespace IonLayout;
 using namespace IonLayout::Private;
 

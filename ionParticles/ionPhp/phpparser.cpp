@@ -12,6 +12,7 @@
 #include <QVector>
 
 #include "phpParser/gen_php_parser.hpp"
+#include <QFile>
 
 extern int _impl_ionPhp_lex(pASTNode *astNode, yyscan_t yyscanner);
 
@@ -31,30 +32,46 @@ phpParser::~phpParser()
     destroy_scanner();
 }
 
-ASTRoot phpParser::parse(QString doc)
+ASTRoot phpParser::parseString(QString doc)
 {
     void * buf = setBuf(doc.toAscii().constData());
     __result = NULL;
     int ret = 1;
+    QString errorText = "unknown error";
     try {
         ret = ion_php_parse(this);
     } catch (std::exception& e) {
-        std::cerr << "exception while parsing: " << e.what() << " at: " << __line << ", "<< __col<< ", "<< __posLine<< ", "<< __posCol<< std::endl;
+        errorText = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
+                        .arg(e.what())
+                        .arg(__line).arg(__col)
+                        .arg(__posLine).arg(__posCol)
+                    ;
     }
     delBuf(buf);
-
-    //std::cout << ret << std::endl;
 
     if (ret) {
         if (__result) {
             delete __result;
             __result = NULL;
         }
+        throw std::runtime_error(errorText.toStdString());
     }
 
     return ASTRoot(__result);
 }
 
+ASTRoot phpParser::parseFile(QString path)
+{
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        try {
+            return parseString(file.readAll());
+        } catch (std::runtime_error &err) {
+            throw std::runtime_error("parsing of the file failed: file not found: "+path.toStdString()+"\n"+err.what());
+        }
+    }
+    throw std::runtime_error("parsing of the file failed: file not found: "+path.toStdString());
+}
 
 void phpParser::__error(phpParser *myself, const char *error) {
     Q_ASSERT(this == myself);

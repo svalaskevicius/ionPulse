@@ -21,20 +21,24 @@ using namespace IonPhp;
 
 #define QCOMPARE_3(actual, expected, actions) \
 do {\
-    if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__))\
+    if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__)) { \
         actions; \
-        return;\
+    } \
+    return; \
 } while (0)
 
 #define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
 #define TEST_PHP_PARSER(CODE, ASTSTR) { \
-    ASTRoot ret; \
-    QVERIFY((ret = IonPhp::phpParser().parse(CODE)).data()); \
-    QCOMPARE_3( \
-        ret->toString(), \
-        QString(ASTSTR), \
-        PRINT(ret->toString()) \
-    ); \
+    try { \
+        ASTRoot ret = IonPhp::phpParser().parseString(CODE); \
+        QCOMPARE_3( \
+            ret->toString(), \
+            QString(ASTSTR), \
+            PRINT(ret->toString()) \
+        ); \
+    } catch (std::runtime_error &err) { \
+        QFAIL(err.what()); \
+    } \
 }
 
 
@@ -46,7 +50,7 @@ private Q_SLOTS:
     void test_getASTChildren_returnsAListOfMatchedChildren()
     {
         ASTRoot ret;
-        QVERIFY((ret = IonPhp::phpParser().parse("<?php $x;$y;")).data());
+        QVERIFY((ret = IonPhp::phpParser().parseString("<?php $x;$y;")).data());
 
         QList<pASTNode> children = ret->findChildren("T_VARIABLE");
 
