@@ -834,11 +834,6 @@ private Q_SLOTS:
         "<?php if(1) if (2) {echo $y;} elseif (3) {echo $z;}",
         "top_statement_list(if(T_LNUMBER (@ 0:9) [text:1]; if(T_LNUMBER (@ 0:16) [text:2]; inner_statement_list(echo(echo_expr_list(T_VARIABLE (@ 0:25) [text:$y]))); elseif_list(elseif(T_LNUMBER (@ 0:38) [text:3]; inner_statement_list(echo(echo_expr_list(T_VARIABLE (@ 0:47) [text:$z]))))); else); elseif_list; else))"
     );}
-
-//    void test_asd() { TEST_PHP_PARSER(
-//        "<?php if (1): echo $x; else: echo $y; endif;",
-//        ""
-//    );}
 };
 
 }

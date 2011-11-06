@@ -10,8 +10,8 @@ namespace IonPhp {
 
 class PhpTreeSource : public IonProject::TreeModelSource {
 public:
-    PhpTreeSource(const IonProject::TreeModel &fileSource)
-        : fileSource(fileSource) {
+    PhpTreeSource(const IonProject::TreeModel &fileSource, IonProject::TreeItemFactory &treeItemFactory)
+        : fileSource(fileSource), treeItemFactory(treeItemFactory) {
     }
     virtual IonProject::TreeBranch * setupData();
     QString getTitle() const {return "Class browser";}
@@ -19,8 +19,8 @@ public:
 protected:
     QVector<QString> getPhpFileList();
 private:
-
     const IonProject::TreeModel &fileSource;
+    IonProject::TreeItemFactory &treeItemFactory;
 };
 
 }

@@ -34,6 +34,12 @@ public:
     virtual void filter(QString const filter) = 0;
 };
 
+class TreeItemFactory {
+public:
+    virtual TreeItem* createTreeItem(QString const name, QString const path, TreeBranch *parent) = 0;
+    virtual TreeBranch* createTreeBranch(QString const name, QString const path, TreeBranch *parent) = 0;
+};
+
 class TreeModelSource {
 public:
     virtual TreeBranch * setupData() = 0;
@@ -54,6 +60,7 @@ class ProjectPlugin : public IonHeart::BasicPlugin {
 public:
     virtual void addTreeWidget(TreeModel *model) = 0;
     virtual void addTreeWidget(TreeModelSource *modelSource) = 0;
+    virtual TreeItemFactory *createTreeItemFactory() = 0;
     virtual TreeModel *getProjectFileTreeModel() = 0;
     static QString name() {return "ionProject";}
 };

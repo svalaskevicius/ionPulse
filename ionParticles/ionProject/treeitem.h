@@ -52,6 +52,13 @@ private:
     QList<TreeItem*> childItems;
 };
 
+class TreeItemFactoryImpl : public TreeItemFactory {
+public:
+    virtual TreeItem* createTreeItem(QString const name, QString const path, TreeBranch *parent);
+    virtual TreeBranch* createTreeBranch(QString const name, QString const path, TreeBranch *parent);
+};
+
+
 }
 }
 

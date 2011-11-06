@@ -26,7 +26,7 @@ typedef QSharedPointer<ASTNode> ASTRoot;
 class ASTNode {
 protected:
     QString name;
-    QList<pASTNode> children;
+    QVector<pASTNode> children;
     QMap<QString, QString> strdata;
     int lineNr, columnNr;
 public:
@@ -40,6 +40,8 @@ public:
     static pASTNode create(QString name) {return new ASTNode(name);}
     QString toMlString(int indentLevel = 0, bool printPosition = false);
     QString toString() {return toMlString(-1, false);}
+    QList<pASTNode> findChildren(QString name);
+    pASTNode getChild(int nr) {if (children.count() <= nr) throw std::out_of_range(QString("child nr (%1) is more than children cnt (%2)").arg(nr).arg(children.count()).toStdString()); return children[nr];}
 };
 
 }

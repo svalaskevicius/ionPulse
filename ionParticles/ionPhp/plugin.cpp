@@ -25,7 +25,7 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::postLoad()
 {
-    PhpTreeSource source(*projectPlugin->getProjectFileTreeModel());
+    PhpTreeSource source(*projectPlugin->getProjectFileTreeModel(), *projectPlugin->createTreeItemFactory());
     projectPlugin->addTreeWidget(&source);
 }
 

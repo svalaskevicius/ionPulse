@@ -65,5 +65,15 @@ QString ASTNode::toMlString(int indentLevel, bool printPosition)
     }
     return ret;
 }
+QList<pASTNode> ASTNode::findChildren(QString name)
+{
+    QList<pASTNode> ret;
+    foreach (pASTNode child, children) {
+        if (child->getName() == name) {
+            ret.append(child);
+        }
+    }
+    return ret;
+}
 
 }

@@ -12,6 +12,7 @@
 #include <ionHeart/shared.h>
 #include "treewidget.h"
 #include "filetreemodel.h"
+#include "treeitem.h"
 
 namespace IonProject {
 
@@ -40,7 +41,7 @@ void Plugin::openFile(QString path)
 TreeModel *Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/warner.development.local");
+        Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/");
         projectTreeModel = new Private::FileTreeModel(&dirTreeSource);
     }
     return projectTreeModel;
@@ -57,6 +58,11 @@ void Plugin::addTreeWidget(TreeModelSource *modelSource)
 {
     Private::FileTreeModel *model = new Private::FileTreeModel(modelSource);
     addTreeWidget(model);
+}
+
+TreeItemFactory *Plugin::createTreeItemFactory()
+{
+    return new Private::TreeItemFactoryImpl();
 }
 
 

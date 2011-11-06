@@ -39,7 +39,7 @@ ASTRoot phpParser::parse(QString doc)
     try {
         ret = ion_php_parse(this);
     } catch (std::exception& e) {
-        std::cout << "exception while parsing: " << e.what() << " at: " << __line << ", "<< __col<< ", "<< __posLine<< ", "<< __posCol<< std::endl;
+        std::cerr << "exception while parsing: " << e.what() << " at: " << __line << ", "<< __col<< ", "<< __posLine<< ", "<< __posCol<< std::endl;
     }
     delBuf(buf);
 

@@ -122,6 +122,15 @@ void TreeBranchImpl::filter(QString const filter)
     }
 }
 
+TreeItem* TreeItemFactoryImpl::createTreeItem(QString const name, QString const path, TreeBranch *parent)
+{
+    return new Private::TreeItemImpl(name, path, parent);
+}
+
+TreeBranch* TreeItemFactoryImpl::createTreeBranch(QString const name, QString const path, TreeBranch *parent)
+{
+    return new Private::TreeBranchImpl(name, path, parent);
+}
 
 }
 }

@@ -41,6 +41,7 @@ public:
     TreeModel *getProjectFileTreeModel();
     virtual void addTreeWidget(TreeModel *model);
     virtual void addTreeWidget(TreeModelSource *modelSource);
+    virtual TreeItemFactory* createTreeItemFactory();
 
 private:
     IonEditor::EditorPlugin *editorPlugin;
