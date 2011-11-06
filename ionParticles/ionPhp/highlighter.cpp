@@ -98,7 +98,6 @@ Highlighter::Highlighter(QPlainTextEdit *parent) :
 
 void Highlighter::highlightBlock(const QString &text)
 {
-    DEBUG_MSG(text.toStdString());
     foreach (const HighlightingRule &rule, highlightingRules) {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text);

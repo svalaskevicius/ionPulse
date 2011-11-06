@@ -674,7 +674,7 @@ private Q_SLOTS:
     );}
     void test_statementStaticVars() { TEST_PHP_PARSER(
         "<?php function x(){static $a = 2; return $a;}",
-        "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING (@ 0:15) [text:x]; parameter_list; inner_statement_list(static(T_VARIABLE (@ 0:26) [text:$a]); return(T_VARIABLE (@ 0:41) [text:$a]))))"
+        "top_statement_list(function_declaration(is_reference [is_reference:0]; T_STRING (@ 0:15) [text:x]; parameter_list; inner_statement_list(static(static_var_list(T_VARIABLE (@ 0:26) [text:$a](T_LNUMBER (@ 0:31) [text:2]))); return(T_VARIABLE (@ 0:41) [text:$a]))))"
     );}
     void test_statementForeach() { TEST_PHP_PARSER(
         "<?php foreach($ar as $a=>$v) {echo 'x';}",

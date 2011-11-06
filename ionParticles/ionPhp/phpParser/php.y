@@ -556,10 +556,10 @@ global_var:
 
 
 static_var_list:
-                static_var_list ',' T_VARIABLE { $$ = $1; }
-        |    static_var_list ',' T_VARIABLE '=' static_scalar { $$ = $1; }
-        |    T_VARIABLE { $$ = $1; }
-        |    T_VARIABLE '=' static_scalar { $$ = $1; }
+                static_var_list ',' T_VARIABLE { $1->addChild($3); }
+        |    static_var_list ',' T_VARIABLE '=' static_scalar { $1->addChild($3->addChild($5)); }
+        |    T_VARIABLE { $$ = ASTNode::create("static_var_list")->addChild($1); }
+        |    T_VARIABLE '=' static_scalar { $$ = ASTNode::create("static_var_list")->addChild($1->addChild($3)); }
 
 ;
 
