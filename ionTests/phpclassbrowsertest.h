@@ -11,8 +11,6 @@
 
 namespace IonTests {
 
-using namespace IonPhp;
-
 class MockedTreeModel : public IonProject::TreeModel {
 public:
     MOCK_METHOD1(filter, void (QString filter));
@@ -26,11 +24,19 @@ public:
     MOCK_CONST_METHOD1(columnCount, int (const QModelIndex &));
     MOCK_CONST_METHOD2(data, QVariant (const QModelIndex &, int));
 };
+
+}
+namespace IonTests {
+
 class MockedTreeItemFactory : public IonProject::TreeItemFactory {
 public:
-    MOCK_METHOD4(createTreeItem, IonProject::TreeItem * (QString, QString, int const line, IonProject::TreeBranch*));
+    MOCK_METHOD5(createTreeItem, IonProject::TreeItem * (QString, QString, QString, int const line, IonProject::TreeBranch*));
     MOCK_METHOD4(createTreeBranch, IonProject::TreeBranch * (QString, QString, int const line, IonProject::TreeBranch*));
 };
+
+}
+namespace IonTests {
+
 class MockedTreeItem : public IonProject::TreeItem {
 public:
     MOCK_CONST_METHOD1(data, QVariant (int column));
@@ -43,6 +49,10 @@ public:
     MOCK_CONST_METHOD0(getLine, int ());
     MOCK_METHOD1(filter, void(QString));
 };
+
+}
+namespace IonTests {
+
 class MockedTreeBranch : public IonProject::TreeBranch {
 public:
     MOCK_CONST_METHOD1(data, QVariant (int column));
@@ -59,6 +69,11 @@ public:
     MOCK_METHOD1(getChild, IonProject::TreeItem*(int));
     MOCK_METHOD1(getChildRowNr, int(IonProject::TreeItem*));
 };
+
+}
+namespace IonTests {
+
+using namespace IonPhp;
 
 
 class PhpTreeModelSourceTest : public QObject

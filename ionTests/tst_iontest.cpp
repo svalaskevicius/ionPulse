@@ -18,10 +18,11 @@
 
 #define ADD_TEST_CLASS(className) { className tc; ret |= QTest::qExec(&tc, argc, argv); }
 
-using namespace IonTests;
+namespace IonTests {
+
 
 class GoogleTestEventListener : public ::testing::EmptyTestEventListener {
-   virtual void OnTestStart(const ::testing::TestInfo& test_info) {
+   virtual void OnTestStart(const ::testing::TestInfo&) {
    }
 
    virtual void OnTestPartResult(const ::testing::TestPartResult& test_part_result) {
@@ -37,12 +38,15 @@ class GoogleTestEventListener : public ::testing::EmptyTestEventListener {
    }
 
    // Called after a test ends.
-   virtual void OnTestEnd(const ::testing::TestInfo& test_info) {
+   virtual void OnTestEnd(const ::testing::TestInfo&) {
    }
- };
+};
+}
+
 
 int main(int argc, char *argv[])
 {
+    using namespace IonTests;
     QApplication app(argc, argv);
     QTEST_DISABLE_KEYPAD_NAVIGATION
 

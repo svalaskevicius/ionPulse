@@ -36,7 +36,7 @@ public:
 class TreeItemFactory {
 public:
     virtual ~TreeItemFactory() {}
-    virtual TreeItem* createTreeItem(QString const name, QString const path, int const line, TreeBranch *parent) = 0;
+    virtual TreeItem* createTreeItem(QString const name, QString filterBy, QString const path, int const line, TreeBranch *parent) = 0;
     virtual TreeBranch* createTreeBranch(QString const name, QString const path, int const line, TreeBranch *parent) = 0;
 };
 

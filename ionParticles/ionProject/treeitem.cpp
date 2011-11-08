@@ -15,8 +15,8 @@ namespace IonProject {
 
 namespace Private {
 
-TreeItemImpl::TreeItemImpl(QString const name, QString const path, int line, TreeBranch *parent)
-    : name(name), path(path), line(line), parentItem(parent)
+TreeItemImpl::TreeItemImpl(QString const name, QString const filterBy, QString const path, int line, TreeBranch *parent)
+    : name(name), filterBy(filterBy), path(path), line(line), parentItem(parent)
 {
     visible = true;
 }
@@ -53,7 +53,7 @@ int TreeItemImpl::childrenCount() const
 
 void TreeItemImpl::filter(QString const filter)
 {
-    visible = path.toLower().contains(filter.toLower());
+    visible = filterBy.toLower().contains(filter.toLower());
 }
 
 
@@ -61,7 +61,7 @@ void TreeItemImpl::filter(QString const filter)
 
 
 TreeBranchImpl::TreeBranchImpl(QString const name, QString const path, int line, TreeBranch *parent)
-    :TreeItemImpl(name, path, line, parent), childItems()
+    :TreeItemImpl(name, "", path, line, parent), childItems()
 {
 }
 TreeBranchImpl::~TreeBranchImpl()
@@ -122,9 +122,9 @@ void TreeBranchImpl::filter(QString const filter)
     }
 }
 
-TreeItem* TreeItemFactoryImpl::createTreeItem(QString const name, QString const path, int const line, TreeBranch *parent)
+TreeItem* TreeItemFactoryImpl::createTreeItem(QString const name, QString filterBy, QString const path, int const line, TreeBranch *parent)
 {
-    return new Private::TreeItemImpl(name, path, line, parent);
+    return new Private::TreeItemImpl(name, filterBy, path, line, parent);
 }
 
 TreeBranch* TreeItemFactoryImpl::createTreeBranch(QString const name, QString const path, int const line, TreeBranch *parent)

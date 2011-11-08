@@ -23,12 +23,14 @@ void PhpTreeSource::addFileToTree(QString path, IonProject::TreeBranch* root)
     foreach(pASTNode classDecl, astRoot->findChildren("class_declaration")) {
         try {
             IonPhp::pASTNode classDeclLabel = classDecl->getChild(1);
-            IonProject::TreeBranch* classNode = treeItemFactory.createTreeBranch(classDeclLabel->getStrData("text"), path, classDeclLabel->getLine(), root);
+            QString className = classDeclLabel->getStrData("text");
+            IonProject::TreeBranch* classNode = treeItemFactory.createTreeBranch(className, path, classDeclLabel->getLine(), root);
             root->appendChild(classNode);
             foreach(pASTNode classStatementList, classDecl->findChildren("class_statement_list")) {
                 foreach(pASTNode methodDecl, classStatementList->findChildren("METHOD")) {
                     IonPhp::pASTNode methodDeclLabel = methodDecl->getChild(2);
-                    classNode->appendChild(treeItemFactory.createTreeItem(methodDeclLabel->getStrData("text"), path, methodDeclLabel->getLine(), classNode));
+                    QString methodName = methodDeclLabel->getStrData("text");
+                    classNode->appendChild(treeItemFactory.createTreeItem(methodName, className+"::"+methodName, path, methodDeclLabel->getLine(), classNode));
                 }
             }
         } catch (std::exception &err) {

@@ -155,7 +155,7 @@ TreeBranch *DirectoryTreeSource::setupData()
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, -1, currentTreeItemsParent));
+            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, fullPath, -1, currentTreeItemsParent));
         }
     }
     return root;

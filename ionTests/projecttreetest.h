@@ -31,9 +31,9 @@ public:
         TreeBranch* level1 = new TreeBranchImpl("dir1", "path1", -1, parent);
         parent->appendChild(level1);
 
-        level1->appendChild(new TreeItemImpl("fileName1", "path1/fileName1", -1, level1));
+        level1->appendChild(new TreeItemImpl("fileName1", "path1/fileName1", "path1/fileName1", -1, level1));
 
-        parent->appendChild(new TreeItemImpl("fileName2", "fileName2", -1, parent));
+        parent->appendChild(new TreeItemImpl("fileName2", "fileName2", "fileName2", -1, parent));
 
         return parent;
     }
@@ -61,7 +61,7 @@ class ProjectTreeItemTest : public QObject
 private Q_SLOTS:
     void test_if_treeItem_getChildren_returnsEmptyList() {
         TreeItemFactoryImpl factory;
-        TreeItem* item = factory.createTreeItem("", "", -1, NULL);
+        TreeItem* item = factory.createTreeItem("", "", "", -1, NULL);
         QList<TreeItem*> list = item->getChildren();
         delete item;
 
@@ -78,13 +78,21 @@ private Q_SLOTS:
     void test_if_treeBranch_getChildren_returnsEmptyListIfThereAreSomeChildren() {
         TreeItemFactoryImpl factory;
         TreeBranch* item = factory.createTreeBranch("", "", -1, NULL);
-        TreeItem* item2 = factory.createTreeItem("", "", -1, item);
+        TreeItem* item2 = factory.createTreeItem("", "", "", -1, item);
         item->appendChild(item2);
         QList<TreeItem*> list = item->getChildren();
         delete item;
 
         QCOMPARE(list.size(), 1);
         QCOMPARE(list.front(), item2); // note, item2 is already deleted, compare only the address
+    }
+    void test_if_treeItem_is_filtered_by_filterBy_param() {
+        TreeItemFactoryImpl factory;
+        QScopedPointer<TreeItem> item(factory.createTreeItem("", "aaa", "", -1, NULL));
+        item->filter("baa");
+        QCOMPARE(item->isVisible(), 0);
+        item->filter("aaa");
+        QCOMPARE(item->isVisible(), 1);
     }
 };
 
