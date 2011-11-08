@@ -1179,7 +1179,6 @@ void ionUnput(char c, yyscan_t yyscanner)
 
 QString retrieveChars(int numberOfChars, yyscan_t yyscanner)
 {
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     QString result;
     char c;
     while (numberOfChars-- && (c = ionInput(yyscanner))) {
@@ -1190,7 +1189,6 @@ QString retrieveChars(int numberOfChars, yyscan_t yyscanner)
 }
 void putCharsBack(QString chars, yyscan_t yyscanner)
 {
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     int i = chars.length();
     while (i--) {
         ionUnput(chars[i].toAscii(), yyscanner);
@@ -1205,7 +1203,6 @@ QString lookupChars(int numberOfChars, yyscan_t yyscanner)
 
 char lookupChar(yyscan_t yyscanner)
 {
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     char c = ionInput(yyscanner);
     ionUnput(c, yyscanner);
     return c;
