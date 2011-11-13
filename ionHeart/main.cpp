@@ -9,15 +9,25 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
 #include "pluginloader.h"
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     IonHeart::Private::MainWindow w;
     IonHeart::Private::PluginLoader plugins;
-    plugins.loadPlugins(w);
+    try {
+        plugins.loadPlugins(w);
+        w.show();
+        return a.exec();
+    } catch (QString &msg) {
+        QMessageBox::critical(
+            0,
+            "Application error",
+            msg+"\n\nClick Cancel to exit.",
+            QMessageBox::Cancel
+        );
+        return 1;
+    }
 
-    w.show();
-
-    return a.exec();
 }
