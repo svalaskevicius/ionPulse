@@ -10,11 +10,12 @@
 
 #include <QtPlugin>
 #include <ionParticles/ionEditor/editorwidget.h>
-#include <QMessageBox>
 #include "ionHeart/shared.h"
 
 #include "editorwidgetfactory.h"
 #include "phptreemodel.h"
+
+#include <QSqlDatabase>
 
 namespace IonPhp {
 
@@ -25,7 +26,16 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::postLoad()
 {
-    PhpTreeSource source(*projectPlugin->getProjectFileTreeModel(), *projectPlugin->createTreeItemFactory());
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "phpStructureStorage");
+//    db.setDatabaseName("/tmp/db.sqlite");
+    db.setDatabaseName(":memory:");
+    if (!db.open()) {
+        throw QString("Unable to establish a database connection.\nPhp plugin requires SQLite support.");
+    }
+    structureStorage.reset(new StructureStorage("phpStructureStorage"));
+    structureStorage->importFileTree(*projectPlugin->getProjectFileTreeModel());
+
+    PhpTreeSource source(*structureStorage, *projectPlugin->createTreeItemFactory());
     projectPlugin->addTreeWidget(&source);
 }
 

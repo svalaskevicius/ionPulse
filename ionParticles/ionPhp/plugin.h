@@ -15,6 +15,8 @@
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionProject/projectapi.h>
 
+#include "structurestorage.h"
+
 #define PHP_PLUGIN_NAME "ionPhp"
 
 namespace IonPhp {
@@ -39,6 +41,7 @@ public:
     virtual void addParent(BasicPlugin *parent);
 protected:
     IonProject::ProjectPlugin *projectPlugin;
+    QScopedPointer<StructureStorage> structureStorage;
     void addEditorParent(IonEditor::EditorPlugin *editorPlugin);
 signals:
 

@@ -10,7 +10,7 @@ TEMPLATE = lib
 CONFIG += core plugin
 VERSION = 0.1.0
 
-QT       += core
+QT       += core sql
 TARGET = ionPhp
 INCLUDEPATH +=  ../..
 #LIBS += -L../ionEditor \
@@ -24,7 +24,8 @@ HEADERS += \
     highlighter.h \
     phpparser.h \
     phpParser/ionParserLib.h \
-    phptreemodel.h
+    phptreemodel.h \
+    structurestorage.h
 
 
 SOURCES += \
@@ -35,7 +36,8 @@ SOURCES += \
     gen_php_scanner.cpp \
     phpparser.cpp \
     phpParser/ionParserLib.cpp \
-    phptreemodel.cpp
+    phptreemodel.cpp \
+    structurestorage.cpp
 
 
 target.path += "$${INSTALL_DIR}/plugins/"
@@ -71,6 +73,8 @@ QMAKE_EXTRA_TARGETS += gen_php_scanner_dep
 OTHER_FILES += \
     phpParser/php.y \
     phpParser/php.l
+
+
 
 
 

@@ -1,62 +1,30 @@
 #include "phptreemodel.h"
 #include <iostream>
 #include <QFile>
+#include <QSqlQuery>
+#include <QDebug>
 
 namespace IonPhp {
 
 IonProject::TreeBranch *PhpTreeSource::setupData()
 {
     IonProject::TreeBranch* root = treeItemFactory.createTreeBranch("Name", "", -1, NULL);
-    foreach (QString path, getPhpFileList()) {
-        try {
-            addFileToTree(path, root);
-        } catch (std::runtime_error &err) {
-            errors << err.what();
+    QSharedPointer<QSqlQuery> q = storage.getClasses();
+    qDebug() << "setp1 ";
+    while (q->next()) {
+        QString className = q->value(1).toString();
+        IonProject::TreeBranch* classNode = treeItemFactory.createTreeBranch(className, q->value(2).toString(), q->value(3).toInt(), root);
+        root->appendChild(classNode);
+
+        QSharedPointer<QSqlQuery> qm = storage.getMethods(q->value(0).toInt());
+        while (qm->next()) {
+            QString methodName = qm->value(1).toString();
+            classNode->appendChild(treeItemFactory.createTreeItem(methodName, className+"::"+methodName, qm->value(2).toString(), qm->value(3).toInt(), classNode));
         }
+
     }
     return root;
 }
 
-void PhpTreeSource::addFileToTree(QString path, IonProject::TreeBranch* root)
-{
-    ASTRoot astRoot = phpParser().parseFile(path);
-    foreach(pASTNode classDecl, astRoot->findChildren("class_declaration")) {
-        try {
-            IonPhp::pASTNode classDeclLabel = classDecl->getChild(1);
-            QString className = classDeclLabel->getStrData("text");
-            IonProject::TreeBranch* classNode = treeItemFactory.createTreeBranch(className, path, classDeclLabel->getLine(), root);
-            root->appendChild(classNode);
-            foreach(pASTNode classStatementList, classDecl->findChildren("class_statement_list")) {
-                foreach(pASTNode methodDecl, classStatementList->findChildren("METHOD")) {
-                    IonPhp::pASTNode methodDeclLabel = methodDecl->getChild(2);
-                    QString methodName = methodDeclLabel->getStrData("text");
-                    classNode->appendChild(treeItemFactory.createTreeItem(methodName, className+"::"+methodName, path, methodDeclLabel->getLine(), classNode));
-                }
-            }
-        } catch (std::exception &err) {
-            errors << err.what();
-        }
-    }
-}
-
-
-QVector<QString> PhpTreeSource::getPhpFileList()
-{
-    QVector<IonProject::TreeItem*> parents;
-    QVector<QString> phpFiles;
-    parents.push_back(fileSource.getRoot());
-    while (!parents.empty()) {
-        IonProject::TreeItem *parent = parents.back();
-        parents.pop_back();
-        foreach (IonProject::TreeItem *child, parent->getChildren()) {
-            parents.push_back(child);
-            QString path = child->getPath();
-            if (path.toLower().endsWith(".php")) {
-                phpFiles.push_back(path);
-            }
-        }
-    }
-    return phpFiles;
-}
 
 }
