@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
 
     int ret = 0;
     ADD_TEST_CLASS(PhpParserTest);
-    ADD_TEST_CLASS(PhpTreeModelSourceTest);
 
     ADD_TEST_CLASS(LayoutManagerTest);
 
