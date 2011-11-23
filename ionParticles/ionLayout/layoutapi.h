@@ -21,6 +21,7 @@ struct ZoneDefinition {
     QString after, before;
     bool hideIfEmpty;
     int sizeWeight;
+    bool childrenClosable;
 };
 
 class PanelWidget {

@@ -104,6 +104,9 @@ public:
     virtual ZoneNodeBranch *getZoneAsBranch();
     virtual QWidget *getWidget();
     virtual void show();
+
+protected slots:
+    void onTabCloseRequested ( int index );
 };
 
 class LayoutZonesManager

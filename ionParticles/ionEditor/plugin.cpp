@@ -51,6 +51,7 @@ void Plugin::postLoad()
     def.before = "right";
     def.hideIfEmpty = false;
     def.sizeWeight = 700;
+    def.childrenClosable = true;
     layoutManager->addZone(def);
 
     def.name = "left";
@@ -60,6 +61,7 @@ void Plugin::postLoad()
     def.before = "central";
     def.hideIfEmpty = false;
     def.sizeWeight = 200;
+    def.childrenClosable = false;
     layoutManager->addZone(def);
 
     def.name = "leftbottom";
@@ -69,6 +71,7 @@ void Plugin::postLoad()
     def.before = "";
     def.hideIfEmpty = true;
     def.sizeWeight = 150;
+    def.childrenClosable = false;
     layoutManager->addZone(def);
 
     def.name = "right";
@@ -78,6 +81,7 @@ void Plugin::postLoad()
     def.before = "";
     def.hideIfEmpty = true;
     def.sizeWeight = 150;
+    def.childrenClosable = false;
     layoutManager->addZone(def);
 
     Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();

@@ -143,6 +143,7 @@ void ZoneNodeBranch::resizeChildren() {
 ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
     : QTabWidget(parent), ZoneNode(parent, zoneDef), parent(parent)
 {
+    connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
 }
 ZoneNodeLeaf::~ZoneNodeLeaf()
 {
@@ -180,6 +181,11 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     }
     return br;
 }
+void ZoneNodeLeaf::onTabCloseRequested ( int index )
+{
+    removeTab(index);
+}
+
 
 
 
@@ -219,13 +225,15 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
    }
    parentNode->addSubZone(leaf, index);
 
+   leaf->setTabsClosable(zone.childrenClosable);
+   leaf->setMovable(true);
+
    if (zone.hideIfEmpty) {
        leaf->hide();
    } else {
        leaf->show();
    }
 }
-
 
 
 
