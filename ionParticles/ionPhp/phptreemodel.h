@@ -10,13 +10,13 @@ namespace IonPhp {
 
 class PhpTreeSource : public IonProject::TreeModelSource {
 public:
-    PhpTreeSource(StructureStorage &storage, IonProject::TreeItemFactory &treeItemFactory)
+    PhpTreeSource(StructureStorage &storage, QSharedPointer<IonProject::TreeItemFactory> treeItemFactory)
         : treeItemFactory(treeItemFactory), storage(storage) {
     }
     virtual IonProject::TreeBranch * setupData();
     QString getTitle() const {return "Class Browser";}
 private:
-    IonProject::TreeItemFactory &treeItemFactory;
+    QSharedPointer<IonProject::TreeItemFactory> treeItemFactory;
     StructureStorage &storage;
 };
 

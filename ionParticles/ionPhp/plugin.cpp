@@ -35,7 +35,7 @@ void Plugin::postLoad()
     structureStorage.reset(new StructureStorage("phpStructureStorage"));
     structureStorage->importFileTree(*projectPlugin->getProjectFileTreeModel());
 
-    PhpTreeSource source(*structureStorage, *projectPlugin->createTreeItemFactory());
+    PhpTreeSource source(*structureStorage, projectPlugin->createTreeItemFactory());
     projectPlugin->addTreeWidget(&source);
 }
 

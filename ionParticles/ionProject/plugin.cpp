@@ -38,16 +38,16 @@ void Plugin::openFile(QString path, int line)
     editorPlugin->openFile(path, line);
 }
 
-TreeModel *Plugin::getProjectFileTreeModel()
+QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
         Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/codeClubs");
         projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(&dirTreeSource));
     }
-    return projectTreeModel.data();
+    return projectTreeModel;
 }
 
-void Plugin::addTreeWidget(TreeModel *model)
+void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
 {
     Private::TreeWidget *fileTree = new Private::TreeWidget(model);
     layoutManager->add(fileTree);
@@ -56,13 +56,13 @@ void Plugin::addTreeWidget(TreeModel *model)
 
 void Plugin::addTreeWidget(TreeModelSource *modelSource)
 {
-    Private::FileTreeModel *model = new Private::FileTreeModel(modelSource);
+    QSharedPointer<TreeModel> model(new Private::FileTreeModel(modelSource));
     addTreeWidget(model);
 }
 
-TreeItemFactory *Plugin::createTreeItemFactory()
+QSharedPointer<TreeItemFactory> Plugin::createTreeItemFactory()
 {
-    return new Private::TreeItemFactoryImpl();
+    return QSharedPointer<TreeItemFactory>(new Private::TreeItemFactoryImpl());
 }
 
 

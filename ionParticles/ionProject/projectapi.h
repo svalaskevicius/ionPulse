@@ -59,10 +59,10 @@ public:
 
 class ProjectPlugin : public IonHeart::BasicPlugin {
 public:
-    virtual void addTreeWidget(TreeModel *model) = 0;
+    virtual void addTreeWidget(QSharedPointer<TreeModel> model) = 0;
     virtual void addTreeWidget(TreeModelSource *modelSource) = 0;
-    virtual TreeItemFactory *createTreeItemFactory() = 0;
-    virtual TreeModel *getProjectFileTreeModel() = 0;
+    virtual QSharedPointer<TreeItemFactory> createTreeItemFactory() = 0;
+    virtual QSharedPointer<TreeModel> getProjectFileTreeModel() = 0;
     static QString name() {return "ionProject";}
 };
 

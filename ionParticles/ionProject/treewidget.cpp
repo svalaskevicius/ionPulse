@@ -14,10 +14,10 @@
 namespace IonProject {
 namespace Private {
 
-TreeWidget::TreeWidget(IonProject::TreeModel *dataModel, QWidget *parent) :
+TreeWidget::TreeWidget(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
     QTreeView(parent), _fiModel(dataModel)
 {
-    this->setModel(_fiModel);
+    this->setModel(_fiModel.data());
 
     _filterInputField = new QLineEdit(this);
     QVBoxLayout *layout = new QVBoxLayout();

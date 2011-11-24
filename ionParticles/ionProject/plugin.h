@@ -38,10 +38,10 @@ public:
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
-    TreeModel *getProjectFileTreeModel();
-    virtual void addTreeWidget(TreeModel *model);
+    QSharedPointer<TreeModel> getProjectFileTreeModel();
+    virtual void addTreeWidget(QSharedPointer<TreeModel> model);
     virtual void addTreeWidget(TreeModelSource *modelSource);
-    virtual TreeItemFactory* createTreeItemFactory();
+    virtual QSharedPointer<TreeItemFactory> createTreeItemFactory();
 
 private:
     IonEditor::EditorPlugin *editorPlugin;

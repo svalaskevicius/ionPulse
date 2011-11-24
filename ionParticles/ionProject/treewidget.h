@@ -26,12 +26,12 @@ class TreeWidget : public QTreeView, public IonLayout::PanelWidget
 {
     Q_OBJECT
 protected:
-    IonProject::TreeModel *_fiModel;
+    QSharedPointer<TreeModel> _fiModel;
     QLineEdit *_filterInputField;
 
     virtual void keyPressEvent ( QKeyEvent * event );
 public:
-    explicit TreeWidget(IonProject::TreeModel *dataModel, QWidget *parent = 0);
+    explicit TreeWidget(QSharedPointer<TreeModel> dataModel, QWidget *parent = 0);
     virtual ~TreeWidget();
     virtual QWidget *getWidget() {return this;}
     virtual QString getPanelTitle() {return _fiModel->getTitle();}
