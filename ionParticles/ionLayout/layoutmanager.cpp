@@ -183,7 +183,12 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
 }
 void ZoneNodeLeaf::onTabCloseRequested ( int index )
 {
-    removeTab(index);
+    QWidget *w = widget(index);
+    if (w->close()) {
+        removeTab(index);
+        delete w;
+    }
+
 }
 
 

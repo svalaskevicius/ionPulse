@@ -48,6 +48,7 @@ signals:
 
 public slots:
     void openFile(QString path, int line);
+    void closeFileEditor(Editor *editor);
 
 private:
     Q_DISABLE_COPY(Plugin)

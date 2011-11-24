@@ -97,12 +97,23 @@ void Plugin::openFile(QString path, int line)
         widget = getEditorWidgetBuilder()->createEditor(path);
         layoutManager->add(widget);
         openedFiles[path] = widget;
+        connect(widget->getWidget(), SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
     } else {
         widget = it.value();
         layoutManager->focus(widget);
     }
     if (-1 != line) {
         widget->focusOnLine(line);
+    }
+}
+
+void Plugin::closeFileEditor(Editor *editor)
+{
+    for (QMap<QString, Editor *>::Iterator it = openedFiles.begin(); it != openedFiles.end(); it++) {
+        if (it.value() == editor) {
+            it = openedFiles.erase(it);
+            return;
+        }
     }
 }
 

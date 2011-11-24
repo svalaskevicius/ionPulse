@@ -88,7 +88,7 @@ protected slots:
     void editorCursorPositionChanged();
 protected:
     void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
-
+    void closeEvent ( QCloseEvent * event ) {emit(editorClosing(this)); QWidget::closeEvent( event );}
 private:
     QList<EditorComponent* > components;
     QSyntaxHighlighter *highlighter;
@@ -96,7 +96,7 @@ private:
     QString filePath;
     ComponentInfo componentInfo;
 signals:
-
+    void editorClosing( Editor *editor );
 public slots:
 public:
 };
