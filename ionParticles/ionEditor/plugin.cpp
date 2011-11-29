@@ -87,6 +87,8 @@ void Plugin::postLoad()
     Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
+
+    getEditorWidgetBuilder()->registerComponentFactory("text", new Private::DefaultLineNumberAreaFactory());
 }
 
 void Plugin::openFile(QString path, int line)

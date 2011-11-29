@@ -45,8 +45,9 @@ public:
     virtual void focusOnLine(int line) = 0;
 };
 
-struct LineNumberAreaFactory {
+struct EditorComponentFactory {
     virtual IonEditor::EditorComponent *operator()(Editor *) = 0;
+    virtual QString getIdentifier() = 0;
 };
 struct HighlighterFactory {
     virtual QSyntaxHighlighter *operator()(Editor *) = 0;
@@ -60,7 +61,7 @@ public:
 
     virtual void registerFileType(QString fileExt, QString fileType) = 0;
     virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter) = 0;
-    virtual void registerLineNumberAreaFactory(QString const & filetype, LineNumberAreaFactory *lineNumberArea) = 0;
+    virtual void registerComponentFactory(QString const & filetype, EditorComponentFactory *component) = 0;
 };
 
 class EditorPlugin : public IonHeart::BasicPlugin {

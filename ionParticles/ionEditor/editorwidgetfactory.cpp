@@ -37,21 +37,28 @@ QSyntaxHighlighter *EditorWidgetBuilderImpl::createHighlighter(Editor *widget, Q
     DefaultHighlighterFactory _default;
     return _default(widget);
 }
-EditorComponent *EditorWidgetBuilderImpl::createLineNumberArea(Editor *widget, QString filetype)
-{
-    QMap<QString, QSharedPointer<LineNumberAreaFactory> >::const_iterator it = typeToLineNumberAreaFactoryMap.find(filetype);
-    if (it != typeToLineNumberAreaFactoryMap.end()) {
-        return (*(*it))(widget);
-    }
-    DefaultLineNumberAreaFactory _default;
-    return _default(widget);
-}
 
 Editor *EditorWidgetBuilderImpl::createEditor(QString path)
 {
     EditorWidget *ret = new EditorWidget(path);
     QString type = getFileType(path);
-    ret->setComponents(QList<EditorComponent*>() << createLineNumberArea(ret, type));
+    QList<EditorComponent*> components;
+    QSet<QString> addedComponents;
+    while (type != "") {
+        foreach (QSharedPointer<EditorComponentFactory> factory, typeToComponentFactoryMap.values(type)) {
+            if (!addedComponents.contains(factory->getIdentifier())) {
+                components.append((*factory)(ret));
+                addedComponents.insert(factory->getIdentifier());
+            }
+        }
+        int idx = type.lastIndexOf("/");
+        if (idx > 0) {
+            type = type.left(idx);
+        } else {
+            type = "";
+        }
+    }
+    ret->setComponents(components);
     ret->setHighlighter(createHighlighter(ret, type));
     return ret;
 }
@@ -74,8 +81,8 @@ void EditorWidgetBuilderImpl::registerFileType(QString fileExt, QString fileType
 void EditorWidgetBuilderImpl::registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter) {
     typeToHighlighterFactoryMap[filetype] = QSharedPointer<HighlighterFactory>(highlighter);
 }
-void EditorWidgetBuilderImpl::registerLineNumberAreaFactory(QString const & filetype, LineNumberAreaFactory *lineNumberArea) {
-    typeToLineNumberAreaFactoryMap[filetype] = QSharedPointer<LineNumberAreaFactory>(lineNumberArea);
+void EditorWidgetBuilderImpl::registerComponentFactory(QString const & filetype, EditorComponentFactory *component) {
+    typeToComponentFactoryMap.insert(filetype, QSharedPointer<EditorComponentFactory>(component));
 }
 
 }

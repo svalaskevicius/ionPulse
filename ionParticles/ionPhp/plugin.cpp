@@ -50,11 +50,11 @@ void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
     IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
     Q_ASSERT(wf);
 
-    wf->registerHighlighterFactory("php", new HighlighterFactory());
+    wf->registerHighlighterFactory("text/php", new HighlighterFactory());
 
-    wf->registerFileType("php", "php");
-    wf->registerFileType("php3", "php");
-    wf->registerFileType("phtml", "php");
+    wf->registerFileType("php", "text/php");
+    wf->registerFileType("php3", "text/php");
+    wf->registerFileType("phtml", "text/php");
 }
 
 }
