@@ -14,6 +14,7 @@
 
 #include "editorwidgetfactory.h"
 #include "phptreemodel.h"
+#include "editorsourcebrowser.h"
 
 #include <QSqlDatabase>
 
@@ -50,6 +51,7 @@ void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
     IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
     Q_ASSERT(wf);
 
+    wf->registerComponentFactory("text/php", new Private::EditorSourceBrowserFactory());
     wf->registerHighlighterFactory("text/php", new HighlighterFactory());
 
     wf->registerFileType("php", "text/php");

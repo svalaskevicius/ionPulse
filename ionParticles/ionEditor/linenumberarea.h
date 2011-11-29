@@ -20,6 +20,8 @@ class LineNumberArea : public QWidget, public EditorComponent
 {
     Q_OBJECT
 public:
+    static QString identity() {return "lineNumberArea";}
+
     explicit LineNumberArea(Editor *parent = 0);
     virtual ~LineNumberArea(){}
     QSize sizeHint() {

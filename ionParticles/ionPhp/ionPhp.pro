@@ -25,7 +25,8 @@ HEADERS += \
     phpparser.h \
     phpParser/ionParserLib.h \
     phptreemodel.h \
-    structurestorage.h
+    structurestorage.h \
+    editorsourcebrowser.h
 
 
 SOURCES += \
@@ -37,7 +38,8 @@ SOURCES += \
     phpparser.cpp \
     phpParser/ionParserLib.cpp \
     phptreemodel.cpp \
-    structurestorage.cpp
+    structurestorage.cpp \
+    editorsourcebrowser.cpp
 
 
 target.path += "$${INSTALL_DIR}/plugins/"
@@ -73,6 +75,8 @@ QMAKE_EXTRA_TARGETS += gen_php_scanner_dep
 OTHER_FILES += \
     phpParser/php.y \
     phpParser/php.l
+
+
 
 
 

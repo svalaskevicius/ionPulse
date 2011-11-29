@@ -22,10 +22,8 @@ namespace Private {
 
 class EditorWidget;
 
-struct DefaultLineNumberAreaFactory : public EditorComponentFactory {
-    virtual IonEditor::EditorComponent *operator()(Editor *);
-    virtual QString getIdentifier() {return "LineNumberArea";}
-};
+typedef EditorComponentFactory<IonEditor::Private::LineNumberArea> DefaultLineNumberAreaFactory;
+
 struct DefaultHighlighterFactory : public HighlighterFactory {
     virtual QSyntaxHighlighter *operator()(Editor *);
 };
@@ -38,9 +36,10 @@ private:
     static QMap<QString, QString> fileExtToTypeMap;
 
     QMap<QString, QSharedPointer<HighlighterFactory> > typeToHighlighterFactoryMap;
-    QMultiMap<QString, QSharedPointer<EditorComponentFactory> > typeToComponentFactoryMap;
+    QMultiMap<QString, QSharedPointer<EditorComponentFactoryBase> > typeToComponentFactoryMap;
 
     QSyntaxHighlighter *createHighlighter(Editor *widget, QString filetype);
+    QList<EditorComponent*> createComponents(Editor *widget, QString fileType);
 public:
     EditorWidgetBuilderImpl() {}
     ~EditorWidgetBuilderImpl() {
@@ -51,7 +50,8 @@ public:
 
     virtual void registerFileType(QString fileExt, QString fileType);
     virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter);
-    virtual void registerComponentFactory(QString const & filetype, EditorComponentFactory *component);
+    virtual void registerComponentFactory(QString const & filetype, EditorComponentFactoryBase *component);
+protected:
 };
 
 }
