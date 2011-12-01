@@ -30,7 +30,7 @@ public:
 class EditorComponent {
 public:
     virtual ~EditorComponent() {}
-    virtual void editorEvent(QEvent * ) = 0;
+    virtual bool editorEvent(QEvent * ) = 0;
     virtual int getWidth() = 0;
 };
 

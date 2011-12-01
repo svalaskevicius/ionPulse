@@ -87,19 +87,19 @@ int LineNumberArea::getWidth()
     return space;
 }
 
-void LineNumberArea::editorEvent(QEvent * event)
+bool LineNumberArea::editorEvent(QEvent * event)
 {
-    //DEBUG_MSG((QString(">> ")+QString("%1").arg(event->type())).toStdString());
     switch(event->type()) {
-    case QEvent::Resize:
-    {
-        QRect cr = ionText->getEditorInstance()->contentsRect();
-        setGeometry(QRect(cr.left(), cr.top(), getWidth(), cr.height()));
-    }
-    break;
-    default:
+        case QEvent::Resize:
+        {
+            QRect cr = ionText->getEditorInstance()->contentsRect();
+            setGeometry(QRect(cr.left(), cr.top(), getWidth(), cr.height()));
+        }
         break;
+        default:
+            break;
     }
+    return false;
 }
 
 void LineNumberArea::editorUpdateRequest(const QRect &rect, int dy)

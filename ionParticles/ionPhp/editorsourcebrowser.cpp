@@ -13,8 +13,10 @@ namespace IonPhp {
 namespace Private {
 
 EditorSourceBrowser::EditorSourceBrowser(IonEditor::Editor *parent)
+    : editor(parent)
 {
-    parent->addEventListener(QEvent::KeyRelease, this);
+    editor->addEventListener(QEvent::KeyRelease, this);
+    editor->addEventListener(QEvent::KeyPress, this);
 }
 
 

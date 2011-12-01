@@ -28,7 +28,7 @@ public:
         return QSize(getWidth(), 0);
     }
     int getWidth();
-    void editorEvent(QEvent * event);
+    bool editorEvent(QEvent * event);
 protected:
     void paintEvent(QPaintEvent *event);
 

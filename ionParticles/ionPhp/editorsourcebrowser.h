@@ -24,12 +24,67 @@ public:
     EditorSourceBrowser(IonEditor::Editor *parent = 0);
 
     int getWidth() {return 0;}
-    void editorEvent(QEvent * event) {
-        if (QEvent::KeyRelease == event->type()) {
-            QKeyEvent *kev = (QKeyEvent *)event;
-            qDebug() << "event: " << kev->key() << kev->modifiers();
+
+    bool editorEvent(QEvent * event)
+    {
+        switch (event->type()) {
+            case QEvent::KeyPress:
+            case QEvent::KeyRelease:
+                return keyboardHandler(event);
         }
+        return false;
     }
+
+    bool keyboardHandler(QEvent * event)
+    {
+        QKeyEvent *kev = (QKeyEvent *)event;
+        switch ( kev->key() ) {
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+                if (kev->modifiers().testFlag(Qt::MetaModifier)) {
+                    if (QEvent::KeyRelease == event->type()) {
+                        goToDefinition(getWordUnderCursor());
+                    }
+                    return true;
+                }
+            break;
+            case Qt::Key_Backspace:
+                if (kev->modifiers().testFlag(Qt::MetaModifier)) {
+                    return true;
+                }
+            break;
+        }
+        return false;
+    }
+
+    QString getWordUnderCursor()
+    {
+        const QTextCursor &tc = editor->getEditorInstance()->textCursor();
+        QString block = tc.block().text();
+        int pos = tc.positionInBlock();
+        int rpos = pos-1;
+        QString ret = "";
+        QRegExp allowedChars("[a-z0-9_:\\.>\\$-]", Qt::CaseInsensitive);
+        QChar c = block[pos];
+        while (allowedChars.exactMatch(c)) {
+            ret += c;
+            c = block[++pos];
+        }
+        c = block[rpos];
+        while (allowedChars.exactMatch(c)) {
+            ret = c + ret;
+            c = block[--rpos];
+        }
+        return ret;
+    }
+
+    void goToDefinition(QString word)
+    {
+        qDebug() << "going to " << word;
+    }
+
+protected:
+    IonEditor::Editor *editor;
 };
 
 typedef IonEditor::EditorComponentFactory<EditorSourceBrowser> EditorSourceBrowserFactory;

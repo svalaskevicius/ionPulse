@@ -143,7 +143,7 @@ void StructureStorage::addFile(QString path)
             }
             int classId = classInsertQuery.lastInsertId().toInt();
 
-            qDebug() << "methofds:";
+            qDebug() << "methods:";
             methodInsertQuery.bindValue("class_id", classId);
 
             foreach(pASTNode classStatementList, classDecl->findChildren("class_statement_list")) {

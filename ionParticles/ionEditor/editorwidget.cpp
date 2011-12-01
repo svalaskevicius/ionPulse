@@ -62,8 +62,14 @@ void EditorWidget::updateViewportMargins()
 
 
 bool EditorWidget::event ( QEvent * event ) {
+    bool accepted = false;
     foreach (EditorComponent *component, eventListeners[event->type()]) {
-        component->editorEvent(event);
+        if (component->editorEvent(event)) {
+            accepted = true;
+        }
+    }
+    if (accepted) {
+        return true;
     }
     return QPlainTextEdit::event(event);
 }
