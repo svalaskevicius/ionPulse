@@ -12,7 +12,9 @@ VERSION = 0.1.0
 
 QT       += core sql
 TARGET = ionPhp
-INCLUDEPATH +=  ../..
+INCLUDEPATH +=  ../.. /opt/local/include/libxml2
+LIBS += -L/opt/local/lib -lxml2 -lz -lpthread -liconv -lm
+
 #LIBS += -L../ionEditor \
 #            -lionEditor \
 

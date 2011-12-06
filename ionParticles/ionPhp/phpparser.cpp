@@ -49,7 +49,7 @@ ASTRoot phpParser::parseString(QString doc)
     }
     delBuf(buf);
 
-    if (ret) {
+    if (ret || !__result) {
         if (__result) {
             delete __result;
             __result = NULL;
@@ -96,7 +96,7 @@ int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
             case T_OPEN_TAG_WITH_ECHO:
                   return T_ECHO;
             case T_INLINE_HTML:
-                if (lastNode && (lastNode->getName() == "T_INLINE_HTML")) {
+                if (lastNode && (lastNode->getName() == "inline_html")) {
                     // join them
                     lastNode->setData("text", lastNode->getStrData("text")+(*astNode)->getStrData("text"));
                     continue;

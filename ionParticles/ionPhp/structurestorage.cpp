@@ -138,37 +138,37 @@ void StructureStorage::addFile(QString path)
     classInsertQuery.bindValue("file_id", fileId);
     methodInsertQuery.bindValue("file_id", fileId);
 
-    foreach(pASTNode classDecl, astRoot->findChildren("class_declaration")) {
-        try {
-            IonPhp::pASTNode classDeclLabel = classDecl->getChild(1);
-            QString className = classDeclLabel->getStrData("text");
-            qDebug() << "classes:";
+//    foreach(pASTNode classDecl, astRoot->findChildren("class_declaration")) {
+//        try {
+//            IonPhp::pASTNode classDeclLabel = classDecl->getChild(1);
+//            QString className = classDeclLabel->getStrData("text");
+//            qDebug() << "classes:";
 
-            classInsertQuery.bindValue("line_nr", classDeclLabel->getLine());
-            classInsertQuery.bindValue("classname", className);
-            if (!classInsertQuery.exec()) {
-                qDebug() << classInsertQuery.lastError();
-            }
-            int classId = classInsertQuery.lastInsertId().toInt();
+//            classInsertQuery.bindValue("line_nr", classDeclLabel->getLine());
+//            classInsertQuery.bindValue("classname", className);
+//            if (!classInsertQuery.exec()) {
+//                qDebug() << classInsertQuery.lastError();
+//            }
+//            int classId = classInsertQuery.lastInsertId().toInt();
 
-            qDebug() << "methods:";
-            methodInsertQuery.bindValue("class_id", classId);
+//            qDebug() << "methods:";
+//            methodInsertQuery.bindValue("class_id", classId);
 
-            foreach(pASTNode classStatementList, classDecl->findChildren("class_statement_list")) {
-                foreach(pASTNode methodDecl, classStatementList->findChildren("METHOD")) {
-                    IonPhp::pASTNode methodDeclLabel = methodDecl->getChild(2);
-                    QString methodName = methodDeclLabel->getStrData("text");
-                    methodInsertQuery.bindValue("line_nr", methodDeclLabel->getLine());
-                    methodInsertQuery.bindValue("methodname", methodName);
-                    if (!methodInsertQuery.exec()) {
-                        qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
-                    }
-                }
-            }
-        } catch (std::exception &err) {
-            errors << err.what();
-        }
-    }
+//            foreach(pASTNode classStatementList, classDecl->findChildren("class_statement_list")) {
+//                foreach(pASTNode methodDecl, classStatementList->findChildren("METHOD")) {
+//                    IonPhp::pASTNode methodDeclLabel = methodDecl->getChild(2);
+//                    QString methodName = methodDeclLabel->getStrData("text");
+//                    methodInsertQuery.bindValue("line_nr", methodDeclLabel->getLine());
+//                    methodInsertQuery.bindValue("methodname", methodName);
+//                    if (!methodInsertQuery.exec()) {
+//                        qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
+//                    }
+//                }
+//            }
+//        } catch (std::exception &err) {
+//            errors << err.what();
+//        }
+//    }
 }
 
 

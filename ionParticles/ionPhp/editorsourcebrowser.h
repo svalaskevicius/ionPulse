@@ -31,6 +31,7 @@ public:
             case QEvent::KeyPress:
             case QEvent::KeyRelease:
                 return keyboardHandler(event);
+            default: break;
         }
         return false;
     }

@@ -15,7 +15,8 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-INCLUDEPATH +=  ..
+INCLUDEPATH +=  .. /opt/local/include/libxml2
+
 LIBS += -lgmock -lgtest \
             -L../ionParticles/ionProject \
             -lionProject \
@@ -24,7 +25,8 @@ LIBS += -lgmock -lgtest \
             -L../ionParticles/ionEditor \
             -lionEditor \
             -L../ionParticles/ionLayout \
-            -lionLayout
+            -lionLayout \
+            -L/opt/local/lib -lxml2 -lz -lpthread -liconv -lm
 
 
 SOURCES += tst_iontest.cpp

@@ -235,7 +235,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 <ST_LOOKING_FOR_PROPERTY>{LABEL} {
         yy_pop_state(yyscanner);
-        *astNode = CREATE_AST_NODE("T_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("string")->setData("text", yytext);
         return T_STRING;
 }
 <ST_LOOKING_FOR_PROPERTY>.|[\n\r] {
@@ -503,7 +503,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_LOOKING_FOR_VARNAME>{LABEL} {
-        *astNode = CREATE_AST_NODE("T_STRING_VARNAME")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("string_varname")->setData("text", yytext);
         yy_pop_state(yyscanner);
         yy_push_state(ST_IN_SCRIPTING, yyscanner);
         return T_STRING_VARNAME;
@@ -518,22 +518,22 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_IN_SCRIPTING>{LNUM}|{HNUM} {
-        *astNode = CREATE_AST_NODE("T_LNUMBER")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("lnumber")->setData("text", yytext);
         return T_LNUMBER;
 }
 
 <ST_VAR_OFFSET>[0]|([1-9][0-9]*) { /* Offset could be treated as a long */
-        *astNode = CREATE_AST_NODE("T_NUM_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("num_string")->setData("text", yytext);
         return T_NUM_STRING;
 }
 
 <ST_VAR_OFFSET>{LNUM}|{HNUM} { /* Offset must be treated as a string */
-        *astNode = CREATE_AST_NODE("T_NUM_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("num_string")->setData("text", yytext);
         return T_NUM_STRING;
 }
 
 <ST_IN_SCRIPTING>{DNUM}|{EXPONENT_DNUM} {
-        *astNode = CREATE_AST_NODE("T_DNUMBER")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("dnumber")->setData("text", yytext);
         return T_DNUMBER;
 }
 
@@ -672,7 +672,7 @@ inline_char_handler:
             }
         }
         if (result.length()) {
-            *astNode = CREATE_AST_NODE("T_INLINE_HTML")->setData("text", result);
+            *astNode = CREATE_AST_NODE("inline_html")->setData("text", result);
         }
         return T_INLINE_HTML;
 }
@@ -683,7 +683,7 @@ inline_char_handler:
              */
         yyless(yyleng - 3);
         yy_push_state(ST_LOOKING_FOR_PROPERTY, yyscanner);
-        *astNode = CREATE_AST_NODE("T_VARIABLE")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("variable")->setData("text", yytext);
         return T_VARIABLE;
 }
 
@@ -692,12 +692,12 @@ inline_char_handler:
          */
         yyless(yyleng - 1);
         yy_push_state(ST_VAR_OFFSET, yyscanner);
-        *astNode = CREATE_AST_NODE("T_VARIABLE")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("variable")->setData("text", yytext);
         return T_VARIABLE;
 }
 
 <ST_IN_SCRIPTING,ST_DOUBLE_QUOTES,ST_HEREDOC,ST_BACKQUOTE,ST_VAR_OFFSET>"$"{LABEL} {
-        *astNode = CREATE_AST_NODE("T_VARIABLE")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("variable")->setData("text", yytext);
         return T_VARIABLE;
 }
 
@@ -719,7 +719,7 @@ inline_char_handler:
 }
 
 <ST_IN_SCRIPTING,ST_VAR_OFFSET>{LABEL} {
-        *astNode = CREATE_AST_NODE("T_STRING")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("string")->setData("text", yytext);
         return T_STRING;
 }
 
@@ -758,7 +758,7 @@ inline_char_handler:
         }
     }
 
-    *astNode = CREATE_AST_NODE("T_COMMENT")->setData("text", yytext);
+    *astNode = CREATE_AST_NODE("comment")->setData("text", yytext);
     return T_COMMENT;
 }
 
@@ -785,11 +785,11 @@ inline_char_handler:
         }
 
         if (doc_com) {
-            *astNode = CREATE_AST_NODE("T_DOC_COMMENT")->setData("text", yytext);
+            *astNode = CREATE_AST_NODE("doc_comment")->setData("text", yytext);
             return T_DOC_COMMENT;
         }
 
-        *astNode = CREATE_AST_NODE("T_COMMENT")->setData("text", yytext);
+        *astNode = CREATE_AST_NODE("comment")->setData("text", yytext);
         return T_COMMENT;
 }
 
@@ -823,7 +823,7 @@ inline_char_handler:
                 }
             }
         }
-        *astNode = CREATE_AST_NODE("T_CONSTANT_ENCAPSED_STRING")->setData("text", result);
+        *astNode = CREATE_AST_NODE("constant_encapsed_string")->setData("text", result);
         return T_CONSTANT_ENCAPSED_STRING;
 }
 
@@ -834,7 +834,7 @@ inline_char_handler:
         while ( (c = ionInput(yyscanner)) )  {
             switch (c) {
                 case '"':
-                    *astNode = CREATE_AST_NODE("T_CONSTANT_ENCAPSED_STRING")->setData("text", result);
+                    *astNode = CREATE_AST_NODE("constant_encapsed_string")->setData("text", result);
                     return T_CONSTANT_ENCAPSED_STRING;
                 case '\\':
                     result += c;
@@ -979,7 +979,7 @@ inline_char_handler:
             break;
         }
 
-        *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+        *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setData("text", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1029,7 +1029,7 @@ inline_char_handler:
                 break;
             }
 
-            *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+            *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setData("text", result);
             return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1090,7 +1090,7 @@ inline_char_handler:
                 }
                 break;
         }
-        *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+        *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setData("text", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1133,7 +1133,7 @@ inline_char_handler:
                 }
                 break;
         }
-        *astNode = CREATE_AST_NODE("T_ENCAPSED_AND_WHITESPACE")->setData("text", result);
+        *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setData("text", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
