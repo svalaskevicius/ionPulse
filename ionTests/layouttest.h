@@ -27,6 +27,7 @@ private Q_SLOTS:
     void test_zones_getZoneNameReturnsNameFromZoneDef() {
         ZoneDefinition def;
         def.name = "name of the zone";
+        def.orientation = Qt::Horizontal;
         ZoneNodeRoot root;
 
         ZoneNodeBranch branch(&root, def);
@@ -47,6 +48,7 @@ private Q_SLOTS:
         ZoneNodeRoot root;
 
         def.name = "name br";
+        def.orientation = Qt::Horizontal;
         ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
         def.name = "name lf";
         ZoneNodeLeaf *leaf = new ZoneNodeLeaf(branch, def);
@@ -64,6 +66,7 @@ private Q_SLOTS:
         ZoneNodeRoot root;
 
         def.name = "name br";
+        def.orientation = Qt::Horizontal;
         ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
         ZoneNodeLeaf *leaf = new ZoneNodeLeaf(&root, def);
 
@@ -80,6 +83,7 @@ private Q_SLOTS:
         ZoneNodeRoot root;
 
         def.name = "name lf";
+        def.orientation = Qt::Horizontal;
         ZoneNodeLeaf *leaf = new ZoneNodeLeaf(&root, def);
 
         root.addSubZone(leaf);
@@ -108,6 +112,7 @@ private Q_SLOTS:
         ZoneNodeRoot root;
 
         def.name = "zone0";
+        def.orientation = Qt::Horizontal;
         ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
         ZoneNodeLeaf *leaf0 = new ZoneNodeLeaf(branch, def);
         def.name = "zone1";
@@ -128,6 +133,7 @@ private Q_SLOTS:
         ZoneNodeRoot root;
 
         def.name = "zone0";
+        def.orientation = Qt::Horizontal;
         ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
         ZoneNodeLeaf *leaf0 = new ZoneNodeLeaf(branch, def);
         def.name = "zone1";
@@ -177,6 +183,7 @@ private Q_SLOTS:
 
     void test_zones_showPropagatesToParents() {
         ZoneDefinition def;
+        def.orientation = Qt::Horizontal;
 
         ZoneNodeRoot branch;
         ZoneNodeLeaf leaf(&branch, def);

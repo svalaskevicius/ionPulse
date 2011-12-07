@@ -80,8 +80,8 @@ void phpParser::__error(phpParser *myself, const char *error) {
 
 int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
 {
+    pASTNode lastNode = *astNode;
     while(1) {
-        pASTNode lastNode = *astNode;
         *astNode = NULL;
         int ret = _impl_ionPhp_lex(astNode, yyscanner);
         switch (ret) {
@@ -89,7 +89,10 @@ int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
             case T_DOC_COMMENT:
             case T_OPEN_TAG:
             case T_WHITESPACE:
-                  continue;
+                if (*astNode) {
+                    ASTNode::destroy(*astNode);
+                }
+                continue;
 
             case T_CLOSE_TAG:
                   return ';'; /* implicit ; */
@@ -99,15 +102,11 @@ int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
                 if (lastNode && (lastNode->getName() == "inline_html")) {
                     // join them
                     lastNode->setText(lastNode->getText()+(*astNode)->getText());
+                    ASTNode::destroy(*astNode);
                     continue;
                 }
             default:
-/*                std::cout << "TOK: " << ret;
-                if (*astNode) {
-                    std::cout << " "  << (*astNode)->getStrData("text").toStdString();
-                }
-                std::cout << std::endl;
-  */                return ret;
+                return ret;
         }
     }
 }

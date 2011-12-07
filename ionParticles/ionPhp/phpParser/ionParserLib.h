@@ -47,6 +47,7 @@ public:
     QString getData(QString name);
     QString getText();
     static pASTNode create(QString name);
+    static void destroy(pASTNode node);
 };
 
 class ASTRoot {

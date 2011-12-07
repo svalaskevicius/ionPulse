@@ -84,13 +84,22 @@ QString ASTNode::getData(QString name)
 
 QString ASTNode::getText()
 {
-    return (const char *) xmlNodeGetContent(xmlNode);
+    char *text = (char *) xmlNodeGetContent(xmlNode);
+    QString ret = text;
+    free(text);
+    return ret;
 }
 
 pASTNode ASTNode::create(QString name)
 {
     return new ASTNode(name);
 }
+void ASTNode::destroy(pASTNode node)
+{
+    xmlFreeNode(node->getXmlNode());
+    delete node;
+}
+
 
 
 ASTRoot::ASTRoot(pASTNode rootNode)
