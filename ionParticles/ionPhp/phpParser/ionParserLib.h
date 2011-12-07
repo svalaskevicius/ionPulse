@@ -29,26 +29,19 @@ typedef ASTNode *pASTNode;
 
 class ASTNode {
 protected:
-    QString name;
     QVector<pASTNode> children;
-    QMap<QString, QString> strdata;
-    int lineNr, columnNr;
     xmlNodePtr xmlNode;
 public:
-    ASTNode(QString name) : name(name), lineNr(-1), columnNr(-1) {
+    ASTNode(QString name) {
         xmlNode = xmlNewNode(NULL, BAD_CAST name.toAscii().constData());
     }
     ~ASTNode() {foreach (pASTNode n, children) delete n; children.clear();}
     xmlNodePtr getXmlNode() {return xmlNode;}
-    QString getName() {return name;}
     pASTNode setPosition(int lineNr, int columnNr) {
-        this->lineNr = lineNr; this->columnNr = columnNr;
         xmlNewProp(xmlNode, BAD_CAST "lineNr", BAD_CAST QString("%1").arg(lineNr).toAscii().constData());
         xmlNewProp(xmlNode, BAD_CAST "columnNr", BAD_CAST QString("%1").arg(columnNr).toAscii().constData());
         return this;
     }
-    int getLine() const {return lineNr;}
-    int getColumn() const {return columnNr;}
     pASTNode addChild(pASTNode child) {
         if(!child) {throw std::invalid_argument( "child must be set" );};
         children.append(child);
@@ -56,7 +49,6 @@ public:
         return this;
     }
     pASTNode setData(QString name, QString data) {
-        strdata[name]=data;
         if ("text" != name) {
             xmlNewProp(xmlNode, BAD_CAST name.toAscii().constData(), BAD_CAST data.toAscii().constData());
         } else {
@@ -67,13 +59,18 @@ public:
         }
         return this;
     }
-    QString getStrData(QString name) {return strdata[name];}
+    QString getName() { return (const char *)xmlNode->name; }
+
+    QString getStrData(QString name) {
+        if ("text" != name) {
+            return (const char *) xmlGetProp(xmlNode, BAD_CAST name.toAscii().constData());
+        } else {
+            return (const char *) xmlNodeGetContent(xmlNode);
+        }
+    }
 
     static pASTNode create(QString name) {return new ASTNode(name);}
 
-    QString toMlString(int indentLevel = 0, bool printPosition = false);
-    QString toString() {return toMlString(-1, false);}
-    QList<pASTNode> findChildren(QString name);
     pASTNode getChild(int nr) {if (children.count() <= nr) throw std::out_of_range(QString("child nr (%1) is more than children cnt (%2)").arg(nr).arg(children.count()).toStdString()); return children[nr];}
 };
 
@@ -103,7 +100,6 @@ public:
         return ret;
     }
 
-    pASTNode operator -> () {return rootNode;}
 };
 
 }
