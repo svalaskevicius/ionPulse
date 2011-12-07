@@ -21,8 +21,8 @@ Highlighter::Highlighter(QPlainTextEdit *parent) :
 
 void Highlighter::highlightBlock(const QString &)
 {
-    printf("GEN\n");
-    // generic rule base highlighter // default is empty
+    // generic rule base highlighter
+    // default is empty
 }
 
 
