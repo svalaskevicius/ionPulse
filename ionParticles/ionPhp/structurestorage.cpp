@@ -138,37 +138,30 @@ void StructureStorage::addFile(QString path)
     classInsertQuery.bindValue("file_id", fileId);
     methodInsertQuery.bindValue("file_id", fileId);
 
-//    foreach(pASTNode classDecl, astRoot->findChildren("class_declaration")) {
-//        try {
-//            IonPhp::pASTNode classDeclLabel = classDecl->getChild(1);
-//            QString className = classDeclLabel->getStrData("text");
-//            qDebug() << "classes:";
+    foreach (pASTNode classDef, astRoot.xpath("//class_declaration")) {
+        try {
+            pASTNode classLabel = astRoot.xpath("string", classDef).front();
 
-//            classInsertQuery.bindValue("line_nr", classDeclLabel->getLine());
-//            classInsertQuery.bindValue("classname", className);
-//            if (!classInsertQuery.exec()) {
-//                qDebug() << classInsertQuery.lastError();
-//            }
-//            int classId = classInsertQuery.lastInsertId().toInt();
+            classInsertQuery.bindValue("line_nr", classLabel->getLine());
+            classInsertQuery.bindValue("classname", classLabel->getStrData("text"));
+            if (!classInsertQuery.exec()) {
+                qDebug() << classInsertQuery.lastError();
+            }
+            int classId = classInsertQuery.lastInsertId().toInt();
 
-//            qDebug() << "methods:";
-//            methodInsertQuery.bindValue("class_id", classId);
-
-//            foreach(pASTNode classStatementList, classDecl->findChildren("class_statement_list")) {
-//                foreach(pASTNode methodDecl, classStatementList->findChildren("METHOD")) {
-//                    IonPhp::pASTNode methodDeclLabel = methodDecl->getChild(2);
-//                    QString methodName = methodDeclLabel->getStrData("text");
-//                    methodInsertQuery.bindValue("line_nr", methodDeclLabel->getLine());
-//                    methodInsertQuery.bindValue("methodname", methodName);
-//                    if (!methodInsertQuery.exec()) {
-//                        qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
-//                    }
-//                }
-//            }
-//        } catch (std::exception &err) {
-//            errors << err.what();
-//        }
-//    }
+            methodInsertQuery.bindValue("class_id", classId);
+            foreach(pASTNode methodDef, astRoot.xpath("class_statement_list/METHOD", classDef)) {
+                pASTNode methodLabel = astRoot.xpath("string", methodDef).front();
+                methodInsertQuery.bindValue("line_nr", methodLabel->getLine());
+                methodInsertQuery.bindValue("methodname", methodLabel->getStrData("text"));
+                if (!methodInsertQuery.exec()) {
+                    qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
+                }
+            }
+        } catch (std::exception &err) {
+            errors << err.what();
+        }
+    }
 }
 
 
