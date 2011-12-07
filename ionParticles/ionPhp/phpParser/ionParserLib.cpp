@@ -59,28 +59,32 @@ pASTNode ASTNode::addChild(pASTNode child)
 
 pASTNode ASTNode::setData(QString name, QString data)
 {
-    if ("text" != name) {
-        xmlNewProp(xmlNode, BAD_CAST name.toAscii().constData(), BAD_CAST data.toAscii().constData());
-    } else {
-        xmlAddChild(
-            xmlNode,
-            xmlNewText(BAD_CAST  data.toAscii().constData())
-        );
-    }
+    xmlNewProp(xmlNode, BAD_CAST name.toAscii().constData(), BAD_CAST data.toAscii().constData());
     return this;
 }
+
+pASTNode ASTNode::setText(QString data)
+{
+    xmlAddChild(
+        xmlNode,
+        xmlNewText(BAD_CAST  data.toAscii().constData())
+    );
+    return this;
+}
+
 QString ASTNode::getName()
 {
     return (const char *)xmlNode->name;
 }
 
-QString ASTNode::getStrData(QString name)
+QString ASTNode::getData(QString name)
 {
-    if ("text" != name) {
-        return (const char *) xmlGetProp(xmlNode, BAD_CAST name.toAscii().constData());
-    } else {
-        return (const char *) xmlNodeGetContent(xmlNode);
-    }
+    return (const char *) xmlGetProp(xmlNode, BAD_CAST name.toAscii().constData());
+}
+
+QString ASTNode::getText()
+{
+    return (const char *) xmlNodeGetContent(xmlNode);
 }
 
 pASTNode ASTNode::create(QString name)

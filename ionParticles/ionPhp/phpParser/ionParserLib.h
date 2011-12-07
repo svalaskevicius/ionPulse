@@ -42,8 +42,10 @@ public:
     int getColumn() const;
     pASTNode addChild(pASTNode child);
     pASTNode setData(QString name, QString data);
+    pASTNode setText(QString data);
     QString getName();
-    QString getStrData(QString name);
+    QString getData(QString name);
+    QString getText();
     static pASTNode create(QString name);
 };
 

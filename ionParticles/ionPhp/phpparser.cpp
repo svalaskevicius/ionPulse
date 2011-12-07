@@ -98,7 +98,7 @@ int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
             case T_INLINE_HTML:
                 if (lastNode && (lastNode->getName() == "inline_html")) {
                     // join them
-                    lastNode->setData("text", lastNode->getStrData("text")+(*astNode)->getStrData("text"));
+                    lastNode->setText(lastNode->getText()+(*astNode)->getText());
                     continue;
                 }
             default:

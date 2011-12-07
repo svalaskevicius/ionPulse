@@ -143,7 +143,7 @@ void StructureStorage::addFile(QString path)
             pASTNode classLabel = astRoot.xpath("string", classDef).front();
 
             classInsertQuery.bindValue("line_nr", classLabel->getLine());
-            classInsertQuery.bindValue("classname", classLabel->getStrData("text"));
+            classInsertQuery.bindValue("classname", classLabel->getText());
             if (!classInsertQuery.exec()) {
                 qDebug() << classInsertQuery.lastError();
             }
@@ -153,7 +153,7 @@ void StructureStorage::addFile(QString path)
             foreach(pASTNode methodDef, astRoot.xpath("class_statement_list/METHOD", classDef)) {
                 pASTNode methodLabel = astRoot.xpath("string", methodDef).front();
                 methodInsertQuery.bindValue("line_nr", methodLabel->getLine());
-                methodInsertQuery.bindValue("methodname", methodLabel->getStrData("text"));
+                methodInsertQuery.bindValue("methodname", methodLabel->getText());
                 if (!methodInsertQuery.exec()) {
                     qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
                 }
