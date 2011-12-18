@@ -100,7 +100,7 @@ private Q_SLOTS:
         searchPath << "name lf";
         try {
             root.getSubZone(searchPath);
-        } catch (std::runtime_error &e) {
+        } catch (const std::runtime_error &e) {
             QCOMPARE(e.what(), "zone 'name lf' not found");
             return;
         }

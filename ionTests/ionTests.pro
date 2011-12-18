@@ -15,7 +15,7 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-INCLUDEPATH +=  .. /opt/local/include/libxml2
+INCLUDEPATH +=  .. /opt/local/include/libxml2 /usr/local/include/
 
 LIBS += -lgmock -lgtest \
             -L../ionParticles/ionProject \
