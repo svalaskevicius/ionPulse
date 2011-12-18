@@ -65,14 +65,15 @@ public:
         int pos = tc.positionInBlock();
         int rpos = pos-1;
         QString ret = "";
-        QRegExp allowedChars("[a-z0-9_:\\.>\\$-]", Qt::CaseInsensitive);
+        QRegExp allowedCharsLeft("[a-z0-9_:\\.>\\$-]", Qt::CaseInsensitive);
+        QRegExp allowedCharsRight("[a-z0-9_]", Qt::CaseInsensitive);
         QChar c = block[pos];
-        while (allowedChars.exactMatch(c)) {
+        while (allowedCharsRight.exactMatch(c)) {
             ret += c;
             c = block[++pos];
         }
         c = block[rpos];
-        while (allowedChars.exactMatch(c)) {
+        while (allowedCharsLeft.exactMatch(c)) {
             ret = c + ret;
             c = block[--rpos];
         }
