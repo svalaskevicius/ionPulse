@@ -16,6 +16,9 @@
 
 namespace IonPhp {
 
+class ASTNode;
+class ASTRoot;
+
 class StructureStorage
 {
 public:
@@ -31,6 +34,9 @@ protected:
     void createTables();
     QVector<QString> getPhpFileList(const IonProject::TreeModel &fileSource);
     void addFile(QString path);
+
+    void addClasses(QSqlQuery &classInsertQuery, QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &classes);
+    void addMethods(QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &methods);
 };
 
 

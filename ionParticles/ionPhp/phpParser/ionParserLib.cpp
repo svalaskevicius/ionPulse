@@ -132,7 +132,7 @@ QString ASTRoot::dumpXml()
     return ret;
 }
 
-QList<pASTNode> ASTRoot::xpath(QString xpathExpr, pASTNode parent)
+QList<pASTNode> ASTRoot::xpath(QString xpathExpr, pASTNode parent) const
 {
     if (!parent) {
         parent = rootNode;

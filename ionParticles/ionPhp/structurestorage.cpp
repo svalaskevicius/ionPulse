@@ -138,7 +138,12 @@ void StructureStorage::addFile(QString path)
     classInsertQuery.bindValue("file_id", fileId);
     methodInsertQuery.bindValue("file_id", fileId);
 
-    foreach (pASTNode classDef, astRoot.xpath("//class_declaration")) {
+    addClasses(classInsertQuery, methodInsertQuery, astRoot, astRoot.xpath("//class_declaration"));
+}
+
+void StructureStorage::addClasses(QSqlQuery &classInsertQuery, QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &classes)
+{
+    foreach (pASTNode classDef, classes) {
         try {
             pASTNode classLabel = astRoot.xpath("string", classDef).front();
 
@@ -146,23 +151,30 @@ void StructureStorage::addFile(QString path)
             classInsertQuery.bindValue("classname", classLabel->getText());
             if (!classInsertQuery.exec()) {
                 qDebug() << classInsertQuery.lastError();
+                throw std::runtime_error("failed to register new class definition");
             }
             int classId = classInsertQuery.lastInsertId().toInt();
 
             methodInsertQuery.bindValue("class_id", classId);
-            foreach(pASTNode methodDef, astRoot.xpath("class_statement_list/METHOD", classDef)) {
-                pASTNode methodLabel = astRoot.xpath("string", methodDef).front();
-                methodInsertQuery.bindValue("line_nr", methodLabel->getLine());
-                methodInsertQuery.bindValue("methodname", methodLabel->getText());
-                if (!methodInsertQuery.exec()) {
-                    qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
-                }
-            }
+            addMethods(methodInsertQuery, astRoot, astRoot.xpath("class_statement_list/METHOD", classDef));
         } catch (std::exception &err) {
             errors << err.what();
         }
     }
 }
 
+
+void StructureStorage::addMethods(QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &methods)
+{
+    foreach(pASTNode methodDef, methods) {
+        pASTNode methodLabel = astRoot.xpath("string", methodDef).front();
+        methodInsertQuery.bindValue("line_nr", methodLabel->getLine());
+        methodInsertQuery.bindValue("methodname", methodLabel->getText());
+        if (!methodInsertQuery.exec()) {
+            qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
+            throw std::runtime_error("failed to register new method definition");
+        }
+    }
+}
 
 }

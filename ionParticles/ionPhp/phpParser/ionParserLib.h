@@ -59,7 +59,7 @@ public:
     ASTRoot(pASTNode rootNode);
     ~ASTRoot();
     QString dumpXml();
-    QList<pASTNode> xpath(QString xpathExpr, pASTNode parent = NULL);
+    QList<pASTNode> xpath(QString xpathExpr, pASTNode parent = NULL) const ;
 };
 
 }
