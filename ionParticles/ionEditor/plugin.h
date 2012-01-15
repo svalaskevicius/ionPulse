@@ -44,12 +44,15 @@ private:
     QScopedPointer<Private::EditorWidgetBuilderImpl> _editorWidgetFactory;
     IonLayout::LayoutManager *layoutManager;
     QMap<QString, Editor *> openedFiles;
+    Editor *focusedEditor;
 signals:
 
 public slots:
     void openFile(QString path, int line);
     void closeFileEditor(Editor *editor);
-
+    void focusFileEditor(Editor *editor);
+    void onFileSave();
+    void onFileClose();
 private:
     Q_DISABLE_COPY(Plugin)
 };

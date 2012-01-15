@@ -29,7 +29,7 @@ void StructureStorage::importFileTree(const IonProject::TreeModel &fileSource)
     foreach (QString path, getPhpFileList(fileSource)) {
         try {
             addFile(path);
-        } catch (std::runtime_error &err) {
+        } catch (std::exception &err) {
             errors << err.what();
         }
     }

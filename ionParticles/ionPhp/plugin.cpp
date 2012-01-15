@@ -33,7 +33,7 @@ void Plugin::postLoad()
     if (!db.open()) {
         throw QString("Unable to establish a database connection.\nPhp plugin requires SQLite support.");
     }
-    structureStorage.reset(new StructureStorage("phpStructureStorage"));
+    structureStorage = QSharedPointer<StructureStorage>(new StructureStorage("phpStructureStorage"));
     structureStorage->importFileTree(*projectPlugin->getProjectFileTreeModel());
 
     PhpTreeSource source(*structureStorage, projectPlugin->createTreeItemFactory());
@@ -51,7 +51,7 @@ void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
     IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
     Q_ASSERT(wf);
 
-    wf->registerComponentFactory("text/php", new Private::EditorSourceBrowserFactory());
+    wf->registerComponentFactory("text/php", new Private::EditorSourceBrowserFactory(structureStorage));
     wf->registerHighlighterFactory("text/php", new HighlighterFactory());
 
     wf->registerFileType("php", "text/php");

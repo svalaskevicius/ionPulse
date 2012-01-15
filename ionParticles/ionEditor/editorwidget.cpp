@@ -14,6 +14,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
+#include <stdexcept>
 
 namespace IonEditor {
 
@@ -125,6 +126,14 @@ void EditorWidget::focusOnLine(int line)
         QTextCursor::MoveAnchor
     );
     setTextCursor(cursor);
+}
+
+void EditorWidget::saveFile() {
+    QFile f(filePath);
+    if (!f.open(QIODevice::WriteOnly)) {
+        throw std::runtime_error(("cannot write file "+filePath).toStdString());
+    }
+    f.write(document()->toPlainText().toAscii());
 }
 
 

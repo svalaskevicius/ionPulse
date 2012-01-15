@@ -16,7 +16,6 @@
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "editorapi.h"
 
-
 namespace IonEditor {
 
 namespace Private {
@@ -89,6 +88,7 @@ protected slots:
 protected:
     void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
     void closeEvent ( QCloseEvent * event ) {emit(editorClosing(this)); QWidget::closeEvent( event );}
+    void focusInEvent ( QFocusEvent * event ) {emit(editorFocusing(this)); QWidget::focusInEvent( event );}
 private:
     QList<EditorComponent* > components;
     QSyntaxHighlighter *highlighter;
@@ -97,9 +97,10 @@ private:
     ComponentInfo componentInfo;
 signals:
     void editorClosing( Editor *editor );
+    void editorFocusing( Editor *editor );
 public slots:
 public:
-};
+    virtual void saveFile();};
 
 }
 

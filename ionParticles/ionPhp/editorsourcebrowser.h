@@ -11,6 +11,7 @@
 
 #include <ionHeart/shared.h>
 #include <ionParticles/ionEditor/editorapi.h>
+#include "structurestorage.h"
 
 namespace IonPhp {
 
@@ -21,7 +22,7 @@ class EditorSourceBrowser : public IonEditor::EditorComponent
 public:
     static QString identity() {return "phpEditorSourceBrowser";}
 
-    EditorSourceBrowser(IonEditor::Editor *parent = 0);
+    EditorSourceBrowser(IonEditor::Editor *parent, QSharedPointer<StructureStorage> structureStorage);
 
     int getWidth() {return 0;}
 
@@ -77,19 +78,27 @@ public:
             ret = c + ret;
             c = block[--rpos];
         }
-        return ret;
+        return ret.remove(QRegExp("[>\\.\\(\\):\\$-]$", Qt::CaseInsensitive));
     }
 
     void goToDefinition(QString word)
     {
+        if (!word.length()) {
+            return;
+        }
         qDebug() << "going to " << word;
+
+        if (!word.contains(QRegExp("[>\\.\\(\\):\\$-]$", Qt::CaseInsensitive))) {
+            //structureStorage->findClassByName(word);
+        }
     }
 
 protected:
     IonEditor::Editor *editor;
+    QSharedPointer<StructureStorage> structureStorage;
 };
 
-typedef IonEditor::EditorComponentFactory<EditorSourceBrowser> EditorSourceBrowserFactory;
+typedef IonEditor::EditorComponentFactory1<EditorSourceBrowser, QSharedPointer<StructureStorage> > EditorSourceBrowserFactory;
 
 }
 

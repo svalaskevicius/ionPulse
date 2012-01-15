@@ -43,6 +43,7 @@ public:
     virtual void setComponents(QList<EditorComponent* > components) = 0;
     virtual QPlainTextEdit* getEditorInstance() = 0;
     virtual void focusOnLine(int line) = 0;
+    virtual void saveFile() = 0;
 };
 
 struct EditorComponentFactoryBase {
@@ -53,6 +54,13 @@ struct EditorComponentFactoryBase {
 template <typename component>
 struct EditorComponentFactory : public EditorComponentFactoryBase {
     IonEditor::EditorComponent *operator()(Editor *e) {return new component(e);}
+    QString getIdentifier() {return component::identity();}
+};
+template <typename component, typename targ1>
+struct EditorComponentFactory1 : public EditorComponentFactoryBase {
+    targ1 arg1;
+    EditorComponentFactory1(targ1 arg1) : arg1(arg1) {}
+    IonEditor::EditorComponent *operator()(Editor *e) {return new component(e, arg1);}
     QString getIdentifier() {return component::identity();}
 };
 
