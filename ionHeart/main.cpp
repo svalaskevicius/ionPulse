@@ -10,6 +10,7 @@
 #include "mainwindow.h"
 #include "pluginloader.h"
 #include <QMessageBox>
+#include <stdexcept>
 
 int main(int argc, char *argv[])
 {
@@ -25,6 +26,14 @@ int main(int argc, char *argv[])
             0,
             "Application error",
             msg+"\n\nClick Cancel to exit.",
+            QMessageBox::Cancel
+        );
+        return 1;
+    } catch (const std::exception &e) {
+        QMessageBox::critical(
+            0,
+            "Application error",
+            QString(e.what())+"\n\nClick Cancel to exit.",
             QMessageBox::Cancel
         );
         return 1;
