@@ -43,6 +43,7 @@ public:
     virtual void setComponents(QList<EditorComponent* > components) = 0;
     virtual QPlainTextEdit* getEditorInstance() = 0;
     virtual void focusOnLine(int line) = 0;
+    virtual void saveFile() = 0;
 };
 
 struct EditorComponentFactoryBase {

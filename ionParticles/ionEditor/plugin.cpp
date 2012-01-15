@@ -18,12 +18,13 @@
 #include "filetreewidget.h"
 
 #include <ionHeart/shared.h>
+#include <QMenuBar>
 
 namespace IonEditor {
 
 
 Plugin::Plugin(QObject *parent) :
-    QObject(parent), layoutManager(NULL), openedFiles()
+    QObject(parent), layoutManager(NULL), openedFiles(), focusedEditor(NULL)
 {
 }
 
@@ -41,6 +42,7 @@ void Plugin::addParent(BasicPlugin *parent) {
 void Plugin::postLoad()
 {
     Q_ASSERT(layoutManager);
+    Q_ASSERT(mainWindow);
 
     IonLayout::ZoneDefinition def;
 
@@ -89,6 +91,25 @@ void Plugin::postLoad()
     connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 
     getEditorWidgetBuilder()->registerComponentFactory("text", new Private::DefaultLineNumberAreaFactory());
+
+    QMenuBar *menuBar = mainWindow->menuBar();
+    QMenu *fileMenu = menuBar->addMenu("&File");
+    fileMenu->addAction("&Save", this, SLOT(onFileSave()), QKeySequence(Qt::CTRL + Qt::Key_S));
+    QMenu *windowMenu = menuBar->addMenu("&Window");
+    windowMenu->addAction("&Close", this, SLOT(onFileClose()), QKeySequence(Qt::CTRL + Qt::Key_W));
+}
+
+void Plugin::onFileSave()
+{
+    if (focusedEditor) {
+        focusedEditor->saveFile();
+    }
+}
+void Plugin::onFileClose()
+{
+    if (focusedEditor) {
+        focusedEditor->getWidget()->close();
+    }
 }
 
 void Plugin::openFile(QString path, int line)
@@ -97,9 +118,10 @@ void Plugin::openFile(QString path, int line)
     QMap<QString, Editor *>::Iterator it = openedFiles.find(path);
     if (openedFiles.end() == it) {
         widget = getEditorWidgetBuilder()->createEditor(path);
-        layoutManager->add(widget);
         openedFiles[path] = widget;
         connect(widget->getWidget(), SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
+        connect(widget->getWidget(), SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
+        layoutManager->add(widget);
     } else {
         widget = it.value();
         layoutManager->focus(widget);
@@ -107,6 +129,11 @@ void Plugin::openFile(QString path, int line)
     if (-1 != line) {
         widget->focusOnLine(line);
     }
+}
+
+void Plugin::focusFileEditor(Editor *editor)
+{
+    focusedEditor = editor;
 }
 
 void Plugin::closeFileEditor(Editor *editor)

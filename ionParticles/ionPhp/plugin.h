@@ -41,7 +41,7 @@ public:
     virtual void addParent(BasicPlugin *parent);
 protected:
     IonProject::ProjectPlugin *projectPlugin;
-    QScopedPointer<StructureStorage> structureStorage;
+    QSharedPointer<StructureStorage> structureStorage;
     void addEditorParent(IonEditor::EditorPlugin *editorPlugin);
 signals:
 
