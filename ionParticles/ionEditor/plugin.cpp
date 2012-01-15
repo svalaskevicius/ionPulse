@@ -95,8 +95,7 @@ void Plugin::postLoad()
     QMenuBar *menuBar = mainWindow->menuBar();
     QMenu *fileMenu = menuBar->addMenu("&File");
     fileMenu->addAction("&Save", this, SLOT(onFileSave()), QKeySequence(Qt::CTRL + Qt::Key_S));
-    QMenu *windowMenu = menuBar->addMenu("&Window");
-    windowMenu->addAction("&Close", this, SLOT(onFileClose()), QKeySequence(Qt::CTRL + Qt::Key_W));
+    fileMenu->addAction("&Close", this, SLOT(onFileClose()), QKeySequence(Qt::CTRL + Qt::Key_W));
 }
 
 void Plugin::onFileSave()
