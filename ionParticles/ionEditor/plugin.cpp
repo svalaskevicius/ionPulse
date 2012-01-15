@@ -108,7 +108,9 @@ void Plugin::onFileSave()
 void Plugin::onFileClose()
 {
     if (focusedEditor) {
-        focusedEditor->getWidget()->close();
+        Editor *widget = focusedEditor;
+        focusedEditor = NULL;
+        layoutManager->remove(widget);
     }
 }
 

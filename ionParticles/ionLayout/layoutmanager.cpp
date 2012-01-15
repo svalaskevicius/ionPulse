@@ -181,16 +181,24 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     }
     return br;
 }
-void ZoneNodeLeaf::onTabCloseRequested ( int index )
+
+void ZoneNodeLeaf::closeAndRemoveTab( int index )
 {
     QWidget *w = widget(index);
     if (w->close()) {
         removeTab(index);
         delete w;
     }
-
+    int idx = currentIndex();
+    if (idx >= 0) {
+        widget(idx)->setFocus();
+    }
 }
 
+void ZoneNodeLeaf::onTabCloseRequested ( int index )
+{
+    closeAndRemoveTab(index);
+}
 
 
 
@@ -267,6 +275,21 @@ void LayoutManagerImpl::add(PanelWidget *panel)
     uiTab->setCurrentIndex(idx);
     uiTab->widget(idx)->setFocus();
     leaf->show();
+}
+
+void LayoutManagerImpl::remove(PanelWidget *panel)
+{
+    ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
+    Q_ASSERT(leaf);
+    QTabWidget *uiTab = leaf->getZoneContents();
+    Q_ASSERT(uiTab);
+    int idx = uiTab->indexOf(
+        panel->getWidget()
+    );
+    if (-1 == idx) {
+        throw std::runtime_error("widget must be already added to the panel");
+    }
+    leaf->closeAndRemoveTab(idx);
 }
 
 void LayoutManagerImpl::focus(PanelWidget *panel)

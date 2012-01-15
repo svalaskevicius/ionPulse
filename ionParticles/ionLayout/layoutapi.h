@@ -37,6 +37,7 @@ class LayoutManager
 public:
     virtual ~LayoutManager() {}
     virtual void add(PanelWidget *panel) = 0;
+    virtual void remove(PanelWidget *panel) = 0;
     virtual void focus(PanelWidget *panel) = 0;
     virtual void addZone(ZoneDefinition &zone) = 0;
 };

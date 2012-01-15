@@ -104,7 +104,7 @@ public:
     virtual ZoneNodeBranch *getZoneAsBranch();
     virtual QWidget *getWidget();
     virtual void show();
-
+    void closeAndRemoveTab( int index );
 protected slots:
     void onTabCloseRequested ( int index );
 };
@@ -128,6 +128,7 @@ protected:
 public:
     LayoutManagerImpl(QMainWindow *mainWindow);
     virtual void add(PanelWidget *panel);
+    virtual void remove(PanelWidget *panel);
     virtual void focus(PanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
 };
