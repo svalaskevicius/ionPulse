@@ -18,7 +18,6 @@ IonProject::TreeBranch *PhpTreeSource::setupData()
 {
     IonProject::TreeBranch* root = treeItemFactory->createTreeBranch("Name", "", -1, NULL);
     QSharedPointer<QSqlQuery> q = storage.getClasses();
-    qDebug() << "setp1 ";
     while (q->next()) {
         QString className = q->value(1).toString();
         IonProject::TreeBranch* classNode = treeItemFactory->createTreeBranch(className, q->value(2).toString(), q->value(3).toInt(), root);

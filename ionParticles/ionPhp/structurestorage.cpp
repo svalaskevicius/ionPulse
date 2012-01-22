@@ -31,6 +31,7 @@ void StructureStorage::importFileTree(const IonProject::TreeModel &fileSource)
             addFile(path);
         } catch (std::exception &err) {
             errors << err.what();
+            DEBUG_MSG(err.what());
         }
     }
 
@@ -123,6 +124,7 @@ QVector<QString> StructureStorage::getPhpFileList(const IonProject::TreeModel &f
 void StructureStorage::addFile(QString path)
 {
     ASTRoot astRoot = phpParser().parseFile(path);
+    //qDebug() << astRoot.dumpXml();
 
     QSqlQuery fileInsertQuery(db);
     fileInsertQuery.prepare("insert into files(filename) values (:filename)");
@@ -144,22 +146,18 @@ void StructureStorage::addFile(QString path)
 void StructureStorage::addClasses(QSqlQuery &classInsertQuery, QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &classes)
 {
     foreach (pASTNode classDef, classes) {
-        try {
-            pASTNode classLabel = astRoot.xpath("string", classDef).front();
+        pASTNode classLabel = astRoot.xpath("string", classDef).front();
 
-            classInsertQuery.bindValue("line_nr", classLabel->getLine());
-            classInsertQuery.bindValue("classname", classLabel->getText());
-            if (!classInsertQuery.exec()) {
-                qDebug() << classInsertQuery.lastError();
-                throw std::runtime_error("failed to register new class definition");
-            }
-            int classId = classInsertQuery.lastInsertId().toInt();
-
-            methodInsertQuery.bindValue("class_id", classId);
-            addMethods(methodInsertQuery, astRoot, astRoot.xpath("class_statement_list/METHOD", classDef));
-        } catch (std::exception &err) {
-            errors << err.what();
+        classInsertQuery.bindValue("line_nr", classLabel->getLine());
+        classInsertQuery.bindValue("classname", classLabel->getText());
+        if (!classInsertQuery.exec()) {
+            qDebug() << classInsertQuery.lastError();
+            throw std::runtime_error("failed to register new class definition");
         }
+        int classId = classInsertQuery.lastInsertId().toInt();
+
+        methodInsertQuery.bindValue("class_id", classId);
+        addMethods(methodInsertQuery, astRoot, astRoot.xpath("class_statement_list/METHOD", classDef));
     }
 }
 
