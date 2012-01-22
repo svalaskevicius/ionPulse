@@ -38,7 +38,7 @@ class FileTreeModel : public IonProject::TreeModel
     Q_OBJECT
 
 public:
-    FileTreeModel(TreeModelSource *source);
+    FileTreeModel(TreeModelSource &source);
     ~FileTreeModel();
 
     QVariant data(const QModelIndex &index, int role) const;
@@ -55,7 +55,7 @@ public:
     TreeItem* getItem(const QModelIndex &index) const;
     QString getTitle() const {return modelTitle;}
     TreeBranch *getRoot() const {return rootItem;}
-
+    void setDirectoryTreeSource(TreeModelSource &source);
 private:
     TreeBranch *rootItem;
     QString modelTitle;

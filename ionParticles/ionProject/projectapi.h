@@ -55,6 +55,7 @@ public:
     virtual TreeItem* getItem(const QModelIndex &index) const = 0;
     virtual QString getTitle() const = 0;
     virtual TreeBranch *getRoot() const = 0;
+    virtual void setDirectoryTreeSource(TreeModelSource &source) = 0;
 };
 
 class ProjectPlugin : public IonHeart::BasicPlugin {

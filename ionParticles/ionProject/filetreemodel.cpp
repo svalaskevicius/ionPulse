@@ -16,15 +16,25 @@
 namespace IonProject {
 namespace Private {
 
-FileTreeModel::FileTreeModel(TreeModelSource *source)
+FileTreeModel::FileTreeModel(TreeModelSource &source)
 {
-    rootItem = source->setupData();
-    modelTitle = source->getTitle();
+    rootItem = source.setupData();
+    modelTitle = source.getTitle();
 }
 
 FileTreeModel::~FileTreeModel()
 {
     delete rootItem;
+}
+
+void FileTreeModel::setDirectoryTreeSource(TreeModelSource &source)
+{
+    if (rootItem) {
+        delete rootItem;
+    }
+    rootItem = source.setupData();
+    modelTitle = source.getTitle();
+    reset();
 }
 
 int FileTreeModel::columnCount(const QModelIndex &) const

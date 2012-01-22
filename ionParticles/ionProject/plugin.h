@@ -50,6 +50,7 @@ private:
 signals:
 
 public slots:
+    void onNewProject();
 protected slots:
     void openFile(QString path, int);
 

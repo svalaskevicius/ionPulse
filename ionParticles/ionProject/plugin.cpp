@@ -14,6 +14,9 @@
 #include "filetreemodel.h"
 #include "treeitem.h"
 
+#include <QMenuBar>
+#include <QFileDialog>
+
 namespace IonProject {
 
 Plugin::Plugin(QObject *parent) :
@@ -24,7 +27,22 @@ Plugin::Plugin(QObject *parent) :
 void Plugin::postLoad()
 {
     Q_ASSERT(editorPlugin);
+    Q_ASSERT(mainWindow);
+
+    QMenuBar *menuBar = mainWindow->menuBar();
+    QMenu *projectMenu = menuBar->addMenu("&Project");
+    projectMenu->addAction("&New from source", this, SLOT(onNewProject()));
+
     addTreeWidget(getProjectFileTreeModel());
+}
+
+void Plugin::onNewProject()
+{
+    QString dir = QFileDialog::getExistingDirectory(mainWindow, tr("Open Directory"));
+    if (dir.length()) {
+        Private::DirectoryTreeSource dirTreeSource(dir);
+        getProjectFileTreeModel()->setDirectoryTreeSource(dirTreeSource);
+    }
 }
 
 void Plugin::addParent(BasicPlugin *parent) {
@@ -41,8 +59,8 @@ void Plugin::openFile(QString path, int line)
 QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        Private::DirectoryTreeSource dirTreeSource("/Users/svalaskevicius/csDisk/codeClubs");
-        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(&dirTreeSource));
+        Private::DirectoryTreeSource dirTreeSource;
+        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(dirTreeSource));
     }
     return projectTreeModel;
 }
@@ -56,7 +74,7 @@ void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
 
 void Plugin::addTreeWidget(TreeModelSource *modelSource)
 {
-    QSharedPointer<TreeModel> model(new Private::FileTreeModel(modelSource));
+    QSharedPointer<TreeModel> model(new Private::FileTreeModel(*modelSource));
     addTreeWidget(model);
 }
 
