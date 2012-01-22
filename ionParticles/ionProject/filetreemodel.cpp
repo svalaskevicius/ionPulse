@@ -132,16 +132,26 @@ TreeBranch *DirectoryTreeSource::setupData()
 {
     TreeBranchImpl* root = new TreeBranchImpl("Name", "", -1, NULL);
 
-    QList<TreeBranchImpl*> parents;
+    if (initialDir.length()) {
+        addDirectory(root, initialDir);
+    }
+
+    return root;
+}
+
+void DirectoryTreeSource::addDirectory(TreeBranch *parent, QString directory)
+{
+    QList<TreeBranch*> parents;
     QList<QString> directoryNames;
-    parents << root;
-    directoryNames << initialDir;
+
+    parents << parent;
+    directoryNames << directory;
 
     while (directoryNames.count()) {
         QString currentDirName = directoryNames.back();
         directoryNames.pop_back();
         QDir currentDir(currentDirName);
-        TreeBranchImpl* currentTreeItemsParent = parents.last();
+        TreeBranch* currentTreeItemsParent = parents.last();
         parents.pop_back();
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
@@ -158,7 +168,6 @@ TreeBranch *DirectoryTreeSource::setupData()
             currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, fullPath, -1, currentTreeItemsParent));
         }
     }
-    return root;
 }
 
 }

@@ -21,8 +21,13 @@ public:
     DirectoryTreeSource(const QString &initialDir)
         : initialDir(initialDir) {
     }
+    DirectoryTreeSource()
+        : initialDir("") {
+    }
     virtual TreeBranch * setupData();
     virtual QString getTitle() const {return "Project Browser";}
+protected:
+    void addDirectory(TreeBranch *parent, QString directory);
 private:
     QString initialDir;
 };
