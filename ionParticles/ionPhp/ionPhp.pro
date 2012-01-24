@@ -26,9 +26,9 @@ HEADERS += \
     highlighter.h \
     phpparser.h \
     phpParser/ionParserLib.h \
-    phptreemodel.h \
     structurestorage.h \
-    editorsourcebrowser.h
+    editorsourcebrowser.h \
+    phptreemodelsource.h
 
 
 SOURCES += \
@@ -39,9 +39,9 @@ SOURCES += \
     gen_php_scanner.cpp \
     phpparser.cpp \
     phpParser/ionParserLib.cpp \
-    phptreemodel.cpp \
     structurestorage.cpp \
-    editorsourcebrowser.cpp
+    editorsourcebrowser.cpp \
+    phptreemodelsource.cpp
 
 
 target.path += "$${INSTALL_DIR}/plugins/"

@@ -15,8 +15,6 @@
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "projectapi.h"
 
-#include <boost/function.hpp>
-
 namespace IonProject {
 
 class TreeModel;
@@ -43,6 +41,8 @@ public:
     virtual void addTreeWidget(QSharedPointer<TreeModel> model);
     virtual void addTreeWidget(TreeModelSource *modelSource);
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory();
+    virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory();
+    virtual void setTreeModelSourceFactory(boost::function<QSharedPointer<TreeModelSource> (QString dirname)> factory);
 
 private:
     struct _defaultTreeModelSourceFactory {
@@ -52,7 +52,9 @@ private:
     IonEditor::EditorPlugin *editorPlugin;
     IonLayout::LayoutManager *layoutManager;
     QSharedPointer<TreeModel> projectTreeModel;
+
     boost::function<QSharedPointer<TreeModelSource> (QString dirname)> _treeModelSourceFactory;
+
 signals:
 
 public slots:

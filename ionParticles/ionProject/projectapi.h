@@ -3,6 +3,8 @@
 #include <QAbstractItemModel>
 #include <ionHeart/plugin.h>
 
+#include <boost/function.hpp>
+
 
 namespace IonProject {
 
@@ -65,6 +67,8 @@ public:
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory() = 0;
     virtual QSharedPointer<TreeModel> getProjectFileTreeModel() = 0;
     static QString name() {return "ionProject";}
+    virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory() = 0;
+    virtual void setTreeModelSourceFactory(boost::function<QSharedPointer<TreeModelSource> (QString dirname)> factory) = 0;
 };
 
 }

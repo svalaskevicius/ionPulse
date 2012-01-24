@@ -24,18 +24,18 @@ StructureStorage::StructureStorage(QString connName)
     createTables();
 }
 
-void StructureStorage::importFileTree(const IonProject::TreeModel &fileSource)
-{
-    foreach (QString path, getPhpFileList(fileSource)) {
-        try {
-            addFile(path);
-        } catch (std::exception &err) {
-            errors << err.what();
-            DEBUG_MSG(err.what());
-        }
-    }
+//void StructureStorage::importFileTree(const IonProject::TreeModel &fileSource)
+//{
+//    foreach (QString path, getPhpFileList(fileSource)) {
+//        try {
+//            addFile(path);
+//        } catch (std::exception &err) {
+//            errors << err.what();
+//            DEBUG_MSG(err.what());
+//        }
+//    }
 
-}
+//}
 
 QSharedPointer<QSqlQuery> StructureStorage::getClasses()
 {
@@ -47,7 +47,18 @@ QSharedPointer<QSqlQuery> StructureStorage::getClasses()
     return query;
 }
 
-QSharedPointer<QSqlQuery> StructureStorage::getMethods(int classId)
+QSharedPointer<QSqlQuery> StructureStorage::getFileClasses(int fileId)
+{
+    QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
+    query->prepare("select classes.id, classname, filename, line_nr from classes left join files on files.id=classes.file_id where files.id=:file_id");
+    query->bindValue("file_id", fileId);
+    if (!query->exec()) {
+        qDebug() << query->lastError();
+    }
+    return query;
+}
+
+QSharedPointer<QSqlQuery> StructureStorage::getClassMethods(int classId)
 {
     QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
     query->prepare("select methods.id, methodname, filename, line_nr from methods left join files on files.id=file_id where class_id=:class_id");
@@ -101,27 +112,27 @@ void StructureStorage::createTables()
 }
 
 
-QVector<QString> StructureStorage::getPhpFileList(const IonProject::TreeModel &fileSource)
-{
-    QVector<IonProject::TreeItem*> parents;
-    QVector<QString> phpFiles;
-    parents.push_back(fileSource.getRoot());
-    while (!parents.empty()) {
-        IonProject::TreeItem *parent = parents.back();
-        parents.pop_back();
-        foreach (IonProject::TreeItem *child, parent->getChildren()) {
-            parents.push_back(child);
-            QString path = child->getPath();
-            if (path.toLower().endsWith(".php")) {
-                phpFiles.push_back(path);
-            }
-        }
-    }
-    return phpFiles;
-}
+//QVector<QString> StructureStorage::getPhpFileList(const IonProject::TreeModel &fileSource)
+//{
+//    QVector<IonProject::TreeItem*> parents;
+//    QVector<QString> phpFiles;
+//    parents.push_back(fileSource.getRoot());
+//    while (!parents.empty()) {
+//        IonProject::TreeItem *parent = parents.back();
+//        parents.pop_back();
+//        foreach (IonProject::TreeItem *child, parent->getChildren()) {
+//            parents.push_back(child);
+//            QString path = child->getPath();
+//            if (path.toLower().endsWith(".php")) {
+//                phpFiles.push_back(path);
+//            }
+//        }
+//    }
+//    return phpFiles;
+//}
 
 
-void StructureStorage::addFile(QString path)
+int StructureStorage::addFile(QString path)
 {
     ASTRoot astRoot = phpParser().parseFile(path);
     //qDebug() << astRoot.dumpXml();
@@ -141,6 +152,8 @@ void StructureStorage::addFile(QString path)
     methodInsertQuery.bindValue("file_id", fileId);
 
     addClasses(classInsertQuery, methodInsertQuery, astRoot, astRoot.xpath("//class_declaration"));
+
+    return fileId;
 }
 
 void StructureStorage::addClasses(QSqlQuery &classInsertQuery, QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &classes)

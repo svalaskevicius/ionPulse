@@ -29,6 +29,16 @@ Plugin::Plugin(QObject *parent) :
 {
 }
 
+const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &Plugin::getTreeModelSourceFactory()
+{
+    return _treeModelSourceFactory;
+}
+
+void Plugin::setTreeModelSourceFactory(boost::function<QSharedPointer<TreeModelSource> (QString dirname)> factory)
+{
+    _treeModelSourceFactory = factory;
+}
+
 void Plugin::postLoad()
 {
     Q_ASSERT(editorPlugin);
@@ -45,7 +55,7 @@ void Plugin::onNewProject()
 {
     QString dir = QFileDialog::getExistingDirectory(mainWindow, tr("Open Directory"));
     if (dir.length()) {
-        getProjectFileTreeModel()->setDirectoryTreeSource(*_treeModelSourceFactory(dir));
+        getProjectFileTreeModel()->setDirectoryTreeSource(*getTreeModelSourceFactory()(dir));
     }
 }
 
@@ -63,7 +73,7 @@ void Plugin::openFile(QString path, int line)
 QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(*_treeModelSourceFactory("")));
+        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(*getTreeModelSourceFactory()("")));
     }
     return projectTreeModel;
 }

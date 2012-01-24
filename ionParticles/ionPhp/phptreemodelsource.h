@@ -15,19 +15,22 @@
 #include "structurestorage.h"
 
 namespace IonPhp {
+namespace Private {
 
-class PhpTreeSource : public IonProject::TreeModelSource {
+class PhpTreeModelSourceDecorator : public IonProject::TreeModelSource {
 public:
-    PhpTreeSource(StructureStorage &storage, QSharedPointer<IonProject::TreeItemFactory> treeItemFactory)
-        : treeItemFactory(treeItemFactory), storage(storage) {
+    PhpTreeModelSourceDecorator(QSharedPointer<IonProject::TreeModelSource> origTreeModelSource, StructureStorage &storage, QSharedPointer<IonProject::TreeItemFactory> treeItemFactory)
+        : origTreeModelSource(origTreeModelSource), treeItemFactory(treeItemFactory), storage(storage) {
     }
     virtual IonProject::TreeBranch * setupData();
-    QString getTitle() const {return "Class Browser";}
+    QString getTitle() const {return origTreeModelSource->getTitle();}
 private:
+    QSharedPointer<IonProject::TreeModelSource> origTreeModelSource;
     QSharedPointer<IonProject::TreeItemFactory> treeItemFactory;
     StructureStorage &storage;
 };
 
+}
 }
 
 #endif // PHPTREEMODEL_H

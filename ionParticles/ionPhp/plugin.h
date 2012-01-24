@@ -40,9 +40,26 @@ public:
     }
     virtual void addParent(BasicPlugin *parent);
 protected:
-    IonProject::ProjectPlugin *projectPlugin;
+    struct phpTreeModelSourceDecoratorFactory {
+    private:
+        boost::function<QSharedPointer<IonProject::TreeModelSource>(QString dirname)> origFactory;
+        StructureStorage &structureStorage;
+        QSharedPointer<IonProject::TreeItemFactory> treeItemFactory;
+    public:
+        phpTreeModelSourceDecoratorFactory(
+                    const boost::function<QSharedPointer<IonProject::TreeModelSource>(QString dirname)> &origFactory,
+                    StructureStorage &structureStorage,
+                    QSharedPointer<IonProject::TreeItemFactory> treeItemFactory
+                )
+            : origFactory(origFactory), structureStorage(structureStorage), treeItemFactory(treeItemFactory)
+        {
+        }
+        QSharedPointer<IonProject::TreeModelSource> operator()(QString dirname);
+    };
+
     QSharedPointer<StructureStorage> structureStorage;
     void addEditorParent(IonEditor::EditorPlugin *editorPlugin);
+    void addProjectParent(IonProject::ProjectPlugin *projectPlugin);
 signals:
 
 public slots:

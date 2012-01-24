@@ -13,19 +13,20 @@
 #include "ionHeart/shared.h"
 
 #include "editorwidgetfactory.h"
-#include "phptreemodel.h"
+#include "phptreemodelsource.h"
 #include "editorsourcebrowser.h"
 
 #include <QSqlDatabase>
 
 namespace IonPhp {
 
-Plugin::Plugin(QObject *parent) :
-    QObject(parent)
+QSharedPointer<IonProject::TreeModelSource> Plugin::phpTreeModelSourceDecoratorFactory::operator()(QString dirname)
 {
+    return QSharedPointer<IonProject::TreeModelSource>(new Private::PhpTreeModelSourceDecorator(origFactory(dirname), structureStorage, treeItemFactory));
 }
 
-void Plugin::postLoad()
+Plugin::Plugin(QObject *parent) :
+    QObject(parent)
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "phpStructureStorage");
 //    db.setDatabaseName("/tmp/db.sqlite");
@@ -34,16 +35,16 @@ void Plugin::postLoad()
         throw QString("Unable to establish a database connection.\nPhp plugin requires SQLite support.");
     }
     structureStorage = QSharedPointer<StructureStorage>(new StructureStorage("phpStructureStorage"));
-    structureStorage->importFileTree(*projectPlugin->getProjectFileTreeModel());
+}
 
-    PhpTreeSource source(*structureStorage, projectPlugin->createTreeItemFactory());
-    projectPlugin->addTreeWidget(&source);
+void Plugin::postLoad()
+{
 }
 
 
 void Plugin::addParent(BasicPlugin *parent) {
     CHECK_AND_ADD_PARENT(parent, IonEditor::EditorPlugin, addEditorParent(target));
-    CHECK_AND_ADD_PARENT(parent, IonProject::ProjectPlugin, projectPlugin = target);
+    CHECK_AND_ADD_PARENT(parent, IonProject::ProjectPlugin, addProjectParent(target));
 }
 
 void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
@@ -57,6 +58,15 @@ void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
     wf->registerFileType("php", "text/php");
     wf->registerFileType("php3", "text/php");
     wf->registerFileType("phtml", "text/php");
+}
+
+void Plugin::addProjectParent(IonProject::ProjectPlugin *projectPlugin)
+{
+    projectPlugin->setTreeModelSourceFactory(
+        phpTreeModelSourceDecoratorFactory(
+            projectPlugin->getTreeModelSourceFactory(), *structureStorage, projectPlugin->createTreeItemFactory()
+        )
+    );
 }
 
 }
