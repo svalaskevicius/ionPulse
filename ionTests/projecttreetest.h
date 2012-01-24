@@ -104,7 +104,7 @@ class ProjectTreeModelTest : public QObject
 private Q_SLOTS:
     void test_dataDimensions() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         QCOMPARE(model.rowCount(), 2);
         QCOMPARE(model.rowCount(model.index(0, 0)), 1);
@@ -113,14 +113,14 @@ private Q_SLOTS:
 
     void test_structureBetweenParentAndChild() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         QCOMPARE(model.parent(model.index(0, 0, model.index(0, 0))), model.index(0, 0));
     }
 
     void test_dataContainsCorrectFixtures() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir1"));
         QCOMPARE(model.data(model.index(1, 0), Qt::DisplayRole).toString(), QString("fileName2"));
@@ -129,7 +129,7 @@ private Q_SLOTS:
 
     void test_dataIsReducedByFilter() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         model.filter("2");
 
@@ -146,7 +146,7 @@ private Q_SLOTS:
 
     void test_filterWorksForPathBasis() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         model.filter("1/f");
 
@@ -160,7 +160,7 @@ private Q_SLOTS:
 
     void test_getPath() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         model.filter("1/f");
 
@@ -169,14 +169,14 @@ private Q_SLOTS:
 
     void test_getTitleReturnsSourceTitle() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         QCOMPARE(model.getTitle(), QString("test"));
     }
 
     void test_getRootReturnsSourceCreatedRoot() {
         MockTreeSource source;
-        FileTreeModel model(&source);
+        FileTreeModel model(source);
 
         TreeBranch *root = model.getRoot();
         QCOMPARE(root->data(0).toString(), QString("name"));

@@ -19,8 +19,13 @@
 
 namespace IonProject {
 
+
+QSharedPointer<TreeModelSource> Plugin::_defaultTreeModelSourceFactory::operator()(QString dirname) {
+    return QSharedPointer<TreeModelSource>(new Private::DirectoryTreeSource(dirname));
+}
+
 Plugin::Plugin(QObject *parent) :
-    QObject(parent), editorPlugin(NULL), layoutManager(NULL), projectTreeModel(NULL)
+    QObject(parent), editorPlugin(NULL), layoutManager(NULL), projectTreeModel(NULL), _treeModelSourceFactory(Plugin::_defaultTreeModelSourceFactory())
 {
 }
 
@@ -40,8 +45,7 @@ void Plugin::onNewProject()
 {
     QString dir = QFileDialog::getExistingDirectory(mainWindow, tr("Open Directory"));
     if (dir.length()) {
-        Private::DirectoryTreeSource dirTreeSource(dir);
-        getProjectFileTreeModel()->setDirectoryTreeSource(dirTreeSource);
+        getProjectFileTreeModel()->setDirectoryTreeSource(*_treeModelSourceFactory(dir));
     }
 }
 
@@ -59,8 +63,7 @@ void Plugin::openFile(QString path, int line)
 QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        Private::DirectoryTreeSource dirTreeSource;
-        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(dirTreeSource));
+        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(*_treeModelSourceFactory("")));
     }
     return projectTreeModel;
 }
