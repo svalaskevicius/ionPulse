@@ -25,10 +25,10 @@ namespace IonTests {
 class MockTreeSource : public TreeModelSource {
 public:
     virtual QString getTitle() const {return "test";}
-    virtual TreeBranch * setupData() {
-        TreeBranch* parent = new TreeBranchImpl("name", "path", -1, NULL);
+    virtual TreeItem * setupData() {
+        TreeItem* parent = new TreeItemImpl("name", "", "path", -1, NULL);
 
-        TreeBranch* level1 = new TreeBranchImpl("dir1", "path1", -1, parent);
+        TreeItem* level1 = new TreeItemImpl("dir1", "", "path1", -1, parent);
         parent->appendChild(level1);
 
         level1->appendChild(new TreeItemImpl("fileName1", "path1/fileName1", "path1/fileName1", -1, level1));
@@ -67,17 +67,17 @@ private Q_SLOTS:
 
         QCOMPARE(list.size(), 0);
     }
-    void test_if_treeBranch_getChildren_returnsEmptyListIfThereAreNoChildren() {
+    void test_if_TreeItem_getChildren_returnsEmptyListIfThereAreNoChildren() {
         TreeItemFactoryImpl factory;
-        TreeBranch* item = factory.createTreeBranch("", "", -1, NULL);
+        TreeItem* item = factory.createTreeItem("", "", "", -1, NULL);
         QList<TreeItem*> list = item->getChildren();
         delete item;
 
         QCOMPARE(list.size(), 0);
     }
-    void test_if_treeBranch_getChildren_returnsEmptyListIfThereAreSomeChildren() {
+    void test_if_TreeItem_getChildren_returnsEmptyListIfThereAreSomeChildren() {
         TreeItemFactoryImpl factory;
-        TreeBranch* item = factory.createTreeBranch("", "", -1, NULL);
+        TreeItem* item = factory.createTreeItem("", "", "", -1, NULL);
         TreeItem* item2 = factory.createTreeItem("", "", "", -1, item);
         item->appendChild(item2);
         QList<TreeItem*> list = item->getChildren();
@@ -178,7 +178,7 @@ private Q_SLOTS:
         MockTreeSource source;
         FileTreeModel model(source);
 
-        TreeBranch *root = model.getRoot();
+        TreeItem *root = model.getRoot();
         QCOMPARE(root->data(0).toString(), QString("name"));
     }
 };

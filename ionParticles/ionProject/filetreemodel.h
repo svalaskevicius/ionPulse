@@ -24,10 +24,10 @@ public:
     DirectoryTreeSource()
         : initialDir("") {
     }
-    virtual TreeBranch * setupData();
+    virtual TreeItem * setupData();
     virtual QString getTitle() const {return "Project Browser";}
 protected:
-    void addDirectory(TreeBranch *parent, QString directory);
+    void addDirectory(TreeItem *parent, QString directory);
 private:
     QString initialDir;
 };
@@ -54,10 +54,10 @@ public:
     void filter(QString filter);
     TreeItem* getItem(const QModelIndex &index) const;
     QString getTitle() const {return modelTitle;}
-    TreeBranch *getRoot() const {return rootItem;}
+    TreeItem *getRoot() const {return rootItem;}
     void setDirectoryTreeSource(TreeModelSource &source);
 private:
-    TreeBranch *rootItem;
+    TreeItem *rootItem;
     QString modelTitle;
 };
 

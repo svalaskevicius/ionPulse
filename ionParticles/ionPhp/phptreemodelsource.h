@@ -22,8 +22,11 @@ public:
     PhpTreeModelSourceDecorator(QSharedPointer<IonProject::TreeModelSource> origTreeModelSource, StructureStorage &storage, QSharedPointer<IonProject::TreeItemFactory> treeItemFactory)
         : origTreeModelSource(origTreeModelSource), treeItemFactory(treeItemFactory), storage(storage) {
     }
-    virtual IonProject::TreeBranch * setupData();
+    virtual IonProject::TreeItem * setupData();
     QString getTitle() const {return origTreeModelSource->getTitle();}
+protected:
+    void decorateNode(IonProject::TreeItem *node);
+    void addPhpFileInfo(IonProject::TreeItem *node, QString path);
 private:
     QSharedPointer<IonProject::TreeModelSource> origTreeModelSource;
     QSharedPointer<IonProject::TreeItemFactory> treeItemFactory;

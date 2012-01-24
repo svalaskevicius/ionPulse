@@ -8,28 +8,19 @@
 
 namespace IonProject {
 
-class TreeBranch;
-
 class TreeItem
 {
 public:
     virtual ~TreeItem() {}
     virtual QVariant data(int column) const = 0;
     virtual int getRowNr() = 0;
-    virtual TreeBranch *parent() = 0;
+    virtual TreeItem *parent() = 0;
     virtual int childrenCount() const = 0;
     virtual QList<TreeItem*> getChildren() const = 0;
     virtual void filter(QString const filter) = 0;
     virtual bool isVisible() const = 0;
     virtual QString getPath() const = 0;
     virtual int getLine() const = 0;
-};
-
-class TreeBranch : virtual public TreeItem
-{
-public:
-    virtual ~TreeBranch() {}
-
     virtual void appendChild(TreeItem *child) = 0;
     virtual TreeItem *getChild(int rowNr) = 0;
     virtual int getChildRowNr(TreeItem *child) = 0;
@@ -38,14 +29,13 @@ public:
 class TreeItemFactory {
 public:
     virtual ~TreeItemFactory() {}
-    virtual TreeItem* createTreeItem(QString const name, QString filterBy, QString const path, int const line, TreeBranch *parent) = 0;
-    virtual TreeBranch* createTreeBranch(QString const name, QString const path, int const line, TreeBranch *parent) = 0;
+    virtual TreeItem* createTreeItem(QString const name, QString filterBy, QString const path, int const line, TreeItem *parent) = 0;
 };
 
 class TreeModelSource {
 public:
     virtual ~TreeModelSource() {}
-    virtual TreeBranch * setupData() = 0;
+    virtual TreeItem * setupData() = 0;
     virtual QString getTitle() const = 0;
 };
 
@@ -56,7 +46,7 @@ public:
     virtual void filter(QString filter) = 0;
     virtual TreeItem* getItem(const QModelIndex &index) const = 0;
     virtual QString getTitle() const = 0;
-    virtual TreeBranch *getRoot() const = 0;
+    virtual TreeItem *getRoot() const = 0;
     virtual void setDirectoryTreeSource(TreeModelSource &source) = 0;
 };
 

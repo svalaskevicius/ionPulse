@@ -24,7 +24,6 @@ class StructureStorage
 {
 public:
     StructureStorage(QString connName);
-    const QList<QString> &getErrors() const {return errors;}
     QSharedPointer<QSqlQuery> getClasses();
     QSharedPointer<QSqlQuery> getFileClasses(int fileId);
     QSharedPointer<QSqlQuery> getClassMethods(int classId);
@@ -32,7 +31,6 @@ public:
     int addFile(QString path);
 protected:
     QSqlDatabase db;
-    QList<QString> errors;
 
     void createTables();
 

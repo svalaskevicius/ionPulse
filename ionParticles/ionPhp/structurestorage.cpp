@@ -24,19 +24,6 @@ StructureStorage::StructureStorage(QString connName)
     createTables();
 }
 
-//void StructureStorage::importFileTree(const IonProject::TreeModel &fileSource)
-//{
-//    foreach (QString path, getPhpFileList(fileSource)) {
-//        try {
-//            addFile(path);
-//        } catch (std::exception &err) {
-//            errors << err.what();
-//            DEBUG_MSG(err.what());
-//        }
-//    }
-
-//}
-
 QSharedPointer<QSqlQuery> StructureStorage::getClasses()
 {
     QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
@@ -110,27 +97,6 @@ void StructureStorage::createTables()
 
 
 }
-
-
-//QVector<QString> StructureStorage::getPhpFileList(const IonProject::TreeModel &fileSource)
-//{
-//    QVector<IonProject::TreeItem*> parents;
-//    QVector<QString> phpFiles;
-//    parents.push_back(fileSource.getRoot());
-//    while (!parents.empty()) {
-//        IonProject::TreeItem *parent = parents.back();
-//        parents.pop_back();
-//        foreach (IonProject::TreeItem *child, parent->getChildren()) {
-//            parents.push_back(child);
-//            QString path = child->getPath();
-//            if (path.toLower().endsWith(".php")) {
-//                phpFiles.push_back(path);
-//            }
-//        }
-//    }
-//    return phpFiles;
-//}
-
 
 int StructureStorage::addFile(QString path)
 {
