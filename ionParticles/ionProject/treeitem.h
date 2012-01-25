@@ -29,6 +29,7 @@ public:
     bool isVisible() const {return visible;}
     QString getPath() const {return path;}
     int getLine() const {return line;}
+    virtual void setFullVisibility(bool visible);
 
     virtual void appendChild(TreeItem *getChild);
     virtual TreeItem *getChild(int getRowNr);

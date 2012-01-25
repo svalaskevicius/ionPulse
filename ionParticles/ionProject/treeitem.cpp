@@ -94,14 +94,25 @@ int TreeItemImpl::getChildRowNr(TreeItem *child)
 
 void TreeItemImpl::filter(QString const filter)
 {
+    visible = false;
     if (filterBy.length()) {
         visible = filterBy.toLower().contains(filter.toLower());
+    }
+    if (visible) {
+        setFullVisibility(true);
     } else {
-        visible = false;
         foreach (TreeItem* child, childItems) {
             child->filter(filter);
             visible |= child->isVisible();
         }
+    }
+}
+
+void TreeItemImpl::setFullVisibility(bool visible)
+{
+    this->visible = visible;
+    foreach (TreeItem* child, childItems) {
+        child->setFullVisibility(visible);
     }
 }
 

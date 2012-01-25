@@ -19,6 +19,7 @@ public:
     virtual QList<TreeItem*> getChildren() const = 0;
     virtual void filter(QString const filter) = 0;
     virtual bool isVisible() const = 0;
+    virtual void setFullVisibility(bool visible) = 0;
     virtual QString getPath() const = 0;
     virtual int getLine() const = 0;
     virtual void appendChild(TreeItem *child) = 0;
