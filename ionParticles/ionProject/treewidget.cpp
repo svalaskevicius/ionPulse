@@ -17,6 +17,7 @@ namespace Private {
 TreeWidget::TreeWidget(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
     QTreeView(parent), _fiModel(dataModel)
 {
+    setIndentation(15);
     this->setModel(_fiModel.data());
 
     _filterInputField = new QLineEdit(this);
