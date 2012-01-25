@@ -40,7 +40,7 @@ QDir PluginLoader::_getPluginsDir()
     #endif
     pluginsDir.cd("plugins");
 
-    DEBUG_MSG(pluginsDir.path().toStdString());
+    DEBUG_MSG(pluginsDir.path());
     return pluginsDir;
 }
 

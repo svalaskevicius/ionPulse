@@ -22,7 +22,8 @@
                 }
 
 
-#define DEBUG_MSG(str) { std::cerr << str << " " << std::endl; }
 #include <QDebug>
+
+#define DEBUG_MSG(str) { qDebug() << str; }
 
 #endif // IONSHARED_H

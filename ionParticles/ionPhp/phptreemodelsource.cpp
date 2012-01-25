@@ -46,7 +46,6 @@ void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QSt
 {
     QSharedPointer<ASTRoot> fileInfo;
     try {
-        DEBUG_MSG("adding "<<path.toStdString());
         fileInfo = phpParser().parseFile(path);
     } catch (std::exception &err) {
         DEBUG_MSG(err.what());

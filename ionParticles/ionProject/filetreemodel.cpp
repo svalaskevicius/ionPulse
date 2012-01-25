@@ -166,7 +166,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent, QString directory)
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+subDirName;
-            TreeItem* newTreeItem = new TreeItemImpl(subDirName, "", fullPath, -1, currentTreeItemsParent);
+            TreeItem* newTreeItem = new TreeItemImpl(subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
             currentTreeItemsParent->appendChild(newTreeItem);
 
             directoryNames.append(fullPath);
@@ -175,7 +175,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent, QString directory)
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fullPath, fullPath, -1, currentTreeItemsParent));
+            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fileName, fullPath, -1, currentTreeItemsParent));
         }
     }
 }

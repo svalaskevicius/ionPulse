@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "treeitem.h"
+#include <ionHeart/shared.h>
 
 namespace IonProject {
 
@@ -81,9 +82,9 @@ int TreeItemImpl::childrenCount() const
 int TreeItemImpl::getChildRowNr(TreeItem *child)
 {
     int current = 0;
-    foreach (TreeItem* cchild, childItems) {
-        if (cchild->isVisible()) {
-            if (cchild == child) {
+    foreach (TreeItem* current_child, childItems) {
+        if (current_child->isVisible()) {
+            if (current_child == child) {
                 return current;
             }
             current++;
