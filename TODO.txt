@@ -1,39 +1,20 @@
 === parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
 
-=== structure: addParent and plugin management: refactor goal: remove the requirement of if/switch at the plugin client side ===
-	one solution:
-		use registry from the main app, which would be set to BasicPlugins, so that later code, in specific plugins could just retrieve full registry and select by name
-
 === project holder ===
 	initially just one project at any time.
 	save & load config.xml to paths and settings
 	each project will contain its own sqlLite handle
 
 === sqlLite integration for project data ===
-	tables for file parsing info
-		files:       id, file, path
-		definitions: id, definition, type (class, function, variable, const), fileId, lineNr
-		usages:      definitionId, fileId, lineId
-
-=== parser: find and parse php files in project  ===
-	semantic parser for semantic highlight
+	use one big transaction on project start
 
 === semantic hightlight ===
-
-=== save file ===
-
-=== close file tab ===
 
 === layout manager ===
 	vertical/horizontal split source code tabs e.g. for tests/code
 
-=== match parentheses ===
-    == basic highlight ==
-
 === editor handler ===
 	handles key presses, such as tab, (shift) enter etc
-
-=== class view ===
 
 === search & replace ===
 
@@ -64,26 +45,4 @@
 === improve Treemodel to provide icons and fonts for dir view ===
 
 === project: move TreeModel to overridable factory, make php project override it and add decorators for tree model getData to provide icons, font sizes etc ===
-
-
-
-
-
-
-====== DONE =====
-=== syntax highlight ===
-
-
-=== files view ===
-	use enter key too to activate item
-
-=== multiple files opened, tabbed gui ===
-	on file open - focus editor
-	setup widget size constraints / proportions
-
-=== project view ===
-	add quick search filter
-
-=== decouple php plugin from editor ===
-
 
