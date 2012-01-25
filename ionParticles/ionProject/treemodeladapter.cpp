@@ -11,23 +11,23 @@
 #include <stdexcept>
 
 #include "treeitem.h"
-#include "filetreemodel.h"
+#include "treemodeladapter.h"
 
 namespace IonProject {
 namespace Private {
 
-FileTreeModel::FileTreeModel(TreeModelSource &source)
+TreeModelAdapter::TreeModelAdapter(TreeModelSource &source)
 {
     rootItem = source.setupData();
     modelTitle = source.getTitle();
 }
 
-FileTreeModel::~FileTreeModel()
+TreeModelAdapter::~TreeModelAdapter()
 {
     delete rootItem;
 }
 
-void FileTreeModel::setDirectoryTreeSource(TreeModelSource &source)
+void TreeModelAdapter::setDirectoryTreeSource(TreeModelSource &source)
 {
     if (rootItem) {
         delete rootItem;
@@ -37,12 +37,12 @@ void FileTreeModel::setDirectoryTreeSource(TreeModelSource &source)
     reset();
 }
 
-int FileTreeModel::columnCount(const QModelIndex &) const
+int TreeModelAdapter::columnCount(const QModelIndex &) const
 {
     return 1;
 }
 
-QVariant FileTreeModel::data(const QModelIndex &index, int role) const
+QVariant TreeModelAdapter::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -55,7 +55,7 @@ QVariant FileTreeModel::data(const QModelIndex &index, int role) const
     return item->data(index.column());
 }
 
-Qt::ItemFlags FileTreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags TreeModelAdapter::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return 0;
@@ -63,7 +63,7 @@ Qt::ItemFlags FileTreeModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant FileTreeModel::headerData(int section, Qt::Orientation orientation,
+QVariant TreeModelAdapter::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -72,7 +72,7 @@ QVariant FileTreeModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-QModelIndex FileTreeModel::index(int row, int column, const QModelIndex &parent)
+QModelIndex TreeModelAdapter::index(int row, int column, const QModelIndex &parent)
 const
 {
     if (!hasIndex(row, column, parent))
@@ -92,7 +92,7 @@ const
         return QModelIndex();
 }
 
-QModelIndex FileTreeModel::parent(const QModelIndex &index) const
+QModelIndex TreeModelAdapter::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
         return QModelIndex();
@@ -106,7 +106,7 @@ QModelIndex FileTreeModel::parent(const QModelIndex &index) const
     return createIndex(parentItem->getRowNr(), 0, parentItem);
 }
 
-int FileTreeModel::rowCount(const QModelIndex &parent) const
+int TreeModelAdapter::rowCount(const QModelIndex &parent) const
 {
     TreeItem *parentItem;
     if (parent.column() > 0)
@@ -120,12 +120,12 @@ int FileTreeModel::rowCount(const QModelIndex &parent) const
     return parentItem->childrenCount();
 }
 
-void FileTreeModel::filter(QString filter) {
+void TreeModelAdapter::filter(QString filter) {
     rootItem->filter(filter);
     reset();
 }
 
-TreeItem* FileTreeModel::getItem(const QModelIndex &index) const {
+TreeItem* TreeModelAdapter::getItem(const QModelIndex &index) const {
     if (!index.isValid()) {
         throw std::runtime_error("index is invalid");
     }
@@ -137,48 +137,6 @@ TreeItem* FileTreeModel::getItem(const QModelIndex &index) const {
 
 
 
-
-TreeItem *DirectoryTreeSource::setupData()
-{
-    TreeItemImpl* root = new TreeItemImpl("Name", "", "", -1, NULL);
-
-    if (initialDir.length()) {
-        addDirectory(root, initialDir);
-    }
-
-    return root;
-}
-
-void DirectoryTreeSource::addDirectory(TreeItem *parent, QString directory)
-{
-    QList<TreeItem*> parents;
-    QList<QString> directoryNames;
-
-    parents << parent;
-    directoryNames << directory;
-
-    while (directoryNames.count()) {
-        QString currentDirName = directoryNames.back();
-        directoryNames.pop_back();
-        QDir currentDir(currentDirName);
-        TreeItem* currentTreeItemsParent = parents.last();
-        parents.pop_back();
-
-        foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
-            QString fullPath = currentDir.absolutePath()+"/"+subDirName;
-            TreeItem* newTreeItem = new TreeItemImpl(subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
-            currentTreeItemsParent->appendChild(newTreeItem);
-
-            directoryNames.append(fullPath);
-            parents << newTreeItem;
-        }
-
-        foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
-            QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fileName, fullPath, -1, currentTreeItemsParent));
-        }
-    }
-}
 
 }
 }

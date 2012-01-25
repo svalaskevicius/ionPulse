@@ -15,7 +15,8 @@
 
 #include <ionParticles/ionProject/projectapi.h>
 #include <ionParticles/ionProject/treeitem.h>
-#include <ionParticles/ionProject/filetreemodel.h>
+#include <ionParticles/ionProject/treemodeladapter.h>
+#include <ionParticles/ionProject/directorytreesource.h>
 
 using namespace IonProject;
 using namespace IonProject::Private;
@@ -106,7 +107,7 @@ class ProjectTreeModelTest : public QObject
 private Q_SLOTS:
     void test_dataDimensions() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         QCOMPARE(model.rowCount(), 2);
         QCOMPARE(model.rowCount(model.index(0, 0)), 1);
@@ -115,14 +116,14 @@ private Q_SLOTS:
 
     void test_structureBetweenParentAndChild() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         QCOMPARE(model.parent(model.index(0, 0, model.index(0, 0))), model.index(0, 0));
     }
 
     void test_dataContainsCorrectFixtures() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir1"));
         QCOMPARE(model.data(model.index(1, 0), Qt::DisplayRole).toString(), QString("fileName2"));
@@ -131,7 +132,7 @@ private Q_SLOTS:
 
     void test_if_dataIsReducedByFilter() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         model.filter("2");
 
@@ -148,7 +149,7 @@ private Q_SLOTS:
 
     void test_if_filterWorksForPathBasis() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         model.filter("1/f");
 
@@ -167,7 +168,7 @@ private Q_SLOTS:
         source.root->appendChild(level1);
         level1->appendChild(new TreeItemImpl("fileName3", "fileName1", "fileName1", -1, level1));
 
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         model.filter("path3");
 
@@ -186,7 +187,7 @@ private Q_SLOTS:
         source.root->appendChild(level1);
         level1->appendChild(new TreeItemImpl("fileName3", "fileName3", "fileName1", -1, level1));
 
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         model.filter("fileName3");
 
@@ -200,7 +201,7 @@ private Q_SLOTS:
 
     void test_getPath() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         model.filter("1/f");
 
@@ -209,14 +210,14 @@ private Q_SLOTS:
 
     void test_if_getTitleReturnsSourceTitle() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         QCOMPARE(model.getTitle(), QString("test"));
     }
 
     void test_if_getRootReturnsSourceCreatedRoot() {
         MockTreeSource source;
-        FileTreeModel model(source);
+        TreeModelAdapter model(source);
 
         TreeItem *root = model.getRoot();
         QCOMPARE(root->data(0).toString(), QString("name"));

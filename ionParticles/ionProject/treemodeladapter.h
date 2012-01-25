@@ -16,30 +16,14 @@
 namespace IonProject {
 namespace Private {
 
-class DirectoryTreeSource : public TreeModelSource {
-public:
-    DirectoryTreeSource(const QString &initialDir)
-        : initialDir(initialDir) {
-    }
-    DirectoryTreeSource()
-        : initialDir("") {
-    }
-    virtual TreeItem * setupData();
-    virtual QString getTitle() const {return "Project Browser";}
-protected:
-    void addDirectory(TreeItem *parent, QString directory);
-private:
-    QString initialDir;
-};
 
-
-class FileTreeModel : public IonProject::TreeModel
+class TreeModelAdapter : public IonProject::TreeModel
 {
     Q_OBJECT
 
 public:
-    FileTreeModel(TreeModelSource &source);
-    ~FileTreeModel();
+    TreeModelAdapter(TreeModelSource &source);
+    ~TreeModelAdapter();
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;

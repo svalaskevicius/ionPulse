@@ -20,7 +20,7 @@ namespace IonProject {
 
 namespace Private {
 
-class FileTreeModel;
+class TreeModelAdapter;
 
 class TreeWidget : public QTreeView, public IonLayout::PanelWidget
 {

@@ -7,7 +7,7 @@
 */
 
 #include "treewidget.h"
-#include "filetreemodel.h"
+#include "treemodeladapter.h"
 #include <QVBoxLayout>
 #include <QFileInfo>
 

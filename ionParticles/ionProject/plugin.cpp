@@ -11,8 +11,9 @@
 #include <QtPlugin>
 #include <ionHeart/shared.h>
 #include "treewidget.h"
-#include "filetreemodel.h"
+#include "treemodeladapter.h"
 #include "treeitem.h"
+#include "directorytreesource.h"
 
 #include <QMenuBar>
 #include <QFileDialog>
@@ -73,7 +74,7 @@ void Plugin::openFile(QString path, int line)
 QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        projectTreeModel = QSharedPointer<TreeModel>(new Private::FileTreeModel(*getTreeModelSourceFactory()("")));
+        projectTreeModel = QSharedPointer<TreeModel>(new Private::TreeModelAdapter(*getTreeModelSourceFactory()("")));
     }
     return projectTreeModel;
 }
@@ -87,7 +88,7 @@ void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
 
 void Plugin::addTreeWidget(TreeModelSource *modelSource)
 {
-    QSharedPointer<TreeModel> model(new Private::FileTreeModel(*modelSource));
+    QSharedPointer<TreeModel> model(new Private::TreeModelAdapter(*modelSource));
     addTreeWidget(model);
 }
 
