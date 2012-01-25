@@ -47,7 +47,7 @@ void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QSt
         QSharedPointer<QSqlQuery> q = storage.getFileClasses(fileId);
         while (q->next()) {
             QString className = q->value(1).toString();
-            IonProject::TreeItem* classNode = treeItemFactory->createTreeItem(className, "", q->value(2).toString(), q->value(3).toInt(), node);
+            IonProject::TreeItem* classNode = treeItemFactory->createTreeItem(className, className, q->value(2).toString(), q->value(3).toInt(), node);
             node->appendChild(classNode);
 
             QSharedPointer<QSqlQuery> qm = storage.getClassMethods(q->value(0).toInt());
