@@ -15,6 +15,8 @@
 
 #include <QSharedPointer>
 
+#include "phpParser/ionParserLib.h"
+
 namespace IonPhp {
 
 class ASTNode;
@@ -28,7 +30,11 @@ public:
     QSharedPointer<QSqlQuery> getFileClasses(int fileId);
     QSharedPointer<QSqlQuery> getClassMethods(int classId);
 
-    int addFile(QString path);
+    int addFile(QString path, ASTRoot &astRoot);
+
+    bool beginTransaction();
+    bool commitTransaction();
+    bool rollbackTransaction();
 protected:
     QSqlDatabase db;
 

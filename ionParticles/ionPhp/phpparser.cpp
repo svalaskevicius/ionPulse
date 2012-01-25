@@ -32,7 +32,7 @@ phpParser::~phpParser()
     destroy_scanner();
 }
 
-ASTRoot phpParser::parseString(QString doc)
+QSharedPointer<ASTRoot> phpParser::parseString(QString doc)
 {
     void * buf = setBuf(doc.toAscii().constData());
     __result = NULL;
@@ -57,10 +57,10 @@ ASTRoot phpParser::parseString(QString doc)
         throw std::runtime_error(errorText.toStdString());
     }
 
-    return ASTRoot(__result);
+    return QSharedPointer<ASTRoot>(new ASTRoot(__result));
 }
 
-ASTRoot phpParser::parseFile(QString path)
+QSharedPointer<ASTRoot> phpParser::parseFile(QString path)
 {
     QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {

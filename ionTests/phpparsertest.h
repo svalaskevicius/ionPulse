@@ -30,11 +30,11 @@ do {\
 #define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
 #define TEST_PHP_PARSER(CODE, ASTSTR) { \
     try { \
-        ASTRoot ret = IonPhp::phpParser().parseString(CODE); \
+        QSharedPointer<ASTRoot> ret = IonPhp::phpParser().parseString(CODE); \
         QCOMPARE_3( \
-            ret.dumpXml().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
+            ret->dumpXml().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
             QString(ASTSTR).replace(" ", "").replace("\n", "").replace("\r", ""), \
-            PRINT(ret.dumpXml()) \
+            PRINT(ret->dumpXml()) \
         ); \
     } catch (std::runtime_error &err) { \
         QFAIL(err.what()); \

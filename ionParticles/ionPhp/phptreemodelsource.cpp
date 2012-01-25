@@ -12,6 +12,8 @@
 #include <QSqlQuery>
 #include <ionHeart/shared.h>
 
+#include "phpparser.h"
+
 namespace IonPhp {
 namespace Private {
 
@@ -42,8 +44,20 @@ void PhpTreeModelSourceDecorator::decorateNode(IonProject::TreeItem *node)
 
 void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QString path)
 {
+    QSharedPointer<ASTRoot> fileInfo;
     try {
-        int fileId = storage.addFile(path);
+        DEBUG_MSG("adding "<<path.toStdString());
+        fileInfo = phpParser().parseFile(path);
+    } catch (std::exception &err) {
+        DEBUG_MSG(err.what());
+        //TODO: mark node red
+        return;
+    }
+
+
+    try {
+        storage.beginTransaction();
+        int fileId = storage.addFile(path, *fileInfo);
         QSharedPointer<QSqlQuery> q = storage.getFileClasses(fileId);
         while (q->next()) {
             QString className = q->value(1).toString();
@@ -56,8 +70,10 @@ void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QSt
                 classNode->appendChild(treeItemFactory->createTreeItem(methodName, className+"::"+methodName, qm->value(2).toString(), qm->value(3).toInt(), classNode));
             }
         }
+        storage.commitTransaction();
     } catch (std::exception &err) {
         DEBUG_MSG(err.what());
+        storage.rollbackTransaction();
         //TODO: mark node red
     }
 }

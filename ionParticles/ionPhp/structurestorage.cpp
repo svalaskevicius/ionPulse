@@ -14,14 +14,27 @@
 #include <QVariant>
 #include <QSqlError>
 
-#include "phpparser.h"
-
 namespace IonPhp {
 
 StructureStorage::StructureStorage(QString connName)
     : db(QSqlDatabase::database(connName))
 {
     createTables();
+}
+
+bool StructureStorage::beginTransaction()
+{
+    return db.transaction();
+}
+
+bool StructureStorage::commitTransaction()
+{
+    return db.commit();
+}
+
+bool StructureStorage::rollbackTransaction()
+{
+    return db.rollback();
 }
 
 QSharedPointer<QSqlQuery> StructureStorage::getClasses()
@@ -98,11 +111,8 @@ void StructureStorage::createTables()
 
 }
 
-int StructureStorage::addFile(QString path)
+int StructureStorage::addFile(QString path, ASTRoot &astRoot)
 {
-    ASTRoot astRoot = phpParser().parseFile(path);
-    //qDebug() << astRoot.dumpXml();
-
     QSqlQuery fileInsertQuery(db);
     fileInsertQuery.prepare("insert into files(filename) values (:filename)");
     QSqlQuery classInsertQuery(db);
