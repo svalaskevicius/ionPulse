@@ -1,20 +1,11 @@
-=== parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
-
-=== project holder ===
-	initially just one project at any time.
-	save & load config.xml to paths and settings
-	each project will contain its own sqlLite handle
-
-=== sqlLite integration for project data ===
-	use one big transaction on project start
+=== editor handler ===
+	handles key presses, such as tab, (shift) enter etc
+	autoindent on new line
 
 === semantic hightlight ===
 
 === layout manager ===
 	vertical/horizontal split source code tabs e.g. for tests/code
-
-=== editor handler ===
-	handles key presses, such as tab, (shift) enter etc
 
 === search & replace ===
 
@@ -24,17 +15,14 @@
 	should be possible to delete some results after reviewing
 
 
+=== parser: ASTNode::create : make nonstatic, register observer, to cleanup nodes later on parser errors  ===
 
 === config loader for colors, fonts etc ===
 
 
 === preference dialog to manage config ===
 
-=== auto indent on new line ===
-
 === syntax formatter ===
-
-=== remember window size and position ===
 
 === checkstyle ===
 
