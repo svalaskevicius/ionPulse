@@ -22,7 +22,7 @@ namespace Private {
 
 class TreeModelAdapter;
 
-class TreeWidget : public QTreeView, public IonLayout::PanelWidget
+class TreeView : public QTreeView, public IonLayout::PanelWidget
 {
     Q_OBJECT
 protected:
@@ -31,8 +31,8 @@ protected:
 
     virtual void keyPressEvent ( QKeyEvent * event );
 public:
-    explicit TreeWidget(QSharedPointer<TreeModel> dataModel, QWidget *parent = 0);
-    virtual ~TreeWidget();
+    explicit TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent = 0);
+    virtual ~TreeView();
     virtual QWidget *getWidget() {return this;}
     virtual QString getPanelTitle() {return _fiModel->getTitle();}
     virtual QString getPanelZone() {return "left";}

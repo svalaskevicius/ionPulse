@@ -6,15 +6,16 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include "treewidget.h"
+#include "treeview.h"
 #include "treemodeladapter.h"
 #include <QVBoxLayout>
 #include <QFileInfo>
+#include <ionHeart/shared.h>
 
 namespace IonProject {
 namespace Private {
 
-TreeWidget::TreeWidget(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
+TreeView::TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
     QTreeView(parent), _fiModel(dataModel)
 {
     setIndentation(15);
@@ -31,10 +32,10 @@ TreeWidget::TreeWidget(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
     connect(_filterInputField, SIGNAL(textChanged( QString )), this, SLOT(onFilterTextChanged( QString )));
 }
 
-TreeWidget::~TreeWidget() {
+TreeView::~TreeView() {
 }
 
-void TreeWidget::onItemActivated(const QModelIndex &index )
+void TreeView::onItemActivated(const QModelIndex &index )
 {
     if (!index.isValid()) {
         return;
@@ -47,7 +48,7 @@ void TreeWidget::onItemActivated(const QModelIndex &index )
     }
 }
 
-void TreeWidget::keyPressEvent ( QKeyEvent * event ) {
+void TreeView::keyPressEvent ( QKeyEvent * event ) {
     int key = event->key();
     switch (key) {
         case Qt::Key_Return:
@@ -64,7 +65,7 @@ void TreeWidget::keyPressEvent ( QKeyEvent * event ) {
     }
 }
 
-void TreeWidget::onFilterTextChanged ( const QString & text ) {
+void TreeView::onFilterTextChanged ( const QString & text ) {
     _fiModel->filter(text);
 }
 

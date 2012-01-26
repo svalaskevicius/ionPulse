@@ -10,7 +10,7 @@
 
 #include <QtPlugin>
 #include <ionHeart/shared.h>
-#include "treewidget.h"
+#include "treeview.h"
 #include "treemodeladapter.h"
 #include "treeitem.h"
 #include "directorytreesource.h"
@@ -81,7 +81,7 @@ QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 
 void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
 {
-    Private::TreeWidget *fileTree = new Private::TreeWidget(model);
+    Private::TreeView *fileTree = new Private::TreeView(model);
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
