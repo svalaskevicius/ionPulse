@@ -32,7 +32,8 @@ public:
         TreeItem* level1 = new TreeItemImpl("dir1", "path1", "path1", -1, root);
         root->appendChild(level1);
 
-        level1->appendChild(new TreeItemImpl("fileName1", "path1/fileName1", "path1/fileName1", -1, level1));
+        level1->appendChild(new TreeItemImpl("fileName1_1", "path11/fileName11", "path1/fileName11", -1, level1));
+        level1->appendChild(new TreeItemImpl("fileName1_2", "path12/fileName12", "path1/fileName12", -1, level1));
 
         root->appendChild(new TreeItemImpl("fileName2", "fileName2", "fileName2", -1, root));
     }
@@ -110,7 +111,7 @@ private Q_SLOTS:
         TreeModelAdapter model(source);
 
         QCOMPARE(model.rowCount(), 2);
-        QCOMPARE(model.rowCount(model.index(0, 0)), 1);
+        QCOMPARE(model.rowCount(model.index(0, 0)), 2);
         QCOMPARE(model.columnCount(), 1);
     }
 
@@ -127,7 +128,7 @@ private Q_SLOTS:
 
         QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir1"));
         QCOMPARE(model.data(model.index(1, 0), Qt::DisplayRole).toString(), QString("fileName2"));
-        QCOMPARE(model.data(model.index(0, 0, model.index(0, 0)), Qt::DisplayRole).toString(), QString("fileName1"));
+        QCOMPARE(model.data(model.index(0, 0, model.index(0, 0)), Qt::DisplayRole).toString(), QString("fileName1_1"));
     }
 
     void test_if_dataIsReducedByFilter() {
@@ -136,14 +137,14 @@ private Q_SLOTS:
 
         model.filter("2");
 
-        QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.rowCount(model.index(0, 0)), 0);
+        QCOMPARE(model.rowCount(), 2);
+        QCOMPARE(model.rowCount(model.index(1, 0)), 0);
         QCOMPARE(model.columnCount(), 1);
 
         model.filter("1");
 
         QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.rowCount(model.index(0, 0)), 1);
+        QCOMPARE(model.rowCount(model.index(0, 0)), 2);
         QCOMPARE(model.columnCount(), 1);
     }
 
@@ -151,14 +152,12 @@ private Q_SLOTS:
         MockTreeSource source;
         TreeModelAdapter model(source);
 
-        model.filter("1/f");
+        model.filter("11/f");
 
         QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.rowCount(model.index(0, 0)), 1);
-        QCOMPARE(model.columnCount(), 1);
+        QCOMPARE(model.rowCount(model.index(0, 0)), 0);
 
-        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir1"));
-        QCOMPARE(model.data(model.index(0, 0, model.index(0, 0)), Qt::DisplayRole).toString(), QString("fileName1"));
+        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName1_1"));
     }
 
     void test_if_filterChecksFilterByFirst() {
@@ -173,11 +172,10 @@ private Q_SLOTS:
         model.filter("path3");
 
         QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.rowCount(model.index(0, 0)), 1);
+        QCOMPARE(model.rowCount(model.index(0, 0)), 0);
         QCOMPARE(model.columnCount(), 1);
 
-        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir3"));
-        QCOMPARE(model.data(model.index(0, 0, model.index(0, 0)), Qt::DisplayRole).toString(), QString("fileName3"));
+        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName3"));
     }
 
     void test_if_filterChecksChildItems() {
@@ -192,20 +190,19 @@ private Q_SLOTS:
         model.filter("fileName3");
 
         QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.rowCount(model.index(0, 0)), 1);
+        QCOMPARE(model.rowCount(model.index(0, 0)), 0);
         QCOMPARE(model.columnCount(), 1);
 
-        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir3"));
-        QCOMPARE(model.data(model.index(0, 0, model.index(0, 0)), Qt::DisplayRole).toString(), QString("fileName3"));
+        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName3"));
     }
 
     void test_getPath() {
         MockTreeSource source;
         TreeModelAdapter model(source);
 
-        model.filter("1/f");
+        model.filter("11/f");
 
-        QCOMPARE(model.getItem(model.index(0, 0, model.index(0, 0)))->getPath(), QString("path1/fileName1"));
+        QCOMPARE(model.getItem(model.index(0, 0))->getPath(), QString("path1/fileName11"));
     }
 
     void test_if_getTitleReturnsSourceTitle() {
@@ -221,6 +218,20 @@ private Q_SLOTS:
 
         TreeItem *root = model.getRoot();
         QCOMPARE(root->data(0).toString(), QString("name"));
+    }
+
+    void test_if_getRangeItems_returnsVectorOfSkippedTreeItems()
+    {
+        MockTreeSource source;
+        TreeModelAdapter model(source);
+
+        model.filter("11/f");
+
+        QVector<TreeItem*> ret= model.getRangeItems(model.index(0, 0));
+        QCOMPARE(ret.size(), 2);
+
+        QCOMPARE(ret[0]->data(0).toString(), QString("dir1"));
+        QCOMPARE(ret[1]->data(0).toString(), QString("fileName1_1"));
     }
 };
 

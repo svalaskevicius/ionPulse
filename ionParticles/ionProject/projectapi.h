@@ -46,6 +46,8 @@ public:
     virtual ~TreeModel() {}
     virtual void filter(QString filter) = 0;
     virtual TreeItem* getItem(const QModelIndex &index) const = 0;
+    virtual TreeItem* getDirectItem(const QModelIndex &index) const = 0;
+    virtual QVector<TreeItem *> getRangeItems(const QModelIndex &index) const = 0;
     virtual QString getTitle() const = 0;
     virtual TreeItem *getRoot() const = 0;
     virtual void setDirectoryTreeSource(TreeModelSource &source) = 0;

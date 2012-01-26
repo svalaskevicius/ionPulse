@@ -36,13 +36,14 @@ public:
     virtual QWidget *getWidget() {return this;}
     virtual QString getPanelTitle() {return _fiModel->getTitle();}
     virtual QString getPanelZone() {return "left";}
-
+    void reset();
 signals:
     void fileActivated(QString filename, int line);
 public slots:
 protected slots:
-    void onItemActivated(const QModelIndex &index );
-    void onFilterTextChanged ( const QString & text );
+    void onItemActivated(const QModelIndex &index);
+    void onFilterTextChanged(const QString & text);
+    void updateScrollArea(const QModelIndex &index);
 };
 
 

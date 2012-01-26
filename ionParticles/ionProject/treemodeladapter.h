@@ -37,6 +37,8 @@ public:
 
     void filter(QString filter);
     TreeItem* getItem(const QModelIndex &index) const;
+    TreeItem* getDirectItem(const QModelIndex &index) const;
+    QVector<TreeItem *> getRangeItems(const QModelIndex &index) const;
     QString getTitle() const {return modelTitle;}
     TreeItem *getRoot() const {return rootItem;}
     void setDirectoryTreeSource(TreeModelSource &source);

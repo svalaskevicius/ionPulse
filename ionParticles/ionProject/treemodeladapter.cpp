@@ -50,9 +50,7 @@ QVariant TreeModelAdapter::data(const QModelIndex &index, int role) const
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    TreeItemImpl *item = static_cast<TreeItemImpl*>(index.internalPointer());
-
-    return item->data(index.column());
+    return getItem(index)->data(index.column());
 }
 
 Qt::ItemFlags TreeModelAdapter::flags(const QModelIndex &index) const
@@ -83,7 +81,7 @@ const
     if (!parent.isValid())
         parentItem = rootItem;
     else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        parentItem = getItem(parent);
 
     TreeItem *childItem = parentItem->getChild(row);
     if (childItem)
@@ -106,18 +104,20 @@ QModelIndex TreeModelAdapter::parent(const QModelIndex &index) const
     return createIndex(parentItem->getRowNr(), 0, parentItem);
 }
 
-int TreeModelAdapter::rowCount(const QModelIndex &parent) const
+int TreeModelAdapter::rowCount(const QModelIndex &index) const
 {
-    TreeItem *parentItem;
-    if (parent.column() > 0)
+    TreeItem *item;
+    if (index.column() > 0)
         return 0;
 
-    if (!parent.isValid())
-        parentItem = rootItem;
+    if (!index.isValid())
+        item = rootItem;
     else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        item = getItem(index);
 
-    return parentItem->childrenCount();
+    int count = item->childrenCount();
+
+    return count;
 }
 
 void TreeModelAdapter::filter(QString filter) {
@@ -125,13 +125,42 @@ void TreeModelAdapter::filter(QString filter) {
     reset();
 }
 
-TreeItem* TreeModelAdapter::getItem(const QModelIndex &index) const {
+TreeItem* TreeModelAdapter::getItem(const QModelIndex &index) const
+{
+    TreeItem *item = getDirectItem(index);
+
+    while (1 == item->childrenCount()) {
+        item = item->getChild(0);
+    }
+    return item;
+}
+
+TreeItem* TreeModelAdapter::getDirectItem(const QModelIndex &index) const
+{
     if (!index.isValid()) {
         throw std::runtime_error("index is invalid");
     }
 
-    TreeItemImpl *item = static_cast<TreeItemImpl*>(index.internalPointer());
-    return item;
+    if (TreeItem *item = static_cast<TreeItem*>(index.internalPointer())) {
+        return item;
+    }
+
+    throw std::runtime_error("index contains invalid pointer");
+}
+
+QVector<TreeItem *> TreeModelAdapter::getRangeItems(const QModelIndex &index) const
+{
+    TreeItem *parent = getDirectItem(index);
+    TreeItem *current = getItem(index);
+
+    QVector<TreeItem *> itemPath;
+
+    itemPath.prepend(current);
+    while (current != parent) {
+        current = current->parent();
+        itemPath.prepend(current);
+    }
+    return itemPath;
 }
 
 

@@ -14,6 +14,8 @@
 #include "treemodeladapter.h"
 #include "treeitem.h"
 #include "directorytreesource.h"
+#include "treeviewitemdelegate.h"
+
 
 #include <QMenuBar>
 #include <QFileDialog>
@@ -82,6 +84,8 @@ QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
 {
     Private::TreeView *fileTree = new Private::TreeView(model);
+    Private::TreeViewItemDelegate *viewItemDelegate = new Private::TreeViewItemDelegate(model, fileTree);
+    fileTree->setItemDelegate(viewItemDelegate);
     layoutManager->add(fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
