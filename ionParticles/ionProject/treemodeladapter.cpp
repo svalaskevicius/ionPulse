@@ -115,9 +115,7 @@ int TreeModelAdapter::rowCount(const QModelIndex &index) const
     else
         item = getItem(index);
 
-    int count = item->childrenCount();
-
-    return count;
+    return item->childrenCount();
 }
 
 void TreeModelAdapter::filter(QString filter) {
