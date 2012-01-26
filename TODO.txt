@@ -4,6 +4,9 @@
 
 === semantic hightlight ===
 
+=== project tree ===
+	limit max length of each item (+joined ones) - use dots in the middle with full info as a tooltip
+
 === layout manager ===
 	vertical/horizontal split source code tabs e.g. for tests/code
 
