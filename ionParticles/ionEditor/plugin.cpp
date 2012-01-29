@@ -108,8 +108,25 @@ void Plugin::onFileClose()
 {
     if (focusedEditor) {
         Editor *widget = focusedEditor;
-        focusedEditor = NULL;
-        layoutManager->remove(widget);
+        int ret = QMessageBox::Discard;
+        if (widget->getEditorInstance()->document()->isModified()) {
+            QMessageBox msgBox;
+            msgBox.setText("The document '"+widget->getPanelTitle()+"' has been modified.");
+            msgBox.setInformativeText("Do you want to save your changes?");
+            msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Save);
+            ret = msgBox.exec();
+        }
+        switch (ret) {
+            case QMessageBox::Cancel:
+                break;
+            case QMessageBox::Save:
+                widget->saveFile();
+                // fall through to remove it
+            case QMessageBox::Discard:
+                focusedEditor = NULL;
+                layoutManager->remove(widget);
+        }
     }
 }
 
