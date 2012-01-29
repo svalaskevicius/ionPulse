@@ -1,12 +1,12 @@
-            ionPulse IDE
-=====================================
+ionPulse IDE
+============
 
 Todo
--------------------------------------
+----
 
 ### editor handler
-	handles key presses, such as tab, (shift) enter etc
-	autoindent on new line
+* handles key presses, such as tab, (shift) enter etc
+* autoindent on new line
 
 ### CODE REVIEW, documentation
 
