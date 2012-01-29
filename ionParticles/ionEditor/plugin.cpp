@@ -123,6 +123,7 @@ void Plugin::openFile(QString path, int line)
         connect(widget->getWidget(), SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
         connect(widget->getWidget(), SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
         layoutManager->add(widget);
+        connect(widget->getWidget(), SIGNAL(updatePanelTitle(IonLayout::PanelWidget *)), layoutManager, SLOT(updatePanelTitle(IonLayout::PanelWidget *)));
     } else {
         widget = it.value();
         layoutManager->focus(widget);

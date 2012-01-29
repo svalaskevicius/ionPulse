@@ -14,7 +14,8 @@
 
 namespace IonLayout {
 
-struct ZoneDefinition {
+struct ZoneDefinition
+{
     QString parentPath;
     QString name;
     Qt::Orientation orientation;
@@ -24,7 +25,8 @@ struct ZoneDefinition {
     bool childrenClosable;
 };
 
-class PanelWidget {
+class PanelWidget
+{
 public:
     virtual QWidget *getWidget() = 0;
     virtual QString getPanelTitle() = 0;
@@ -32,21 +34,25 @@ public:
 };
 
 
-class LayoutManager
+class LayoutManager : public QObject
 {
+    Q_OBJECT
 public:
     virtual ~LayoutManager() {}
     virtual void add(PanelWidget *panel) = 0;
     virtual void remove(PanelWidget *panel) = 0;
     virtual void focus(PanelWidget *panel) = 0;
     virtual void addZone(ZoneDefinition &zone) = 0;
+public slots:
+    virtual void updatePanelTitle(PanelWidget *panel) = 0;
 };
 
 
-class LayoutPlugin : public IonHeart::BasicPlugin {
+class LayoutPlugin : public IonHeart::BasicPlugin
+{
 public:
     virtual LayoutManager *getLayoutManager() = 0;
-    static QString name() {return "ionLayout";}
+    static QString name() { return "ionLayout"; }
 };
 
 }

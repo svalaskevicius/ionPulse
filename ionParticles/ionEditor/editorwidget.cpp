@@ -36,7 +36,9 @@ EditorWidget::EditorWidget(QString filePath)
         setPlainText(QTextStream(&f).readAll());
     }
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(editorCursorPositionChanged()));
+    connect(document(), SIGNAL(modificationChanged(bool)), this, SLOT(modificationChanged(bool)));
     editorCursorPositionChanged();
+    document()->setModified(false);
 }
 
 EditorWidget::~EditorWidget()
@@ -152,8 +154,13 @@ void EditorWidget::resetHighlighter() {
     highlighter = NULL;
 }
 
-QString EditorWidget::getPanelTitle() {
-    return QFileInfo(filePath).fileName();
+QString EditorWidget::getPanelTitle()
+{
+    QString title = QFileInfo(filePath).fileName();
+    if (document()->isModified()) {
+        title += " *";
+    }
+    return title;
 }
 
 
@@ -198,8 +205,13 @@ void EditorWidget::saveFile() {
         throw std::runtime_error(("cannot write file "+filePath).toStdString());
     }
     f.write(document()->toPlainText().toAscii());
+    document()->setModified(false);
 }
 
+void EditorWidget::modificationChanged(bool changed)
+{
+    emit updatePanelTitle(this);
+}
 
 }
 }

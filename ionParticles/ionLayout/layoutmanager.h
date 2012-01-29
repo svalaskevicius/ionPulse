@@ -104,9 +104,9 @@ public:
     virtual ZoneNodeBranch *getZoneAsBranch();
     virtual QWidget *getWidget();
     virtual void show();
-    void closeAndRemoveTab( int index );
+    void closeAndRemoveTab(int index);
 protected slots:
-    void onTabCloseRequested ( int index );
+    void onTabCloseRequested(int index);
 };
 
 class LayoutZonesManager
@@ -123,6 +123,7 @@ public:
 
 class LayoutManagerImpl : public LayoutManager
 {
+    Q_OBJECT
 protected:
     LayoutZonesManager zonesManager;
 public:
@@ -131,6 +132,8 @@ public:
     virtual void remove(PanelWidget *panel);
     virtual void focus(PanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
+public slots:
+    void updatePanelTitle(IonLayout::PanelWidget *panel);
 };
 }
 }

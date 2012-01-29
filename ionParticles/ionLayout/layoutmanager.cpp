@@ -7,7 +7,7 @@
 */
 
 #include "layoutmanager.h"
-
+#include <ionHeart/shared.h>
 
 namespace IonLayout {
 
@@ -312,6 +312,21 @@ void LayoutManagerImpl::focus(PanelWidget *panel)
 void LayoutManagerImpl::addZone(ZoneDefinition &zone)
 {
     zonesManager.addZone(zone);
+}
+
+void LayoutManagerImpl::updatePanelTitle(IonLayout::PanelWidget *panel)
+{
+    ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
+    Q_ASSERT(leaf);
+    QTabWidget *uiTab = leaf->getZoneContents();
+    Q_ASSERT(uiTab);
+    int idx = uiTab->indexOf(
+        panel->getWidget()
+    );
+    if (-1 == idx) {
+        throw std::runtime_error("widget must be already added to the panel");
+    }
+    uiTab->setTabText(idx, panel->getPanelTitle());
 }
 
 }

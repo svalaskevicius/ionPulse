@@ -85,9 +85,9 @@ public:
     }
     virtual QPlainTextEdit* getEditorInstance() {return this;}
 
-
 protected slots:
     void editorCursorPositionChanged();
+    void modificationChanged(bool changed);
 protected:
     void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
     void closeEvent ( QCloseEvent * event ) {emit(editorClosing(this)); QWidget::closeEvent( event );}
@@ -101,9 +101,11 @@ private:
 signals:
     void editorClosing( Editor *editor );
     void editorFocusing( Editor *editor );
+    void updatePanelTitle( IonLayout::PanelWidget *panel );
 public slots:
 public:
-    virtual void saveFile();};
+    virtual void saveFile();
+};
 
 }
 
