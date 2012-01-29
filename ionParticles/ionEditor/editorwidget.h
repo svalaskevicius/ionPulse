@@ -58,9 +58,12 @@ public:
     }
     void focusOnLine(int line);
 protected:
+    std::pair<int, int> getSelectedBlockRange();
     bool event ( QEvent * event );
     void resetComponents();
     void resetHighlighter();
+    void keyPressEvent ( QKeyEvent * e );
+    void keyReleaseEvent ( QKeyEvent * e );
 
 public:
     virtual QWidget *getWidget() {return this;}

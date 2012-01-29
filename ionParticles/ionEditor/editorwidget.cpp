@@ -72,6 +72,71 @@ bool EditorWidget::event ( QEvent * event ) {
     }
     return QPlainTextEdit::event(event);
 }
+void EditorWidget::keyPressEvent(QKeyEvent * e)
+{
+    switch (e->key()) {
+        case Qt::Key_Backtab:
+            {
+                std::pair<int, int> range = getSelectedBlockRange();
+                QTextBlock b = document()->findBlockByNumber(range.first);
+                QTextCursor c(document());
+                while (range.second >= b.blockNumber()) {
+                    QString bt = b.text();
+                    int indentPos = 0;
+                    while((indentPos < 4)&&((0x20 == bt[indentPos]) || (0x09 == bt[indentPos]))) {
+                        indentPos++;
+                    }
+                    c.setPosition(b.position());
+                    c.setPosition(b.position()+indentPos, QTextCursor::KeepAnchor);
+                    c.removeSelectedText();
+                    b = b.next();
+                }
+            }
+        break;
+        case Qt::Key_Tab:
+            {
+                std::pair<int, int> range = getSelectedBlockRange();
+                QTextBlock b = document()->findBlockByNumber(range.first);
+                QTextCursor c(document());
+                while (range.second >= b.blockNumber()) {
+                    c.setPosition(b.position());
+                    c.insertText("    ");
+                    b = b.next();
+                }
+            }
+            break;
+        default:
+            QPlainTextEdit::keyPressEvent(e);
+    }
+}
+
+std::pair<int, int> EditorWidget::getSelectedBlockRange()
+{
+    QTextCursor c = textCursor();
+    int selectionStart = c.selectionStart();
+    int selectionEnd = c.selectionEnd();
+    c.setPosition(selectionStart);
+    int blockStart = c.blockNumber();
+    c.setPosition(selectionEnd);
+    int blockEnd = c.blockNumber();
+    if (blockEnd < blockStart) {
+        int tmp = blockStart;
+        blockStart = blockEnd;
+        blockEnd = tmp;
+    }
+    return std::make_pair<int, int>(blockStart, blockEnd);
+}
+
+void EditorWidget::keyReleaseEvent(QKeyEvent * e)
+{
+    switch (e->key()) {
+        case Qt::Key_Tab:
+            // do nothing on release as indentation is handled on key press
+            break;
+        default:
+            QPlainTextEdit::keyReleaseEvent(e);
+    }
+}
 
 
 void EditorWidget::resetComponents() {
