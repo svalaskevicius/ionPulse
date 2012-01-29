@@ -41,9 +41,7 @@ EditorWidget::EditorWidget(QString filePath)
 
 EditorWidget::~EditorWidget()
 {
-    if (highlighter) {
-        delete highlighter;
-    }
+    resetHighlighter();
     resetComponents();
 }
 
@@ -86,6 +84,7 @@ void EditorWidget::resetHighlighter() {
     if (highlighter) {
         delete highlighter;
     }
+    highlighter = NULL;
 }
 
 QString EditorWidget::getPanelTitle() {
