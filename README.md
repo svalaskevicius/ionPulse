@@ -4,8 +4,6 @@ ionPulse IDE
 Todo
 ----
 
-#### make font bigger
-
 #### refresh project parse info for changed files by timestamp
 
 #### editor handler

@@ -29,6 +29,7 @@ EditorWidget::EditorWidget(QString filePath)
       componentInfo(this)
 {
     QFont font("Monaco");
+    font.setPointSize(14);
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);
     QFile f(filePath);
