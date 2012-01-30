@@ -16,10 +16,10 @@
 namespace IonProject {
 namespace Private {
 
-TreeModelAdapter::TreeModelAdapter(TreeModelSource &source)
+TreeModelAdapter::TreeModelAdapter(QSharedPointer<TreeModelSource> source)
+    : source(source)
 {
-    rootItem = source.setupData();
-    modelTitle = source.getTitle();
+    updateFromSource();
 }
 
 TreeModelAdapter::~TreeModelAdapter()
@@ -27,13 +27,19 @@ TreeModelAdapter::~TreeModelAdapter()
     delete rootItem;
 }
 
-void TreeModelAdapter::setDirectoryTreeSource(TreeModelSource &source)
+void TreeModelAdapter::setDirectoryTreeSource(QSharedPointer<TreeModelSource> source)
 {
     if (rootItem) {
         delete rootItem;
     }
-    rootItem = source.setupData();
-    modelTitle = source.getTitle();
+    this->source = source;
+    updateFromSource();
+}
+
+void TreeModelAdapter::updateFromSource()
+{
+    rootItem = source->setupData();
+    modelTitle = source->getTitle();
     reset();
 }
 

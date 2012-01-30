@@ -22,7 +22,7 @@ class TreeModelAdapter : public IonProject::TreeModel
     Q_OBJECT
 
 public:
-    TreeModelAdapter(TreeModelSource &source);
+    TreeModelAdapter(QSharedPointer<TreeModelSource> source);
     ~TreeModelAdapter();
 
     QVariant data(const QModelIndex &index, int role) const;
@@ -41,10 +41,12 @@ public:
     QVector<TreeItem *> getRangeItems(const QModelIndex &index) const;
     QString getTitle() const {return modelTitle;}
     TreeItem *getRoot() const {return rootItem;}
-    void setDirectoryTreeSource(TreeModelSource &source);
+    void setDirectoryTreeSource(QSharedPointer<TreeModelSource> source);
+    void updateFromSource();
 private:
     TreeItem *rootItem;
     QString modelTitle;
+    QSharedPointer<TreeModelSource> source;
 };
 
 }

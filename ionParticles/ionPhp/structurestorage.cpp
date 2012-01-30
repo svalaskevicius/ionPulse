@@ -47,6 +47,17 @@ QSharedPointer<QSqlQuery> StructureStorage::getClasses()
     return query;
 }
 
+QSharedPointer<QSqlQuery> StructureStorage::getFile(QString filename)
+{
+    QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
+    query->prepare("select id, timestamp from files where files.filename=:filename");
+    query->bindValue("filename", filename);
+    if (!query->exec()) {
+        qDebug() << query->lastError();
+    }
+    return query;
+}
+
 QSharedPointer<QSqlQuery> StructureStorage::getFileClasses(int fileId)
 {
     QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
@@ -78,7 +89,8 @@ void StructureStorage::createTables()
     if (!query.exec(
         "create table files ("
             "id INTEGER primary key autoincrement, "
-            "filename varchar(2048)"
+            "filename varchar(2048),"
+            "timestamp INTEGER"
         ")"
     )) {
         qDebug() << query.lastError();
@@ -89,7 +101,7 @@ void StructureStorage::createTables()
             "file_id int,"
             "line_nr int,"
             "classname varchar(255),"
-            "FOREIGN KEY(file_id) REFERENCES files(id)"
+            "FOREIGN KEY(file_id) REFERENCES files(id) ON DELETE CASCADE"
         ")"
     )) {
         qDebug() << query.lastError();
@@ -101,8 +113,8 @@ void StructureStorage::createTables()
             "line_nr int,"
             "class_id int,"
             "methodname varchar(255),"
-            "FOREIGN KEY(file_id) REFERENCES files(id),"
-            "FOREIGN KEY(class_id) REFERENCES classes(id)"
+            "FOREIGN KEY(file_id) REFERENCES files(id) ON DELETE CASCADE,"
+            "FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE"
         ")"
     )) {
         qDebug() << query.lastError();
@@ -111,16 +123,17 @@ void StructureStorage::createTables()
 
 }
 
-int StructureStorage::addFile(QString path, ASTRoot &astRoot)
+int StructureStorage::addFile(QString path, int timestamp, ASTRoot &astRoot)
 {
     QSqlQuery fileInsertQuery(db);
-    fileInsertQuery.prepare("insert into files(filename) values (:filename)");
+    fileInsertQuery.prepare("insert into files(filename, timestamp) values (:filename, :timestamp)");
     QSqlQuery classInsertQuery(db);
     classInsertQuery.prepare("insert into classes(file_id, line_nr, classname) values(:file_id, :line_nr, :classname)");
     QSqlQuery methodInsertQuery(db);
     methodInsertQuery.prepare("insert into methods(file_id, class_id, line_nr, methodname) values(:file_id, :class_id, :line_nr, :methodname)");
 
     fileInsertQuery.bindValue("filename", path);
+    fileInsertQuery.bindValue("timestamp", timestamp);
     fileInsertQuery.exec();
 
     int fileId = fileInsertQuery.lastInsertId().toInt();
@@ -161,6 +174,29 @@ void StructureStorage::addMethods(QSqlQuery &methodInsertQuery, const ASTRoot & 
             qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
             throw std::runtime_error("failed to register new method definition");
         }
+    }
+}
+
+void StructureStorage::removeFile(int file_id)
+{
+    QSqlQuery fileQuery(db), classQuery(db), methodQuery(db);
+
+    fileQuery.prepare("delete from files where id=:file_id");
+    classQuery.prepare("delete from classes where file_id=:file_id");
+    methodQuery.prepare("delete from methods where file_id=:file_id");
+
+    fileQuery.bindValue("file_id", file_id);
+    classQuery.bindValue("file_id", file_id);
+    methodQuery.bindValue("file_id", file_id);
+
+    if (!fileQuery.exec()) {
+        qDebug() << fileQuery.lastError();
+    }
+    if (!classQuery.exec()) {
+        qDebug() << classQuery.lastError();
+    }
+    if (!methodQuery.exec()) {
+        qDebug() << methodQuery.lastError();
     }
 }
 

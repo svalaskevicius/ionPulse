@@ -14,6 +14,9 @@
 
 #include "phpparser.h"
 
+#include <QFileInfo>
+#include <QDateTime>
+
 namespace IonPhp {
 namespace Private {
 
@@ -44,19 +47,12 @@ void PhpTreeModelSourceDecorator::decorateNode(IonProject::TreeItem *node)
 
 void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QString path)
 {
-    QSharedPointer<ASTRoot> fileInfo;
-    try {
-        fileInfo = phpParser().parseFile(path);
-    } catch (std::exception &err) {
-        DEBUG_MSG(err.what());
-        //TODO: mark node red
-        return;
-    }
-
-
     try {
         storage.beginTransaction();
-        int fileId = storage.addFile(path, *fileInfo);
+        int fileId = getStoredFile(path);
+        if (-1 == fileId) {
+            fileId = storeFile(path);
+        }
         QSharedPointer<QSqlQuery> q = storage.getFileClasses(fileId);
         while (q->next()) {
             QString className = q->value(1).toString();
@@ -76,6 +72,29 @@ void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QSt
         //TODO: mark node red
     }
 }
+
+int PhpTreeModelSourceDecorator::getStoredFile(QString path)
+{
+    QSharedPointer<QSqlQuery> fileQuery = storage.getFile(path);
+    if (fileQuery->first()) {
+        unsigned int mtimeStored = fileQuery->value(1).toInt();
+        QFileInfo fileInfo(path);
+        if (fileInfo.lastModified().toTime_t() > mtimeStored) {
+            storage.removeFile(fileQuery->value(0).toInt());
+            return -1;
+        }
+        return fileQuery->value(0).toInt();
+    }
+    return -1;
+}
+
+int PhpTreeModelSourceDecorator::storeFile(QString path)
+{
+    QFileInfo fileInfo(path);
+    QSharedPointer<ASTRoot> fileAst = phpParser().parseFile(path);
+    return storage.addFile(path, fileInfo.lastModified().toTime_t(), *fileAst);
+}
+
 
 
 

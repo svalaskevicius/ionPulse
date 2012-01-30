@@ -50,6 +50,7 @@ void Plugin::postLoad()
     QMenuBar *menuBar = mainWindow->menuBar();
     QMenu *projectMenu = menuBar->addMenu("&Project");
     projectMenu->addAction("&New from source", this, SLOT(onNewProject()));
+    projectMenu->addAction("&Update", this, SLOT(onUpdateProject()), QKeySequence(Qt::Key_F5));
 
     addTreeWidget(getProjectFileTreeModel());
 }
@@ -58,8 +59,13 @@ void Plugin::onNewProject()
 {
     QString dir = QFileDialog::getExistingDirectory(mainWindow, tr("Open Directory"));
     if (dir.length()) {
-        getProjectFileTreeModel()->setDirectoryTreeSource(*getTreeModelSourceFactory()(dir));
+        getProjectFileTreeModel()->setDirectoryTreeSource(getTreeModelSourceFactory()(dir));
     }
+}
+
+void Plugin::onUpdateProject()
+{
+    getProjectFileTreeModel()->updateFromSource();
 }
 
 void Plugin::addParent(BasicPlugin *parent) {
@@ -76,7 +82,7 @@ void Plugin::openFile(QString path, int line)
 QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        projectTreeModel = QSharedPointer<TreeModel>(new Private::TreeModelAdapter(*getTreeModelSourceFactory()("")));
+        projectTreeModel = QSharedPointer<TreeModel>(new Private::TreeModelAdapter(getTreeModelSourceFactory()("")));
     }
     return projectTreeModel;
 }
@@ -90,9 +96,9 @@ void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
     connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
 
-void Plugin::addTreeWidget(TreeModelSource *modelSource)
+void Plugin::addTreeWidget(QSharedPointer<TreeModelSource> modelSource)
 {
-    QSharedPointer<TreeModel> model(new Private::TreeModelAdapter(*modelSource));
+    QSharedPointer<TreeModel> model(new Private::TreeModelAdapter(modelSource));
     addTreeWidget(model);
 }
 

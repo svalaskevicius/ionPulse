@@ -39,7 +39,7 @@ public:
     virtual void addParent(BasicPlugin *parent);
     QSharedPointer<TreeModel> getProjectFileTreeModel();
     virtual void addTreeWidget(QSharedPointer<TreeModel> model);
-    virtual void addTreeWidget(TreeModelSource *modelSource);
+    virtual void addTreeWidget(QSharedPointer<TreeModelSource> modelSource);
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory();
     virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory();
     virtual void setTreeModelSourceFactory(boost::function<QSharedPointer<TreeModelSource> (QString dirname)> factory);
@@ -59,6 +59,7 @@ signals:
 
 public slots:
     void onNewProject();
+    void onUpdateProject();
 protected slots:
     void openFile(QString path, int);
 

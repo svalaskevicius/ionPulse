@@ -27,10 +27,13 @@ class StructureStorage
 public:
     StructureStorage(QString connName);
     QSharedPointer<QSqlQuery> getClasses();
+    QSharedPointer<QSqlQuery> getFile(QString filename);
     QSharedPointer<QSqlQuery> getFileClasses(int fileId);
     QSharedPointer<QSqlQuery> getClassMethods(int classId);
 
-    int addFile(QString path, ASTRoot &astRoot);
+    void removeFile(int file_id);
+
+    int addFile(QString path, int timestamp, ASTRoot &astRoot);
 
     bool beginTransaction();
     bool commitTransaction();

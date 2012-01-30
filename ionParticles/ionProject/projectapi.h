@@ -50,13 +50,14 @@ public:
     virtual QVector<TreeItem *> getRangeItems(const QModelIndex &index) const = 0;
     virtual QString getTitle() const = 0;
     virtual TreeItem *getRoot() const = 0;
-    virtual void setDirectoryTreeSource(TreeModelSource &source) = 0;
+    virtual void setDirectoryTreeSource(QSharedPointer<TreeModelSource> source) = 0;
+    virtual void updateFromSource() = 0;
 };
 
 class ProjectPlugin : public IonHeart::BasicPlugin {
 public:
     virtual void addTreeWidget(QSharedPointer<TreeModel> model) = 0;
-    virtual void addTreeWidget(TreeModelSource *modelSource) = 0;
+    virtual void addTreeWidget(QSharedPointer<TreeModelSource> modelSource) = 0;
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory() = 0;
     virtual QSharedPointer<TreeModel> getProjectFileTreeModel() = 0;
     static QString name() {return "ionProject";}
