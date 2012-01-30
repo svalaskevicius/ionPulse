@@ -23,6 +23,8 @@ Todo
 
 ### trim trailing whitespaces
 
+### parse php in background thread
+
 ### layout manager
 * vertical/horizontal split source code tabs e.g. for tests/code
 
@@ -53,4 +55,6 @@ Todo
 ### html, css, js highlight
 
 ### ? tdd/bdd helper -> switch to/from test by configurable rules
+
+### ? textMate bundle support
 
