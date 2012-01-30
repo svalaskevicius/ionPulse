@@ -15,8 +15,6 @@ SOURCES += main.cpp\
         pluginloader.cpp
 
 HEADERS  += mainwindow.h \
-    ionPulse/shared.h \
-    ionPulse/plugin.h \
     shared.h \
     plugin.h \
     pluginloader.h
