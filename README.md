@@ -4,9 +4,14 @@ ionPulse IDE
 Todo
 ----
 
+#### make font bigger
+
+#### refresh project parse info for changed files by timestamp
+
 #### editor handler
 * handles key presses, such as tab, (shift) enter etc
 * autoindent on new line
+* home button should go to beginning of the text, after the whitespace
 
 ### 0.1 CODE REVIEW, documentation
 
@@ -14,7 +19,7 @@ Todo
 
 #### reparse files on save
 
-#### refresh project parse info for changed files by timestamp
+#### UTF8 editor
 
 #### project tree
 * limit max length of each item (+joined ones) - use dots in the middle with full info as a tooltip
@@ -22,9 +27,12 @@ Todo
 
 #### show trailing whitespaces
 
+#### bug: caret is gone on refocus editor until a char is typed
+
 ### 0.2 CODE REVIEW, documentation
 
 #### search & replace
+* mark occurences in editor on clicking on varname
 
 #### search & replace in files
 * should be possible to delete some results after reviewing
