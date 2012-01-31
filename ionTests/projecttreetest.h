@@ -107,7 +107,7 @@ class ProjectTreeModelTest : public QObject
 
 private Q_SLOTS:
     void test_dataDimensions() {
-        MockTreeSource source;
+        QSharedPointer<TreeModelSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         QCOMPARE(model.rowCount(), 2);
@@ -116,14 +116,14 @@ private Q_SLOTS:
     }
 
     void test_structureBetweenParentAndChild() {
-        MockTreeSource source;
+        QSharedPointer<TreeModelSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         QCOMPARE(model.parent(model.index(0, 0, model.index(0, 0))), model.index(0, 0));
     }
 
     void test_dataContainsCorrectFixtures() {
-        MockTreeSource source;
+        QSharedPointer<TreeModelSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("dir1"));
@@ -132,7 +132,7 @@ private Q_SLOTS:
     }
 
     void test_if_dataIsReducedByFilter() {
-        MockTreeSource source;
+        QSharedPointer<TreeModelSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         model.filter("2");
@@ -149,7 +149,7 @@ private Q_SLOTS:
     }
 
     void test_if_filterWorksForPathBasis() {
-        MockTreeSource source;
+        QSharedPointer<TreeModelSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         model.filter("11/f");
@@ -161,10 +161,10 @@ private Q_SLOTS:
     }
 
     void test_if_filterChecksFilterByFirst() {
-        MockTreeSource source;
+        QSharedPointer<MockTreeSource> source(new MockTreeSource());
 
-        TreeItem* level1 = new TreeItemImpl("dir3", "path3", "path1", -1, source.root);
-        source.root->appendChild(level1);
+        TreeItem* level1 = new TreeItemImpl("dir3", "path3", "path1", -1, source->root);
+        source->root->appendChild(level1);
         level1->appendChild(new TreeItemImpl("fileName3", "fileName1", "fileName1", -1, level1));
 
         TreeModelAdapter model(source);
@@ -179,10 +179,10 @@ private Q_SLOTS:
     }
 
     void test_if_filterChecksChildItems() {
-        MockTreeSource source;
+        QSharedPointer<MockTreeSource> source(new MockTreeSource());
 
-        TreeItem* level1 = new TreeItemImpl("dir3", "path3", "path1", -1, source.root);
-        source.root->appendChild(level1);
+        TreeItem* level1 = new TreeItemImpl("dir3", "path3", "path1", -1, source->root);
+        source->root->appendChild(level1);
         level1->appendChild(new TreeItemImpl("fileName3", "fileName3", "fileName1", -1, level1));
 
         TreeModelAdapter model(source);
@@ -197,7 +197,7 @@ private Q_SLOTS:
     }
 
     void test_getPath() {
-        MockTreeSource source;
+        QSharedPointer<MockTreeSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         model.filter("11/f");
@@ -206,14 +206,14 @@ private Q_SLOTS:
     }
 
     void test_if_getTitleReturnsSourceTitle() {
-        MockTreeSource source;
+        QSharedPointer<MockTreeSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         QCOMPARE(model.getTitle(), QString("test"));
     }
 
     void test_if_getRootReturnsSourceCreatedRoot() {
-        MockTreeSource source;
+        QSharedPointer<MockTreeSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         TreeItem *root = model.getRoot();
@@ -222,7 +222,7 @@ private Q_SLOTS:
 
     void test_if_getRangeItems_returnsVectorOfSkippedTreeItems()
     {
-        MockTreeSource source;
+        QSharedPointer<MockTreeSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
         model.filter("11/f");

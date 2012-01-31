@@ -50,7 +50,7 @@ QSharedPointer<QSqlQuery> StructureStorage::getClasses()
 QSharedPointer<QSqlQuery> StructureStorage::getFile(QString filename)
 {
     QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
-    query->prepare("select id, timestamp from files where files.filename=:filename");
+    query->prepare("select id, timestamp from files where files.filename=:filename limit 1");
     query->bindValue("filename", filename);
     if (!query->exec()) {
         qDebug() << query->lastError();
