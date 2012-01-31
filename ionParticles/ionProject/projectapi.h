@@ -26,12 +26,13 @@ public:
     virtual void appendChild(TreeItem *child) = 0;
     virtual TreeItem *getChild(int rowNr) = 0;
     virtual int getChildRowNr(TreeItem *child) = 0;
+    virtual const QString &getItemClass() const = 0;
 };
 
 class TreeItemFactory {
 public:
     virtual ~TreeItemFactory() {}
-    virtual TreeItem* createTreeItem(QString const name, QString filterBy, QString const path, int const line, TreeItem *parent) = 0;
+    virtual TreeItem* createTreeItem(QString itemClass, QString const name, QString filterBy, QString const path, int const line, TreeItem *parent) = 0;
 };
 
 class TreeModelSource {

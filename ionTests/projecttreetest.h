@@ -27,15 +27,15 @@ class MockTreeSource : public TreeModelSource {
 public:
     TreeItem* root;
     MockTreeSource() {
-        root = new TreeItemImpl("name", "", "path", -1, NULL);
+        root = new TreeItemImpl("test", "name", "", "path", -1, NULL);
 
-        TreeItem* level1 = new TreeItemImpl("dir1", "path1", "path1", -1, root);
+        TreeItem* level1 = new TreeItemImpl("test", "dir1", "path1", "path1", -1, root);
         root->appendChild(level1);
 
-        level1->appendChild(new TreeItemImpl("fileName1_1", "path11/fileName11", "path1/fileName11", -1, level1));
-        level1->appendChild(new TreeItemImpl("fileName1_2", "path12/fileName12", "path1/fileName12", -1, level1));
+        level1->appendChild(new TreeItemImpl("test", "fileName1_1", "path11/fileName11", "path1/fileName11", -1, level1));
+        level1->appendChild(new TreeItemImpl("test", "fileName1_2", "path12/fileName12", "path1/fileName12", -1, level1));
 
-        root->appendChild(new TreeItemImpl("fileName2", "fileName2", "fileName2", -1, root));
+        root->appendChild(new TreeItemImpl("test", "fileName2", "fileName2", "fileName2", -1, root));
     }
     virtual QString getTitle() const {return "test";}
     virtual TreeItem * setupData() {
@@ -65,7 +65,7 @@ class ProjectTreeItemTest : public QObject
 private Q_SLOTS:
     void test_if_treeItem_getChildren_returnsEmptyList() {
         TreeItemFactoryImpl factory;
-        TreeItem* item = factory.createTreeItem("", "", "", -1, NULL);
+        TreeItem* item = factory.createTreeItem("test", "", "", "", -1, NULL);
         QList<TreeItem*> list = item->getChildren();
         delete item;
 
@@ -73,7 +73,7 @@ private Q_SLOTS:
     }
     void test_if_TreeItem_getChildren_returnsEmptyListIfThereAreNoChildren() {
         TreeItemFactoryImpl factory;
-        TreeItem* item = factory.createTreeItem("", "", "", -1, NULL);
+        TreeItem* item = factory.createTreeItem("test", "", "", "", -1, NULL);
         QList<TreeItem*> list = item->getChildren();
         delete item;
 
@@ -81,8 +81,8 @@ private Q_SLOTS:
     }
     void test_if_TreeItem_getChildren_returnsEmptyListIfThereAreSomeChildren() {
         TreeItemFactoryImpl factory;
-        TreeItem* item = factory.createTreeItem("", "", "", -1, NULL);
-        TreeItem* item2 = factory.createTreeItem("", "", "", -1, item);
+        TreeItem* item = factory.createTreeItem("test", "", "", "", -1, NULL);
+        TreeItem* item2 = factory.createTreeItem("test", "", "", "", -1, item);
         item->appendChild(item2);
         QList<TreeItem*> list = item->getChildren();
         delete item;
@@ -92,7 +92,7 @@ private Q_SLOTS:
     }
     void test_if_treeItem_is_filtered_by_filterBy_param() {
         TreeItemFactoryImpl factory;
-        QScopedPointer<TreeItem> item(factory.createTreeItem("", "aaa", "", -1, NULL));
+        QScopedPointer<TreeItem> item(factory.createTreeItem("test", "", "aaa", "", -1, NULL));
         item->filter("baa");
         QCOMPARE(item->isVisible(), 0);
         item->filter("aaa");
@@ -163,9 +163,9 @@ private Q_SLOTS:
     void test_if_filterChecksFilterByFirst() {
         QSharedPointer<MockTreeSource> source(new MockTreeSource());
 
-        TreeItem* level1 = new TreeItemImpl("dir3", "path3", "path1", -1, source->root);
+        TreeItem* level1 = new TreeItemImpl("test", "dir3", "path3", "path1", -1, source->root);
         source->root->appendChild(level1);
-        level1->appendChild(new TreeItemImpl("fileName3", "fileName1", "fileName1", -1, level1));
+        level1->appendChild(new TreeItemImpl("test", "fileName3", "fileName1", "fileName1", -1, level1));
 
         TreeModelAdapter model(source);
 
@@ -181,9 +181,9 @@ private Q_SLOTS:
     void test_if_filterChecksChildItems() {
         QSharedPointer<MockTreeSource> source(new MockTreeSource());
 
-        TreeItem* level1 = new TreeItemImpl("dir3", "path3", "path1", -1, source->root);
+        TreeItem* level1 = new TreeItemImpl("test", "dir3", "path3", "path1", -1, source->root);
         source->root->appendChild(level1);
-        level1->appendChild(new TreeItemImpl("fileName3", "fileName3", "fileName1", -1, level1));
+        level1->appendChild(new TreeItemImpl("test", "fileName3", "fileName3", "fileName1", -1, level1));
 
         TreeModelAdapter model(source);
 

@@ -19,7 +19,7 @@ namespace Private {
 class TreeItemImpl : virtual public TreeItem
 {
 public:
-    TreeItemImpl(QString const name, QString const filterBy, QString const path, int line, TreeItem *parent);
+    TreeItemImpl(QString itemClass, QString const name, QString const filterBy, QString const path, int line, TreeItem *parent);
     virtual ~TreeItemImpl();
     QVariant data(int column) const;
     int getRowNr();
@@ -34,9 +34,11 @@ public:
     virtual void appendChild(TreeItem *item);
     virtual TreeItem *getChild(int getRowNr);
     virtual const QList<TreeItem*> &getChildren() const {return childItems;}
-    virtual void clearChildren() {/*qDeleteAll(childItems);*/childItems.clear();}
+    virtual void clearChildren();
     virtual int getChildRowNr(TreeItem *getChild);
+    virtual const QString &getItemClass() const {return itemClass;}
 private:
+    QString itemClass;
     QList<TreeItem*> childItems;
     QString name, filterBy, path;
     int line;
@@ -47,7 +49,7 @@ protected:
 
 class TreeItemFactoryImpl : public TreeItemFactory {
 public:
-    virtual TreeItem* createTreeItem(QString const name, QString filterBy, QString const path, int const line, TreeItem *parent);
+    virtual TreeItem* createTreeItem(QString itemClass, QString const name, QString filterBy, QString const path, int const line, TreeItem *parent);
 };
 
 

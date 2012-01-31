@@ -19,7 +19,7 @@ namespace Private {
 TreeItem *DirectoryTreeSource::setupData()
 {
     if (!root) {
-        root = new TreeItemImpl("Name", "", initialDir, -1, NULL);
+        root = new TreeItemImpl("dir", "Name", "", initialDir, -1, NULL);
     }
 
     if (initialDir.length()) {
@@ -49,7 +49,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
                 }
             }
             if (!treeItem) {
-                treeItem = new TreeItemImpl(subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
+                treeItem = new TreeItemImpl("dir", subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
                 currentTreeItemsParent->appendChild(treeItem);
             }
             parents << treeItem;
@@ -64,7 +64,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
                 }
             }
             if (!treeItem) {
-                currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fileName, fullPath, -1, currentTreeItemsParent));
+                currentTreeItemsParent->appendChild(new TreeItemImpl("file", fileName, fileName, fullPath, -1, currentTreeItemsParent));
             }
         }
     }

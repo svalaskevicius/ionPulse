@@ -16,8 +16,8 @@ namespace IonProject {
 
 namespace Private {
 
-TreeItemImpl::TreeItemImpl(QString const name, QString const filterBy, QString const path, int line, TreeItem *parent)
-    : childItems(), name(name), filterBy(filterBy), path(path), line(line), parentItem(parent)
+TreeItemImpl::TreeItemImpl(QString itemClass, QString const name, QString const filterBy, QString const path, int line, TreeItem *parent)
+    : itemClass(itemClass), childItems(), name(name), filterBy(filterBy), path(path), line(line), parentItem(parent)
 {
     visible = true;
 }
@@ -27,6 +27,10 @@ TreeItemImpl::~TreeItemImpl()
     childItems.clear();
 }
 
+void TreeItemImpl::clearChildren() {
+    qDeleteAll(childItems);
+    childItems.clear();
+}
 
 
 QVariant TreeItemImpl::data(int column) const
@@ -118,9 +122,9 @@ void TreeItemImpl::setFullVisibility(bool visible)
     }
 }
 
-TreeItem* TreeItemFactoryImpl::createTreeItem(QString const name, QString filterBy, QString const path, int const line, TreeItem *parent)
+TreeItem* TreeItemFactoryImpl::createTreeItem(QString itemClass, QString const name, QString filterBy, QString const path, int const line, TreeItem *parent)
 {
-    return new Private::TreeItemImpl(name, filterBy, path, line, parent);
+    return new Private::TreeItemImpl(itemClass, name, filterBy, path, line, parent);
 }
 
 

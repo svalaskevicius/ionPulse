@@ -27,12 +27,15 @@ IonProject::TreeItem *PhpTreeModelSourceDecorator::setupData()
     QVector<IonProject::TreeItem*> parents;
     parents.push_back(root);
     while (!parents.empty()) {
-        IonProject::TreeItem *parent = parents.back();
+        IonProject::TreeItem *node = parents.back();
         parents.pop_back();
-        foreach (IonProject::TreeItem *child, parent->getChildren()) {
-            parents.push_back(child);
+        if (node->getItemClass() == "dir") {
+            foreach (IonProject::TreeItem *child, node->getChildren()) {
+                parents.push_back(child);
+            }
+        } else if (node->getItemClass() == "file") {
+            decorateNode(node);
         }
-        decorateNode(parent);
     }
     return root;
 }
@@ -61,13 +64,13 @@ void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QSt
         QSharedPointer<QSqlQuery> q = storage.getFileClasses(fileId);
         while (q->next()) {
             QString className = q->value(1).toString();
-            IonProject::TreeItem* classNode = treeItemFactory->createTreeItem(className, className, q->value(2).toString(), q->value(3).toInt(), node);
+            IonProject::TreeItem* classNode = treeItemFactory->createTreeItem("phpclass", className, className, q->value(2).toString(), q->value(3).toInt(), node);
             node->appendChild(classNode);
 
             QSharedPointer<QSqlQuery> qm = storage.getClassMethods(q->value(0).toInt());
             while (qm->next()) {
                 QString methodName = qm->value(1).toString();
-                classNode->appendChild(treeItemFactory->createTreeItem(methodName, className+"::"+methodName, qm->value(2).toString(), qm->value(3).toInt(), classNode));
+                classNode->appendChild(treeItemFactory->createTreeItem("phpmethod", methodName, className+"::"+methodName, qm->value(2).toString(), qm->value(3).toInt(), classNode));
             }
         }
         storage.commitTransaction();
