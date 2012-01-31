@@ -32,24 +32,19 @@ TreeItem *DirectoryTreeSource::setupData()
 void DirectoryTreeSource::addDirectory(TreeItem *parent, QString directory)
 {
     QList<TreeItem*> parents;
-    QList<QString> directoryNames;
-
     parents << parent;
-    directoryNames << directory;
 
-    while (directoryNames.count()) {
-        QString currentDirName = directoryNames.back();
-        directoryNames.pop_back();
-        QDir currentDir(currentDirName);
+    while (parents.count()) {
         TreeItem* currentTreeItemsParent = parents.last();
         parents.pop_back();
+        QString currentDirName = currentTreeItemsParent->getPath();
+        QDir currentDir(currentDirName);
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
-            QString fullPath = currentDir.absolutePath()+"/"+subDirName;
+            QString fullPath = currentDir.absolutePath()+"/"+subDirName+"/";
             TreeItem* newTreeItem = new TreeItemImpl(subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
             currentTreeItemsParent->appendChild(newTreeItem);
 
-            directoryNames.append(fullPath);
             parents << newTreeItem;
         }
 
