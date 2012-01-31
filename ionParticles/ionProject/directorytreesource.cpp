@@ -19,17 +19,17 @@ namespace Private {
 TreeItem *DirectoryTreeSource::setupData()
 {
     if (!root) {
-        root = new TreeItemImpl("Name", "", "", -1, NULL);
+        root = new TreeItemImpl("Name", "", initialDir, -1, NULL);
     }
 
     if (initialDir.length()) {
-        addDirectory(root, initialDir);
+        addDirectory(root);
     }
 
     return root;
 }
 
-void DirectoryTreeSource::addDirectory(TreeItem *parent, QString directory)
+void DirectoryTreeSource::addDirectory(TreeItem *parent)
 {
     QList<TreeItem*> parents;
     parents << parent;
@@ -42,15 +42,30 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent, QString directory)
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+subDirName+"/";
-            TreeItem* newTreeItem = new TreeItemImpl(subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
-            currentTreeItemsParent->appendChild(newTreeItem);
-
-            parents << newTreeItem;
+            TreeItem* treeItem = NULL;
+            for (QList<TreeItem*>::const_iterator it = currentTreeItemsParent->getChildren().begin();!treeItem && (it != currentTreeItemsParent->getChildren().end());it++) {
+                if ((*it)->getPath() == fullPath) {
+                    treeItem = *it;
+                }
+            }
+            if (!treeItem) {
+                treeItem = new TreeItemImpl(subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
+                currentTreeItemsParent->appendChild(treeItem);
+            }
+            parents << treeItem;
         }
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fileName, fullPath, -1, currentTreeItemsParent));
+            TreeItem* treeItem = NULL;
+            for (QList<TreeItem*>::const_iterator it = currentTreeItemsParent->getChildren().begin();!treeItem && (it != currentTreeItemsParent->getChildren().end());it++) {
+                if ((*it)->getPath() == fullPath) {
+                    treeItem = *it;
+                }
+            }
+            if (!treeItem) {
+                currentTreeItemsParent->appendChild(new TreeItemImpl(fileName, fileName, fullPath, -1, currentTreeItemsParent));
+            }
         }
     }
 }

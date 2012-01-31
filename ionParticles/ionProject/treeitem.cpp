@@ -24,6 +24,7 @@ TreeItemImpl::TreeItemImpl(QString const name, QString const filterBy, QString c
 TreeItemImpl::~TreeItemImpl()
 {
     qDeleteAll(childItems);
+    childItems.clear();
 }
 
 

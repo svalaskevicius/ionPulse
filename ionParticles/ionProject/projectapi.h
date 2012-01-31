@@ -17,6 +17,7 @@ public:
     virtual TreeItem *parent() = 0;
     virtual int childrenCount() const = 0;
     virtual const QList<TreeItem*> &getChildren() const = 0;
+    virtual void clearChildren() = 0;
     virtual void filter(QString const filter) = 0;
     virtual bool isVisible() const = 0;
     virtual void setFullVisibility(bool visible) = 0;

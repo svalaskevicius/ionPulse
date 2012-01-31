@@ -47,12 +47,17 @@ void PhpTreeModelSourceDecorator::decorateNode(IonProject::TreeItem *node)
 
 void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QString path)
 {
+    int fileId = getStoredFile(path);
+    if (-1 != fileId) {
+        return;
+    }
     try {
-        storage.beginTransaction();
-        int fileId = getStoredFile(path);
-        if (-1 == fileId) {
-            fileId = storeFile(path);
+        if (node->childrenCount()) {
+            node->clearChildren();
         }
+
+        storage.beginTransaction();
+        fileId = storeFile(path);
         QSharedPointer<QSqlQuery> q = storage.getFileClasses(fileId);
         while (q->next()) {
             QString className = q->value(1).toString();

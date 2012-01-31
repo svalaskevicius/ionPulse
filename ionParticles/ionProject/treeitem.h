@@ -31,9 +31,10 @@ public:
     int getLine() const {return line;}
     virtual void setFullVisibility(bool visible);
 
-    virtual void appendChild(TreeItem *getChild);
+    virtual void appendChild(TreeItem *item);
     virtual TreeItem *getChild(int getRowNr);
     virtual const QList<TreeItem*> &getChildren() const {return childItems;}
+    virtual void clearChildren() {/*qDeleteAll(childItems);*/childItems.clear();}
     virtual int getChildRowNr(TreeItem *getChild);
 private:
     QList<TreeItem*> childItems;

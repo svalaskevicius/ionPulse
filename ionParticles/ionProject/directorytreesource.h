@@ -25,7 +25,7 @@ public:
     virtual TreeItem * setupData();
     virtual QString getTitle() const {return "Project Browser";}
 protected:
-    void addDirectory(TreeItem *parent, QString directory);
+    void addDirectory(TreeItem *parent);
 private:
     TreeItemImpl* root;
     QString initialDir;
