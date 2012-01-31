@@ -44,7 +44,7 @@ public:
     MOCK_METHOD0(getRowNr, int ());
     MOCK_METHOD0(parent, IonProject::TreeItem * ());
     MOCK_CONST_METHOD0(childrenCount, int ());
-    MOCK_CONST_METHOD0(getChildren, QList<IonProject::TreeItem*> ());
+    MOCK_CONST_METHOD0(getChildren, const QList<IonProject::TreeItem*> &());
     MOCK_CONST_METHOD0(isVisible, bool ());
     MOCK_CONST_METHOD0(getPath, QString ());
     MOCK_CONST_METHOD0(getLine, int ());

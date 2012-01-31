@@ -18,7 +18,9 @@ namespace Private {
 
 TreeItem *DirectoryTreeSource::setupData()
 {
-    TreeItemImpl* root = new TreeItemImpl("Name", "", "", -1, NULL);
+    if (!root) {
+        root = new TreeItemImpl("Name", "", "", -1, NULL);
+    }
 
     if (initialDir.length()) {
         addDirectory(root, initialDir);

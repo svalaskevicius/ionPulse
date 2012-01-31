@@ -33,7 +33,7 @@ public:
 
     virtual void appendChild(TreeItem *getChild);
     virtual TreeItem *getChild(int getRowNr);
-    virtual QList<TreeItem*> getChildren() const {return childItems;}
+    virtual const QList<TreeItem*> &getChildren() const {return childItems;}
     virtual int getChildRowNr(TreeItem *getChild);
 private:
     QList<TreeItem*> childItems;

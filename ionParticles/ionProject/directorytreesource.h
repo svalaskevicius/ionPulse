@@ -17,7 +17,7 @@ namespace Private {
 class DirectoryTreeSource : public TreeModelSource {
 public:
     DirectoryTreeSource(const QString &initialDir)
-        : initialDir(initialDir) {
+        : root(NULL), initialDir(initialDir) {
     }
     DirectoryTreeSource()
         : initialDir("") {
@@ -27,6 +27,7 @@ public:
 protected:
     void addDirectory(TreeItem *parent, QString directory);
 private:
+    TreeItemImpl* root;
     QString initialDir;
 };
 
