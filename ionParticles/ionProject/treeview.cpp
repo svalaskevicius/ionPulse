@@ -40,6 +40,13 @@ TreeView::TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
 TreeView::~TreeView() {
 }
 
+void TreeView::scrollContentsBy ( int dx, int dy )
+{
+    QTreeView::scrollContentsBy(dx, dy);
+    viewport()->layout()->invalidate();
+    update();
+}
+
 void TreeView::onItemActivated(const QModelIndex &index )
 {
     if (!index.isValid()) {

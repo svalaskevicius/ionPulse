@@ -30,6 +30,7 @@ protected:
     QLineEdit *_filterInputField;
 
     virtual void keyPressEvent ( QKeyEvent * event );
+    virtual void scrollContentsBy ( int dx, int dy );
 public:
     explicit TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent = 0);
     virtual ~TreeView();
