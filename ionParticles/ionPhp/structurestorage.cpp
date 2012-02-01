@@ -96,6 +96,13 @@ void StructureStorage::createTables()
         qDebug() << query.lastError();
     }
     if (!query.exec(
+        "create index filename_search on files ("
+            "filename"
+        ")"
+    )) {
+        qDebug() << query.lastError();
+    }
+    if (!query.exec(
         "create table classes ("
             "id INTEGER primary key autoincrement, "
             "file_id int,"
