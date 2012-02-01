@@ -29,11 +29,11 @@ IonProject::TreeItem *PhpTreeModelSourceDecorator::setupData()
     while (!parents.empty()) {
         IonProject::TreeItem *node = parents.back();
         parents.pop_back();
-        if (node->getItemClass() == "dir") {
+        if (node->getItemClass() == TREESOURCE_CLASS_DIR) {
             foreach (IonProject::TreeItem *child, node->getChildren()) {
                 parents.push_back(child);
             }
-        } else if (node->getItemClass() == "file") {
+        } else if (node->getItemClass() == TREESOURCE_CLASS_FILE) {
             decorateNode(node);
         }
     }

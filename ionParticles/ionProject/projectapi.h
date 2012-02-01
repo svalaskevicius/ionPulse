@@ -5,6 +5,8 @@
 
 #include <boost/function.hpp>
 
+#define TREESOURCE_CLASS_DIR  "dir"
+#define TREESOURCE_CLASS_FILE "file"
 
 namespace IonProject {
 

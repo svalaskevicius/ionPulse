@@ -30,13 +30,13 @@ public:
     }
 private:
     inline QList<TreeItem*>::iterator &processIterator(QList<TreeItem*> &children, QList<TreeItem*>::iterator &it) {
-        if ("dir" == (*it)->getItemClass()) {
+        if (TREESOURCE_CLASS_DIR == (*it)->getItemClass()) {
             if (dirnames.end() == std::find(dirnames.begin(), dirnames.end(), (*it)->getPath())) {
                 delete *it;
                 it = children.erase(it);
                 return it;
             }
-        } else if ("file" == (*it)->getItemClass()) {
+        } else if (TREESOURCE_CLASS_FILE == (*it)->getItemClass()) {
             if (filenames.end() == std::find(filenames.begin(), filenames.end(), (*it)->getPath())) {
                 delete *it;
                 it = children.erase(it);
@@ -50,7 +50,7 @@ private:
 TreeItem *DirectoryTreeSource::setupData()
 {
     if (!root) {
-        root = new TreeItemImpl("dir", "Name", "", initialDir, -1, NULL);
+        root = new TreeItemImpl(TREESOURCE_CLASS_DIR, "Name", "", initialDir, -1, NULL);
     }
 
     if (initialDir.length()) {
@@ -80,7 +80,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
             QString fullPath = currentDir.absolutePath()+"/"+subDirName+"/";
             TreeItem *treeItem = findChildForPath(currentTreeItemsParent, fullPath);
             if (!treeItem) {
-                treeItem = new TreeItemImpl("dir", subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
+                treeItem = new TreeItemImpl(TREESOURCE_CLASS_DIR, subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
                 currentTreeItemsParent->appendChild(treeItem);
             }
             parents << treeItem;
@@ -89,7 +89,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         foreach (QString fileName, filenames) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
             if (!findChildForPath(currentTreeItemsParent, fullPath)) {
-                currentTreeItemsParent->appendChild(new TreeItemImpl("file", fileName, fileName, fullPath, -1, currentTreeItemsParent));
+                currentTreeItemsParent->appendChild(new TreeItemImpl(TREESOURCE_CLASS_FILE, fileName, fileName, fullPath, -1, currentTreeItemsParent));
             }
         }
     }
