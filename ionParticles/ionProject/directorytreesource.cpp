@@ -42,12 +42,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
 
         foreach (QString subDirName, currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+subDirName+"/";
-            TreeItem* treeItem = NULL;
-            for (QList<TreeItem*>::const_iterator it = currentTreeItemsParent->getChildren().begin();!treeItem && (it != currentTreeItemsParent->getChildren().end());it++) {
-                if ((*it)->getPath() == fullPath) {
-                    treeItem = *it;
-                }
-            }
+            TreeItem *treeItem = findChildForPath(currentTreeItemsParent, fullPath);
             if (!treeItem) {
                 treeItem = new TreeItemImpl("dir", subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
                 currentTreeItemsParent->appendChild(treeItem);
@@ -57,19 +52,26 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
 
         foreach (QString fileName, currentDir.entryList(QDir::Files, QDir::Name)) {
             QString fullPath = currentDir.absolutePath()+"/"+fileName;
-            TreeItem* treeItem = NULL;
-            for (QList<TreeItem*>::const_iterator it = currentTreeItemsParent->getChildren().begin();!treeItem && (it != currentTreeItemsParent->getChildren().end());it++) {
-                if ((*it)->getPath() == fullPath) {
-                    treeItem = *it;
-                }
-            }
-            if (!treeItem) {
+            if (!findChildForPath(currentTreeItemsParent, fullPath)) {
                 currentTreeItemsParent->appendChild(new TreeItemImpl("file", fileName, fileName, fullPath, -1, currentTreeItemsParent));
             }
         }
     }
 }
 
+TreeItem *DirectoryTreeSource::findChildForPath(TreeItem *node, QString path)
+{
+    for (
+         QList<TreeItem*>::const_iterator it = currentTreeItemsParent->getChildren().begin();
+         it != currentTreeItemsParent->getChildren().end();
+         it++
+    ) {
+        if ((*it)->getPath() == fullPath) {
+            return *it;
+        }
+    }
+    return NULL;
+}
 
 }
 }
