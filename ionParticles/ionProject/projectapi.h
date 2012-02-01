@@ -5,6 +5,8 @@
 
 #include <boost/function.hpp>
 
+#define TREESOURCE_CLASS_DIR  "dir"
+#define TREESOURCE_CLASS_FILE "file"
 
 namespace IonProject {
 
@@ -16,7 +18,7 @@ public:
     virtual int getRowNr() = 0;
     virtual TreeItem *parent() = 0;
     virtual int childrenCount() const = 0;
-    virtual const QList<TreeItem*> &getChildren() const = 0;
+    virtual QList<TreeItem*> &getChildren() = 0;
     virtual void clearChildren() = 0;
     virtual void filter(QString const filter) = 0;
     virtual bool isVisible() const = 0;
