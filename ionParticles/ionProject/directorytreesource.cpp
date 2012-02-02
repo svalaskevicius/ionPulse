@@ -21,29 +21,39 @@ public:
     QStringList &dirnames, &filenames;
     MissingFilesCleaner(QStringList &dirnames, QStringList &filenames)
         : dirnames(dirnames), filenames(filenames)
-    {}
-    void clean(QList<TreeItem*> &children) {
+    {
+    }
+    void clean(QString prefix, QList<TreeItem*> &children) {
         QList<TreeItem*>::iterator it = children.begin();
         while (it != children.end()) {
-            it = processIterator(children, it);
+            it = processIterator(prefix, children, it);
         }
     }
 private:
-    inline QList<TreeItem*>::iterator &processIterator(QList<TreeItem*> &children, QList<TreeItem*>::iterator &it) {
+    inline QList<TreeItem*>::iterator &processIterator(QString prefix, QList<TreeItem*> &children, QList<TreeItem*>::iterator &it) {
         if (TREESOURCE_CLASS_DIR == (*it)->getItemClass()) {
-            if (dirnames.end() == std::find(dirnames.begin(), dirnames.end(), (*it)->getPath())) {
+            if (dirnames.end() == findPathNode(prefix,  (*it)->getPath(), dirnames)) {
                 delete *it;
                 it = children.erase(it);
                 return it;
             }
         } else if (TREESOURCE_CLASS_FILE == (*it)->getItemClass()) {
-            if (filenames.end() == std::find(filenames.begin(), filenames.end(), (*it)->getPath())) {
+            if (filenames.end() == findPathNode(prefix,  (*it)->getPath(), filenames)) {
                 delete *it;
                 it = children.erase(it);
                 return it;
             }
         }
         return ++it;
+    }
+    inline QStringList::Iterator findPathNode(QString prefix, QString path, QStringList paths)
+    {
+        for (QStringList::Iterator it = paths.begin(); it!=paths.end(); it++) {
+            if (prefix + (*it) == path) {
+                return it;
+            }
+        }
+        return paths.end();
     }
 };
 
@@ -74,7 +84,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         QStringList filenames = currentDir.entryList(QDir::Files, QDir::Name);
 
         MissingFilesCleaner cleaner(dirnames, filenames);
-        cleaner.clean(currentTreeItemsParent->getChildren());
+        cleaner.clean(currentDir.absolutePath()+"/", currentTreeItemsParent->getChildren());
 
         foreach (QString subDirName, dirnames) {
             QString fullPath = currentDir.absolutePath()+"/"+subDirName+"/";
