@@ -4,18 +4,18 @@ ionPulse IDE
 Todo
 ----
 
-#### refresh project parse info for changed files by timestamp
+### 0.1 CODE REVIEW, documentation
+
+#### search & replace
+* mark occurences in editor on clicking on varname
 
 #### editor handler
 * handles key presses, such as tab, (shift) enter etc
 * autoindent on new line
 * home button should go to beginning of the text, after the whitespace
-
-### 0.1 CODE REVIEW, documentation
+* tabulator should not indent if not on the start of the line
 
 #### new file
-
-#### reparse files on save
 
 #### UTF8 editor
 
@@ -29,8 +29,7 @@ Todo
 
 ### 0.2 CODE REVIEW, documentation
 
-#### search & replace
-* mark occurences in editor on clicking on varname
+#### reparse files on save
 
 #### search & replace in files
 * should be possible to delete some results after reviewing
