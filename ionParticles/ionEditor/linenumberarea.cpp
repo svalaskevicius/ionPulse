@@ -10,7 +10,7 @@
 #include <QPainter>
 #include <QTextBlock>
 #include <QPaintEvent>
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 
 namespace IonEditor {
 namespace Private {

@@ -9,7 +9,7 @@
 #include "plugin.h"
 
 #include <QtPlugin>
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include "treeview.h"
 #include "treemodeladapter.h"
 #include "treeitem.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include <ionHeart/plugin.h>
+#include <ionCore/plugin.h>
 
 #include <boost/function.hpp>
 
@@ -58,7 +58,7 @@ public:
     virtual void updateFromSource() = 0;
 };
 
-class ProjectPlugin : public IonHeart::BasicPlugin {
+class ProjectPlugin : public IonCore::BasicPlugin {
 public:
     virtual void addTreeWidget(QSharedPointer<TreeModel> model) = 0;
     virtual void addTreeWidget(QSharedPointer<TreeModelSource> modelSource) = 0;

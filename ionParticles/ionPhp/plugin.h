@@ -10,7 +10,7 @@
 #define IONEDITORPHP_H
 
 #include <QObject>
-#include <ionHeart/plugin.h>
+#include <ionCore/plugin.h>
 
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionProject/projectapi.h>
@@ -22,10 +22,10 @@
 namespace IonPhp {
 
 
-class Plugin : public QObject, public IonHeart::BasicPlugin
+class Plugin : public QObject, public IonCore::BasicPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonHeart::BasicPlugin)
+    Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     void postLoad();

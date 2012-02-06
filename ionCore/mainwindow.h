@@ -12,7 +12,7 @@
 #include <QMainWindow>
 
 
-namespace IonHeart {
+namespace IonCore {
 
 namespace Private {
 

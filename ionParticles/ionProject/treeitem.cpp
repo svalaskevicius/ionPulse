@@ -10,7 +10,7 @@
 #include <stdexcept>
 
 #include "treeitem.h"
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 
 namespace IonProject {
 

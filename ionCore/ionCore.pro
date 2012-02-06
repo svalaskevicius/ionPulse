@@ -7,7 +7,7 @@ include (../ionPulse.pri)
 
 QT       += core gui
 
-TARGET = ionHeart
+TARGET = ionCore
 TEMPLATE = app
 
 SOURCES += main.cpp\

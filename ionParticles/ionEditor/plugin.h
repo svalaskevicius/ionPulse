@@ -25,7 +25,7 @@ class EditorWidgetBuilderImpl;
 class Plugin : public QObject, public EditorPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonHeart::BasicPlugin)
+    Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     ~Plugin();

@@ -17,7 +17,7 @@
 #include <QBoxLayout>
 #include "filetreewidget.h"
 
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include <QMenuBar>
 
 namespace IonEditor {

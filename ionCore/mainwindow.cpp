@@ -10,7 +10,7 @@
 #include <shared.h>
 #include <QStatusBar>
 
-namespace IonHeart {
+namespace IonCore {
 
 namespace Private {
 

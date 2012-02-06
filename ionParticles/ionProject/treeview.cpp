@@ -10,7 +10,7 @@
 #include "treemodeladapter.h"
 #include <QVBoxLayout>
 #include <QFileInfo>
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 
 namespace IonProject {
 namespace Private {

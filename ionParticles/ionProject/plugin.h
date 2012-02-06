@@ -10,7 +10,7 @@
 #define IONEDITORPROJECT_H
 
 #include <QObject>
-#include <ionHeart/plugin.h>
+#include <ionCore/plugin.h>
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "projectapi.h"
@@ -22,7 +22,7 @@ class TreeModel;
 class Plugin : public QObject, public ProjectPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonHeart::BasicPlugin)
+    Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     ~Plugin() {}

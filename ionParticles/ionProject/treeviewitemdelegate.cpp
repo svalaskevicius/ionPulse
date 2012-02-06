@@ -8,7 +8,7 @@
 
 #include "treeviewitemdelegate.h"
 
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include <QApplication>
 
 

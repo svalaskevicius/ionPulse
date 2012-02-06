@@ -13,7 +13,7 @@
 #include <QMainWindow>
 
 
-namespace IonHeart {
+namespace IonCore {
 
 class BasicPlugin {
 protected:
@@ -32,6 +32,6 @@ public:
 
 }
 
-Q_DECLARE_INTERFACE(IonHeart::BasicPlugin, "com.ionPulse.PluginInterface")
+Q_DECLARE_INTERFACE(IonCore::BasicPlugin, "com.ionPulse.PluginInterface")
 
 #endif // INTERFACES_H

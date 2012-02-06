@@ -7,7 +7,7 @@
 */
 
 #include "editorwidgetfactory.h"
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include "highlighter.h"
 
 namespace IonPhp {

@@ -7,7 +7,7 @@
 */
 
 #include "editorwidget.h"
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include "editorwidgetfactory.h"

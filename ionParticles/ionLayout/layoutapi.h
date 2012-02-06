@@ -10,7 +10,7 @@
 #define PANELWIDGET_H
 
 #include <QWidget>
-#include <ionHeart/plugin.h>
+#include <ionCore/plugin.h>
 
 namespace IonLayout {
 
@@ -48,7 +48,7 @@ public slots:
 };
 
 
-class LayoutPlugin : public IonHeart::BasicPlugin
+class LayoutPlugin : public IonCore::BasicPlugin
 {
 public:
     virtual LayoutManager *getLayoutManager() = 0;

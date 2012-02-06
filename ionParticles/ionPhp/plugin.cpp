@@ -10,7 +10,7 @@
 
 #include <QtPlugin>
 #include <ionParticles/ionEditor/editorwidget.h>
-#include "ionHeart/shared.h"
+#include "ionCore/shared.h"
 
 #include "editorwidgetfactory.h"
 #include "phptreemodelsource.h"

@@ -14,7 +14,7 @@
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
 #include <ionParticles/ionLayout/layoutapi.h>
-#include <ionHeart/plugin.h>
+#include <ionCore/plugin.h>
 
 namespace IonEditor {
 
@@ -79,7 +79,7 @@ public:
     virtual void registerComponentFactory(QString const & filetype, EditorComponentFactoryBase *component) = 0;
 };
 
-class EditorPlugin : public IonHeart::BasicPlugin {
+class EditorPlugin : public IonCore::BasicPlugin {
 public:
     static QString name() {return "ionEditor";}
     virtual EditorWidgetBuilder *getEditorWidgetBuilder() = 0;

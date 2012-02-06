@@ -9,7 +9,7 @@
 #ifndef EDITORSOURCEBROWSER_H
 #define EDITORSOURCEBROWSER_H
 
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include <ionParticles/ionEditor/editorapi.h>
 #include "structurestorage.h"
 

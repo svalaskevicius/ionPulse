@@ -15,8 +15,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    IonHeart::Private::MainWindow w;
-    IonHeart::Private::PluginLoader plugins;
+    IonCore::Private::MainWindow w;
+    IonCore::Private::PluginLoader plugins;
     try {
         plugins.loadPlugins(w);
         w.show();
@@ -26,14 +26,6 @@ int main(int argc, char *argv[])
             0,
             "Application error",
             msg+"\n\nClick Cancel to exit.",
-            QMessageBox::Cancel
-        );
-        return 1;
-    } catch (const std::exception &e) {
-        QMessageBox::critical(
-            0,
-            "Application error",
-            QString(e.what())+"\n\nClick Cancel to exit.",
             QMessageBox::Cancel
         );
         return 1;
