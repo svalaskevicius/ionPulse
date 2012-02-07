@@ -10,8 +10,16 @@
 #define IONSHARED_H
 
 #include <iostream>
+#include <QDebug>
 
-
+/**
+ * \brief Helper code to apply the correct code to different loaded plugin dependencies.
+ *
+ * This definition can be used to simplify parent plugin notification handling
+ * on the client side.
+ *
+ * \see IonCore::BasicPlugin::addParent
+ */
 #define CHECK_AND_ADD_PARENT(parent, className, codeToAdd) \
     {\
         if (className::name() == parent->getName() ) {\
@@ -22,8 +30,11 @@
     }
 
 
-#include <QDebug>
-
+/**
+ * \brief Debug message output.
+ *
+ * Handles the debug output in one place for easier code management.
+ */
 #define DEBUG_MSG(str) { qDebug() << str; }
 
 #endif // IONSHARED_H

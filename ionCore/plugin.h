@@ -26,7 +26,7 @@ namespace IonCore {
  * \brief Defines an interface for every loadable plugin.
  *
  * Every plugin has to implement this interface for it to be processed
- * by the plugin loader. The interface defines several methods to controll
+ * by the plugin loader. The interface defines several methods to control
  * how (BasicPlugin::preLoad, BasicPlugin::postLoad) and when
  * (BasicPlugin::getDependencies) each plugin is initialised.
  */
@@ -61,12 +61,56 @@ public:
      * \see BasicPlugin::mainWindow
      */
     void setMainWindow(QMainWindow *mainWindow) {this->mainWindow = mainWindow;}
+
+    /**
+     * \brief Early plugin initialisation.
+     *
+     * This method is invoked before the plugin dependencies are loaded and could
+     * be used to bootstrap the plugin's environment.
+     *
+     * \see postLoad
+     */
     virtual void preLoad() {}
+
+    /**
+     * \brief Plugin initialisation.
+     *
+     * This method is invoked after the plugin's dependencies are loaded and should
+     * normally be used to initialise the plugin.
+     */
     virtual void postLoad() {}
+
+    /**
+     * \brief Unique plugin name.
+     *
+     * The name returned by this method uniquely describes the plugin and is used in
+     * the plugin dependencies management.
+     *
+     * \see getDependencies
+     */
     virtual QString getName() = 0;
+
+    /**
+     * \brief List of the plugin names that should be initialised before this plugin.
+     *
+     * The plugin BasicPlugin::postLoad method will only be invoked after all the listed
+     * plugins are found and initialised.
+     *
+     * \see getName
+     */
     virtual QList<QString> getDependencies() {
         return QList<QString>();
     }
+
+    /**
+     * \brief Notifies the loaded parent plugin.
+     *
+     * During the plugin dependencies loading the load manager notifies the dependant plugins
+     * about each loaded parent. This gives the plugin a chance to interact which each
+     * dependency using an API defined by the parent plugin.
+     *
+     * \see CHECK_AND_ADD_PARENT
+     */
     virtual void addParent(BasicPlugin * /* parent */) {}
 };
 
