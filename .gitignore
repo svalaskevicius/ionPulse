@@ -1,3 +1,4 @@
 doc/doxygen/build/
 doc/sphinx/build/
+ionParticles/ionPhp/phpParser/gen_php_*
 
