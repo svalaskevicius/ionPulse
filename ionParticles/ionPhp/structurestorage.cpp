@@ -14,6 +14,8 @@
 #include <QVariant>
 #include <QSqlError>
 
+#include <stdexcept>
+
 namespace IonPhp {
 
 StructureStorage::StructureStorage(QString connName)
@@ -42,7 +44,8 @@ QSharedPointer<QSqlQuery> StructureStorage::getClasses()
     QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
     query->prepare("select classes.id, classname, filename, line_nr from classes left join files on files.id=classes.file_id");
     if (!query->exec()) {
-        qDebug() << query->lastError();
+        DEBUG_MSG(query->lastError());
+        throw std::runtime_error("sqlite error: "+query->lastError().databaseText().toStdString());
     }
     return query;
 }
@@ -53,7 +56,8 @@ QSharedPointer<QSqlQuery> StructureStorage::getFile(QString filename)
     query->prepare("select id, timestamp from files where files.filename=:filename limit 1");
     query->bindValue("filename", filename);
     if (!query->exec()) {
-        qDebug() << query->lastError();
+        DEBUG_MSG(query->lastError());
+        throw std::runtime_error("sqlite error: "+query->lastError().databaseText().toStdString());
     }
     return query;
 }
@@ -64,7 +68,8 @@ QSharedPointer<QSqlQuery> StructureStorage::getFileClasses(int fileId)
     query->prepare("select classes.id, classname, filename, line_nr from classes left join files on files.id=classes.file_id where files.id=:file_id");
     query->bindValue("file_id", fileId);
     if (!query->exec()) {
-        qDebug() << query->lastError();
+        DEBUG_MSG(query->lastError());
+        throw std::runtime_error("sqlite error: "+query->lastError().databaseText().toStdString());
     }
     return query;
 }
@@ -75,7 +80,8 @@ QSharedPointer<QSqlQuery> StructureStorage::getClassMethods(int classId)
     query->prepare("select methods.id, methodname, filename, line_nr from methods left join files on files.id=file_id where class_id=:class_id");
     query->bindValue("class_id", classId);
     if (!query->exec()) {
-        qDebug() << query->lastError();
+        DEBUG_MSG(query->lastError());
+        throw std::runtime_error("sqlite error: "+query->lastError().databaseText().toStdString());
     }
     return query;
 }
@@ -84,7 +90,8 @@ void StructureStorage::createTables()
 {
     QSqlQuery query(db);
     if (!query.exec("PRAGMA foreign_keys = ON")) {
-        qDebug() << query.lastError();
+        DEBUG_MSG(query.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+query.lastError().databaseText().toStdString());
     }
     if (!query.exec(
         "create table files ("
@@ -93,14 +100,16 @@ void StructureStorage::createTables()
             "timestamp INTEGER"
         ")"
     )) {
-        qDebug() << query.lastError();
+        DEBUG_MSG(query.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+query.lastError().databaseText().toStdString());
     }
     if (!query.exec(
         "create index filename_search on files ("
             "filename"
         ")"
     )) {
-        qDebug() << query.lastError();
+        DEBUG_MSG(query.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+query.lastError().databaseText().toStdString());
     }
     if (!query.exec(
         "create table classes ("
@@ -111,7 +120,8 @@ void StructureStorage::createTables()
             "FOREIGN KEY(file_id) REFERENCES files(id) ON DELETE CASCADE"
         ")"
     )) {
-        qDebug() << query.lastError();
+        DEBUG_MSG(query.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+query.lastError().databaseText().toStdString());
     }
     if (!query.exec(
         "create table methods ("
@@ -124,7 +134,8 @@ void StructureStorage::createTables()
             "FOREIGN KEY(class_id) REFERENCES classes(id) ON DELETE CASCADE"
         ")"
     )) {
-        qDebug() << query.lastError();
+        DEBUG_MSG(query.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+query.lastError().databaseText().toStdString());
     }
 
 
@@ -160,7 +171,7 @@ void StructureStorage::addClasses(QSqlQuery &classInsertQuery, QSqlQuery &method
         classInsertQuery.bindValue("line_nr", classLabel->getLine());
         classInsertQuery.bindValue("classname", classLabel->getText());
         if (!classInsertQuery.exec()) {
-            qDebug() << classInsertQuery.lastError();
+            DEBUG_MSG(classInsertQuery.lastError());
             throw std::runtime_error("failed to register new class definition");
         }
         int classId = classInsertQuery.lastInsertId().toInt();
@@ -178,7 +189,7 @@ void StructureStorage::addMethods(QSqlQuery &methodInsertQuery, const ASTRoot & 
         methodInsertQuery.bindValue("line_nr", methodLabel->getLine());
         methodInsertQuery.bindValue("methodname", methodLabel->getText());
         if (!methodInsertQuery.exec()) {
-            qDebug() << methodInsertQuery.lastError() << methodInsertQuery.lastQuery();
+            DEBUG_MSG(methodInsertQuery.lastError() << methodInsertQuery.lastQuery());
             throw std::runtime_error("failed to register new method definition");
         }
     }
@@ -197,13 +208,16 @@ void StructureStorage::removeFile(int file_id)
     methodQuery.bindValue("file_id", file_id);
 
     if (!fileQuery.exec()) {
-        qDebug() << fileQuery.lastError();
+        DEBUG_MSG(fileQuery.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+fileQuery.lastError().databaseText().toStdString());
     }
     if (!classQuery.exec()) {
-        qDebug() << classQuery.lastError();
+        DEBUG_MSG(classQuery.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+classQuery.lastError().databaseText().toStdString());
     }
     if (!methodQuery.exec()) {
-        qDebug() << methodQuery.lastError();
+        DEBUG_MSG(methodQuery.lastError().databaseText());
+        throw std::runtime_error("sqlite error: "+methodQuery.lastError().databaseText().toStdString());
     }
 }
 

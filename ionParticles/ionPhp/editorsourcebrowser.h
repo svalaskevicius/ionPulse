@@ -86,7 +86,7 @@ public:
         if (!word.length()) {
             return;
         }
-        qDebug() << "going to " << word;
+        DEBUG_MSG("going to " << word);
 
         if (!word.contains(QRegExp("[>\\.\\(\\):\\$-]$", Qt::CaseInsensitive))) {
             //structureStorage->findClassByName(word);
