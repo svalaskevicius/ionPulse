@@ -28,7 +28,7 @@ import sys, os
 
 sys.path.insert( 0,  "/Users/Shared/dev/breathe/" )
 
-extensions = ["breathe"]
+extensions = ["breathe","doxylink"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

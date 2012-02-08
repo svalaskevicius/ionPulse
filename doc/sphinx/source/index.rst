@@ -3,24 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to IonPulse IDE's documentation!
-========================================
+**********************
+Extending IonPulse IDE
+**********************
+
+:Release: |version|
+:Date: |today|
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
+   :numbered:
 
-.. doxygenindex::
-
-.. doxygenclass:: IonPulse
-   :project: IonPulse
-      :members:
+   introduction.rst
+   basicPlugin.rst
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
