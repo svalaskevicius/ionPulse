@@ -19,6 +19,9 @@
  * The main responsibilities of the module are:
  * - create the QApplication and bare main window;
  * - load and initialise plugins.
+ *
+ * After the above steps all the functionality is deferred to the plugins, keeping
+ * the application layer thin.
  */
 namespace IonCore {
 

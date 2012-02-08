@@ -73,3 +73,9 @@ Todo
 
 #### ? textMate bundle support
 
+
+## Notes:
+IonLayout::PanelWidget should provide composition and not inheritance based approach - constructing it provide the widget.
+IonLayout::PanelWidget::getPanelZone could be removed and instead passed as a parameter to LayoutManager::add
+LayoutManager::updatePanelTitle - is it refresh maybe? should title be parametrised too instead of panelWidget container - is the container necessary?
+
