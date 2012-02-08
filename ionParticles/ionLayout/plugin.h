@@ -14,6 +14,7 @@
 
 namespace IonLayout {
 
+namespace Private {
 
 class Plugin : public QObject, public LayoutPlugin
 {
@@ -40,6 +41,7 @@ protected slots:
 
 };
 
+}
 }
 
 

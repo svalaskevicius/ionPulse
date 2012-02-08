@@ -16,6 +16,8 @@
 
 namespace IonLayout {
 
+namespace Private {
+
 Plugin::Plugin(QObject *parent) :
     QObject(parent), layoutManager(NULL)
 {
@@ -33,5 +35,6 @@ LayoutManager *Plugin::getLayoutManager()
 }
 
 }
+}
 
-Q_EXPORT_PLUGIN2 ( ionLayout, IonLayout::Plugin )
+Q_EXPORT_PLUGIN2 ( ionLayout, IonLayout::Private::Plugin )
