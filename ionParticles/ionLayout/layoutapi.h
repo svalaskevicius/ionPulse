@@ -137,8 +137,8 @@ public slots:
  * access to the LayoutManager.
  *
  * To use it, client plugins should list IonLayout::LayoutPlugin::name()
- * in their dependencies. This way the client plugins will recieve an
- * instance of LayoutPlugin in its BasicPlugin::addParent() method.
+ * in their dependencies. This way the client plugins will receive an
+ * instance of LayoutPlugin in their IonCore::BasicPlugin::addParent() method.
  */
 class LayoutPlugin : public IonCore::BasicPlugin
 {
@@ -149,7 +149,8 @@ public:
     virtual LayoutManager *getLayoutManager() = 0;
 
     /**
-     * \brief Plugin name to be used in BasicPlugin::getDependencies().
+     * \brief Plugin name to be used in IonCore::BasicPlugin::getDependencies()
+     *        method of the subscribed plugins.
      */
     static QString name() { return "ionLayout"; }
 };
