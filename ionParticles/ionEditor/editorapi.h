@@ -16,6 +16,28 @@
 #include <ionParticles/ionLayout/layoutapi.h>
 #include <ionCore/plugin.h>
 
+/**
+ * \brief Provides basic (but extendable) editor functionality.
+ *
+ * The IonEditor plugin defines an extendable plain text editor which
+ * is adaptable for different filetypes.
+ *
+ * To instantiate an editor, EditorWidgetBuilder is invoked with the
+ * filepath to be loaded as a parameter. EditorWidgetBuilder then checks
+ * for any registered EditorComponentFactoryBase factories for the given
+ * file type and uses them to customise the editor.
+ *
+ * EditorComponent can be registered using an extended file type notation
+ * describing the file type family to be used.
+ * e.g. "text/php", which tells that the component is suitable for text/php
+ * files family and will be applied if a file type would resolve in either
+ * "text/php" or "text/php/any/subtype".
+ *
+ * A file extension registration to a file type is achieved by using
+ * EditorWidgetBuilder::registerFileType().
+ * If a file extension is not yet registered, a default "text" file type family
+ * is assumed.
+ */
 namespace IonEditor {
 
 class EditorComponentInfo {
