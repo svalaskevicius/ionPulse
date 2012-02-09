@@ -1,18 +1,23 @@
 /* The standard CSS for doxygen */
 @import url("reset.css");
+@import url(http://fonts.googleapis.com/css?family=Junge);
 
 body, table, div, p, dl {
-	font-family: Lucida Grande, Verdana, Geneva, Arial, sans-serif;
+	font-family: Junge, serif;
 	font-size: 14px;
-	line-height: 16px;
+	line-height: 18px;
 }
 
 p {
-	margin-bottom: 15px;
+	margin: 10px 0px 15px 0;
 }
 
-.textblock p {
-	margin: 5px;
+.textblock {
+	max-width: 800px;
+}
+
+.textblock p a {
+	font-weight: normal;
 }
 
 .textblock ul li:before {
@@ -881,6 +886,7 @@ dl.bug
 	font: 300% Tahoma, Arial,sans-serif;
 	margin: 0px;
 	padding: 2px 0px;
+	color: #b00;
 }
     
 #projectbrief
