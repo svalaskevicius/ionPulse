@@ -40,44 +40,165 @@
  */
 namespace IonEditor {
 
+
+/**
+ * \brief Provides basic information about the editor widget to components, which is not visible otherwise.
+ *
+ * This interface opens several protected Editor widget methods to external components,
+ * so that some functionality could be deferred and component-ised from the editor widget class.
+ *
+ * \see Editor::getEditorInfo()
+ */
 class EditorComponentInfo {
 public:
     virtual ~EditorComponentInfo() {}
+
+    /**
+     * \brief Returns the first visible block
+     */
     virtual QTextBlock firstVisibleBlock() const = 0;
+
+    /**
+     * \brief Returns the bounding rectangle of the text block in content coordinates.
+     *
+     * Translate the rectangle with the contentOffset() to get visual coordinates on the viewport.
+     */
     virtual QRectF blockBoundingGeometry(const QTextBlock &block) const = 0;
+
+    /**
+     * \brief Returns the content's origin in viewport coordinates.
+     *
+     * The origin of the content of a plain text edit is always the top left corner
+     * of the first visible text block. The content offset is different from (0,0)
+     * when the text has been scrolled horizontally, or when the first visible block
+     * has been scrolled partially off the screen, i.e. the visible text does not start
+     * with the first line of the first visible block, or when the first visible block
+     * is the very first block and the editor displays a margin.
+     */
     virtual QPointF contentOffset() const = 0;
+
+    /**
+     * \brief Returns the bounding rectangle of the text block in the block's own coordinates.
+     */
     virtual QRectF blockBoundingRect(const QTextBlock &block) const = 0;
 };
 
+
+/**
+ * \brief Define an interface to create Editor components
+ *
+ * Editor components provide a way to defer some specific editor functionality
+ * to be applied dynamically depending on the file type.
+ */
 class EditorComponent {
 public:
     virtual ~EditorComponent() {}
+
+    /**
+     * \brief Handles editor events.
+     *
+     * The component's editorEvent method is invoked before falling back to default
+     * event handler. If any of invoked components return true as a result of this
+     * method, default event functionality will not be invoked.
+     */
     virtual bool editorEvent(QEvent * ) = 0;
+
+    /**
+     * \brief Return width of a component.
+     *
+     * Currently, component implementation can only take some visual rectangle at the left
+     * hand side of the Editor widget. This method will be used to determine the next
+     * component, or Editor offset.
+     */
     virtual int getWidth() = 0;
 };
 
+
+/**
+ * \brief Defines an interface to access and manipulate the Editor widget.
+ */
 class Editor : public IonLayout::PanelWidget {
 public:
     virtual ~Editor() {}
+
+    /**
+     * \brief Defer and open some usefull protected Editor methods.
+     */
     virtual const EditorComponentInfo &getEditorInfo() const = 0;
+
+    /**
+     * \brief Register an event listener.
+     *
+     * The event listener registered will only be invoked for events specified by type parameter.
+     */
     virtual void addEventListener(QEvent::Type type, EditorComponent *component) = 0;
+
+    /**
+     * \brief Notify parent scroll area about changes in viewport margins.
+     *
+     * This method should be called from components, after component changes its width.
+     */
     virtual void updateViewportMargins() = 0;
+
+    /**
+     * \brief Set active editor components.
+     */
     virtual void setComponents(QList<EditorComponent* > components) = 0;
+
+    /**
+     * \brief Retrieve the underlying QPlainTextEdit instance.
+     */
     virtual QPlainTextEdit* getEditorInstance() = 0;
+
+    /**
+     * \brief Set editor focus on the requested line.
+     */
     virtual void focusOnLine(int line) = 0;
+
+    /**
+     * \brief Save file buffer to file.
+     */
     virtual void saveFile() = 0;
 };
 
+
+/**
+ * \brief A base interface for EditorComponent factories.
+ */
 struct EditorComponentFactoryBase {
+
+    /**
+     * \brief Construct EditorComponent for a given Editor object.
+     */
     virtual IonEditor::EditorComponent *operator()(Editor *) = 0;
+
+    /**
+     * \brief Identify this component factory.
+     *
+     * This identifier is used to limit created components for one Editor to be one
+     * for each identifier. If the same identifier is available for several file types
+     * in the same hierarchy, only the most specific EditorComponent factory will be used.
+     */
     virtual QString getIdentifier() = 0;
 };
 
+
+/**
+ * \brief Convenience  templace to create EditorComponent factories.
+ *
+ * Requires that the component would define a static method identity().
+ */
 template <typename component>
 struct EditorComponentFactory : public EditorComponentFactoryBase {
     IonEditor::EditorComponent *operator()(Editor *e) {return new component(e);}
     QString getIdentifier() {return component::identity();}
 };
+
+/**
+ * \brief Convenience  templace to create EditorComponent factories.
+ *
+ * Requires that the component would define a static method identity().
+ */
 template <typename component, typename targ1>
 struct EditorComponentFactory1 : public EditorComponentFactoryBase {
     targ1 arg1;
@@ -86,25 +207,78 @@ struct EditorComponentFactory1 : public EditorComponentFactoryBase {
     QString getIdentifier() {return component::identity();}
 };
 
+/**
+ * \brief Editor highlighter factory.
+ *
+ * Syntax highlighters are not created using components functionality. Instead,
+ * QSyntaxHighlighter subclasses are used.
+ */
 struct HighlighterFactory {
+    /**
+     * \brief Invoke the factory to create a syntax highlighter.
+     */
     virtual QSyntaxHighlighter *operator()(Editor *) = 0;
 };
 
+/**
+ * \brief Editor builder class to create an Editor for a given file.
+ *
+ * This builder class uses registered file types and components for them to
+ * dynamically construct a required Editor instance.
+ */
 class EditorWidgetBuilder
 {
 public:
     virtual ~EditorWidgetBuilder(){}
+
+    /**
+     * \brief Build Editor instance for a file specified by the path parameter.
+     */
     virtual Editor *createEditor(QString path) = 0;
 
+    /**
+     * \brief Register a filetype for given file extension.
+     */
     virtual void registerFileType(QString fileExt, QString fileType) = 0;
+
+    /**
+     * \brief Register a syntax highlighter for given file type.
+     */
     virtual void registerHighlighterFactory(QString const & filetype, HighlighterFactory *highlighter) = 0;
+
+    /**
+     * \brief Register a EditorComponentFactoryBase for given file type.
+     */
     virtual void registerComponentFactory(QString const & filetype, EditorComponentFactoryBase *component) = 0;
 };
 
-class EditorPlugin : public IonCore::BasicPlugin {
+/**
+ * \brief The interface of the IonEditor plugin.
+ *
+ * The EditorPlugin interface provides an unified application scope
+ * access to the EditorWidgetBuilder.
+ *
+ * To use it, client plugins should list EditorPlugin::EditorPlugin::name()
+ * in their dependencies. This way the client plugins will receive an
+ * instance of EditorPlugin in their IonCore::BasicPlugin::addParent() method.
+ */
+class EditorPlugin : public IonCore::BasicPlugin
+{
 public:
+    /**
+     * \brief Plugin name to be used in IonCore::BasicPlugin::getDependencies()
+     *        method of the subscribed plugins.
+     */
     static QString name() {return "ionEditor";}
+
+    /**
+     * \brief Retrieve an instance of EditorWidgetBuilder.
+     */
     virtual EditorWidgetBuilder *getEditorWidgetBuilder() = 0;
+
+    /**
+     * \brief Open a requested file path and focus on the specified line.
+     */
     virtual void openFile(QString path, int line) = 0;
 };
 

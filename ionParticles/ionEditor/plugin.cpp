@@ -22,6 +22,7 @@
 
 namespace IonEditor {
 
+namespace Private {
 
 Plugin::Plugin(QObject *parent) :
     QObject(parent), layoutManager(NULL), openedFiles(), focusedEditor(NULL)
@@ -175,5 +176,6 @@ EditorWidgetBuilder *Plugin::getEditorWidgetBuilder()
 }
 
 }
+}
 
-Q_EXPORT_PLUGIN2 ( ionEditor, IonEditor::Plugin )
+Q_EXPORT_PLUGIN2 ( ionEditor, IonEditor::Private::Plugin )

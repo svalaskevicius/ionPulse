@@ -19,8 +19,6 @@ namespace IonEditor {
 
 namespace Private {
 class EditorWidgetBuilderImpl;
-}
-
 
 class Plugin : public QObject, public EditorPlugin
 {
@@ -57,6 +55,7 @@ private:
     Q_DISABLE_COPY(Plugin)
 };
 
+}
 }
 
 #endif // IONEDITOR_H
