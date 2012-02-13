@@ -10,6 +10,7 @@
 #include <ionCore/shared.h>
 
 namespace IonPhp {
+namespace Private {
 
 Highlighter::Highlighter(QPlainTextEdit *parent) :
     QSyntaxHighlighter(parent->document())
@@ -128,4 +129,5 @@ void Highlighter::highlightBlock(const QString &text)
     }
 }
 
+}
 }

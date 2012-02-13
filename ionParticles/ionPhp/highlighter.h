@@ -13,6 +13,7 @@
 #include <QPlainTextEdit>
 
 namespace IonPhp {
+namespace Private {
 
 class Highlighter : public QSyntaxHighlighter
 {
@@ -42,6 +43,7 @@ public slots:
 
 };
 
+}
 }
 
 #endif // PHPHIGHLIGHTER_H

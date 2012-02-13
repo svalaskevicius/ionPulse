@@ -17,6 +17,7 @@
 #include <stdexcept>
 
 namespace IonPhp {
+namespace Private {
 
 StructureStorage::StructureStorage(QString connName)
     : db(QSqlDatabase::database(connName))
@@ -221,4 +222,5 @@ void StructureStorage::removeFile(int file_id)
     }
 }
 
+}
 }

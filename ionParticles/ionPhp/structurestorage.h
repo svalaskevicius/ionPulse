@@ -18,9 +18,7 @@
 #include "phpParser/ionParserLib.h"
 
 namespace IonPhp {
-
-class ASTNode;
-class ASTRoot;
+namespace Private {
 
 class StructureStorage
 {
@@ -48,6 +46,7 @@ protected:
 };
 
 
+}
 }
 
 #endif // STRUCTURESTORAGE_H
