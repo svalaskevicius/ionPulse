@@ -18,14 +18,14 @@
 #define yydebug ion_php_debug
 #define yynerrs ion_php_nerrs
 
-using namespace IonPhp;
+using namespace IonPhp::Private;
 
 %}
 
 %pure_parser
 %glr-parser
 %expect 4
-%parse-param { IonPhp::phpParser* context }
+%parse-param { IonPhp::Private::phpParser* context }
 %lex-param   { void* ion_php_scanner  }
 
 %left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE

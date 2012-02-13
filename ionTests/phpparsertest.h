@@ -30,7 +30,7 @@ do {\
 #define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
 #define TEST_PHP_PARSER(CODE, ASTSTR) { \
     try { \
-        QSharedPointer<ASTRoot> ret = IonPhp::phpParser().parseString(CODE); \
+        QSharedPointer<IonPhp::Private::ASTRoot> ret = IonPhp::Private::phpParser().parseString(CODE); \
         QCOMPARE_3( \
             ret->dumpXml().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
             QString(ASTSTR).replace(" ", "").replace("\n", "").replace("\r", ""), \
@@ -47,19 +47,6 @@ class PhpParserTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
-//    void test_getASTChildren_returnsAListOfMatchedChildren()
-//    {
-//        ASTRoot ret;
-//        QVERIFY((ret = IonPhp::phpParser().parseString("<?php $x;$y;")).data());
-
-//        QList<pASTNode> children = ret->findChildren("variable");
-
-//        QCOMPARE(children.size(), 2);
-//        QCOMPARE(children[0]->getStrData("text"), QString("$x"));
-//        QCOMPARE(children[1]->getStrData("text"), QString("$y"));
-//    }
-
-
     void test_openCloseNoEnd() { TEST_PHP_PARSER(
         "<?php ?><?php ?><?php ",
         "<top_statement_list>"

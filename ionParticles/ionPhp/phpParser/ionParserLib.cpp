@@ -10,6 +10,7 @@
 #include <iostream>
 
 namespace IonPhp {
+namespace Private {
 
 ASTNode::ASTNode(QString name)
     : lineNr(-1), columnNr(-1)
@@ -150,4 +151,5 @@ QList<pASTNode> ASTRoot::xpath(QString xpathExpr, pASTNode parent) const
     return ret;
 }
 
+}
 }

@@ -10,7 +10,7 @@
 #include "phpParser/ionParserLib.h"
 #include "gen_php_parser.hpp"
 
-using namespace IonPhp;
+using namespace IonPhp::Private;
 
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -35,7 +35,7 @@ using namespace IonPhp;
         }
 #define yylval_param astNode
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
-#define YY_EXTRA_TYPE IonPhp::phpParser*
+#define YY_EXTRA_TYPE IonPhp::Private::phpParser*
 #define YY_FATAL_ERROR(msg) throw std::logic_error(msg)
 #define ECHO yyextra->__echo(yytext, yyleng)
 

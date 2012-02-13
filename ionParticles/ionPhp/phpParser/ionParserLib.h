@@ -24,6 +24,7 @@
 #include <libxml/xpath.h>
 
 namespace IonPhp {
+namespace Private {
 
 class ASTNode;
 typedef ASTNode *pASTNode;
@@ -62,6 +63,7 @@ public:
     QList<pASTNode> xpath(QString xpathExpr, pASTNode parent = NULL) const ;
 };
 
+}
 }
 
 #endif // IONPARSERLIB_H
