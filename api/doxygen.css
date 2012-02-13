@@ -1,6 +1,5 @@
 /* The standard CSS for doxygen */
 @import url("reset.css");
-#@import url(http://fonts.googleapis.com/css?family=Junge);
 @import url(http://fonts.googleapis.com/css?family=Federo);
 
 body, table, div, p, dl {
