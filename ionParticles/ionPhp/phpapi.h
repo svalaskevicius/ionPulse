@@ -21,7 +21,7 @@
  * IonProject plugins is extended to decorate the project tree view and
  * add php file structure inside TreeItem objects for php files.
  *
- * Currently php file type famility is described by the plugin as "text/php"
+ * Currently php file type family is described by the plugin as "text/php"
  * and includes files with extentions *.php, *.php3, *.phtml
  */
 namespace IonPhp {
