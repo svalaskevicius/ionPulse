@@ -15,7 +15,7 @@
 namespace IonProject {
 namespace Private {
 
-TreeView::TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
+TreeView::TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent) :
     QTreeView(parent), _fiModel(dataModel)
 {
     setIndentation(15);

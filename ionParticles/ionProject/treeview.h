@@ -15,6 +15,7 @@
 #include <QKeyEvent>
 #include <QLineEdit>
 #include "projectapi.h"
+#include "treemodeladapter.h"
 
 namespace IonProject {
 
@@ -26,12 +27,12 @@ class TreeView : public QTreeView, public IonLayout::PanelWidget
 {
     Q_OBJECT
 protected:
-    QSharedPointer<TreeModel> _fiModel;
+    QSharedPointer<TreeModelAdapter> _fiModel;
     QLineEdit *_filterInputField;
 
     virtual void keyPressEvent ( QKeyEvent * event );
 public:
-    explicit TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent = 0);
+    explicit TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
     virtual ~TreeView();
     virtual QWidget *getWidget() {return this;}
     virtual QString getPanelTitle() {return _fiModel->getTitle();}

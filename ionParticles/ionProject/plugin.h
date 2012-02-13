@@ -17,9 +17,9 @@
 
 namespace IonProject {
 
-class TreeModel;
-
 namespace Private {
+
+class TreeModelAdapter;
 
 class Plugin : public QObject, public ProjectPlugin
 {
@@ -39,8 +39,8 @@ public:
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
-    QSharedPointer<TreeModel> getProjectFileTreeModel();
-    virtual void addTreeWidget(QSharedPointer<TreeModel> model);
+    QSharedPointer<TreeModelAdapter> getProjectFileTreeModel();
+    virtual void addTreeWidget(QSharedPointer<TreeModelAdapter> model);
     virtual void addTreeWidget(QSharedPointer<TreeModelSource> modelSource);
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory();
     virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory();
@@ -53,7 +53,7 @@ private:
 
     IonEditor::EditorPlugin *editorPlugin;
     IonLayout::LayoutManager *layoutManager;
-    QSharedPointer<TreeModel> projectTreeModel;
+    QSharedPointer<TreeModelAdapter> projectTreeModel;
 
     boost::function<QSharedPointer<TreeModelSource> (QString dirname)> _treeModelSourceFactory;
 

@@ -11,6 +11,7 @@
 
 
 #include "projectapi.h"
+#include "treemodeladapter.h"
 
 #include <QStyledItemDelegate>
 
@@ -23,12 +24,12 @@ class TreeViewItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
 public:
-    TreeViewItemDelegate(QSharedPointer<TreeModel> treeModel, QObject *parent = 0);
+    TreeViewItemDelegate(QSharedPointer<TreeModelAdapter> treeModel, QObject *parent = 0);
     virtual ~TreeViewItemDelegate(){}
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 protected:
-    QSharedPointer<TreeModel> treeModel;
+    QSharedPointer<TreeModelAdapter> treeModel;
 signals:
 public slots:
 

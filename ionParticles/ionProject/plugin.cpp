@@ -80,15 +80,15 @@ void Plugin::openFile(QString path, int line)
     editorPlugin->openFile(path, line);
 }
 
-QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
+QSharedPointer<TreeModelAdapter> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        projectTreeModel = QSharedPointer<TreeModel>(new Private::TreeModelAdapter(getTreeModelSourceFactory()("")));
+        projectTreeModel = QSharedPointer<TreeModelAdapter>(new Private::TreeModelAdapter(getTreeModelSourceFactory()("")));
     }
     return projectTreeModel;
 }
 
-void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
+void Plugin::addTreeWidget(QSharedPointer<TreeModelAdapter> model)
 {
     Private::TreeView *fileTree = new Private::TreeView(model);
     Private::TreeViewItemDelegate *viewItemDelegate = new Private::TreeViewItemDelegate(model, fileTree);
@@ -99,7 +99,7 @@ void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
 
 void Plugin::addTreeWidget(QSharedPointer<TreeModelSource> modelSource)
 {
-    QSharedPointer<TreeModel> model(new Private::TreeModelAdapter(modelSource));
+    QSharedPointer<TreeModelAdapter> model(new Private::TreeModelAdapter(modelSource));
     addTreeWidget(model);
 }
 

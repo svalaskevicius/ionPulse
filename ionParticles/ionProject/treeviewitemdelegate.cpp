@@ -15,7 +15,7 @@
 namespace IonProject {
 namespace Private {
 
-TreeViewItemDelegate::TreeViewItemDelegate(QSharedPointer<TreeModel> treeModel, QObject *parent)
+TreeViewItemDelegate::TreeViewItemDelegate(QSharedPointer<TreeModelAdapter> treeModel, QObject *parent)
     : QStyledItemDelegate(parent), treeModel(treeModel)
 {
 }
