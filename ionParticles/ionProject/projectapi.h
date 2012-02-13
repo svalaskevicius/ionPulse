@@ -150,9 +150,6 @@ public:
 class TreeModelSource {
 public:
     virtual ~TreeModelSource() {}
-    virtual TreeItem * setupData() = 0;
-    virtual QString getTitle() const = 0;
-};
 
     /**
      * \brief The main generator entry point, returning the root element of the created structure.
@@ -165,23 +162,43 @@ public:
     virtual QString getTitle() const = 0;
 };
 
+
+/**
+ * \brief The interface of the IonProject plugin.
+ *
+ * The ProjectPlugin interface provides an unified application scope
+ * access to modify TreeModelSource factory and set their own factory
+ * using a Decorator Pattern to extend the project tree functionality.
+ *
+ * To use it, client plugins should list IonProject::ProjectPlugin::name()
+ * in their dependencies. This way the client plugins will receive an
+ * instance of ProjectPlugin in their IonCore::BasicPlugin::addParent() method.
+ */
 class ProjectPlugin : public IonCore::BasicPlugin {
 public:
     /**
-     * \brief
-     *
-     *
+     * \brief Add a tree widget based on the provided TreeModelSource generator.
      */
     virtual void addTreeWidget(QSharedPointer<TreeModelSource> modelSource) = 0;
+
+    /**
+     * \brief Retrieve a factory instance to create basic TreeItem nodes.
+     */
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory() = 0;
 
     /**
-     * \brief
-     *
-     *
+     * \brief Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins.
      */
     static QString name() {return "ionProject";}
+
+    /**
+     * \brief Retrieve the set factory to instantiate a TreeModelSource for the project files tree.
+     */
     virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory() = 0;
+
+    /**
+     * \brief Set the factory to instantiate a TreeModelSource for the project files tree.
+     */
     virtual void setTreeModelSourceFactory(boost::function<QSharedPointer<TreeModelSource> (QString dirname)> factory) = 0;
 };
 
