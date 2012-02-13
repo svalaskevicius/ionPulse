@@ -17,10 +17,9 @@
  *
  * This documentation contains API definitions for both the main IonPulse
  * application under IonCore namespace and the included set of plugins
- * each under their own namespace.
+ * each under their own namespaces.
  *
- * Please see *Namespaces* section for more detailed information and convenient
- * navigation.
+ * Please see *Namespaces* section for the detailed information.
  */
 
 
