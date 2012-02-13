@@ -12,6 +12,18 @@
 #include <QMessageBox>
 #include <stdexcept>
 
+/**
+ * \mainpage Overview
+ *
+ * This documentation contains API definitions for both the main IonPulse
+ * application under IonCore namespace and the included set of plugins
+ * each under their own namespace.
+ *
+ * Please see *Namespaces* section for more detailed information and convenient
+ * navigation.
+ */
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
