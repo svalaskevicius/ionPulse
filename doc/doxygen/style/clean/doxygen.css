@@ -1,9 +1,9 @@
 /* The standard CSS for doxygen */
 @import url("reset.css");
-@import url(http://fonts.googleapis.com/css?family=Federo);
+/* @import url(http://fonts.googleapis.com/css?family=Federo); */
 
 body, table, div, p, dl {
-	font-family: Federo, serif;
+	font-family: serif;
 	font-size: 14px;
 	line-height: 18px;
 }
