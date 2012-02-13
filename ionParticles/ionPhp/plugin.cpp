@@ -19,6 +19,7 @@
 #include <QSqlDatabase>
 
 namespace IonPhp {
+namespace Private {
 
 QSharedPointer<IonProject::TreeModelSource> Plugin::phpTreeModelSourceDecoratorFactory::operator()(QString dirname)
 {
@@ -70,5 +71,6 @@ void Plugin::addProjectParent(IonProject::ProjectPlugin *projectPlugin)
 }
 
 }
+}
 
-Q_EXPORT_PLUGIN2 ( ionPhp, IonPhp::Plugin )
+Q_EXPORT_PLUGIN2 ( ionPhp, IonPhp::Private::Plugin )

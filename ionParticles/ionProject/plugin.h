@@ -19,6 +19,8 @@ namespace IonProject {
 
 class TreeModel;
 
+namespace Private {
+
 class Plugin : public QObject, public ProjectPlugin
 {
     Q_OBJECT
@@ -65,6 +67,7 @@ protected slots:
 
 };
 
+}
 }
 
 #endif // IONEDITORPROJECT_H

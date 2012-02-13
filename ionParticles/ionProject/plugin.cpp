@@ -21,6 +21,7 @@
 #include <QFileDialog>
 
 namespace IonProject {
+namespace Private {
 
 
 QSharedPointer<TreeModelSource> Plugin::_defaultTreeModelSourceFactory::operator()(QString dirname) {
@@ -109,5 +110,7 @@ QSharedPointer<TreeItemFactory> Plugin::createTreeItemFactory()
 
 
 }
+}
 
-Q_EXPORT_PLUGIN2 ( ionProject, IonProject::Plugin )
+
+Q_EXPORT_PLUGIN2 ( ionProject, IonProject::Private::Plugin )

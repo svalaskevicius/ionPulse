@@ -20,6 +20,7 @@
 #define PHP_PLUGIN_NAME "ionPhp"
 
 namespace IonPhp {
+namespace Private {
 
 
 class Plugin : public QObject, public IonCore::BasicPlugin
@@ -66,6 +67,7 @@ public slots:
 
 };
 
+}
 }
 
 #endif // IONEDITORPHP_H
