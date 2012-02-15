@@ -7,7 +7,6 @@
 */
 
 #include <QtGui>
-#include <QDir>
 #include <stdexcept>
 
 #include "treeitem.h"
@@ -79,15 +78,15 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         TreeItem* currentTreeItemsParent = parents.last();
         parents.pop_back();
 
-        QDir currentDir(currentTreeItemsParent->getPath());
-        QStringList dirnames = currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-        QStringList filenames = currentDir.entryList(QDir::Files, QDir::Name);
+        boost::shared_ptr<DirectoryTreeSource::DirectoryInfo> currentDir = _getDir(currentTreeItemsParent->getPath());
+        QStringList dirnames = currentDir->dirnames();
+        QStringList filenames = currentDir->filenames();
 
         MissingFilesCleaner cleaner(dirnames, filenames);
-        cleaner.clean(currentDir.absolutePath()+"/", currentTreeItemsParent->getChildren());
+        cleaner.clean(currentDir->absolutePath()+"/", currentTreeItemsParent->getChildren());
 
         foreach (QString subDirName, dirnames) {
-            QString fullPath = currentDir.absolutePath()+"/"+subDirName+"/";
+            QString fullPath = currentDir->absolutePath()+"/"+subDirName+"/";
             TreeItem *treeItem = findChildForPath(currentTreeItemsParent, fullPath);
             if (!treeItem) {
                 treeItem = new TreeItemImpl(TREESOURCE_CLASS_DIR, subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
@@ -97,7 +96,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         }
 
         foreach (QString fileName, filenames) {
-            QString fullPath = currentDir.absolutePath()+"/"+fileName;
+            QString fullPath = currentDir->absolutePath()+"/"+fileName;
             if (!findChildForPath(currentTreeItemsParent, fullPath)) {
                 currentTreeItemsParent->appendChild(new TreeItemImpl(TREESOURCE_CLASS_FILE, fileName, fileName, fullPath, -1, currentTreeItemsParent));
             }
@@ -117,6 +116,11 @@ TreeItem *DirectoryTreeSource::findChildForPath(TreeItem *node, QString path)
         }
     }
     return NULL;
+}
+
+boost::shared_ptr<DirectoryTreeSource::DirectoryInfo> DirectoryTreeSource::_getDir(const QString path)
+{
+    return boost::shared_ptr<DirectoryTreeSource::DirectoryInfo>(new DirectoryInfo(path));
 }
 
 }

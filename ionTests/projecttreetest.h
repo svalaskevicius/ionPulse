@@ -18,9 +18,30 @@
 #include <ionParticles/ionProject/treemodeladapter.h>
 #include <ionParticles/ionProject/directorytreesource.h>
 
+#include <boost/fusion/algorithm/iteration/accumulate.hpp>
+#include <boost/fusion/include/accumulate.hpp>
+
+#include "gmock/gmock.h"
+
 using namespace IonProject;
 using namespace IonProject::Private;
 
+namespace IonTests {
+
+class MockedDirectoryTreeSourceDirInfo : public IonProject::Private::DirectoryTreeSource::DirectoryInfo {
+public:
+    MockedDirectoryTreeSourceDirInfo() : IonProject::Private::DirectoryTreeSource::DirectoryInfo("") {}
+    MOCK_METHOD0(dirnames, QStringList ());
+    MOCK_METHOD0(filenames, QStringList ());
+    MOCK_METHOD0(absolutePath, QString ());
+};
+class MockedDirectoryTreeSource : public IonProject::Private::DirectoryTreeSource {
+public:
+    MockedDirectoryTreeSource(QString path) : IonProject::Private::DirectoryTreeSource(path) {}
+    MOCK_METHOD1(_getDir, boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> (const QString));
+};
+
+}
 namespace IonTests {
 
 class MockTreeSource : public TreeModelSource {
@@ -43,10 +64,43 @@ public:
     }
 };
 
+struct TreeItemPrinter {
+    QString operator()(TreeItem *item, int indent=0) {
+        QString ret = "";
+        for (int i = indent; i>0; i--) {
+            ret += "    ";
+        }
+        ret += item->data(0).toString();
+        ret += "\n";
+        foreach (TreeItem *child, item->getChildren()) {
+            ret += (*this)(child, indent+1);
+        }
+        return ret;
+    }
+};
+struct TreeItemAddressPrinter {
+    QString operator()(TreeItem *item, int indent=0) {
+        QString ret = "";
+        for (int i = indent; i>0; i--) {
+            ret += "    ";
+        }
+        ret += QString("0x%1").arg((unsigned long)item);
+        ret += "\n";
+        foreach (TreeItem *child, item->getChildren()) {
+            ret += (*this)(child, indent+1);
+        }
+        return ret;
+    }
+};
 
 class ProjectDirectoryTreeSourceTest : public QObject
 {
     Q_OBJECT
+
+private:
+    QString dumpItemsTree(const TreeItem *root) {
+        return "";
+    }
 
 private Q_SLOTS:
     void test_if_getTitleIsForDirectoryTree() {
@@ -55,6 +109,67 @@ private Q_SLOTS:
 
         QCOMPARE(ds.getTitle(), QString("Project Browser"));
     }
+    void test_if_getSetupCreatesDirTree() {
+        MockedDirectoryTreeSourceDirInfo *pRoot = new MockedDirectoryTreeSourceDirInfo();
+        EXPECT_CALL(*pRoot, dirnames()).WillOnce(testing::Return(QStringList("l1dir1")));
+        EXPECT_CALL(*pRoot, filenames()).WillOnce(testing::Return(QStringList() << "l1file1" << "l1file2"));
+        EXPECT_CALL(*pRoot, absolutePath()).Times(testing::AnyNumber());
+        ON_CALL(*pRoot, absolutePath()).WillByDefault(testing::Return("root/"));
+        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
+
+        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
+        EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), dirnames()).WillOnce(testing::Return(QStringList()));
+        EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), filenames()).WillOnce(testing::Return(QStringList() << "l2file1" << "l2file2"));
+        EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).Times(testing::AnyNumber());
+        ON_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).WillByDefault(testing::Return("root/l1dir1/"));
+
+        MockedDirectoryTreeSource source("root/");
+        EXPECT_CALL(source, _getDir(testing::Eq("root/"))).WillOnce(testing::ReturnPointee(&root));
+        EXPECT_CALL(source, _getDir(testing::Eq("root//l1dir1/"))).WillOnce(testing::Return(l1));
+
+        boost::shared_ptr<TreeItem> rootTreeItem(source.setupData());
+
+        TreeItemPrinter printer;
+
+        QCOMPARE(
+            printer(rootTreeItem.get()),
+            QString(
+                "Name\n"
+                "    l1dir1\n"
+                "        l2file1\n"
+                "        l2file2\n"
+                "    l1file1\n"
+                "    l1file2\n"
+            )
+        );
+    }
+
+    void test_if_getSetupUpdatesDirTreeAndKeepsSameNodes() {
+        MockedDirectoryTreeSourceDirInfo *pRoot = new MockedDirectoryTreeSourceDirInfo();
+        EXPECT_CALL(*pRoot, dirnames()).WillRepeatedly(testing::Return(QStringList("l1dir1")));
+        EXPECT_CALL(*pRoot, filenames()).WillRepeatedly(testing::Return(QStringList() << "l1file1" << "l1file2"));
+        EXPECT_CALL(*pRoot, absolutePath()).Times(testing::AnyNumber());
+        ON_CALL(*pRoot, absolutePath()).WillByDefault(testing::Return("root/"));
+        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
+
+        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
+        EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), dirnames()).WillRepeatedly(testing::Return(QStringList()));
+        EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), filenames()).WillRepeatedly(testing::Return(QStringList() << "l2file1" << "l2file2"));
+        EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).Times(testing::AnyNumber());
+        ON_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).WillByDefault(testing::Return("root/l1dir1/"));
+
+        MockedDirectoryTreeSource source("root/");
+        EXPECT_CALL(source, _getDir(testing::Eq("root/"))).WillRepeatedly(testing::Return(root));
+        EXPECT_CALL(source, _getDir(testing::Eq("root//l1dir1/"))).WillRepeatedly(testing::Return(l1));
+
+        boost::shared_ptr<TreeItem> rootTreeItem(source.setupData());
+
+        TreeItemAddressPrinter printer;
+        QString addresses = printer(rootTreeItem.get());
+
+        QCOMPARE(printer(source.setupData()), addresses);
+    }
+
 };
 
 
