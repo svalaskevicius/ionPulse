@@ -109,7 +109,7 @@ private Q_SLOTS:
 
         QCOMPARE(ds.getTitle(), QString("Project Browser"));
     }
-    void test_if_getSetupCreatesDirTree() {
+    void test_if_setupData_createsDirTree() {
         MockedDirectoryTreeSourceDirInfo *pRoot = new MockedDirectoryTreeSourceDirInfo();
         EXPECT_CALL(*pRoot, dirnames()).WillOnce(testing::Return(QStringList("l1dir1")));
         EXPECT_CALL(*pRoot, filenames()).WillOnce(testing::Return(QStringList() << "l1file1" << "l1file2"));
@@ -144,7 +144,7 @@ private Q_SLOTS:
         );
     }
 
-    void test_if_getSetupUpdatesDirTreeAndKeepsSameNodes() {
+    void test_if_setupData_updatesDirTreeAndKeepsSameNodes() {
         MockedDirectoryTreeSourceDirInfo *pRoot = new MockedDirectoryTreeSourceDirInfo();
         EXPECT_CALL(*pRoot, dirnames()).WillRepeatedly(testing::Return(QStringList("l1dir1")));
         EXPECT_CALL(*pRoot, filenames()).WillRepeatedly(testing::Return(QStringList() << "l1file1" << "l1file2"));
