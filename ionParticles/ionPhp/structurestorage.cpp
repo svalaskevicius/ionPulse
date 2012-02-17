@@ -66,7 +66,7 @@ QSharedPointer<QSqlQuery> StructureStorage::getFile(QString filename)
 QSharedPointer<QSqlQuery> StructureStorage::getFileClasses(int fileId)
 {
     QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
-    query->prepare("select classes.id, classname, filename, line_nr from classes left join files on files.id=classes.file_id where files.id=:file_id");
+    query->prepare("select classes.id, classname, filename, line_nr from classes left join files on files.id=classes.file_id where files.id=:file_id order by line_nr");
     query->bindValue("file_id", fileId);
     if (!query->exec()) {
         DEBUG_MSG(query->lastError());
@@ -78,7 +78,7 @@ QSharedPointer<QSqlQuery> StructureStorage::getFileClasses(int fileId)
 QSharedPointer<QSqlQuery> StructureStorage::getClassMethods(int classId)
 {
     QSharedPointer<QSqlQuery> query(new QSqlQuery(db));
-    query->prepare("select methods.id, methodname, filename, line_nr from methods left join files on files.id=file_id where class_id=:class_id");
+    query->prepare("select methods.id, methodname, filename, line_nr from methods left join files on files.id=file_id where class_id=:class_id order by line_nr asc");
     query->bindValue("class_id", classId);
     if (!query->exec()) {
         DEBUG_MSG(query->lastError());
