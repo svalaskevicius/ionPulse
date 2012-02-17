@@ -92,6 +92,7 @@ protected:
     void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
     void closeEvent ( QCloseEvent * event ) {emit(editorClosing(this)); QWidget::closeEvent( event );}
     void focusInEvent ( QFocusEvent * event ) {emit(editorFocusing(this)); QWidget::focusInEvent( event );}
+    virtual void scrollContentsBy (int dx, int dy) {QPlainTextEdit::scrollContentsBy (  dx,  dy );viewport()->update();}
 private:
     QList<EditorComponent* > components;
     QSyntaxHighlighter *highlighter;

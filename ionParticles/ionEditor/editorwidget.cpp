@@ -32,6 +32,8 @@ EditorWidget::EditorWidget(QString filePath)
     font.setPointSize(14);
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);
+    setFont(font);
+
     QFile f(filePath);
     if (f.open(QFile::ReadOnly)) {
         setPlainText(QTextStream(&f).readAll());
