@@ -31,13 +31,13 @@ public:
 private:
     inline QList<TreeItem*>::iterator &processIterator(QString prefix, QList<TreeItem*> &children, QList<TreeItem*>::iterator &it) {
         if (TREESOURCE_CLASS_DIR == (*it)->getItemClass()) {
-            if (dirnames.end() == findPathNode(prefix,  (*it)->getPath(), dirnames)) {
+            if (dirnames.end() == findPathNode(prefix, "/", (*it)->getPath(), dirnames)) {
                 delete *it;
                 it = children.erase(it);
                 return it;
             }
         } else if (TREESOURCE_CLASS_FILE == (*it)->getItemClass()) {
-            if (filenames.end() == findPathNode(prefix,  (*it)->getPath(), filenames)) {
+            if (filenames.end() == findPathNode(prefix, "", (*it)->getPath(), filenames)) {
                 delete *it;
                 it = children.erase(it);
                 return it;
@@ -45,10 +45,10 @@ private:
         }
         return ++it;
     }
-    inline QStringList::Iterator findPathNode(QString prefix, QString path, QStringList paths)
+    inline QStringList::iterator findPathNode(QString prefix, QString suffix, QString path, QStringList &paths)
     {
-        for (QStringList::Iterator it = paths.begin(); it!=paths.end(); it++) {
-            if (prefix + (*it) == path) {
+        for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++) {
+            if (prefix + (*it) + suffix == path) {
                 return it;
             }
         }
