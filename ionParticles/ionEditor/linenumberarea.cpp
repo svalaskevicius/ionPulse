@@ -35,15 +35,19 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
 
     QTextBlock block = ionText->getEditorInfo().firstVisibleBlock();
     int blockNumber = block.blockNumber();
-    int top = (int) ionText->getEditorInfo().blockBoundingGeometry(block).translated(ionText->getEditorInfo().contentOffset()).top();
-    int bottom = top + (int) ionText->getEditorInfo().blockBoundingRect(block).height();
+    double top = (int) ionText->getEditorInfo().blockBoundingGeometry(block).translated(ionText->getEditorInfo().contentOffset()).top();
+    double bottom = top + (int) ionText->getEditorInfo().blockBoundingRect(block).height();
 
     QFont font("Monaco");
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
-    font.setPixelSize(12);
+    font.setPointSize(12);
     painter.setFont(font);
+    int fontHeight = painter.fontMetrics().height();
+
     bool resetColor = true;
     while (block.isValid() && top <= event->rect().bottom()) {
+        double blockHeight = ionText->getEditorInfo().blockBoundingRect(block).height();
+
         if (block.isVisible() && bottom >= event->rect().top()) {
             if (blockNumber == currentLine) {
                 painter.setPen(QColor(0x70, 0x70, 0x70));
@@ -56,9 +60,9 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
             painter.drawText(
                         QRectF(
                             3,
-                            top + 1,
+                            top + (blockHeight / block.lineCount() - fontHeight) / 2.0f - 1,
                             this->width()-5,
-                            ionText->getEditorInfo().blockBoundingRect(block).height()
+                            blockHeight
                             ),
                         Qt::AlignRight,
                         QString::number(blockNumber + 1)
@@ -67,7 +71,7 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
 
         block = block.next();
         top = bottom;
-        bottom = top + (int) ionText->getEditorInfo().blockBoundingRect(block).height();
+        bottom = top + blockHeight;
         ++blockNumber;
     }
 }
