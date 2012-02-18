@@ -47,6 +47,7 @@ change QSharedPtr to boost::shared_ptr which works
 
 #### layout manager
 * vertical/horizontal split source code tabs e.g. for tests/code
+* support center, north, west, south, east directions to add sub-zones/panels
 
 ### 0.3 CODE REVIEW, documentation
 
