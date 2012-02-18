@@ -58,15 +58,15 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
             }
 
             painter.drawText(
-                        QRectF(
-                            3,
-                            top + (blockHeight / block.lineCount() - fontHeight) / 2.0f - 1,
-                            this->width()-5,
-                            blockHeight
-                            ),
-                        Qt::AlignRight,
-                        QString::number(blockNumber + 1)
-                        );
+                QRectF(
+                    3,
+                    top + (blockHeight / block.lineCount() - fontHeight) / 2.0f - 1,
+                    this->width()-5,
+                    blockHeight
+                ),
+                Qt::AlignRight,
+                QString::number(blockNumber + 1)
+            );
         }
 
         block = block.next();
