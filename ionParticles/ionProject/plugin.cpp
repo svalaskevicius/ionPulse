@@ -10,11 +10,10 @@
 
 #include <QtPlugin>
 #include <ionCore/shared.h>
-#include "treeview.h"
+#include "treeviewpanel.h"
 #include "treemodeladapter.h"
 #include "treeitem.h"
 #include "directorytreesource.h"
-#include "treeviewitemdelegate.h"
 
 
 #include <QMenuBar>
@@ -90,11 +89,9 @@ QSharedPointer<TreeModelAdapter> Plugin::getProjectFileTreeModel()
 
 void Plugin::addTreeWidget(QSharedPointer<TreeModelAdapter> model)
 {
-    Private::TreeView *fileTree = new Private::TreeView(model);
-    Private::TreeViewItemDelegate *viewItemDelegate = new Private::TreeViewItemDelegate(model, fileTree);
-    fileTree->setItemDelegate(viewItemDelegate);
+    Private::TreeViewPanel *fileTree = new Private::TreeViewPanel(model);
     layoutManager->add(fileTree);
-    connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
+    connect(fileTree->getTreeView(), SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
 
 void Plugin::addTreeWidget(QSharedPointer<TreeModelSource> modelSource)
