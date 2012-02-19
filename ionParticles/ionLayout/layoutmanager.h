@@ -125,6 +125,7 @@ public:
     virtual void show();
     void resizeChildren();
     int indexOf(QWidget *);
+    int indexOf(QString);
 };
 
 class ZoneNodeRoot : public ZoneNodeBranch {
@@ -146,11 +147,12 @@ protected:
     }
 };
 
-class ZoneNodeLeaf : public QTabWidget, public ZoneNode
+class ZoneNodeLeaf : public QObject, public ZoneNode
 {
     Q_OBJECT
 protected:
     ZoneNodeBranch *parent;
+    QTabWidget *tabWidget;
 public:
     ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef);
     virtual ~ZoneNodeLeaf();

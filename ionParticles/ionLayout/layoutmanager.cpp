@@ -132,6 +132,13 @@ int ZoneNodeBranch::indexOf(QWidget *child)
 }
 
 
+int ZoneNodeBranch::indexOf(QString childName)
+{
+    if (subZones.contains(childName)) {
+        return indexOf(subZones[childName]->getWidget());
+    }
+    return -1;
+}
 
 
 ///////////
@@ -141,9 +148,10 @@ int ZoneNodeBranch::indexOf(QWidget *child)
 
 
 ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
-    : QTabWidget(parent->getWidget()), ZoneNode(parent, zoneDef), parent(parent)
+    : ZoneNode(parent, zoneDef), parent(parent)
 {
-    connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
+    tabWidget = new QTabWidget(parent->getWidget());
+    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
 }
 ZoneNodeLeaf::~ZoneNodeLeaf()
 {
@@ -155,7 +163,7 @@ ZoneNodeLeaf *ZoneNodeLeaf::getZoneLeaf()
 }
 QTabWidget *ZoneNodeLeaf::getZoneContents()
 {
-    return this;
+    return tabWidget;
 }
 ZoneNode *ZoneNodeLeaf::findSubZone(QStringList &path) throw()
 {
@@ -164,19 +172,19 @@ ZoneNode *ZoneNodeLeaf::findSubZone(QStringList &path) throw()
 }
 QWidget *ZoneNodeLeaf::getWidget()
 {
-    return this;
+    return tabWidget;
 }
 void ZoneNodeLeaf::show()
 {
-    QTabWidget::show();
+    tabWidget->show();
     ZoneNode::show();
 }
 ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
-    parent->addSubZone(br, parent->indexOf(this));
+    parent->addSubZone(br, parent->indexOf(tabWidget));
     br->addSubZone(this);
     parent = br;
-    if (this->isHidden()) {
+    if (tabWidget->isHidden()) {
         br->getWidget()->hide();
     }
     return br;
@@ -184,14 +192,14 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
 
 void ZoneNodeLeaf::closeAndRemoveTab( int index )
 {
-    QWidget *w = widget(index);
+    QWidget *w = tabWidget->widget(index);
     if (w->close()) {
-        removeTab(index);
+        tabWidget->removeTab(index);
         delete w;
     }
-    int idx = currentIndex();
+    int idx = tabWidget->currentIndex();
     if (idx >= 0) {
-        widget(idx)->setFocus();
+        tabWidget->widget(idx)->setFocus();
     }
 }
 
@@ -228,21 +236,21 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
    ZoneNodeBranch *parentNode = root->getZone(zone.parentPath)->getZoneAsBranch();
    Q_ASSERT(parentNode);
    ZoneNodeLeaf *leaf = new ZoneNodeLeaf(parentNode, zone);
-   ZoneNode *pos;
+   int pos;
    signed int index = -1;
 
-   if ( zone.after.length() && (pos = parentNode->findSubZone(QStringList() << zone.after)) ) {
-       index = 1 + parentNode->indexOf(pos->getWidget());
-   } else if ( zone.before.length() && (pos = parentNode->findSubZone(QStringList() << zone.before)) ) {
-       index = parentNode->indexOf(pos->getWidget());
+   if ( zone.after.length() && ((pos = parentNode->indexOf(zone.after)) >= 0) ) {
+       index = 1 + pos;
+   } else if ( zone.before.length() && ((pos = parentNode->indexOf(zone.before)) >= 0) ) {
+       index = pos;
    }
    parentNode->addSubZone(leaf, index);
 
-   leaf->setTabsClosable(zone.childrenClosable);
-   leaf->setMovable(true);
+   leaf->getZoneContents()->setTabsClosable(zone.childrenClosable);
+   leaf->getZoneContents()->setMovable(true);
 
    if (zone.hideIfEmpty) {
-       leaf->hide();
+       leaf->getWidget()->hide();
    } else {
        leaf->show();
    }
