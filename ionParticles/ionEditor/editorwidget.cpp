@@ -129,7 +129,7 @@ std::pair<int, int> EditorWidget::getSelectedBlockRange()
         blockStart = blockEnd;
         blockEnd = tmp;
     }
-    return std::make_pair<int, int>(blockStart, blockEnd);
+    return std::make_pair(blockStart, blockEnd);
 }
 
 void EditorWidget::keyReleaseEvent(QKeyEvent * e)
