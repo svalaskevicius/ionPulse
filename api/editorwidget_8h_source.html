@@ -168,27 +168,28 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00092"></a>00092     <span class="keywordtype">void</span> addCurrentLineExtraSelection(QList&lt;QTextEdit::ExtraSelection&gt; &amp;extraSelections);
 <a name="l00093"></a>00093     <span class="keywordtype">void</span> closeEvent ( QCloseEvent * event ) {emit(editorClosing(<span class="keyword">this</span>)); QWidget::closeEvent( event );}
 <a name="l00094"></a>00094     <span class="keywordtype">void</span> focusInEvent ( QFocusEvent * event ) {emit(editorFocusing(<span class="keyword">this</span>)); QWidget::focusInEvent( event );}
-<a name="l00095"></a>00095 <span class="keyword">private</span>:
-<a name="l00096"></a>00096     QList&lt;EditorComponent* &gt; components;
-<a name="l00097"></a>00097     QSyntaxHighlighter *highlighter;
-<a name="l00098"></a>00098     QMap&lt;QEvent::Type, QList&lt;EditorComponent *&gt; &gt; eventListeners;
-<a name="l00099"></a>00099     QString filePath;
-<a name="l00100"></a>00100     ComponentInfo componentInfo;
-<a name="l00101"></a>00101 signals:
-<a name="l00102"></a>00102     <span class="keywordtype">void</span> editorClosing( Editor *editor );
-<a name="l00103"></a>00103     <span class="keywordtype">void</span> editorFocusing( Editor *editor );
-<a name="l00104"></a>00104     <span class="keywordtype">void</span> updatePanelTitle( <a class="code" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">IonLayout::PanelWidget</a> *panel );
-<a name="l00105"></a>00105 <span class="keyword">public</span> slots:
-<a name="l00106"></a>00106 <span class="keyword">public</span>:
-<a name="l00107"></a>00107     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a8546eeda299b77621ebdd34b10806b34" title="Save file buffer to file.">saveFile</a>();
-<a name="l00108"></a>00108 };
-<a name="l00109"></a>00109 
-<a name="l00110"></a>00110 }
-<a name="l00111"></a>00111 
-<a name="l00112"></a>00112 }
-<a name="l00113"></a>00113 
+<a name="l00095"></a>00095     <span class="keyword">virtual</span> <span class="keywordtype">void</span> scrollContentsBy (<span class="keywordtype">int</span> dx, <span class="keywordtype">int</span> dy) {QPlainTextEdit::scrollContentsBy (  dx,  dy );viewport()-&gt;update();}
+<a name="l00096"></a>00096 <span class="keyword">private</span>:
+<a name="l00097"></a>00097     QList&lt;EditorComponent* &gt; components;
+<a name="l00098"></a>00098     QSyntaxHighlighter *highlighter;
+<a name="l00099"></a>00099     QMap&lt;QEvent::Type, QList&lt;EditorComponent *&gt; &gt; eventListeners;
+<a name="l00100"></a>00100     QString filePath;
+<a name="l00101"></a>00101     ComponentInfo componentInfo;
+<a name="l00102"></a>00102 signals:
+<a name="l00103"></a>00103     <span class="keywordtype">void</span> editorClosing( Editor *editor );
+<a name="l00104"></a>00104     <span class="keywordtype">void</span> editorFocusing( Editor *editor );
+<a name="l00105"></a>00105     <span class="keywordtype">void</span> updatePanelTitle( <a class="code" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">IonLayout::PanelWidget</a> *panel );
+<a name="l00106"></a>00106 <span class="keyword">public</span> slots:
+<a name="l00107"></a>00107 <span class="keyword">public</span>:
+<a name="l00108"></a>00108     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a8546eeda299b77621ebdd34b10806b34" title="Save file buffer to file.">saveFile</a>();
+<a name="l00109"></a>00109 };
+<a name="l00110"></a>00110 
+<a name="l00111"></a>00111 }
+<a name="l00112"></a>00112 
+<a name="l00113"></a>00113 }
 <a name="l00114"></a>00114 
-<a name="l00115"></a>00115 <span class="preprocessor">#endif // IONTEXTEDITORWIDGET_H</span>
+<a name="l00115"></a>00115 
+<a name="l00116"></a>00116 <span class="preprocessor">#endif // IONTEXTEDITORWIDGET_H</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -208,7 +209,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 13 2012 22:10:08 for IonPulse IDE by &#160;<a href="http://www.doxygen.org/index.html">
+Generated API documentation for IonPulse IDE - <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>

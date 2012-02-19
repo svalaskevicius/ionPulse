@@ -110,7 +110,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00030"></a>00030     <span class="keywordtype">bool</span> first = <span class="keyword">true</span>;
 <a name="l00031"></a>00031     <span class="keywordflow">foreach</span> (TreeItem *current, treeModel-&gt;getRangeItems(index)) {
 <a name="l00032"></a>00032         <span class="keywordflow">if</span> (!first) {
-<a name="l00033"></a>00033             <span class="keyword">const</span> <span class="keywordtype">char</span> s[] = {0xc2, 0xbb, 0x00};<span class="comment">// right double angle</span>
+<a name="l00033"></a>00033             <span class="keyword">const</span> <span class="keywordtype">char</span> s[] = {(<span class="keyword">const</span> char)0xc2, (<span class="keyword">const</span> <span class="keywordtype">char</span>)0xbb, 0x00};<span class="comment">// right double angle</span>
 <a name="l00034"></a>00034             opt.text = QString::fromUtf8(s);
 <a name="l00035"></a>00035             opt.rect.setLeft(opt.rect.left() + 4);
 <a name="l00036"></a>00036             QApplication::style()-&gt;drawControl(QStyle::CE_ItemViewItem, &amp;opt, painter);
@@ -164,7 +164,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 13 2012 22:10:09 for IonPulse IDE by &#160;<a href="http://www.doxygen.org/index.html">
+Generated API documentation for IonPulse IDE - <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>

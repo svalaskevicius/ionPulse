@@ -146,7 +146,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00066"></a>00066 QSharedPointer&lt;QSqlQuery&gt; StructureStorage::getFileClasses(<span class="keywordtype">int</span> fileId)
 <a name="l00067"></a>00067 {
 <a name="l00068"></a>00068     QSharedPointer&lt;QSqlQuery&gt; query(<span class="keyword">new</span> QSqlQuery(db));
-<a name="l00069"></a>00069     query-&gt;prepare(<span class="stringliteral">&quot;select classes.id, classname, filename, line_nr from classes left join files on files.id=classes.file_id where files.id=:file_id&quot;</span>);
+<a name="l00069"></a>00069     query-&gt;prepare(<span class="stringliteral">&quot;select classes.id, classname, filename, line_nr from classes left join files on files.id=classes.file_id where files.id=:file_id order by line_nr&quot;</span>);
 <a name="l00070"></a>00070     query-&gt;bindValue(<span class="stringliteral">&quot;file_id&quot;</span>, fileId);
 <a name="l00071"></a>00071     <span class="keywordflow">if</span> (!query-&gt;exec()) {
 <a name="l00072"></a>00072         DEBUG_MSG(query-&gt;lastError());
@@ -158,7 +158,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00078"></a>00078 QSharedPointer&lt;QSqlQuery&gt; StructureStorage::getClassMethods(<span class="keywordtype">int</span> classId)
 <a name="l00079"></a>00079 {
 <a name="l00080"></a>00080     QSharedPointer&lt;QSqlQuery&gt; query(<span class="keyword">new</span> QSqlQuery(db));
-<a name="l00081"></a>00081     query-&gt;prepare(<span class="stringliteral">&quot;select methods.id, methodname, filename, line_nr from methods left join files on files.id=file_id where class_id=:class_id&quot;</span>);
+<a name="l00081"></a>00081     query-&gt;prepare(<span class="stringliteral">&quot;select methods.id, methodname, filename, line_nr from methods left join files on files.id=file_id where class_id=:class_id order by line_nr asc&quot;</span>);
 <a name="l00082"></a>00082     query-&gt;bindValue(<span class="stringliteral">&quot;class_id&quot;</span>, classId);
 <a name="l00083"></a>00083     <span class="keywordflow">if</span> (!query-&gt;exec()) {
 <a name="l00084"></a>00084         DEBUG_MSG(query-&gt;lastError());
@@ -323,7 +323,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 13 2012 22:10:08 for IonPulse IDE by &#160;<a href="http://www.doxygen.org/index.html">
+Generated API documentation for IonPulse IDE - <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>

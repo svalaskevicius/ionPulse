@@ -75,7 +75,25 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="contents">
 <div class="textblock"><p>This documentation contains API definitions for both the main IonPulse application under <a class="el" href="namespace_ion_core.html" title="Holds the bare window creation and plugin management functionality.">IonCore</a> namespace and the included set of plugins each under their own namespaces.</p>
-<p>Please see *Namespaces* section for the detailed information. </p>
+<p>Please see *Namespaces* section for the detailed information.</p>
+<p>To build and develop IonPulse IDE one should install:</p>
+<ul>
+<li>Gcc 4.6.2 or higher, to support C++11 standard;</li>
+<li>Qt 4.8 or higher;</li>
+<li>Boost;</li>
+<li>Bison and Flex;</li>
+<li>Sqlite 3;</li>
+<li>GoogleMock.</li>
+</ul>
+<p>PLATFORM SPECIFIC instructions:</p>
+<ul>
+<li>MAC OSX</li>
+</ul>
+<p>As Apple is not a friend of not-only-for-apple developers, one has to manually build the required GCC version required. Please see these links for more instructions:</p>
+<ul>
+<li><a href="http://solarianprogrammer.com/2011/12/01/compiling-gcc-4-6-2-on-mac-osx-lion/">http://solarianprogrammer.com/2011/12/01/compiling-gcc-4-6-2-on-mac-osx-lion/</a></li>
+<li><a href="http://stackoverflow.com/questions/9102030/g-4-6-adds-a-space-between-f-and-the-path-when-calling-ld-on-mac-os-x/9345746#9345746">http://stackoverflow.com/questions/9102030/g-4-6-adds-a-space-between-f-and-the-path-when-calling-ld-on-mac-os-x/9345746#9345746</a> </li>
+</ul>
 </div></div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -94,7 +112,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 13 2012 22:10:08 for IonPulse IDE by &#160;<a href="http://www.doxygen.org/index.html">
+Generated API documentation for IonPulse IDE - <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>

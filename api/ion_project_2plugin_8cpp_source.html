@@ -90,110 +90,107 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00010"></a>00010 
 <a name="l00011"></a>00011 <span class="preprocessor">#include &lt;QtPlugin&gt;</span>
 <a name="l00012"></a>00012 <span class="preprocessor">#include &lt;ionCore/shared.h&gt;</span>
-<a name="l00013"></a>00013 <span class="preprocessor">#include &quot;treeview.h&quot;</span>
+<a name="l00013"></a>00013 <span class="preprocessor">#include &quot;treeviewpanel.h&quot;</span>
 <a name="l00014"></a>00014 <span class="preprocessor">#include &quot;treemodeladapter.h&quot;</span>
 <a name="l00015"></a>00015 <span class="preprocessor">#include &quot;treeitem.h&quot;</span>
 <a name="l00016"></a>00016 <span class="preprocessor">#include &quot;directorytreesource.h&quot;</span>
-<a name="l00017"></a>00017 <span class="preprocessor">#include &quot;treeviewitemdelegate.h&quot;</span>
+<a name="l00017"></a>00017 
 <a name="l00018"></a>00018 
-<a name="l00019"></a>00019 
-<a name="l00020"></a>00020 <span class="preprocessor">#include &lt;QMenuBar&gt;</span>
-<a name="l00021"></a>00021 <span class="preprocessor">#include &lt;QFileDialog&gt;</span>
-<a name="l00022"></a>00022 
-<a name="l00023"></a>00023 <span class="keyword">namespace </span>IonProject {
-<a name="l00024"></a>00024 <span class="keyword">namespace </span>Private {
+<a name="l00019"></a>00019 <span class="preprocessor">#include &lt;QMenuBar&gt;</span>
+<a name="l00020"></a>00020 <span class="preprocessor">#include &lt;QFileDialog&gt;</span>
+<a name="l00021"></a>00021 
+<a name="l00022"></a>00022 <span class="keyword">namespace </span>IonProject {
+<a name="l00023"></a>00023 <span class="keyword">namespace </span>Private {
+<a name="l00024"></a>00024 
 <a name="l00025"></a>00025 
-<a name="l00026"></a>00026 
-<a name="l00027"></a>00027 QSharedPointer&lt;TreeModelSource&gt; Plugin::_defaultTreeModelSourceFactory::operator()(QString dirname) {
-<a name="l00028"></a>00028     <span class="keywordflow">return</span> QSharedPointer&lt;TreeModelSource&gt;(<span class="keyword">new</span> Private::DirectoryTreeSource(dirname));
-<a name="l00029"></a>00029 }
-<a name="l00030"></a>00030 
-<a name="l00031"></a>00031 Plugin::Plugin(QObject *parent) :
-<a name="l00032"></a>00032     QObject(parent), editorPlugin(NULL), layoutManager(NULL), projectTreeModel(NULL), _treeModelSourceFactory(Plugin::_defaultTreeModelSourceFactory())
-<a name="l00033"></a>00033 {
-<a name="l00034"></a>00034 }
-<a name="l00035"></a>00035 
-<a name="l00036"></a>00036 <span class="keyword">const</span> boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; &amp;Plugin::getTreeModelSourceFactory()
-<a name="l00037"></a>00037 {
-<a name="l00038"></a>00038     <span class="keywordflow">return</span> _treeModelSourceFactory;
-<a name="l00039"></a>00039 }
-<a name="l00040"></a>00040 
-<a name="l00041"></a>00041 <span class="keywordtype">void</span> Plugin::setTreeModelSourceFactory(boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; factory)
-<a name="l00042"></a>00042 {
-<a name="l00043"></a>00043     _treeModelSourceFactory = factory;
-<a name="l00044"></a>00044 }
-<a name="l00045"></a>00045 
-<a name="l00046"></a>00046 <span class="keywordtype">void</span> Plugin::postLoad()
-<a name="l00047"></a>00047 {
-<a name="l00048"></a>00048     Q_ASSERT(editorPlugin);
-<a name="l00049"></a>00049     Q_ASSERT(mainWindow);
-<a name="l00050"></a>00050 
-<a name="l00051"></a>00051     QMenuBar *menuBar = mainWindow-&gt;menuBar();
-<a name="l00052"></a>00052     QMenu *projectMenu = menuBar-&gt;addMenu(<span class="stringliteral">&quot;&amp;Project&quot;</span>);
-<a name="l00053"></a>00053     projectMenu-&gt;addAction(<span class="stringliteral">&quot;&amp;New from source&quot;</span>, <span class="keyword">this</span>, SLOT(onNewProject()));
-<a name="l00054"></a>00054     projectMenu-&gt;addAction(<span class="stringliteral">&quot;&amp;Update&quot;</span>, <span class="keyword">this</span>, SLOT(onUpdateProject()), QKeySequence(Qt::Key_F5));
-<a name="l00055"></a>00055 
-<a name="l00056"></a>00056     addTreeWidget(getProjectFileTreeModel());
-<a name="l00057"></a>00057 }
-<a name="l00058"></a>00058 
-<a name="l00059"></a>00059 <span class="keywordtype">void</span> Plugin::onNewProject()
-<a name="l00060"></a>00060 {
-<a name="l00061"></a>00061     QString dir = QFileDialog::getExistingDirectory(mainWindow, tr(<span class="stringliteral">&quot;Open Directory&quot;</span>));
-<a name="l00062"></a>00062     <span class="keywordflow">if</span> (dir.length()) {
-<a name="l00063"></a>00063         getProjectFileTreeModel()-&gt;setDirectoryTreeSource(getTreeModelSourceFactory()(dir));
-<a name="l00064"></a>00064     }
-<a name="l00065"></a>00065 }
-<a name="l00066"></a>00066 
-<a name="l00067"></a>00067 <span class="keywordtype">void</span> Plugin::onUpdateProject()
-<a name="l00068"></a>00068 {
-<a name="l00069"></a>00069     getProjectFileTreeModel()-&gt;updateFromSource();
-<a name="l00070"></a>00070 }
-<a name="l00071"></a>00071 
-<a name="l00072"></a>00072 <span class="keywordtype">void</span> Plugin::addParent(BasicPlugin *parent) {
-<a name="l00073"></a>00073     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a>, editorPlugin = target);
-<a name="l00074"></a>00074     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_layout_1_1_layout_plugin.html" title="The interface of the IonLayout plugin.">IonLayout::LayoutPlugin</a>, layoutManager = target-&gt;<a class="code" href="class_ion_layout_1_1_layout_plugin.html#aa7a30a5f5c1dde1e4861412641073633" title="Retrieve LayoutManager instance.">getLayoutManager</a>());
-<a name="l00075"></a>00075 }
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077 <span class="keywordtype">void</span> Plugin::openFile(QString path, <span class="keywordtype">int</span> line)
-<a name="l00078"></a>00078 {
-<a name="l00079"></a>00079     Q_ASSERT(editorPlugin);
-<a name="l00080"></a>00080     editorPlugin-&gt;openFile(path, line);
-<a name="l00081"></a>00081 }
-<a name="l00082"></a>00082 
-<a name="l00083"></a>00083 QSharedPointer&lt;TreeModelAdapter&gt; Plugin::getProjectFileTreeModel()
-<a name="l00084"></a>00084 {
-<a name="l00085"></a>00085     <span class="keywordflow">if</span> (!projectTreeModel) {
-<a name="l00086"></a>00086         projectTreeModel = QSharedPointer&lt;TreeModelAdapter&gt;(<span class="keyword">new</span> Private::TreeModelAdapter(getTreeModelSourceFactory()(<span class="stringliteral">&quot;&quot;</span>)));
-<a name="l00087"></a>00087     }
-<a name="l00088"></a>00088     <span class="keywordflow">return</span> projectTreeModel;
-<a name="l00089"></a>00089 }
-<a name="l00090"></a>00090 
-<a name="l00091"></a>00091 <span class="keywordtype">void</span> Plugin::addTreeWidget(QSharedPointer&lt;TreeModelAdapter&gt; model)
-<a name="l00092"></a>00092 {
-<a name="l00093"></a>00093     Private::TreeView *fileTree = <span class="keyword">new</span> Private::TreeView(model);
-<a name="l00094"></a>00094     Private::TreeViewItemDelegate *viewItemDelegate = <span class="keyword">new</span> Private::TreeViewItemDelegate(model, fileTree);
-<a name="l00095"></a>00095     fileTree-&gt;setItemDelegate(viewItemDelegate);
-<a name="l00096"></a>00096     layoutManager-&gt;add(fileTree);
-<a name="l00097"></a>00097     connect(fileTree, SIGNAL(fileActivated(QString, <span class="keywordtype">int</span>)), <span class="keyword">this</span>, SLOT(openFile(QString, <span class="keywordtype">int</span>)));
-<a name="l00098"></a>00098 }
-<a name="l00099"></a>00099 
-<a name="l00100"></a>00100 <span class="keywordtype">void</span> Plugin::addTreeWidget(QSharedPointer&lt;TreeModelSource&gt; modelSource)
-<a name="l00101"></a>00101 {
-<a name="l00102"></a>00102     QSharedPointer&lt;TreeModelAdapter&gt; model(<span class="keyword">new</span> Private::TreeModelAdapter(modelSource));
-<a name="l00103"></a>00103     addTreeWidget(model);
-<a name="l00104"></a>00104 }
-<a name="l00105"></a>00105 
-<a name="l00106"></a>00106 QSharedPointer&lt;TreeItemFactory&gt; Plugin::createTreeItemFactory()
-<a name="l00107"></a>00107 {
-<a name="l00108"></a>00108     <span class="keywordflow">return</span> QSharedPointer&lt;TreeItemFactory&gt;(<span class="keyword">new</span> Private::TreeItemFactoryImpl());
+<a name="l00026"></a>00026 QSharedPointer&lt;TreeModelSource&gt; Plugin::_defaultTreeModelSourceFactory::operator()(QString dirname) {
+<a name="l00027"></a>00027     <span class="keywordflow">return</span> QSharedPointer&lt;TreeModelSource&gt;(<span class="keyword">new</span> Private::DirectoryTreeSource(dirname));
+<a name="l00028"></a>00028 }
+<a name="l00029"></a>00029 
+<a name="l00030"></a>00030 Plugin::Plugin(QObject *parent) :
+<a name="l00031"></a>00031     QObject(parent), editorPlugin(NULL), layoutManager(NULL), projectTreeModel(NULL), _treeModelSourceFactory(Plugin::_defaultTreeModelSourceFactory())
+<a name="l00032"></a>00032 {
+<a name="l00033"></a>00033 }
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035 <span class="keyword">const</span> boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; &amp;Plugin::getTreeModelSourceFactory()
+<a name="l00036"></a>00036 {
+<a name="l00037"></a>00037     <span class="keywordflow">return</span> _treeModelSourceFactory;
+<a name="l00038"></a>00038 }
+<a name="l00039"></a>00039 
+<a name="l00040"></a>00040 <span class="keywordtype">void</span> Plugin::setTreeModelSourceFactory(boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; factory)
+<a name="l00041"></a>00041 {
+<a name="l00042"></a>00042     _treeModelSourceFactory = factory;
+<a name="l00043"></a>00043 }
+<a name="l00044"></a>00044 
+<a name="l00045"></a>00045 <span class="keywordtype">void</span> Plugin::postLoad()
+<a name="l00046"></a>00046 {
+<a name="l00047"></a>00047     Q_ASSERT(editorPlugin);
+<a name="l00048"></a>00048     Q_ASSERT(mainWindow);
+<a name="l00049"></a>00049 
+<a name="l00050"></a>00050     QMenuBar *menuBar = mainWindow-&gt;menuBar();
+<a name="l00051"></a>00051     QMenu *projectMenu = menuBar-&gt;addMenu(<span class="stringliteral">&quot;&amp;Project&quot;</span>);
+<a name="l00052"></a>00052     projectMenu-&gt;addAction(<span class="stringliteral">&quot;&amp;New from source&quot;</span>, <span class="keyword">this</span>, SLOT(onNewProject()));
+<a name="l00053"></a>00053     projectMenu-&gt;addAction(<span class="stringliteral">&quot;&amp;Update&quot;</span>, <span class="keyword">this</span>, SLOT(onUpdateProject()), QKeySequence(Qt::Key_F5));
+<a name="l00054"></a>00054 
+<a name="l00055"></a>00055     addTreeWidget(getProjectFileTreeModel());
+<a name="l00056"></a>00056 }
+<a name="l00057"></a>00057 
+<a name="l00058"></a>00058 <span class="keywordtype">void</span> Plugin::onNewProject()
+<a name="l00059"></a>00059 {
+<a name="l00060"></a>00060     QString dir = QFileDialog::getExistingDirectory(mainWindow, tr(<span class="stringliteral">&quot;Open Directory&quot;</span>));
+<a name="l00061"></a>00061     <span class="keywordflow">if</span> (dir.length()) {
+<a name="l00062"></a>00062         getProjectFileTreeModel()-&gt;setDirectoryTreeSource(getTreeModelSourceFactory()(dir));
+<a name="l00063"></a>00063     }
+<a name="l00064"></a>00064 }
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066 <span class="keywordtype">void</span> Plugin::onUpdateProject()
+<a name="l00067"></a>00067 {
+<a name="l00068"></a>00068     getProjectFileTreeModel()-&gt;updateFromSource();
+<a name="l00069"></a>00069 }
+<a name="l00070"></a>00070 
+<a name="l00071"></a>00071 <span class="keywordtype">void</span> Plugin::addParent(BasicPlugin *parent) {
+<a name="l00072"></a>00072     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a>, editorPlugin = target);
+<a name="l00073"></a>00073     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_layout_1_1_layout_plugin.html" title="The interface of the IonLayout plugin.">IonLayout::LayoutPlugin</a>, layoutManager = target-&gt;<a class="code" href="class_ion_layout_1_1_layout_plugin.html#aa7a30a5f5c1dde1e4861412641073633" title="Retrieve LayoutManager instance.">getLayoutManager</a>());
+<a name="l00074"></a>00074 }
+<a name="l00075"></a>00075 
+<a name="l00076"></a>00076 <span class="keywordtype">void</span> Plugin::openFile(QString path, <span class="keywordtype">int</span> line)
+<a name="l00077"></a>00077 {
+<a name="l00078"></a>00078     Q_ASSERT(editorPlugin);
+<a name="l00079"></a>00079     editorPlugin-&gt;openFile(path, line);
+<a name="l00080"></a>00080 }
+<a name="l00081"></a>00081 
+<a name="l00082"></a>00082 QSharedPointer&lt;TreeModelAdapter&gt; Plugin::getProjectFileTreeModel()
+<a name="l00083"></a>00083 {
+<a name="l00084"></a>00084     <span class="keywordflow">if</span> (!projectTreeModel) {
+<a name="l00085"></a>00085         projectTreeModel = QSharedPointer&lt;TreeModelAdapter&gt;(<span class="keyword">new</span> Private::TreeModelAdapter(getTreeModelSourceFactory()(<span class="stringliteral">&quot;&quot;</span>)));
+<a name="l00086"></a>00086     }
+<a name="l00087"></a>00087     <span class="keywordflow">return</span> projectTreeModel;
+<a name="l00088"></a>00088 }
+<a name="l00089"></a>00089 
+<a name="l00090"></a>00090 <span class="keywordtype">void</span> Plugin::addTreeWidget(QSharedPointer&lt;TreeModelAdapter&gt; model)
+<a name="l00091"></a>00091 {
+<a name="l00092"></a>00092     Private::TreeViewPanel *fileTree = <span class="keyword">new</span> Private::TreeViewPanel(model);
+<a name="l00093"></a>00093     layoutManager-&gt;add(fileTree);
+<a name="l00094"></a>00094     connect(fileTree-&gt;getTreeView(), SIGNAL(fileActivated(QString, <span class="keywordtype">int</span>)), <span class="keyword">this</span>, SLOT(openFile(QString, <span class="keywordtype">int</span>)));
+<a name="l00095"></a>00095 }
+<a name="l00096"></a>00096 
+<a name="l00097"></a>00097 <span class="keywordtype">void</span> Plugin::addTreeWidget(QSharedPointer&lt;TreeModelSource&gt; modelSource)
+<a name="l00098"></a>00098 {
+<a name="l00099"></a>00099     QSharedPointer&lt;TreeModelAdapter&gt; model(<span class="keyword">new</span> Private::TreeModelAdapter(modelSource));
+<a name="l00100"></a>00100     addTreeWidget(model);
+<a name="l00101"></a>00101 }
+<a name="l00102"></a>00102 
+<a name="l00103"></a>00103 QSharedPointer&lt;TreeItemFactory&gt; Plugin::createTreeItemFactory()
+<a name="l00104"></a>00104 {
+<a name="l00105"></a>00105     <span class="keywordflow">return</span> QSharedPointer&lt;TreeItemFactory&gt;(<span class="keyword">new</span> Private::TreeItemFactoryImpl());
+<a name="l00106"></a>00106 }
+<a name="l00107"></a>00107 
+<a name="l00108"></a>00108 
 <a name="l00109"></a>00109 }
-<a name="l00110"></a>00110 
+<a name="l00110"></a>00110 }
 <a name="l00111"></a>00111 
-<a name="l00112"></a>00112 }
-<a name="l00113"></a>00113 }
-<a name="l00114"></a>00114 
-<a name="l00115"></a>00115 
-<a name="l00116"></a>00116 Q_EXPORT_PLUGIN2 ( ionProject, IonProject::Private::Plugin )
+<a name="l00112"></a>00112 
+<a name="l00113"></a>00113 Q_EXPORT_PLUGIN2 ( ionProject, IonProject::Private::Plugin )
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -213,7 +210,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 13 2012 22:10:08 for IonPulse IDE by &#160;<a href="http://www.doxygen.org/index.html">
+Generated API documentation for IonPulse IDE - <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>
