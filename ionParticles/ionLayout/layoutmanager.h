@@ -157,12 +157,15 @@ public:
     ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef);
     virtual ~ZoneNodeLeaf();
     virtual ZoneNodeLeaf *getZoneLeaf();
-    virtual QTabWidget *getZoneContents();
     virtual ZoneNode *findSubZone(QStringList &path) throw();
     virtual ZoneNodeBranch *getZoneAsBranch();
     virtual QWidget *getWidget();
     virtual void show();
     void closeAndRemoveTab(int index);
+    void add(IonLayout::PanelWidget *panel);
+    void remove(IonLayout::PanelWidget *panel);
+    void update(IonLayout::PanelWidget *panel);
+    void focus(IonLayout::PanelWidget *panel);
 protected slots:
     void onTabCloseRequested(int index);
 };

@@ -151,6 +151,8 @@ ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
     : ZoneNode(parent, zoneDef), parent(parent)
 {
     tabWidget = new QTabWidget(parent->getWidget());
+    tabWidget->setTabsClosable(zoneDef.childrenClosable);
+    tabWidget->setMovable(true);
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
 }
 ZoneNodeLeaf::~ZoneNodeLeaf()
@@ -160,10 +162,6 @@ ZoneNodeLeaf::~ZoneNodeLeaf()
 ZoneNodeLeaf *ZoneNodeLeaf::getZoneLeaf()
 {
     return this;
-}
-QTabWidget *ZoneNodeLeaf::getZoneContents()
-{
-    return tabWidget;
 }
 ZoneNode *ZoneNodeLeaf::findSubZone(QStringList &path) throw()
 {
@@ -208,6 +206,48 @@ void ZoneNodeLeaf::onTabCloseRequested ( int index )
     closeAndRemoveTab(index);
 }
 
+void ZoneNodeLeaf::add(IonLayout::PanelWidget *panel)
+{
+    int idx = tabWidget->addTab(
+        panel->getWidget(),
+        panel->getPanelTitle()
+    );
+    tabWidget->setCurrentIndex(idx);
+    tabWidget->widget(idx)->setFocus();
+
+}
+void ZoneNodeLeaf::remove(IonLayout::PanelWidget *panel)
+{
+    int idx = tabWidget->indexOf(
+        panel->getWidget()
+    );
+    if (-1 == idx) {
+        throw std::runtime_error("widget must be already added to the panel");
+    }
+    closeAndRemoveTab(idx);
+
+}
+void ZoneNodeLeaf::update(IonLayout::PanelWidget *panel)
+{
+    int idx = tabWidget->indexOf(
+        panel->getWidget()
+    );
+    if (-1 == idx) {
+        throw std::runtime_error("widget must be already added to the panel");
+    }
+    tabWidget->setTabText(idx, panel->getPanelTitle());
+}
+void ZoneNodeLeaf::focus(IonLayout::PanelWidget *panel)
+{
+    int idx = tabWidget->indexOf(
+        panel->getWidget()
+    );
+    if (-1 == idx) {
+        throw std::runtime_error("widget must be already added to the panel");
+    }
+    tabWidget->setCurrentIndex(idx);
+    tabWidget->widget(idx)->setFocus();
+}
 
 
 
@@ -246,9 +286,6 @@ void LayoutZonesManager::addZone(ZoneDefinition &zone)
    }
    parentNode->addSubZone(leaf, index);
 
-   leaf->getZoneContents()->setTabsClosable(zone.childrenClosable);
-   leaf->getZoneContents()->setMovable(true);
-
    if (zone.hideIfEmpty) {
        leaf->getWidget()->hide();
    } else {
@@ -274,14 +311,7 @@ void LayoutManagerImpl::add(PanelWidget *panel)
 {
     ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(leaf);
-    QTabWidget *uiTab = leaf->getZoneContents();
-    Q_ASSERT(uiTab);
-    int idx = uiTab->addTab(
-        panel->getWidget(),
-        panel->getPanelTitle()
-    );
-    uiTab->setCurrentIndex(idx);
-    uiTab->widget(idx)->setFocus();
+    leaf->add(panel);
     leaf->show();
 }
 
@@ -289,31 +319,14 @@ void LayoutManagerImpl::remove(PanelWidget *panel)
 {
     ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(leaf);
-    QTabWidget *uiTab = leaf->getZoneContents();
-    Q_ASSERT(uiTab);
-    int idx = uiTab->indexOf(
-        panel->getWidget()
-    );
-    if (-1 == idx) {
-        throw std::runtime_error("widget must be already added to the panel");
-    }
-    leaf->closeAndRemoveTab(idx);
+    leaf->remove(panel);
 }
 
 void LayoutManagerImpl::focus(PanelWidget *panel)
 {
     ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(leaf);
-    QTabWidget *uiTab = leaf->getZoneContents();
-    Q_ASSERT(uiTab);
-    int idx = uiTab->indexOf(
-        panel->getWidget()
-    );
-    if (-1 == idx) {
-        throw std::runtime_error("widget must be already added to the panel");
-    }
-    uiTab->setCurrentIndex(idx);
-    uiTab->widget(idx)->setFocus();
+    leaf->focus(panel);
     leaf->show();
 }
 
@@ -326,15 +339,7 @@ void LayoutManagerImpl::updatePanelTitle(IonLayout::PanelWidget *panel)
 {
     ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
     Q_ASSERT(leaf);
-    QTabWidget *uiTab = leaf->getZoneContents();
-    Q_ASSERT(uiTab);
-    int idx = uiTab->indexOf(
-        panel->getWidget()
-    );
-    if (-1 == idx) {
-        throw std::runtime_error("widget must be already added to the panel");
-    }
-    uiTab->setTabText(idx, panel->getPanelTitle());
+    leaf->update(panel);
 }
 
 }
