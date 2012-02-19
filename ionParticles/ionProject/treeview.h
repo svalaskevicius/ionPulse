@@ -28,7 +28,6 @@ protected:
     QSharedPointer<TreeModelAdapter> _fiModel;
 
     virtual void keyPressEvent ( QKeyEvent * event );
-    virtual void scrollContentsBy ( int dx, int dy );
 public:
     explicit TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
     virtual ~TreeView();
