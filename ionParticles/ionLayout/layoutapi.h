@@ -70,13 +70,13 @@ struct ZoneDefinition
      */
     enum Type {
         /**
-         * \brief Default behaviour where children are displayed in a tabbed widget.
+         * \brief Default behaviour where children are displayed in split widgets.
          */
-        Tabbed,
+        Split,
         /**
          * \brief Children of such zone will be placed usign simple QBoxLayout (vertical or horizontal depending on orientation).
          */
-        Stacked,
+        Boxed,
     };
 
     /**

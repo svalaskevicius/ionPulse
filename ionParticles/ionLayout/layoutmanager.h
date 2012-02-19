@@ -17,6 +17,8 @@
 #include <stdexcept>
 #include <QMainWindow>
 
+#include <QBoxLayout>
+
 #include <boost/shared_ptr.hpp>
 
 
@@ -63,9 +65,36 @@ public:
     ZoneWidgetSplitter() {splitter = new QSplitter();}
     virtual void setOrientation(Qt::Orientation orientation) { splitter->setOrientation(orientation); }
     virtual void insertWidget(int position, QWidget *widget) { splitter->insertWidget(position, widget); }
-    virtual int indexOf(QWidget *widget) { return splitter->indexOf(widget); }
+    virtual int indexOf(QWidget *child) { return splitter->indexOf(child); }
     virtual void setSizes(QList<int> sizes) {splitter->setSizes(sizes);}
     virtual QWidget *getWidget() { return splitter; }
+};
+
+class ZoneWidgetBoxed : public ZoneWidget
+{
+protected:
+    QWidget *widget;
+    QBoxLayout *layout;
+public:
+    ZoneWidgetBoxed() {
+        widget = new QWidget();layout = new QBoxLayout(QBoxLayout::LeftToRight);widget->setLayout(layout);
+        layout->setMargin(0);
+    }
+    virtual void setOrientation(Qt::Orientation orientation)
+    {
+        switch (orientation) {
+            case Qt::Vertical:
+                layout->setDirection(QBoxLayout::TopToBottom);
+                break;
+            case Qt::Horizontal:
+                layout->setDirection(QBoxLayout::LeftToRight);
+                break;
+        }
+    }
+    virtual void insertWidget(int position, QWidget *child) { layout->insertWidget(position, child); }
+    virtual int indexOf(QWidget *child) { return layout->indexOf(child); }
+    virtual void setSizes(QList<int> sizes) { int i = 0; foreach (int size, sizes) { layout->setStretch(i, size); i++; } }
+    virtual QWidget *getWidget() { return widget; }
 };
 
 class ZoneNodeBranch : public QObject, public ZoneNode
@@ -76,7 +105,15 @@ protected:
     ZoneList subZones;
     ZoneWidget *zoneImpl;
 
-    ZoneWidget *_createZoneWidget(ZoneDefinition  zoneDef) {return new ZoneWidgetSplitter();}
+    ZoneWidget *_createZoneWidget(ZoneDefinition  zoneDef) {
+        switch (zoneDef.type) {
+            case ZoneDefinition::Boxed:
+                return new ZoneWidgetBoxed();
+            case ZoneDefinition::Split:
+            default:
+                return new ZoneWidgetSplitter();
+        }
+    }
 public:
     ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef);
     virtual ~ZoneNodeBranch();
