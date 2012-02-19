@@ -44,17 +44,11 @@ public:
     const ZoneDefinition & getDefinition() const;
 };
 
-class ZoneNodeBranch : public QSplitter, public ZoneNode
+class ZoneNodeBranch : public QObject, public ZoneNode
 {
    Q_OBJECT
-private:
-    bool childrenResized;
 protected:
-    virtual void resizeEvent ( QResizeEvent * event ) {
-        QSplitter::resizeEvent(event);
-        splitterResized();
-    }
-protected:
+    QSplitter *splitter;
     typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
 public:
@@ -67,8 +61,7 @@ public:
     virtual QWidget *getWidget();
     virtual void show();
     void resizeChildren();
-protected:
-    void splitterResized ( );
+    int indexOf(QWidget *);
 };
 
 class ZoneNodeRoot : public ZoneNodeBranch {

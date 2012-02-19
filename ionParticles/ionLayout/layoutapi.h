@@ -64,6 +64,20 @@ struct ZoneDefinition
      * \brief Can subscribed panels be closed?
      */
     bool childrenClosable;
+
+    /**
+     * \brief Defines control types used to display zone panels
+     */
+    enum Type {
+        Tabbed,
+        Split,
+        Stacked,
+    };
+
+    /**
+     * \brief Defines controls used to display zone panels
+     */
+    Type type;
 };
 
 /**

@@ -60,13 +60,14 @@ const ZoneDefinition & ZoneNode::getDefinition() const
 
 
 ZoneNodeBranch::ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef)
-    : QSplitter(parent), ZoneNode(parent, zoneDef), childrenResized(false)
+    : ZoneNode(parent, zoneDef), splitter(new QSplitter()), subZones(ZoneList())
 {
-    setOrientation(zoneDef.orientation);
+    splitter->setOrientation(zoneDef.orientation);
 }
 
 ZoneNodeBranch::~ZoneNodeBranch()
 {
+    delete splitter;
 }
 
 
@@ -74,7 +75,8 @@ void ZoneNodeBranch::addSubZone(ZoneNode *child, int position)
 {
     QString zoneName = child->getZoneName();
     subZones[zoneName] = child;
-    this->insertWidget(position, child->getWidget());
+    splitter->insertWidget(position, child->getWidget());
+    resizeChildren();
 }
 
 ZoneNodeBranch *ZoneNodeBranch::getZoneAsBranch()
@@ -84,12 +86,12 @@ ZoneNodeBranch *ZoneNodeBranch::getZoneAsBranch()
 
 QWidget *ZoneNodeBranch::getWidget()
 {
-    return this;
+    return splitter;
 }
 
 void ZoneNodeBranch::show()
 {
-    QSplitter::show();
+    splitter->show();
     ZoneNode::show();
 }
 
@@ -98,12 +100,12 @@ ZoneNode *ZoneNodeBranch::findSubZone(QStringList &path) throw()
     if (!path.length()) {
         path << getZoneName();
     }
-    ZoneNode *next = subZones[path.front()];
-    if (!next) {
+    ZoneList::iterator subz = subZones.find(path.front());
+    if (subZones.end() == subz) {
         return NULL;
     }
     path.pop_front();
-    return next->findSubZone(path);
+    return subz.value()->findSubZone(path);
 }
 
 ZoneNodeLeaf *ZoneNodeBranch::getZoneLeaf() {
@@ -111,25 +113,21 @@ ZoneNodeLeaf *ZoneNodeBranch::getZoneLeaf() {
     return getSubZone(empty)->getZoneLeaf();
 }
 
-void ZoneNodeBranch::splitterResized ( ) {
-    if (!childrenResized) {
-        resizeChildren();
-        childrenResized = true;
-    }
-}
 void ZoneNodeBranch::resizeChildren() {
-    QVector<int> vSizes(this->children().size());
+    QVector<int> vSizes(splitter->children().size());
     foreach (ZoneNode * const br, subZones) {
         int sizeWeight = br->getDefinition().sizeWeight;
         Q_ASSERT(sizeWeight); // not implemented support of sizeWeight = 0 (auto size adjusment)
-        int i = this->indexOf(br->getWidget());
-        printf("nfo: name: %s, size: %d, i: %d\n", br->getDefinition().name.toAscii().constData(), sizeWeight, i);
+        int i = splitter->indexOf(br->getWidget());
         vSizes[i] = sizeWeight;
     }
-    this->setSizes(vSizes.toList());
+    splitter->setSizes(vSizes.toList());
 }
 
-
+int ZoneNodeBranch::indexOf(QWidget *child)
+{
+    return splitter->indexOf(child);
+}
 
 
 
@@ -141,7 +139,7 @@ void ZoneNodeBranch::resizeChildren() {
 
 
 ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
-    : QTabWidget(parent), ZoneNode(parent, zoneDef), parent(parent)
+    : QTabWidget(parent->getWidget()), ZoneNode(parent, zoneDef), parent(parent)
 {
     connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
 }

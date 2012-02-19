@@ -83,6 +83,7 @@ private Q_SLOTS:
         ZoneNodeRoot root;
 
         def.name = "name lf";
+        def.sizeWeight = 1;
         def.orientation = Qt::Horizontal;
         ZoneNodeLeaf *leaf = new ZoneNodeLeaf(&root, def);
 
