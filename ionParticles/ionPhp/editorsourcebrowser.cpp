@@ -12,7 +12,7 @@ namespace IonPhp {
 
 namespace Private {
 
-EditorSourceBrowser::EditorSourceBrowser(IonEditor::Editor *parent, QSharedPointer<StructureStorage> structureStorage)
+EditorSourceBrowser::EditorSourceBrowser(IonEditor::Editor *parent, boost::shared_ptr<StructureStorage> structureStorage)
     : editor(parent), structureStorage(structureStorage)
 {
     editor->addEventListener(QEvent::KeyRelease, this);

@@ -12,6 +12,8 @@
 #include <QObject>
 #include <ionCore/plugin.h>
 
+#include <boost/shared_ptr.hpp>
+
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionProject/projectapi.h>
 
@@ -29,6 +31,7 @@ class Plugin : public QObject, public IonCore::BasicPlugin
     Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
+    void preLoad();
     void postLoad();
     QString getName() {
         return PHP_PLUGIN_NAME;
@@ -58,7 +61,7 @@ protected:
         QSharedPointer<IonProject::TreeModelSource> operator()(QString dirname);
     };
 
-    QSharedPointer<StructureStorage> structureStorage;
+    boost::shared_ptr<StructureStorage> structureStorage;
     void addEditorParent(IonEditor::EditorPlugin *editorPlugin);
     void addProjectParent(IonProject::ProjectPlugin *projectPlugin);
 signals:

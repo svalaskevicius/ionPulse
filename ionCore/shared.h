@@ -12,6 +12,8 @@
 #include <iostream>
 #include <QDebug>
 
+#include <boost/shared_ptr.hpp>
+
 /**
  * \brief Helper code to apply the correct code to different loaded plugin dependencies.
  *

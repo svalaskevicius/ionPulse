@@ -22,7 +22,7 @@ class EditorSourceBrowser : public IonEditor::EditorComponent
 public:
     static QString identity() {return "phpEditorSourceBrowser";}
 
-    EditorSourceBrowser(IonEditor::Editor *parent, QSharedPointer<StructureStorage> structureStorage);
+    EditorSourceBrowser(IonEditor::Editor *parent, boost::shared_ptr<StructureStorage> structureStorage);
 
     int getWidth() {return 0;}
 
@@ -95,10 +95,10 @@ public:
 
 protected:
     IonEditor::Editor *editor;
-    QSharedPointer<StructureStorage> structureStorage;
+    boost::shared_ptr<StructureStorage> structureStorage;
 };
 
-typedef IonEditor::EditorComponentFactory1<EditorSourceBrowser, QSharedPointer<StructureStorage> > EditorSourceBrowserFactory;
+typedef IonEditor::EditorComponentFactory1<EditorSourceBrowser, boost::shared_ptr<StructureStorage> > EditorSourceBrowserFactory;
 
 }
 
