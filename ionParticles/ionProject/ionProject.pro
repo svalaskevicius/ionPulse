@@ -21,7 +21,8 @@ HEADERS += \
     treemodeladapter.h \
     directorytreesource.h \
     treeviewitemdelegate.h \
-    treeview.h
+    treeview.h \
+    treeviewpanel.h
 
 SOURCES += \
     plugin.cpp \
@@ -29,10 +30,13 @@ SOURCES += \
     treemodeladapter.cpp \
     directorytreesource.cpp \
     treeviewitemdelegate.cpp \
-    treeview.cpp
+    treeview.cpp \
+    treeviewpanel.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
 
 
 

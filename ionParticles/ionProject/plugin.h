@@ -10,19 +10,21 @@
 #define IONEDITORPROJECT_H
 
 #include <QObject>
-#include <ionHeart/plugin.h>
+#include <ionCore/plugin.h>
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "projectapi.h"
 
 namespace IonProject {
 
-class TreeModel;
+namespace Private {
+
+class TreeModelAdapter;
 
 class Plugin : public QObject, public ProjectPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonHeart::BasicPlugin)
+    Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     ~Plugin() {}
@@ -37,8 +39,8 @@ public:
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
-    QSharedPointer<TreeModel> getProjectFileTreeModel();
-    virtual void addTreeWidget(QSharedPointer<TreeModel> model);
+    QSharedPointer<TreeModelAdapter> getProjectFileTreeModel();
+    virtual void addTreeWidget(QSharedPointer<TreeModelAdapter> model);
     virtual void addTreeWidget(QSharedPointer<TreeModelSource> modelSource);
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory();
     virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory();
@@ -51,7 +53,7 @@ private:
 
     IonEditor::EditorPlugin *editorPlugin;
     IonLayout::LayoutManager *layoutManager;
-    QSharedPointer<TreeModel> projectTreeModel;
+    QSharedPointer<TreeModelAdapter> projectTreeModel;
 
     boost::function<QSharedPointer<TreeModelSource> (QString dirname)> _treeModelSourceFactory;
 
@@ -65,6 +67,7 @@ protected slots:
 
 };
 
+}
 }
 
 #endif // IONEDITORPROJECT_H

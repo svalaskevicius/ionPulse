@@ -9,16 +9,17 @@
 #pragma once
 
 #include <QObject>
-#include <ionHeart/plugin.h>
+#include <ionCore/plugin.h>
 #include "layoutapi.h"
 
 namespace IonLayout {
 
+namespace Private {
 
 class Plugin : public QObject, public LayoutPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(IonHeart::BasicPlugin)
+    Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
     virtual ~Plugin() {
@@ -40,6 +41,7 @@ protected slots:
 
 };
 
+}
 }
 
 

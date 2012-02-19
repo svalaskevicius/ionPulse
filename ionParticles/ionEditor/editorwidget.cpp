@@ -7,7 +7,7 @@
 */
 
 #include "editorwidget.h"
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include "editorwidgetfactory.h"
@@ -32,6 +32,8 @@ EditorWidget::EditorWidget(QString filePath)
     font.setPointSize(14);
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);
+    setFont(font);
+
     QFile f(filePath);
     if (f.open(QFile::ReadOnly)) {
         setPlainText(QTextStream(&f).readAll());
@@ -127,7 +129,7 @@ std::pair<int, int> EditorWidget::getSelectedBlockRange()
         blockStart = blockEnd;
         blockEnd = tmp;
     }
-    return std::make_pair<int, int>(blockStart, blockEnd);
+    return std::make_pair(blockStart, blockEnd);
 }
 
 void EditorWidget::keyReleaseEvent(QKeyEvent * e)

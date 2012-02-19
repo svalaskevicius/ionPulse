@@ -10,12 +10,24 @@
 #define DIRECTORYTREESOURCE_H
 
 #include "projectapi.h"
+#include <QDir>
+#include <boost/shared_ptr.hpp>
 
 namespace IonProject {
 namespace Private {
 
 class DirectoryTreeSource : public TreeModelSource {
 public:
+    class DirectoryInfo {
+    private:
+        QDir dir;
+    public:
+        DirectoryInfo(QString path) : dir(path) {}
+        inline virtual QStringList dirnames() {return dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);}
+        inline virtual QStringList filenames() {return dir.entryList(QDir::Files, QDir::Name);}
+        inline virtual QString absolutePath() {return dir.absolutePath();}
+    };
+
     DirectoryTreeSource(const QString &initialDir)
         : root(NULL), initialDir(initialDir) {
     }
@@ -27,6 +39,7 @@ public:
 protected:
     void addDirectory(TreeItem *parent);
     TreeItem *findChildForPath(TreeItem *node, QString path);
+    inline virtual boost::shared_ptr<DirectoryInfo> _getDir(const QString path);
 private:
     TreeItemImpl* root;
     QString initialDir;

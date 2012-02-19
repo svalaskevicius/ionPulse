@@ -16,6 +16,7 @@
 typedef void * yyscan_t;
 
 namespace IonPhp {
+namespace Private {
 
 class phpParser
 {
@@ -40,6 +41,7 @@ public:
     QString currentHeredocLabel;
 };
 
+}
 }
 
 #endif // PHPPARSER_H

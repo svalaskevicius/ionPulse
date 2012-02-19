@@ -7,7 +7,7 @@
 */
 
 #include "layoutmanager.h"
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 
 namespace IonLayout {
 

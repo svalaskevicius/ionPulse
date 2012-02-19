@@ -14,12 +14,13 @@
 #include "phpParser/gen_php_parser.hpp"
 #include <QFile>
 
-extern int _impl_ionPhp_lex(pASTNode *astNode, yyscan_t yyscanner);
+extern int _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
 
-int ion_php_parse(IonPhp::phpParser* context);
+int ion_php_parse(IonPhp::Private::phpParser* context);
 
 
 namespace IonPhp {
+namespace Private {
 
 
 phpParser::phpParser()
@@ -122,4 +123,5 @@ void phpParser::__echo(const char *text, int size)
     throw std::logic_error("failed to match in scanner: "+txt.toStdString());
 }
 
+}
 }

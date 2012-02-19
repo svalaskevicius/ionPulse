@@ -17,7 +17,7 @@ namespace IonProject {
 namespace Private {
 
 
-class TreeModelAdapter : public IonProject::TreeModel
+class TreeModelAdapter : public QAbstractItemModel
 {
     Q_OBJECT
 

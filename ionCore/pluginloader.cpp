@@ -12,7 +12,7 @@
 #include <QPluginLoader>
 #include "plugin.h"
 
-namespace IonHeart {
+namespace IonCore {
 
 namespace Private {
 

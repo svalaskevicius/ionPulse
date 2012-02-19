@@ -7,7 +7,6 @@
 */
 
 #include <QtGui>
-#include <QDir>
 #include <stdexcept>
 
 #include "treeitem.h"
@@ -32,13 +31,13 @@ public:
 private:
     inline QList<TreeItem*>::iterator &processIterator(QString prefix, QList<TreeItem*> &children, QList<TreeItem*>::iterator &it) {
         if (TREESOURCE_CLASS_DIR == (*it)->getItemClass()) {
-            if (dirnames.end() == findPathNode(prefix,  (*it)->getPath(), dirnames)) {
+            if (dirnames.end() == findPathNode(prefix, "/", (*it)->getPath(), dirnames)) {
                 delete *it;
                 it = children.erase(it);
                 return it;
             }
         } else if (TREESOURCE_CLASS_FILE == (*it)->getItemClass()) {
-            if (filenames.end() == findPathNode(prefix,  (*it)->getPath(), filenames)) {
+            if (filenames.end() == findPathNode(prefix, "", (*it)->getPath(), filenames)) {
                 delete *it;
                 it = children.erase(it);
                 return it;
@@ -46,10 +45,10 @@ private:
         }
         return ++it;
     }
-    inline QStringList::Iterator findPathNode(QString prefix, QString path, QStringList paths)
+    inline QStringList::iterator findPathNode(QString prefix, QString suffix, QString path, QStringList &paths)
     {
-        for (QStringList::Iterator it = paths.begin(); it!=paths.end(); it++) {
-            if (prefix + (*it) == path) {
+        for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++) {
+            if (prefix + (*it) + suffix == path) {
                 return it;
             }
         }
@@ -79,15 +78,15 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         TreeItem* currentTreeItemsParent = parents.last();
         parents.pop_back();
 
-        QDir currentDir(currentTreeItemsParent->getPath());
-        QStringList dirnames = currentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-        QStringList filenames = currentDir.entryList(QDir::Files, QDir::Name);
+        boost::shared_ptr<DirectoryTreeSource::DirectoryInfo> currentDir = _getDir(currentTreeItemsParent->getPath());
+        QStringList dirnames = currentDir->dirnames();
+        QStringList filenames = currentDir->filenames();
 
         MissingFilesCleaner cleaner(dirnames, filenames);
-        cleaner.clean(currentDir.absolutePath()+"/", currentTreeItemsParent->getChildren());
+        cleaner.clean(currentDir->absolutePath()+"/", currentTreeItemsParent->getChildren());
 
         foreach (QString subDirName, dirnames) {
-            QString fullPath = currentDir.absolutePath()+"/"+subDirName+"/";
+            QString fullPath = currentDir->absolutePath()+"/"+subDirName+"/";
             TreeItem *treeItem = findChildForPath(currentTreeItemsParent, fullPath);
             if (!treeItem) {
                 treeItem = new TreeItemImpl(TREESOURCE_CLASS_DIR, subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
@@ -97,7 +96,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         }
 
         foreach (QString fileName, filenames) {
-            QString fullPath = currentDir.absolutePath()+"/"+fileName;
+            QString fullPath = currentDir->absolutePath()+"/"+fileName;
             if (!findChildForPath(currentTreeItemsParent, fullPath)) {
                 currentTreeItemsParent->appendChild(new TreeItemImpl(TREESOURCE_CLASS_FILE, fileName, fileName, fullPath, -1, currentTreeItemsParent));
             }
@@ -117,6 +116,11 @@ TreeItem *DirectoryTreeSource::findChildForPath(TreeItem *node, QString path)
         }
     }
     return NULL;
+}
+
+boost::shared_ptr<DirectoryTreeSource::DirectoryInfo> DirectoryTreeSource::_getDir(const QString path)
+{
+    return boost::shared_ptr<DirectoryTreeSource::DirectoryInfo>(new DirectoryInfo(path));
 }
 
 }

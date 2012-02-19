@@ -8,33 +8,23 @@
 
 #include "treeview.h"
 #include "treemodeladapter.h"
-#include <QVBoxLayout>
 #include <QFileInfo>
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 
 namespace IonProject {
 namespace Private {
 
-TreeView::TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent) :
+TreeView::TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent) :
     QTreeView(parent), _fiModel(dataModel)
 {
     setIndentation(15);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->setModel(_fiModel.data());
 
-    _filterInputField = new QLineEdit(this);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(5, 0, 5, 3);
-    layout->addSpacing(100000);
-    layout->addWidget(_filterInputField);
-    viewport()->setLayout(layout);
-
     connect(this, SIGNAL(activated( QModelIndex )), this, SLOT(onItemActivated( QModelIndex )));
     connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(updateScrollArea(QModelIndex)));
     connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(updateScrollArea(QModelIndex)));
     resizeColumnToContents(0);
-    connect(_filterInputField, SIGNAL(textChanged( QString )), this, SLOT(onFilterTextChanged( QString )));
 }
 
 TreeView::~TreeView() {
@@ -69,8 +59,7 @@ void TreeView::keyPressEvent ( QKeyEvent * event ) {
             break;
         default:
             if ((Qt::Key_A <= key) && (Qt::Key_Z >= key)) {
-                _filterInputField->setFocus(Qt::ShortcutFocusReason);
-                _filterInputField->setText(QString( (char) key - Qt::Key_A + 'a'));
+                emit filterKeyPressed(key);
             } else {
                 QTreeView::keyPressEvent(event);
             }

@@ -13,11 +13,13 @@
 
 
 namespace IonPhp {
+namespace Private {
 
 struct HighlighterFactory : virtual public IonEditor::HighlighterFactory {
     virtual QSyntaxHighlighter *operator()(IonEditor::Editor *);
 };
 
+}
 }
 
 #endif // PHPEDITORWIDGETFACTORY_H

@@ -4,18 +4,25 @@ ionPulse IDE
 Todo
 ----
 
-#### refresh project parse info for changed files by timestamp
+change QSharedPtr to boost::shared_ptr which works
+
+### 0.1 CODE REVIEW, documentation
+##### Notes:
+* IonLayout::PanelWidget should provide composition and not inheritance based approach - constructing it provide the widget.
+* IonLayout::PanelWidget::getPanelZone could be removed and instead passed as a parameter to LayoutManager::add
+* LayoutManager::updatePanelTitle - is it refresh maybe? should title be parametrised too instead of panelWidget container - is the container necessary?
+
+
+#### search & replace
+* mark occurences in editor on clicking on varname
 
 #### editor handler
 * handles key presses, such as tab, (shift) enter etc
 * autoindent on new line
 * home button should go to beginning of the text, after the whitespace
-
-### 0.1 CODE REVIEW, documentation
+* tabulator should not indent if not on the start of the line
 
 #### new file
-
-#### reparse files on save
 
 #### UTF8 editor
 
@@ -29,8 +36,7 @@ Todo
 
 ### 0.2 CODE REVIEW, documentation
 
-#### search & replace
-* mark occurences in editor on clicking on varname
+#### reparse files on save
 
 #### search & replace in files
 * should be possible to delete some results after reviewing
@@ -41,6 +47,7 @@ Todo
 
 #### layout manager
 * vertical/horizontal split source code tabs e.g. for tests/code
+* support center, north, west, south, east directions to add sub-zones/panels
 
 ### 0.3 CODE REVIEW, documentation
 
@@ -73,4 +80,5 @@ Todo
 #### ? tdd/bdd helper -> switch to/from test by configurable rules
 
 #### ? textMate bundle support
+
 

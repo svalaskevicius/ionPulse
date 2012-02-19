@@ -11,10 +11,9 @@
 
 #include <QTreeView>
 #include <QAbstractItemModel>
-#include <ionParticles/ionLayout/layoutapi.h>
 #include <QKeyEvent>
-#include <QLineEdit>
 #include "projectapi.h"
+#include "treemodeladapter.h"
 
 namespace IonProject {
 
@@ -22,24 +21,21 @@ namespace Private {
 
 class TreeModelAdapter;
 
-class TreeView : public QTreeView, public IonLayout::PanelWidget
+class TreeView : public QTreeView
 {
     Q_OBJECT
 protected:
-    QSharedPointer<TreeModel> _fiModel;
-    QLineEdit *_filterInputField;
+    QSharedPointer<TreeModelAdapter> _fiModel;
 
     virtual void keyPressEvent ( QKeyEvent * event );
     virtual void scrollContentsBy ( int dx, int dy );
 public:
-    explicit TreeView(QSharedPointer<TreeModel> dataModel, QWidget *parent = 0);
+    explicit TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
     virtual ~TreeView();
-    virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelTitle() {return _fiModel->getTitle();}
-    virtual QString getPanelZone() {return "left";}
     void reset();
 signals:
     void fileActivated(QString filename, int line);
+    void filterKeyPressed(int key);
 public slots:
 protected slots:
     void onItemActivated(const QModelIndex &index);

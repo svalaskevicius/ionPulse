@@ -1,0 +1,51 @@
+.tabs, .tabs2, .tabs3 {
+    width: 100%;
+    z-index: 101;
+    font-size: 16px;
+}
+
+.tabs2 {
+    font-size: 15px;
+}
+.tabs3 {
+    font-size: 14px;
+}
+
+.tablist {
+    margin: 0;
+    padding: 0;
+    display: table;
+}
+
+.tablist li {
+    float: left;
+    display: table-cell;
+    line-height: 22px;
+    list-style: none;
+}
+
+.tablist a {
+    display: block;
+    padding: 0 20px;
+    color: #1A1F22;
+    text-decoration: none;
+    outline: none;
+    border-right: 1px dotted black;
+    border-bottom: 1px dotted black;
+}
+
+.tabs3 .tablist a {
+    padding: 0 10px;
+}
+
+.tablist li.current a {
+    background-color:#eee;
+    color: #111;
+}
+
+.tablist a:hover, .tablist li.current a:hover {
+    background-color:#ccc;
+    color: #333;
+    text-decoration: none;
+}
+

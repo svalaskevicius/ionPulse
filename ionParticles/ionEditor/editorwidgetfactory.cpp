@@ -7,7 +7,7 @@
 */
 
 #include "editorwidgetfactory.h"
-#include "ionHeart/shared.h"
+#include "ionCore/shared.h"
 
 
 namespace IonEditor {
@@ -26,7 +26,6 @@ QSyntaxHighlighter *EditorWidgetBuilderImpl::createHighlighter(Editor *widget, Q
 {
     QMap<QString, QSharedPointer<HighlighterFactory> >::const_iterator it = typeToHighlighterFactoryMap.find(filetype);
     if (it != typeToHighlighterFactoryMap.end()) {
-        qDebug() << typeToHighlighterFactoryMap;
         return (*(*it))(widget);
     }
     DefaultHighlighterFactory _default;
@@ -40,7 +39,7 @@ QList<EditorComponent*> EditorWidgetBuilderImpl::createComponents(Editor *widget
     while (fileType != "") {
         foreach (QSharedPointer<EditorComponentFactoryBase> factory, typeToComponentFactoryMap.values(fileType)) {
             if (!addedComponents.contains(factory->getIdentifier())) {
-                qDebug() << "Loading component: "<< fileType << factory->getIdentifier();
+                DEBUG_MSG("Loading component: "<< fileType << factory->getIdentifier());
                 components.append((*factory)(widget));
                 addedComponents.insert(factory->getIdentifier());
             }

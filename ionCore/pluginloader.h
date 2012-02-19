@@ -15,7 +15,7 @@
 #include "mainwindow.h"
 
 
-namespace IonHeart {
+namespace IonCore {
 
 class BasicPlugin;
 

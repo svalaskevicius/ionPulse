@@ -7,15 +7,16 @@
 */
 
 #include "editorwidgetfactory.h"
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include "highlighter.h"
 
 namespace IonPhp {
+namespace Private {
 
 QSyntaxHighlighter *HighlighterFactory::operator()(IonEditor::Editor *parent)
 {
-    return new IonPhp::Highlighter(parent->getEditorInstance());
+    return new IonPhp::Private::Highlighter(parent->getEditorInstance());
 }
 
-
+}
 }

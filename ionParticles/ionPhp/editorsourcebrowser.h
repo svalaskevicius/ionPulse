@@ -9,7 +9,7 @@
 #ifndef EDITORSOURCEBROWSER_H
 #define EDITORSOURCEBROWSER_H
 
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include <ionParticles/ionEditor/editorapi.h>
 #include "structurestorage.h"
 
@@ -86,7 +86,7 @@ public:
         if (!word.length()) {
             return;
         }
-        qDebug() << "going to " << word;
+        DEBUG_MSG("going to " << word);
 
         if (!word.contains(QRegExp("[>\\.\\(\\):\\$-]$", Qt::CaseInsensitive))) {
             //structureStorage->findClassByName(word);

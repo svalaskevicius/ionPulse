@@ -1,6 +1,6 @@
 
 TEMPLATE  = subdirs
 CONFIG += ordered
-SUBDIRS = ionHeart ionParticles ionTests
+SUBDIRS = ionCore ionParticles ionTests
 
-ionTests.depends = ionHeart ionParticles
+ionTests.depends = ionCore ionParticles

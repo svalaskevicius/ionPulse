@@ -10,7 +10,7 @@
 #include <iostream>
 #include <QFile>
 #include <QSqlQuery>
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 
 #include "phpparser.h"
 

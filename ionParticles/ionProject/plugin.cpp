@@ -9,18 +9,18 @@
 #include "plugin.h"
 
 #include <QtPlugin>
-#include <ionHeart/shared.h>
-#include "treeview.h"
+#include <ionCore/shared.h>
+#include "treeviewpanel.h"
 #include "treemodeladapter.h"
 #include "treeitem.h"
 #include "directorytreesource.h"
-#include "treeviewitemdelegate.h"
 
 
 #include <QMenuBar>
 #include <QFileDialog>
 
 namespace IonProject {
+namespace Private {
 
 
 QSharedPointer<TreeModelSource> Plugin::_defaultTreeModelSourceFactory::operator()(QString dirname) {
@@ -79,26 +79,24 @@ void Plugin::openFile(QString path, int line)
     editorPlugin->openFile(path, line);
 }
 
-QSharedPointer<TreeModel> Plugin::getProjectFileTreeModel()
+QSharedPointer<TreeModelAdapter> Plugin::getProjectFileTreeModel()
 {
     if (!projectTreeModel) {
-        projectTreeModel = QSharedPointer<TreeModel>(new Private::TreeModelAdapter(getTreeModelSourceFactory()("")));
+        projectTreeModel = QSharedPointer<TreeModelAdapter>(new Private::TreeModelAdapter(getTreeModelSourceFactory()("")));
     }
     return projectTreeModel;
 }
 
-void Plugin::addTreeWidget(QSharedPointer<TreeModel> model)
+void Plugin::addTreeWidget(QSharedPointer<TreeModelAdapter> model)
 {
-    Private::TreeView *fileTree = new Private::TreeView(model);
-    Private::TreeViewItemDelegate *viewItemDelegate = new Private::TreeViewItemDelegate(model, fileTree);
-    fileTree->setItemDelegate(viewItemDelegate);
+    Private::TreeViewPanel *fileTree = new Private::TreeViewPanel(model);
     layoutManager->add(fileTree);
-    connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
+    connect(fileTree->getTreeView(), SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
 
 void Plugin::addTreeWidget(QSharedPointer<TreeModelSource> modelSource)
 {
-    QSharedPointer<TreeModel> model(new Private::TreeModelAdapter(modelSource));
+    QSharedPointer<TreeModelAdapter> model(new Private::TreeModelAdapter(modelSource));
     addTreeWidget(model);
 }
 
@@ -109,5 +107,7 @@ QSharedPointer<TreeItemFactory> Plugin::createTreeItemFactory()
 
 
 }
+}
 
-Q_EXPORT_PLUGIN2 ( ionProject, IonProject::Plugin )
+
+Q_EXPORT_PLUGIN2 ( ionProject, IonProject::Private::Plugin )

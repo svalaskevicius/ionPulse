@@ -6,12 +6,13 @@
 #include <iostream>
 
 #include <ionParticles/ionPhp/phptreemodelsource.h>
+#include <ionParticles/ionProject/treemodeladapter.h>
 
 #include "gmock/gmock.h"
 
 namespace IonTests {
 
-class MockedTreeModel : public IonProject::TreeModel {
+class MockedTreeModel : public IonProject::Private::TreeModelAdapter {
 public:
     MOCK_METHOD1(filter, void (QString filter));
     MOCK_CONST_METHOD1(getItem, IonProject::TreeItem * (const QModelIndex &index));

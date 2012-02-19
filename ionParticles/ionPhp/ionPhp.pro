@@ -28,7 +28,8 @@ HEADERS += \
     phpParser/ionParserLib.h \
     structurestorage.h \
     editorsourcebrowser.h \
-    phptreemodelsource.h
+    phptreemodelsource.h \
+    phpapi.h
 
 
 SOURCES += \
@@ -77,6 +78,7 @@ QMAKE_EXTRA_TARGETS += gen_php_scanner_dep
 OTHER_FILES += \
     phpParser/php.y \
     phpParser/php.l
+
 
 
 

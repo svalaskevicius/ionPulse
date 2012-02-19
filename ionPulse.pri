@@ -20,6 +20,7 @@ isEmpty(IDE_BUILD_TREE) {
 INSTALL_DIR = $$IDE_BUILD_TREE/bin
 
 
+QMAKE_CXXFLAGS += -std=c++0x
 #QMAKE_CXXFLAGS += -std=c++0x -fexceptions -shared-libgcc
 #QMAKE_CXXFLAGS += -fexceptions -shared-libgcc
 #QMAKE_LFLAGS += -fexceptions -shared-libgcc

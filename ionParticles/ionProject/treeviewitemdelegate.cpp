@@ -8,14 +8,14 @@
 
 #include "treeviewitemdelegate.h"
 
-#include <ionHeart/shared.h>
+#include <ionCore/shared.h>
 #include <QApplication>
 
 
 namespace IonProject {
 namespace Private {
 
-TreeViewItemDelegate::TreeViewItemDelegate(QSharedPointer<TreeModel> treeModel, QObject *parent)
+TreeViewItemDelegate::TreeViewItemDelegate(QSharedPointer<TreeModelAdapter> treeModel, QObject *parent)
     : QStyledItemDelegate(parent), treeModel(treeModel)
 {
 }
@@ -30,7 +30,7 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     bool first = true;
     foreach (TreeItem *current, treeModel->getRangeItems(index)) {
         if (!first) {
-            const char s[] = {0xc2, 0xbb, 0x00};// right double angle
+            const char s[] = {(const char)0xc2, (const char)0xbb, 0x00};// right double angle
             opt.text = QString::fromUtf8(s);
             opt.rect.setLeft(opt.rect.left() + 4);
             QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
