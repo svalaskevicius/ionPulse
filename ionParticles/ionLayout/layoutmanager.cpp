@@ -60,14 +60,16 @@ const ZoneDefinition & ZoneNode::getDefinition() const
 
 
 ZoneNodeBranch::ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef)
-    : ZoneNode(parent, zoneDef), splitter(new QSplitter()), subZones(ZoneList())
+    : ZoneNode(parent, zoneDef), subZones(ZoneList())
 {
-    splitter->setOrientation(zoneDef.orientation);
+    zoneImpl = _createZoneWidget(zoneDef);
+    zoneImpl->setOrientation(zoneDef.orientation);
 }
 
 ZoneNodeBranch::~ZoneNodeBranch()
 {
-    delete splitter;
+    delete zoneImpl;
+    qDeleteAll(subZones);
 }
 
 
@@ -75,7 +77,7 @@ void ZoneNodeBranch::addSubZone(ZoneNode *child, int position)
 {
     QString zoneName = child->getZoneName();
     subZones[zoneName] = child;
-    splitter->insertWidget(position, child->getWidget());
+    zoneImpl->insertWidget(position, child->getWidget());
     resizeChildren();
 }
 
@@ -86,12 +88,12 @@ ZoneNodeBranch *ZoneNodeBranch::getZoneAsBranch()
 
 QWidget *ZoneNodeBranch::getWidget()
 {
-    return splitter;
+    return zoneImpl->getWidget();
 }
 
 void ZoneNodeBranch::show()
 {
-    splitter->show();
+    zoneImpl->getWidget()->show();
     ZoneNode::show();
 }
 
@@ -114,19 +116,19 @@ ZoneNodeLeaf *ZoneNodeBranch::getZoneLeaf() {
 }
 
 void ZoneNodeBranch::resizeChildren() {
-    QVector<int> vSizes(splitter->children().size());
+    QVector<int> vSizes(zoneImpl->getWidget()->children().size());
     foreach (ZoneNode * const br, subZones) {
         int sizeWeight = br->getDefinition().sizeWeight;
         Q_ASSERT(sizeWeight); // not implemented support of sizeWeight = 0 (auto size adjusment)
-        int i = splitter->indexOf(br->getWidget());
+        int i = zoneImpl->indexOf(br->getWidget());
         vSizes[i] = sizeWeight;
     }
-    splitter->setSizes(vSizes.toList());
+    zoneImpl->setSizes(vSizes.toList());
 }
 
 int ZoneNodeBranch::indexOf(QWidget *child)
 {
-    return splitter->indexOf(child);
+    return zoneImpl->indexOf(child);
 }
 
 
@@ -208,7 +210,7 @@ void ZoneNodeLeaf::onTabCloseRequested ( int index )
 
 LayoutZonesManager::LayoutZonesManager()
 {
-    root = new ZoneNodeRoot();
+    root = boost::shared_ptr<ZoneNodeBranch>(new ZoneNodeRoot());
 }
 QWidget *LayoutZonesManager::getMainWidget()
 {

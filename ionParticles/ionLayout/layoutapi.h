@@ -69,8 +69,13 @@ struct ZoneDefinition
      * \brief Defines control types used to display zone panels
      */
     enum Type {
+        /**
+         * \brief Default behaviour where children are displayed in a tabbed widget.
+         */
         Tabbed,
-        Split,
+        /**
+         * \brief Children of such zone will be placed usign simple QBoxLayout (vertical or horizontal depending on orientation).
+         */
         Stacked,
     };
 

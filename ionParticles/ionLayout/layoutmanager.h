@@ -17,6 +17,8 @@
 #include <stdexcept>
 #include <QMainWindow>
 
+#include <boost/shared_ptr.hpp>
+
 
 namespace IonLayout {
 
@@ -44,13 +46,37 @@ public:
     const ZoneDefinition & getDefinition() const;
 };
 
+class ZoneWidget  {
+public:
+    virtual void setOrientation(Qt::Orientation) = 0;
+    virtual void insertWidget(int position, QWidget *) = 0;
+    virtual int indexOf(QWidget *) = 0;
+    virtual void setSizes(QList<int>) = 0;
+    virtual QWidget *getWidget() = 0;
+};
+
+class ZoneWidgetSplitter : public ZoneWidget
+{
+protected:
+    QSplitter *splitter;
+public:
+    ZoneWidgetSplitter() {splitter = new QSplitter();}
+    virtual void setOrientation(Qt::Orientation orientation) { splitter->setOrientation(orientation); }
+    virtual void insertWidget(int position, QWidget *widget) { splitter->insertWidget(position, widget); }
+    virtual int indexOf(QWidget *widget) { return splitter->indexOf(widget); }
+    virtual void setSizes(QList<int> sizes) {splitter->setSizes(sizes);}
+    virtual QWidget *getWidget() { return splitter; }
+};
+
 class ZoneNodeBranch : public QObject, public ZoneNode
 {
    Q_OBJECT
 protected:
-    QSplitter *splitter;
     typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
+    ZoneWidget *zoneImpl;
+
+    ZoneWidget *_createZoneWidget(ZoneDefinition  zoneDef) {return new ZoneWidgetSplitter();}
 public:
     ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef);
     virtual ~ZoneNodeBranch();
@@ -105,7 +131,7 @@ protected slots:
 class LayoutZonesManager
 {
 protected:
-    ZoneNodeBranch *root;
+    boost::shared_ptr<ZoneNodeBranch> root;
 public:
     LayoutZonesManager();
     ZoneNodeLeaf *getZone(QString path);
