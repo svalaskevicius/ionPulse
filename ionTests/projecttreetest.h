@@ -110,11 +110,6 @@ class ProjectDirectoryTreeSourceTest : public QObject
 {
     Q_OBJECT
 
-private:
-    QString dumpItemsTree(const TreeItem *root) {
-        return "";
-    }
-
 private Q_SLOTS:
     void test_if_getTitleIsForDirectoryTree() {
         QString path;

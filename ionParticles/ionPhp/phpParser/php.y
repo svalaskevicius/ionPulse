@@ -13,7 +13,6 @@
 #define yyparse ion_php_parse
 #define yylex   context->__lex
 #define yyerror context->__error
-#define yylval  ion_php_lval
 #define yychar  ion_php_char
 #define yydebug ion_php_debug
 #define yynerrs ion_php_nerrs

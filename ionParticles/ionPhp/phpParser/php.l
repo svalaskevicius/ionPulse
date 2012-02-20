@@ -1034,7 +1034,6 @@ inline_char_handler:
 }
 
 <ST_HEREDOC>.|[\n\r] {
-        int newline = 0;
         QString result = "";
 
         char c = yytext[0];
@@ -1095,7 +1094,6 @@ inline_char_handler:
 }
 
 <ST_NOWDOC>.|[\n\r] {
-        int newline = 0;
         QString result = "";
 
         char c = yytext[0];

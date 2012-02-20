@@ -14,12 +14,10 @@
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "projectapi.h"
-
+#include "treemodeladapter.h"
 namespace IonProject {
 
 namespace Private {
-
-class TreeModelAdapter;
 
 class Plugin : public QObject, public ProjectPlugin
 {
