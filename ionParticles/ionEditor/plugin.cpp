@@ -20,6 +20,8 @@
 #include <ionCore/shared.h>
 #include <QMenuBar>
 
+#include "searchpanel.h"
+
 namespace IonEditor {
 
 namespace Private {
@@ -117,6 +119,10 @@ void Plugin::postLoad()
     QMenu *fileMenu = menuBar->addMenu("&File");
     fileMenu->addAction("&Save", this, SLOT(onFileSave()), QKeySequence(Qt::CTRL + Qt::Key_S));
     fileMenu->addAction("&Close", this, SLOT(onFileClose()), QKeySequence(Qt::CTRL + Qt::Key_W));
+
+
+    layoutManager->add(new SearchPanel());
+
 }
 
 void Plugin::onFileSave()
