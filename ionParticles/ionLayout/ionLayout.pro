@@ -16,12 +16,16 @@ INCLUDEPATH +=  ../..
 
 HEADERS += \
     plugin.h \
+    layoutapi.h \
     layoutmanager.h \
-    layoutapi.h
+    zonenode.h \
+    widgetsaggregate.h
 
 SOURCES += \
     plugin.cpp \
-    layoutmanager.cpp
+    layoutmanager.cpp \
+    zonenode.cpp \
+    widgetsaggregate.cpp
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
