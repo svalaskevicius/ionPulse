@@ -68,7 +68,7 @@ struct ZoneDefinition
     /**
      * \brief Defines control types used to display zone panels
      */
-    enum Type {
+    enum class Type {
         /**
          * \brief Default behaviour where children are displayed in split widgets.
          */

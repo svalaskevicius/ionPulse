@@ -25,7 +25,7 @@ class LayoutManagerTest : public QObject
 
 private Q_SLOTS:
     void test_zones_getZoneNameReturnsNameFromZoneDef() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         def.name = "name of the zone";
         def.orientation = Qt::Horizontal;
         ZoneNodeRoot root;
@@ -44,7 +44,7 @@ private Q_SLOTS:
     }
 
     void test_zones_findSubZoneReturnsDeepestPath() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
 
         def.name = "name br";
@@ -62,7 +62,7 @@ private Q_SLOTS:
     }
 
     void test_zones_findSubZoneForBranchesLooksForSameNameIfSearchListIsEmpty() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
 
         def.name = "name br";
@@ -79,7 +79,7 @@ private Q_SLOTS:
     }
 
     void test_zones_getSubZoneReturnsFindSubZoneIfSuccess() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
 
         def.name = "name lf";
@@ -109,7 +109,7 @@ private Q_SLOTS:
     }
 
     void test_zones_getZoneReturnsDeepestPaths() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
 
         def.name = "zone0";
@@ -130,7 +130,7 @@ private Q_SLOTS:
     }
 
     void test_zones_getZoneLeafReturnsDeepestLeaf() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
 
         def.name = "zone0";
@@ -150,7 +150,7 @@ private Q_SLOTS:
     }
 
     void test_zones_getZoneAsBranchConvertsLeavesToBranchesIfNecessary() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         def.parentPath = "parentpath";
         def.sizeWeight = 23;
         def.orientation = Qt::Vertical;
@@ -183,7 +183,7 @@ private Q_SLOTS:
     }
 
     void test_zones_showPropagatesToParents() {
-        ZoneDefinition def;
+        ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         def.orientation = Qt::Horizontal;
 
         ZoneNodeRoot branch;

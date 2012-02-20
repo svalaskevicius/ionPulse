@@ -52,6 +52,7 @@ public:
 
 class ZoneWidget  {
 public:
+    virtual ~ZoneWidget(){}
     virtual void setOrientation(Qt::Orientation) = 0;
     virtual void addWidget(QWidget *) = 0;
     virtual void insertWidget(int position, QWidget *) = 0;
@@ -65,9 +66,9 @@ public:
 class ZoneWidgetSplitter : public ZoneWidget
 {
 protected:
-    QSplitter *splitter;
+    QSplitter * splitter;
 public:
-    ZoneWidgetSplitter() {splitter = new QSplitter();}
+    ZoneWidgetSplitter(QWidget *parent) { splitter = new QSplitter(parent); }
     virtual void setOrientation(Qt::Orientation orientation) { splitter->setOrientation(orientation); }
     virtual void addWidget(QWidget *child) { splitter->addWidget(child); }
     virtual void insertWidget(int position, QWidget *child) { splitter->insertWidget(position, child); }
@@ -84,8 +85,10 @@ protected:
     QWidget *widget;
     QBoxLayout *layout;
 public:
-    ZoneWidgetBoxed() {
-        widget = new QWidget();layout = new QBoxLayout(QBoxLayout::LeftToRight);widget->setLayout(layout);
+    ZoneWidgetBoxed(QWidget *parent) {
+        widget = new QWidget(parent);
+        layout = new QBoxLayout(QBoxLayout::LeftToRight);
+        widget->setLayout(layout);
         layout->setMargin(0);
     }
     virtual void setOrientation(Qt::Orientation orientation)
@@ -140,8 +143,8 @@ protected:
         child->installEventFilter(watcher);
     }
 public:
-    ZoneWidgetTabbed(ZoneDefinition zoneDef) {
-        tabWidget = new QTabWidget();
+    ZoneWidgetTabbed(QWidget *parent, ZoneDefinition zoneDef) {
+        tabWidget = new QTabWidget(parent);
         tabWidget->setTabsClosable(zoneDef.childrenClosable);
         tabWidget->setMovable(true);
         connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
@@ -202,13 +205,13 @@ protected:
     ZoneList subZones;
     ZoneWidget *zoneImpl;
 
-    ZoneWidget *_createZoneWidget(ZoneDefinition  zoneDef) {
+    ZoneWidget *_createZoneWidget(QWidget *parent, ZoneDefinition  zoneDef) {
         switch (zoneDef.type) {
-            case ZoneDefinition::Boxed:
-                return new ZoneWidgetBoxed();
-            case ZoneDefinition::Split:
+            case ZoneDefinition::Type::Boxed:
+                return new ZoneWidgetBoxed(parent);
+            case ZoneDefinition::Type::Split:
             default:
-                return new ZoneWidgetSplitter();
+                return new ZoneWidgetSplitter(parent);
         }
     }
 public:
@@ -231,7 +234,6 @@ public:
         : ZoneNodeBranch(NULL, getEmptyZoneDef())
     {
     }
-protected:
     static ZoneDefinition getEmptyZoneDef() {
         ZoneDefinition def;
         def.after = "";
@@ -240,6 +242,8 @@ protected:
         def.name = "";
         def.orientation = Qt::Horizontal;
         def.sizeWeight = 1000;
+        def.childrenClosable = false;
+        def.type = ZoneDefinition::Type::Split;
         return def;
     }
 };

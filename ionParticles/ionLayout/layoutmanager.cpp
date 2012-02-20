@@ -62,7 +62,11 @@ const ZoneDefinition & ZoneNode::getDefinition() const
 ZoneNodeBranch::ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef)
     : ZoneNode(parent, zoneDef), subZones(ZoneList())
 {
-    zoneImpl = _createZoneWidget(zoneDef);
+    QWidget *parentWidget = NULL;
+    if (parent) {
+        parentWidget = parent->getWidget();
+    }
+    zoneImpl = _createZoneWidget(parentWidget, zoneDef);
     zoneImpl->setOrientation(zoneDef.orientation);
 }
 
@@ -150,10 +154,11 @@ int ZoneNodeBranch::indexOf(QString childName)
 ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
     : ZoneNode(parent, zoneDef), parent(parent)
 {
-    zoneWidget = new ZoneWidgetTabbed(zoneDef);
+    zoneWidget = new ZoneWidgetTabbed(parent->getWidget(), zoneDef);
 }
 ZoneNodeLeaf::~ZoneNodeLeaf()
 {
+    delete zoneWidget;
 }
 
 ZoneNodeLeaf *ZoneNodeLeaf::getZoneLeaf()
