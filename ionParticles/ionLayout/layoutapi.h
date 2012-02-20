@@ -100,11 +100,6 @@ public:
     virtual QWidget *getWidget() = 0;
 
     /**
-     * \brief A title to be displayed.
-     */
-    virtual QString getPanelTitle() = 0;
-
-    /**
      * \brief A UNIX-like path to the target zone.
      */
     virtual QString getPanelZone() = 0;
@@ -140,12 +135,6 @@ public:
      * \brief Add new zone to the tree.
      */
     virtual void addZone(ZoneDefinition &zone) = 0;
-public slots:
-
-    /**
-     * \brief Refresh the panel title label.
-     */
-    virtual void updatePanelTitle(PanelWidget *panel) = 0;
 };
 
 

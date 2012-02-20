@@ -26,6 +26,7 @@ FileTreeWidget::FileTreeWidget(QWidget *parent) :
         this->setColumnHidden(i, true);
     }
     connect(this, SIGNAL(activated( QModelIndex )), this, SLOT(onItemActivated( QModelIndex )));
+    setWindowTitle("File Browser");
 }
 
 void FileTreeWidget::onItemActivated(const QModelIndex &index )

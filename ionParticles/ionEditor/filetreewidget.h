@@ -28,7 +28,6 @@ protected:
 public:
     explicit FileTreeWidget(QWidget *parent = 0);
     virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelTitle() {return "File Browser";}
     virtual QString getPanelZone() {return "left";}
 
 signals:

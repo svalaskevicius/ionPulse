@@ -150,10 +150,7 @@ int ZoneNodeBranch::indexOf(QString childName)
 ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
     : ZoneNode(parent, zoneDef), parent(parent)
 {
-    tabWidget = new QTabWidget(parent->getWidget());
-    tabWidget->setTabsClosable(zoneDef.childrenClosable);
-    tabWidget->setMovable(true);
-    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
+    zoneWidget = new ZoneWidgetTabbed(zoneDef);
 }
 ZoneNodeLeaf::~ZoneNodeLeaf()
 {
@@ -170,83 +167,36 @@ ZoneNode *ZoneNodeLeaf::findSubZone(QStringList &path) throw()
 }
 QWidget *ZoneNodeLeaf::getWidget()
 {
-    return tabWidget;
+    return zoneWidget->getWidget();
 }
 void ZoneNodeLeaf::show()
 {
-    tabWidget->show();
+    zoneWidget->getWidget()->show();
     ZoneNode::show();
 }
 ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
-    parent->addSubZone(br, parent->indexOf(tabWidget));
+    parent->addSubZone(br, parent->indexOf(zoneWidget->getWidget()));
     br->addSubZone(this);
     parent = br;
-    if (tabWidget->isHidden()) {
+    if (zoneWidget->getWidget()->isHidden()) {
         br->getWidget()->hide();
     }
     return br;
 }
 
-void ZoneNodeLeaf::closeAndRemoveTab( int index )
-{
-    QWidget *w = tabWidget->widget(index);
-    if (w->close()) {
-        tabWidget->removeTab(index);
-        delete w;
-    }
-    int idx = tabWidget->currentIndex();
-    if (idx >= 0) {
-        tabWidget->widget(idx)->setFocus();
-    }
-}
-
-void ZoneNodeLeaf::onTabCloseRequested ( int index )
-{
-    closeAndRemoveTab(index);
-}
-
 void ZoneNodeLeaf::add(IonLayout::PanelWidget *panel)
 {
-    int idx = tabWidget->addTab(
-        panel->getWidget(),
-        panel->getPanelTitle()
-    );
-    tabWidget->setCurrentIndex(idx);
-    tabWidget->widget(idx)->setFocus();
-
+    zoneWidget->addWidget(panel->getWidget());
+    zoneWidget->focus(panel->getWidget());
 }
 void ZoneNodeLeaf::remove(IonLayout::PanelWidget *panel)
 {
-    int idx = tabWidget->indexOf(
-        panel->getWidget()
-    );
-    if (-1 == idx) {
-        throw std::runtime_error("widget must be already added to the panel");
-    }
-    closeAndRemoveTab(idx);
-
-}
-void ZoneNodeLeaf::update(IonLayout::PanelWidget *panel)
-{
-    int idx = tabWidget->indexOf(
-        panel->getWidget()
-    );
-    if (-1 == idx) {
-        throw std::runtime_error("widget must be already added to the panel");
-    }
-    tabWidget->setTabText(idx, panel->getPanelTitle());
+    zoneWidget->remove(panel->getWidget());
 }
 void ZoneNodeLeaf::focus(IonLayout::PanelWidget *panel)
 {
-    int idx = tabWidget->indexOf(
-        panel->getWidget()
-    );
-    if (-1 == idx) {
-        throw std::runtime_error("widget must be already added to the panel");
-    }
-    tabWidget->setCurrentIndex(idx);
-    tabWidget->widget(idx)->setFocus();
+    zoneWidget->focus(panel->getWidget());
 }
 
 
@@ -333,13 +283,6 @@ void LayoutManagerImpl::focus(PanelWidget *panel)
 void LayoutManagerImpl::addZone(ZoneDefinition &zone)
 {
     zonesManager.addZone(zone);
-}
-
-void LayoutManagerImpl::updatePanelTitle(IonLayout::PanelWidget *panel)
-{
-    ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
-    Q_ASSERT(leaf);
-    leaf->update(panel);
 }
 
 }

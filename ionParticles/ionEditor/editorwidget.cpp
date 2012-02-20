@@ -28,6 +28,7 @@ EditorWidget::EditorWidget(QString filePath)
       filePath(filePath),
       componentInfo(this)
 {
+    setWindowTitle(QFileInfo(filePath).fileName());
     QFont font("Monaco");
     font.setPointSize(14);
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
@@ -42,6 +43,7 @@ EditorWidget::EditorWidget(QString filePath)
     connect(document(), SIGNAL(modificationChanged(bool)), this, SLOT(modificationChanged(bool)));
     editorCursorPositionChanged();
     document()->setModified(false);
+    setWindowModified(false);
 }
 
 EditorWidget::~EditorWidget()
@@ -157,16 +159,6 @@ void EditorWidget::resetHighlighter() {
     highlighter = NULL;
 }
 
-QString EditorWidget::getPanelTitle()
-{
-    QString title = QFileInfo(filePath).fileName();
-    if (document()->isModified()) {
-        title += " *";
-    }
-    return title;
-}
-
-
 void EditorWidget::editorCursorPositionChanged()
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
@@ -213,7 +205,12 @@ void EditorWidget::saveFile() {
 
 void EditorWidget::modificationChanged(bool changed)
 {
-    emit updatePanelTitle(this);
+    if (changed) {
+        setWindowTitle(QFileInfo(filePath).fileName() + " *");
+    } else {
+        setWindowTitle(QFileInfo(filePath).fileName());
+    }
+    setWindowModified(changed);
 }
 
 }

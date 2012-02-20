@@ -67,7 +67,6 @@ protected:
 
 public:
     virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelTitle();
     virtual QString getPanelZone() {return "central";}
 
 public:

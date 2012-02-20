@@ -29,6 +29,8 @@ TreeViewPanel::TreeViewPanel(QSharedPointer<TreeModelAdapter> dataModel, QWidget
     layout->addWidget(_treeView);
     layout->addWidget(_filterInputField);
     setLayout(layout);
+    setWindowTitle(_dataModel->getTitle());
+
 }
 
 void TreeViewPanel::filterKey(int key)

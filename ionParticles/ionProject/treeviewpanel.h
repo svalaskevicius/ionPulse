@@ -23,7 +23,6 @@ protected:
 public:
     explicit TreeViewPanel(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
     virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelTitle() {return _dataModel->getTitle();}
     virtual QString getPanelZone() {return "left";}
 
     TreeView *getTreeView(){return _treeView;}

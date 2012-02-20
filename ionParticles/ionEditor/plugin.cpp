@@ -112,7 +112,7 @@ void Plugin::onFileClose()
         int ret = QMessageBox::Discard;
         if (widget->getEditorInstance()->document()->isModified()) {
             QMessageBox msgBox;
-            msgBox.setText("The document '"+widget->getPanelTitle()+"' has been modified.");
+            msgBox.setText("The document '"+widget->getWidget()->windowTitle()+"' has been modified.");
             msgBox.setInformativeText("Do you want to save your changes?");
             msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
             msgBox.setDefaultButton(QMessageBox::Save);
@@ -141,7 +141,6 @@ void Plugin::openFile(QString path, int line)
         connect(widget->getWidget(), SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
         connect(widget->getWidget(), SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
         layoutManager->add(widget);
-        connect(widget->getWidget(), SIGNAL(updatePanelTitle(IonLayout::PanelWidget *)), layoutManager, SLOT(updatePanelTitle(IonLayout::PanelWidget *)));
     } else {
         widget = it.value();
         layoutManager->focus(widget);

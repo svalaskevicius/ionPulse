@@ -16,11 +16,13 @@
 #include <QMap>
 #include <stdexcept>
 #include <QMainWindow>
+#include <QEvent>
 
 #include <QBoxLayout>
 
 #include <boost/shared_ptr.hpp>
 
+#include <ionCore/shared.h>
 
 namespace IonLayout {
 
@@ -51,8 +53,11 @@ public:
 class ZoneWidget  {
 public:
     virtual void setOrientation(Qt::Orientation) = 0;
+    virtual void addWidget(QWidget *) = 0;
     virtual void insertWidget(int position, QWidget *) = 0;
+    virtual void remove(QWidget *) = 0;
     virtual int indexOf(QWidget *) = 0;
+    virtual int focus(QWidget *) = 0;
     virtual void setSizes(QList<int>) = 0;
     virtual QWidget *getWidget() = 0;
 };
@@ -64,8 +69,11 @@ protected:
 public:
     ZoneWidgetSplitter() {splitter = new QSplitter();}
     virtual void setOrientation(Qt::Orientation orientation) { splitter->setOrientation(orientation); }
-    virtual void insertWidget(int position, QWidget *widget) { splitter->insertWidget(position, widget); }
+    virtual void addWidget(QWidget *child) { splitter->addWidget(child); }
+    virtual void insertWidget(int position, QWidget *child) { splitter->insertWidget(position, child); }
+    virtual void remove(QWidget *child) { child->close(); }
     virtual int indexOf(QWidget *child) { return splitter->indexOf(child); }
+    virtual int focus(QWidget *child) { child->setFocus(); }
     virtual void setSizes(QList<int> sizes) {splitter->setSizes(sizes);}
     virtual QWidget *getWidget() { return splitter; }
 };
@@ -91,10 +99,99 @@ public:
                 break;
         }
     }
+    virtual void addWidget(QWidget *child) { layout->addWidget(child); }
     virtual void insertWidget(int position, QWidget *child) { layout->insertWidget(position, child); }
+    virtual void remove(QWidget *child) { child->close(); }
     virtual int indexOf(QWidget *child) { return layout->indexOf(child); }
+    virtual int focus(QWidget *child) { child->setFocus(); }
     virtual void setSizes(QList<int> sizes) { int i = 0; foreach (int size, sizes) { layout->setStretch(i, size); i++; } }
     virtual QWidget *getWidget() { return widget; }
+};
+
+class WindowsTitleWatcher : public QObject
+{
+    Q_OBJECT
+public:
+    WindowsTitleWatcher(QObject *parent) : QObject(parent) { }
+
+signals:
+    void titleChanged(QWidget *);
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event){
+        if(QEvent::WindowTitleChange == event->type()) {
+            QWidget *const window = qobject_cast<QWidget *>(obj);
+            if(window) {
+                emit titleChanged(window);
+            }
+        }
+        return QObject::eventFilter(obj, event);
+    }
+};
+
+class ZoneWidgetTabbed : public QObject, public ZoneWidget
+{
+    Q_OBJECT
+protected:
+    QTabWidget *tabWidget;
+    void installTitleWatcher(QWidget *child) {
+        WindowsTitleWatcher *watcher = new WindowsTitleWatcher(child);
+        connect(watcher, SIGNAL(titleChanged(QWidget *)), this, SLOT(onTitleChanged(QWidget *)));
+        child->installEventFilter(watcher);
+    }
+public:
+    ZoneWidgetTabbed(ZoneDefinition zoneDef) {
+        tabWidget = new QTabWidget();
+        tabWidget->setTabsClosable(zoneDef.childrenClosable);
+        tabWidget->setMovable(true);
+        connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
+    }
+    virtual void setOrientation(Qt::Orientation orientation) { }
+    virtual void addWidget(QWidget *child) { tabWidget->addTab(child, child->windowTitle()); installTitleWatcher(child); }
+    virtual void insertWidget(int position, QWidget *child) { tabWidget->insertTab(position, child, child->windowTitle()); installTitleWatcher(child); }
+    virtual void remove(QWidget *child) {
+        int idx = indexOf(child);
+        if (-1 == idx) {
+            throw std::runtime_error("widget must be already added to the panel");
+        }
+        closeAndRemoveTab(idx);
+    }
+    virtual int indexOf(QWidget *child) { return tabWidget->indexOf(child); }
+    virtual int focus(QWidget *child) {
+        int idx = indexOf(child);
+        if (-1 == idx) {
+            throw std::runtime_error("widget must be already added to the panel");
+        }
+        tabWidget->setCurrentIndex(idx);
+        child->setFocus();
+    }
+    virtual void setSizes(QList<int> sizes) { }
+    virtual QWidget *getWidget() { return tabWidget; }
+protected slots:
+    void closeAndRemoveTab(int index)
+    {
+        QWidget *w = tabWidget->widget(index);
+        if (w->close()) {
+            tabWidget->removeTab(index);
+            delete w;
+        }
+        int idx = tabWidget->currentIndex();
+        if (idx >= 0) {
+            tabWidget->widget(idx)->setFocus();
+        }
+    }
+    void onTitleChanged(QWidget *child) {
+        int idx = indexOf(child);
+        if (-1 == idx) {
+            throw std::runtime_error("widget must be already added to the panel");
+        }
+        tabWidget->setTabText(idx, child->windowTitle());
+    }
+    void onTabCloseRequested(int index)
+    {
+        closeAndRemoveTab(index);
+    }
+
 };
 
 class ZoneNodeBranch : public QObject, public ZoneNode
@@ -152,7 +249,7 @@ class ZoneNodeLeaf : public QObject, public ZoneNode
     Q_OBJECT
 protected:
     ZoneNodeBranch *parent;
-    QTabWidget *tabWidget;
+    ZoneWidget *zoneWidget;
 public:
     ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef);
     virtual ~ZoneNodeLeaf();
@@ -161,13 +258,9 @@ public:
     virtual ZoneNodeBranch *getZoneAsBranch();
     virtual QWidget *getWidget();
     virtual void show();
-    void closeAndRemoveTab(int index);
     void add(IonLayout::PanelWidget *panel);
     void remove(IonLayout::PanelWidget *panel);
-    void update(IonLayout::PanelWidget *panel);
     void focus(IonLayout::PanelWidget *panel);
-protected slots:
-    void onTabCloseRequested(int index);
 };
 
 class LayoutZonesManager
@@ -193,8 +286,6 @@ public:
     virtual void remove(PanelWidget *panel);
     virtual void focus(PanelWidget *panel);
     virtual void addZone(ZoneDefinition &zone);
-public slots:
-    void updatePanelTitle(IonLayout::PanelWidget *panel);
 };
 }
 }
