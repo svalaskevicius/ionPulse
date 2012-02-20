@@ -48,13 +48,27 @@ void Plugin::postLoad()
     IonLayout::ZoneDefinition def;
 
     def.name = "central";
-    def.orientation = Qt::Horizontal;
+    def.orientation = Qt::Vertical;
     def.parentPath = "";
     def.after = "left";
     def.before = "right";
     def.hideIfEmpty = false;
     def.sizeWeight = 700;
     def.childrenClosable = true;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Boxed;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
+    layoutManager->addZone(def);
+
+    def.name = "central_footer";
+    def.orientation = Qt::Horizontal;
+    def.parentPath = "central";
+    def.after = "central";
+    def.before = "";
+    def.hideIfEmpty = true;
+    def.sizeWeight = 100;
+    def.childrenClosable = false;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Boxed;
     layoutManager->addZone(def);
 
     def.name = "left";
@@ -65,6 +79,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = false;
     def.sizeWeight = 200;
     def.childrenClosable = false;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Split;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
     layoutManager->addZone(def);
 
     def.name = "leftbottom";
@@ -75,6 +91,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = true;
     def.sizeWeight = 150;
     def.childrenClosable = false;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Split;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
     layoutManager->addZone(def);
 
     def.name = "right";
@@ -85,6 +103,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = true;
     def.sizeWeight = 150;
     def.childrenClosable = false;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Split;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
     layoutManager->addZone(def);
 
     Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();

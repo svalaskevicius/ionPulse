@@ -77,12 +77,18 @@ struct ZoneDefinition
          * \brief Children of such zone will be placed usign simple QBoxLayout (vertical or horizontal depending on orientation).
          */
         Boxed,
+        Tabbed,
     };
 
     /**
      * \brief Defines controls used to display zone panels
      */
-    Type type;
+    Type subZonesContainerType;
+
+    /**
+     * \brief Defines controls used to display widget panels
+     */
+    Type widgetsContainerType;
 };
 
 /**

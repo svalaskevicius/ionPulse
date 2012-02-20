@@ -32,24 +32,6 @@ namespace Private {
 class ZoneNodeLeaf;
 class ZoneNodeBranch;
 
-class ZoneNode {
-protected:
-    ZoneNode *parent;
-    ZoneDefinition  zoneDef;
-public:
-    ZoneNode(ZoneNode *parent, ZoneDefinition  zoneDef);
-    virtual ~ZoneNode(){}
-    QString getZoneName();
-    virtual ZoneNode *findSubZone(QStringList &path) throw() = 0;
-    virtual ZoneNode *getSubZone(QStringList &path) throw(std::runtime_error);
-    virtual ZoneNodeLeaf *getZoneLeaf() = 0;
-    virtual ZoneNode *getZone(QString path);
-    virtual ZoneNodeBranch *getZoneAsBranch() = 0;
-    virtual QWidget *getWidget() = 0;
-    virtual void show();
-    const ZoneDefinition & getDefinition() const;
-};
-
 class ZoneWidget  {
 public:
     virtual ~ZoneWidget(){}
@@ -62,6 +44,7 @@ public:
     virtual void setSizes(QList<int>) = 0;
     virtual QWidget *getWidget() = 0;
 };
+
 
 class ZoneWidgetSplitter : public ZoneWidget
 {
@@ -196,6 +179,38 @@ protected slots:
     }
 
 };
+class ZoneNode {
+protected:
+    ZoneNode *parent;
+    ZoneDefinition  zoneDef;
+
+    ZoneWidget *_createZoneWidget(ZoneDefinition::Type type, QWidget *parent, ZoneDefinition  zoneDef) {
+        switch (type) {
+            case ZoneDefinition::Type::Boxed:
+                return new ZoneWidgetBoxed(parent);
+            case ZoneDefinition::Type::Tabbed:
+                return new ZoneWidgetTabbed(parent, zoneDef);
+            case ZoneDefinition::Type::Split:
+                return new ZoneWidgetSplitter(parent);
+            default:
+                throw std::runtime_error("zone type is not set");
+        }
+    }
+
+public:
+    ZoneNode(ZoneNode *parent, ZoneDefinition  zoneDef);
+    virtual ~ZoneNode(){}
+    QString getZoneName();
+    virtual ZoneNode *findSubZone(QStringList &path) throw() = 0;
+    virtual ZoneNode *getSubZone(QStringList &path) throw(std::runtime_error);
+    virtual ZoneNodeLeaf *getZoneLeaf() = 0;
+    virtual ZoneNode *getZone(QString path);
+    virtual ZoneNodeBranch *getZoneAsBranch() = 0;
+    virtual QWidget *getWidget() = 0;
+    virtual void show();
+    const ZoneDefinition & getDefinition() const;
+};
+
 
 class ZoneNodeBranch : public QObject, public ZoneNode
 {
@@ -204,16 +219,6 @@ protected:
     typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
     ZoneWidget *zoneImpl;
-
-    ZoneWidget *_createZoneWidget(QWidget *parent, ZoneDefinition  zoneDef) {
-        switch (zoneDef.type) {
-            case ZoneDefinition::Type::Boxed:
-                return new ZoneWidgetBoxed(parent);
-            case ZoneDefinition::Type::Split:
-            default:
-                return new ZoneWidgetSplitter(parent);
-        }
-    }
 public:
     ZoneNodeBranch(ZoneNodeBranch *parent, ZoneDefinition  zoneDef);
     virtual ~ZoneNodeBranch();
@@ -243,7 +248,8 @@ public:
         def.orientation = Qt::Horizontal;
         def.sizeWeight = 1000;
         def.childrenClosable = false;
-        def.type = ZoneDefinition::Type::Split;
+        def.subZonesContainerType = ZoneDefinition::Type::Split;
+        def.widgetsContainerType = ZoneDefinition::Type::Split;
         return def;
     }
 };
