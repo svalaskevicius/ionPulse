@@ -1,8 +1,21 @@
 #include "searchpanel.h"
 
-SearchPanel::SearchPanel(QWidget *parent) :
-    QWidget(parent)
+namespace IonEditor {
+
+namespace Private {
+
+
+SearchPanel::SearchPanel(QWidget *parent) : QWidget(parent)
 {
-    DEBUG_MSG( metaObject()->className() );
-    //setStyleSheet("background-color: white;");
+    layout = new QHBoxLayout(this);
+    searchText = new QLineEdit(this);
+    layout->setMargin(0);
+    layout->addWidget(searchText);
+    layout->addStretch();
+    DEBUG_MSG(metaObject()->className());
+    //setSizePolicy(searchText->sizePolicy());
+}
+
+
+}
 }
