@@ -90,6 +90,7 @@ WidgetsBoxed::WidgetsBoxed(QWidget *parent)
     layout = new QBoxLayout(QBoxLayout::LeftToRight);
     widget->setLayout(layout);
     layout->setMargin(0);
+    layout->setSpacing(4);
 }
 
 void WidgetsBoxed::setOrientation(Qt::Orientation orientation)

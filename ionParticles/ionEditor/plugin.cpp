@@ -67,7 +67,7 @@ void Plugin::postLoad()
     def.after = "central";
     def.before = "";
     def.hideIfEmpty = true;
-    def.sizeWeight = 100;
+    def.sizeWeight = 1;
     def.childrenClosable = false;
     def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
     def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Boxed;
