@@ -58,6 +58,12 @@ public slots:
             editor->getEditorInstance()->find(searchText->text());
         }
     }
+    void findPrevious() {
+        Editor *editor = getActiveEditor();
+        if (editor) {
+            editor->getEditorInstance()->find(searchText->text(), QTextDocument::FindBackward);
+        }
+    }
 };
 
 }

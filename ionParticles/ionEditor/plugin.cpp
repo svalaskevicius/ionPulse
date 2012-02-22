@@ -123,6 +123,7 @@ void Plugin::postLoad()
     QMenu *editMenu = menuBar->addMenu("&Edit");
     editMenu->addAction("&Find", this, SLOT(onEditSearch()), QKeySequence(Qt::CTRL + Qt::Key_F));
     editMenu->addAction("Find &Next", this, SLOT(onEditSearchNext()), QKeySequence(Qt::CTRL + Qt::Key_G));
+    editMenu->addAction("Find &Previous", this, SLOT(onEditSearchPrev()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_G));
 
     searchPanel = new SearchPanel();
     searchPanel->setActiveEditorGetter( [&] () -> Editor* { return this->getCurrentEditor(); } );
@@ -138,6 +139,10 @@ void Plugin::onEditSearch()
 void Plugin::onEditSearchNext()
 {
     searchPanel->findNext();
+}
+void Plugin::onEditSearchPrev()
+{
+    searchPanel->findPrevious();
 }
 
 void Plugin::onFileSave()

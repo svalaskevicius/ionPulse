@@ -60,6 +60,7 @@ public slots:
     void onFileClose();
     void onEditSearch();
     void onEditSearchNext();
+    void onEditSearchPrev();
 private:
     Q_DISABLE_COPY(Plugin)
 };
