@@ -280,6 +280,11 @@ public:
      * \brief Open a requested file path and focus on the specified line.
      */
     virtual void openFile(QString path, int line) = 0;
+
+    /**
+     * \brief Retrieve currently active Editor instance, or NULL, if none is active.
+     */
+    Editor *getCurrentEditor();
 };
 
 

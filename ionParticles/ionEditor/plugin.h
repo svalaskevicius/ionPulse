@@ -10,10 +10,12 @@
 #define IONEDITOR_H
 
 #include <QObject>
-
 #include <QScopedPointer>
-#include "editorapi.h"
+
 #include <ionParticles/ionLayout/layoutapi.h>
+
+#include "editorapi.h"
+#include "searchpanel.h"
 
 namespace IonEditor {
 
@@ -43,6 +45,11 @@ private:
     IonLayout::LayoutManager *layoutManager;
     QMap<QString, Editor *> openedFiles;
     Editor *focusedEditor;
+    SearchPanel *searchPanel;
+public:
+    Editor *getCurrentEditor() {
+        return focusedEditor;
+    }
 signals:
 
 public slots:
@@ -51,6 +58,8 @@ public slots:
     void focusFileEditor(Editor *editor);
     void onFileSave();
     void onFileClose();
+    void onEditSearch();
+    void onEditSearchNext();
 private:
     Q_DISABLE_COPY(Plugin)
 };

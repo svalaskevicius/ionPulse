@@ -12,6 +12,7 @@
 #include <iostream>
 #include <QDebug>
 
+#include <stdexcept>
 #include <boost/shared_ptr.hpp>
 
 /**

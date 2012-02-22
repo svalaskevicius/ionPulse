@@ -14,6 +14,7 @@ SearchPanel::SearchPanel(QWidget *parent) : QWidget(parent)
     layout->addStretch();
     DEBUG_MSG(metaObject()->className());
     //setSizePolicy(searchText->sizePolicy());
+    connect(searchText, SIGNAL(returnPressed()), this, SLOT(findNext()));
 }
 
 
