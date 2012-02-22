@@ -163,6 +163,7 @@ WidgetsTabbed::WidgetsTabbed(QWidget *parent, ZoneDefinition zoneDef)
     tabWidget->setTabsClosable(zoneDef.childrenClosable);
     tabWidget->setMovable(true);
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)));
 }
 
 void WidgetsTabbed::setOrientation(Qt::Orientation )
@@ -241,6 +242,12 @@ void WidgetsTabbed::onTabCloseRequested(int index)
     closeAndRemoveTab(index);
 }
 
+void WidgetsTabbed::onTabChanged(int index)
+{
+    if (tabWidget->count()) {
+        tabWidget->widget(0)->setFocus();
+    }
+}
 
 
 }

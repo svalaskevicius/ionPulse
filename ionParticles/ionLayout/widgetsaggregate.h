@@ -101,6 +101,7 @@ protected slots:
     void closeAndRemoveTab(int index);
     void onTitleChanged(QWidget *child);
     void onTabCloseRequested(int index);
+    void onTabChanged(int index);
 };
 
 }
