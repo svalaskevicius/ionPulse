@@ -34,10 +34,9 @@ protected:
 public:
     PluginLoader();
     ~PluginLoader();
-    void loadPlugins(MainWindow &mainWindow);
+    void loadPlugins(MainWindow &mainWindow, QString pluginsDir);
 private:
     QMap<QString, BasicPlugin *> _includedPlugins;
-    QDir _getPluginsDir();
     bool _arePluginsIncluded(QStringList pluginNames);
     void _includePlugin(BasicPlugin *plugin);
     void _loadPluginsList(PluginsList &plugins);

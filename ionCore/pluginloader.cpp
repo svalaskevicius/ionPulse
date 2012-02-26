@@ -27,29 +27,11 @@ PluginLoader::~PluginLoader()
     }
 }
 
-QDir PluginLoader::_getPluginsDir()
-{
-    QDir pluginsDir = QDir(qApp->applicationDirPath());
 
-    #if defined(Q_OS_MAC)
-        if (pluginsDir.dirName() == "MacOS") {
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-        }
-    #endif
-    pluginsDir.cd("plugins");
-
-    DEBUG_MSG(pluginsDir.path());
-    return pluginsDir;
-}
-
-
-void PluginLoader::loadPlugins(MainWindow &mainWindow)
+void PluginLoader::loadPlugins(MainWindow &mainWindow, QString pluginsDir)
 {
     QString oldPwd = QDir::currentPath();
-    QDir pluginsDir = _getPluginsDir();
-    QDir::setCurrent(pluginsDir.absolutePath());
+    QDir::setCurrent(pluginsDir);
 
     PluginsList pluginsToLoad;
     pluginsToLoad.addStaticPlugins();

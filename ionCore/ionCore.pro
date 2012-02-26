@@ -5,7 +5,7 @@
 #-------------------------------------------------
 include (../ionPulse.pri)
 
-QT       += core gui
+QT       += core gui script scripttools
 
 TARGET = ionCore
 TEMPLATE = app
@@ -21,8 +21,18 @@ HEADERS  += mainwindow.h \
 
 FORMS    +=
 
+OTHER_FILES += \
+    ionPulse.js \
+    ionPulse.css
+
 target.path += "$${INSTALL_DIR}"
 INSTALLS += target
+
+distrib_css.path = "$${INSTALL_DIR}"
+distrib_css.files += ionPulse.css
+distrib_js.path = "$${INSTALL_DIR}"
+distrib_js.files += ionPulse.js
+INSTALLS += distrib_css distrib_js
 
 
 

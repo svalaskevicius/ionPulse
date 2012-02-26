@@ -10,6 +10,9 @@
 #include <QMessageBox>
 #include <stdexcept>
 
+#include <QScriptEngine>
+#include <QScriptEngineDebugger>
+
 #include "shared.h"
 #include "mainwindow.h"
 #include "pluginloader.h"
@@ -45,13 +48,53 @@
  */
 
 
+namespace IonCore {
+namespace Private {
+
+
+QString getBaseDir()
+{
+    QDir baseDir = QDir(qApp->applicationDirPath());
+
+    #if defined(Q_OS_MAC)
+        if (baseDir.dirName() == "MacOS") {
+            baseDir.cdUp();
+            baseDir.cdUp();
+            baseDir.cdUp();
+        }
+    #endif
+
+    return baseDir.absolutePath();
+}
+
+}
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     IonCore::Private::MainWindow w;
     IonCore::Private::PluginLoader plugins;
+
     try {
-        plugins.loadPlugins(w);
+        QString baseDir = IonCore::Private::getBaseDir();
+
+        QFile styleSheetFile(baseDir+"/ionPulse.css");
+        if (styleSheetFile.open(QFile::ReadOnly)) {
+            a.setStyleSheet(styleSheetFile.readAll());
+        }
+
+        plugins.loadPlugins(w, baseDir+"/plugins/");
+
+        QScriptEngine scriptEngine;
+        QScriptEngineDebugger debugger;
+        debugger.attachTo(&scriptEngine);
+        QFile jsFile(baseDir+"/ionPulse.js");
+        if (jsFile.open(QFile::ReadOnly)) {
+            scriptEngine.evaluate(jsFile.readAll(), "ionPulse.js");
+        }
+
+
         w.show();
         return a.exec();
     } catch (QString &msg) {
