@@ -68,7 +68,7 @@ QSharedPointer<ASTRoot> phpParser::parseFile(QString path)
         try {
             return parseString(file.readAll());
         } catch (std::runtime_error &err) {
-            throw std::runtime_error("parsing of the file failed: file not found: "+path.toStdString()+"\n"+err.what());
+            throw std::runtime_error("parsing of the file failed: "+path.toStdString()+"\n"+err.what());
         }
     }
     throw std::runtime_error("parsing of the file failed: file not found: "+path.toStdString());

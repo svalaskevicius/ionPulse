@@ -17,7 +17,7 @@ namespace Private {
 
 LayoutZonesManager::LayoutZonesManager()
 {
-    root = boost::shared_ptr<ZoneNodeBranch>(new ZoneNodeRoot());
+    root = QSharedPointer<ZoneNodeBranch>(new ZoneNodeRoot());
 }
 QWidget *LayoutZonesManager::getMainWidget()
 {

@@ -78,7 +78,7 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         TreeItem* currentTreeItemsParent = parents.last();
         parents.pop_back();
 
-        boost::shared_ptr<DirectoryTreeSource::DirectoryInfo> currentDir = _getDir(currentTreeItemsParent->getPath());
+        QSharedPointer<DirectoryTreeSource::DirectoryInfo> currentDir = _getDir(currentTreeItemsParent->getPath());
         QStringList dirnames = currentDir->dirnames();
         QStringList filenames = currentDir->filenames();
 
@@ -118,9 +118,9 @@ TreeItem *DirectoryTreeSource::findChildForPath(TreeItem *node, QString path)
     return NULL;
 }
 
-boost::shared_ptr<DirectoryTreeSource::DirectoryInfo> DirectoryTreeSource::_getDir(const QString path)
+QSharedPointer<DirectoryTreeSource::DirectoryInfo> DirectoryTreeSource::_getDir(const QString path)
 {
-    return boost::shared_ptr<DirectoryTreeSource::DirectoryInfo>(new DirectoryInfo(path));
+    return QSharedPointer<DirectoryTreeSource::DirectoryInfo>(new DirectoryInfo(path));
 }
 
 }

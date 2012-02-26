@@ -13,7 +13,7 @@
 #include <QDebug>
 
 #include <stdexcept>
-#include <boost/shared_ptr.hpp>
+#include <QSharedPointer>
 
 /**
  * \brief Helper code to apply the correct code to different loaded plugin dependencies.

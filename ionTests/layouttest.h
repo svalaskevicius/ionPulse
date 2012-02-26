@@ -29,6 +29,8 @@ private Q_SLOTS:
         def.name = "name of the zone";
         def.orientation = Qt::Horizontal;
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         ZoneNodeBranch branch(&root, def);
         ZoneNodeLeaf leaf(&root, def);
@@ -39,6 +41,8 @@ private Q_SLOTS:
 
     void test_zones_findSubZoneReturnsNullIfNotFound() {
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
         QStringList empty;
         QCOMPARE((ulong)root.findSubZone(empty), (ulong)NULL);
     }
@@ -46,6 +50,8 @@ private Q_SLOTS:
     void test_zones_findSubZoneReturnsDeepestPath() {
         ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         def.name = "name br";
         def.orientation = Qt::Horizontal;
@@ -64,6 +70,8 @@ private Q_SLOTS:
     void test_zones_findSubZoneForBranchesLooksForSameNameIfSearchListIsEmpty() {
         ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         def.name = "name br";
         def.orientation = Qt::Horizontal;
@@ -81,6 +89,8 @@ private Q_SLOTS:
     void test_zones_getSubZoneReturnsFindSubZoneIfSuccess() {
         ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         def.name = "name lf";
         def.sizeWeight = 1;
@@ -96,6 +106,8 @@ private Q_SLOTS:
 
     void test_zones_getSubZoneThrowsExceptionOnError() {
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         QStringList searchPath;
         searchPath << "name lf";
@@ -111,6 +123,8 @@ private Q_SLOTS:
     void test_zones_getZoneReturnsDeepestPaths() {
         ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         def.name = "zone0";
         def.orientation = Qt::Horizontal;
@@ -132,6 +146,8 @@ private Q_SLOTS:
     void test_zones_getZoneLeafReturnsDeepestLeaf() {
         ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         def.name = "zone0";
         def.orientation = Qt::Horizontal;
@@ -156,6 +172,8 @@ private Q_SLOTS:
         def.orientation = Qt::Vertical;
         def.hideIfEmpty = 1;
         ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        root.getWidget()->setParent(&rootWidgetParent);
 
         def.name = "zone0";
         ZoneNodeBranch *branch = new ZoneNodeBranch(&root, def);
@@ -186,13 +204,17 @@ private Q_SLOTS:
         ZoneDefinition def = ZoneNodeRoot::getEmptyZoneDef();
         def.orientation = Qt::Horizontal;
 
-        ZoneNodeRoot branch;
-        ZoneNodeLeaf leaf(&branch, def);
-        branch.getWidget()->hide();
+        ZoneNodeRoot root;
+        QWidget rootWidgetParent;
+        rootWidgetParent.show();
+        root.getWidget()->setParent(&rootWidgetParent);
+
+        ZoneNodeLeaf leaf(&root, def);
+        root.getWidget()->hide();
 
         leaf.show();
 
-        QCOMPARE(branch.getWidget()->isVisible(), 1);
+        QCOMPARE(root.getWidget()->isVisible(), 1);
     }
 
 };

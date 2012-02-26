@@ -38,7 +38,7 @@ public:
 class MockedDirectoryTreeSource : public IonProject::Private::DirectoryTreeSource {
 public:
     MockedDirectoryTreeSource(QString path) : IonProject::Private::DirectoryTreeSource(path) {}
-    MOCK_METHOD1(_getDir, boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> (const QString));
+    MOCK_METHOD1(_getDir, QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> (const QString));
 };
 
 }
@@ -123,9 +123,9 @@ private Q_SLOTS:
         EXPECT_CALL(*pRoot, filenames()).WillOnce(testing::Return(QStringList() << "l1file1" << "l1file2"));
         EXPECT_CALL(*pRoot, absolutePath()).Times(testing::AnyNumber());
         ON_CALL(*pRoot, absolutePath()).WillByDefault(testing::Return("root"));
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
 
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), dirnames()).WillOnce(testing::Return(QStringList()));
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), filenames()).WillOnce(testing::Return(QStringList() << "l2file1" << "l2file2"));
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).Times(testing::AnyNumber());
@@ -135,12 +135,12 @@ private Q_SLOTS:
         EXPECT_CALL(source, _getDir(testing::Eq("root/"))).WillOnce(testing::Return(root));
         EXPECT_CALL(source, _getDir(testing::Eq("root/l1dir1/"))).WillOnce(testing::Return(l1));
 
-        boost::shared_ptr<TreeItem> rootTreeItem(source.setupData());
+        QSharedPointer<TreeItem> rootTreeItem(source.setupData());
 
         TreeItemPrinter printer;
 
         QCOMPARE(
-            printer(rootTreeItem.get()),
+            printer(rootTreeItem.data()),
             QString(
                 "Name\n"
                 "    l1dir1\n"
@@ -158,9 +158,9 @@ private Q_SLOTS:
         EXPECT_CALL(*pRoot, filenames()).WillRepeatedly(testing::Return(QStringList() << "l1file1" << "l1file2"));
         EXPECT_CALL(*pRoot, absolutePath()).Times(testing::AnyNumber());
         ON_CALL(*pRoot, absolutePath()).WillByDefault(testing::Return("root"));
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
 
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), dirnames()).WillRepeatedly(testing::Return(QStringList()));
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), filenames()).WillRepeatedly(testing::Return(QStringList() << "l2file1" << "l2file2"));
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).Times(testing::AnyNumber());
@@ -170,10 +170,10 @@ private Q_SLOTS:
         EXPECT_CALL(source, _getDir(testing::Eq("root/"))).WillRepeatedly(testing::Return(root));
         EXPECT_CALL(source, _getDir(testing::Eq("root/l1dir1/"))).WillRepeatedly(testing::Return(l1));
 
-        boost::shared_ptr<TreeItem> rootTreeItem(source.setupData());
+        QSharedPointer<TreeItem> rootTreeItem(source.setupData());
 
         TreeItemAddressPrinter printer;
-        QString addresses = printer(rootTreeItem.get());
+        QString addresses = printer(rootTreeItem.data());
 
         QCOMPARE(printer(source.setupData()), addresses);
     }
@@ -186,9 +186,9 @@ private Q_SLOTS:
         init1 += EXPECT_CALL(*pRoot, filenames()).WillOnce(testing::Return(QStringList() << "l1file1" << "l1file2"));
         EXPECT_CALL(*pRoot, absolutePath()).Times(testing::AnyNumber());
         ON_CALL(*pRoot, absolutePath()).WillByDefault(testing::Return("root"));
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
 
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), dirnames()).WillRepeatedly(testing::Return(QStringList()));
         init1 += EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), filenames()).WillOnce(testing::Return(QStringList() << "l2file1" << "l2file2"));
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).Times(testing::AnyNumber());
@@ -201,10 +201,10 @@ private Q_SLOTS:
         EXPECT_CALL(source, _getDir(testing::Eq("root/"))).WillRepeatedly(testing::Return(root));
         EXPECT_CALL(source, _getDir(testing::Eq("root/l1dir1/"))).WillRepeatedly(testing::Return(l1));
 
-        boost::shared_ptr<TreeItem> rootTreeItem(source.setupData());
+        QSharedPointer<TreeItem> rootTreeItem(source.setupData());
 
         TreeItemAddressCollector collector;
-        QSet<TreeItem *> addresses1 = collector(rootTreeItem.get());
+        QSet<TreeItem *> addresses1 = collector(rootTreeItem.data());
         QSet<TreeItem *> addresses2 = collector(source.setupData());
 
         QSet<TreeItem *> diff = addresses2 - addresses1;
@@ -225,9 +225,9 @@ private Q_SLOTS:
         init1 += EXPECT_CALL(*pRoot, filenames()).WillOnce(testing::Return(QStringList() << "l1file1" << "l1file2"));
         EXPECT_CALL(*pRoot, absolutePath()).Times(testing::AnyNumber());
         ON_CALL(*pRoot, absolutePath()).WillByDefault(testing::Return("root"));
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> root(pRoot);
 
-        boost::shared_ptr<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
+        QSharedPointer<IonProject::Private::DirectoryTreeSource::DirectoryInfo> l1(new MockedDirectoryTreeSourceDirInfo());
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), dirnames()).WillRepeatedly(testing::Return(QStringList()));
         init1 += EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), filenames()).WillOnce(testing::Return(QStringList() << "l2file1" << "l2file2"));
         EXPECT_CALL((MockedDirectoryTreeSourceDirInfo &)(*l1), absolutePath()).Times(testing::AnyNumber());
@@ -240,10 +240,10 @@ private Q_SLOTS:
         EXPECT_CALL(source, _getDir(testing::Eq("root/"))).WillRepeatedly(testing::Return(root));
         EXPECT_CALL(source, _getDir(testing::Eq("root/l1dir1/"))).WillRepeatedly(testing::Return(l1));
 
-        boost::shared_ptr<TreeItem> rootTreeItem(source.setupData());
+        QSharedPointer<TreeItem> rootTreeItem(source.setupData());
 
         TreeItemAddressCollector collector;
-        QSet<TreeItem *> addresses1 = collector(rootTreeItem.get());
+        QSet<TreeItem *> addresses1 = collector(rootTreeItem.data());
         QMap<TreeItem *, QString> pathMap;
         foreach (TreeItem *item, addresses1) {
             pathMap[item] = item->getPath();

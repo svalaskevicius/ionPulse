@@ -12,8 +12,6 @@
 #include <QObject>
 #include <ionCore/plugin.h>
 
-#include <boost/shared_ptr.hpp>
-
 #include <ionParticles/ionEditor/editorapi.h>
 #include <ionParticles/ionProject/projectapi.h>
 
@@ -61,7 +59,7 @@ protected:
         QSharedPointer<IonProject::TreeModelSource> operator()(QString dirname);
     };
 
-    boost::shared_ptr<StructureStorage> structureStorage;
+    QSharedPointer<StructureStorage> structureStorage;
     void addEditorParent(IonEditor::EditorPlugin *editorPlugin);
     void addProjectParent(IonProject::ProjectPlugin *projectPlugin);
 signals:

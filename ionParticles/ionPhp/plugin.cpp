@@ -39,7 +39,7 @@ void Plugin::preLoad()
     if (!db.open()) {
         throw QString("Unable to establish a database connection.\nPhp plugin requires SQLite support.");
     }
-    structureStorage = boost::shared_ptr<StructureStorage>(new StructureStorage("phpStructureStorage"));
+    structureStorage = QSharedPointer<StructureStorage>(new StructureStorage("phpStructureStorage"));
 }
 
 void Plugin::postLoad()

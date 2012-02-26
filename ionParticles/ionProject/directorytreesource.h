@@ -11,7 +11,6 @@
 
 #include "projectapi.h"
 #include <QDir>
-#include <boost/shared_ptr.hpp>
 
 namespace IonProject {
 namespace Private {
@@ -40,7 +39,7 @@ public:
 protected:
     void addDirectory(TreeItem *parent);
     TreeItem *findChildForPath(TreeItem *node, QString path);
-    inline virtual boost::shared_ptr<DirectoryInfo> _getDir(const QString path);
+    inline virtual QSharedPointer<DirectoryInfo> _getDir(const QString path);
 private:
     TreeItemImpl* root;
     QString initialDir;

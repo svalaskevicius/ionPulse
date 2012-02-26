@@ -27,7 +27,7 @@ namespace Private {
 class LayoutZonesManager
 {
 protected:
-    boost::shared_ptr<ZoneNodeBranch> root;
+    QSharedPointer<ZoneNodeBranch> root;
 public:
     LayoutZonesManager();
     ZoneNodeLeaf *getZone(QString path);
