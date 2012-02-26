@@ -16,7 +16,7 @@
 
 extern int _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
 
-int ion_php_parse(IonPhp::Private::phpParser* context);
+extern int ion_php_parse(IonPhp::Private::phpParser* context);
 
 
 namespace IonPhp {

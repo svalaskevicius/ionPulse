@@ -17,6 +17,18 @@ SearchPanel::SearchPanel(QWidget *parent) : QWidget(parent)
     connect(searchText, SIGNAL(returnPressed()), this, SLOT(findNext()));
 }
 
+void SearchPanel::findNext() {
+    Editor *editor = editorPlugin->getCurrentEditor();
+    if (editor) {
+        editor->getEditorInstance()->find(searchText->text());
+    }
+}
+void SearchPanel::findPrevious() {
+    Editor *editor = editorPlugin->getCurrentEditor();
+    if (editor) {
+        editor->getEditorInstance()->find(searchText->text(), QTextDocument::FindBackward);
+    }
+}
 
 }
 }

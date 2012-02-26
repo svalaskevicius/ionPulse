@@ -23,6 +23,7 @@ public:
         QDir dir;
     public:
         DirectoryInfo(QString path) : dir(path) {}
+        virtual ~DirectoryInfo() {}
         inline virtual QStringList dirnames() {return dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);}
         inline virtual QStringList filenames() {return dir.entryList(QDir::Files, QDir::Name);}
         inline virtual QString absolutePath() {return dir.absolutePath();}

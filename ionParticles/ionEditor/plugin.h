@@ -47,9 +47,7 @@ private:
     Editor *focusedEditor;
     SearchPanel *searchPanel;
 public:
-    Editor *getCurrentEditor() {
-        return focusedEditor;
-    }
+    Editor *getCurrentEditor();
 signals:
 
 public slots:

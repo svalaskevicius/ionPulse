@@ -47,6 +47,14 @@ class PhpParserTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void test_failsOnPhpError() {
+        try {
+            IonPhp::Private::phpParser().parseString("<?php asd");
+        } catch (std::exception &e) {
+            return;
+        }
+        QFAIL("Exception is not thrown");
+    }
     void test_openCloseNoEnd() { TEST_PHP_PARSER(
         "<?php ?><?php ?><?php ",
         "<top_statement_list>"

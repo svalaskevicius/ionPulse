@@ -57,8 +57,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = false;
     def.sizeWeight = 700;
     def.childrenClosable = true;
-    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Boxed;
-    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Boxed;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
     layoutManager->addZone(def);
 
     def.name = "central_footer";
@@ -69,8 +69,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = true;
     def.sizeWeight = 1;
     def.childrenClosable = false;
-    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
-    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Boxed;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Tabbed;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Boxed;
     layoutManager->addZone(def);
 
     def.name = "left";
@@ -81,8 +81,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = false;
     def.sizeWeight = 200;
     def.childrenClosable = false;
-    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Split;
-    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Split;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
     layoutManager->addZone(def);
 
     def.name = "leftbottom";
@@ -93,8 +93,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = true;
     def.sizeWeight = 150;
     def.childrenClosable = false;
-    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Split;
-    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Split;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
     layoutManager->addZone(def);
 
     def.name = "right";
@@ -105,8 +105,8 @@ void Plugin::postLoad()
     def.hideIfEmpty = true;
     def.sizeWeight = 150;
     def.childrenClosable = false;
-    def.subZonesContainerType = IonLayout::ZoneDefinition::Type::Split;
-    def.widgetsContainerType = IonLayout::ZoneDefinition::Type::Tabbed;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Split;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
     layoutManager->addZone(def);
 
     Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();
@@ -126,9 +126,13 @@ void Plugin::postLoad()
     editMenu->addAction("Find &Previous", this, SLOT(onEditSearchPrev()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_G));
 
     searchPanel = new SearchPanel();
-    searchPanel->setActiveEditorGetter( [&] () -> Editor* { return this->getCurrentEditor(); } );
+    searchPanel->setEditorPlugin(this);
     layoutManager->add(searchPanel);
 
+}
+
+Editor *Plugin::getCurrentEditor() {
+    return focusedEditor;
 }
 
 void Plugin::onEditSearch()

@@ -22,14 +22,8 @@ class SearchPanel : public QWidget, public IonLayout::PanelWidget
 protected:
     QHBoxLayout *layout;
     QLineEdit *searchText;
-    std::function<Editor *()> __getActiveEditor;
+    EditorPlugin * editorPlugin;
 
-    inline Editor *getActiveEditor() {
-        if (!__getActiveEditor) {
-            throw std::runtime_error("active editor getter not set for searchPanel");
-        }
-        return __getActiveEditor();
-    }
 public:
     explicit SearchPanel(QWidget *parent = 0);
     virtual QWidget *getWidget() {return this;}
@@ -42,8 +36,8 @@ public:
         style()->drawPrimitive(QStyle::PE_Widget, &styleOption, &painter, this);
     }
 
-    void setActiveEditorGetter(std::function<Editor *()> getter) {
-        __getActiveEditor = getter;
+    void setEditorPlugin(EditorPlugin * editorPlugin) {
+        this->editorPlugin = editorPlugin;
     }
 
     void focusSearchInput() {
@@ -52,18 +46,8 @@ public:
 signals:
 
 public slots:
-    void findNext() {
-        Editor *editor = getActiveEditor();
-        if (editor) {
-            editor->getEditorInstance()->find(searchText->text());
-        }
-    }
-    void findPrevious() {
-        Editor *editor = getActiveEditor();
-        if (editor) {
-            editor->getEditorInstance()->find(searchText->text(), QTextDocument::FindBackward);
-        }
-    }
+    void findNext();
+    void findPrevious();
 };
 
 }

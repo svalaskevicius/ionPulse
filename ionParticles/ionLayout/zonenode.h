@@ -80,8 +80,8 @@ public:
         def.orientation = Qt::Horizontal;
         def.sizeWeight = 1000;
         def.childrenClosable = false;
-        def.subZonesContainerType = ZoneDefinition::Type::Split;
-        def.widgetsContainerType = ZoneDefinition::Type::Split;
+        def.subZonesContainerType = ZoneDefinition::Split;
+        def.widgetsContainerType = ZoneDefinition::Split;
         return def;
     }
 };

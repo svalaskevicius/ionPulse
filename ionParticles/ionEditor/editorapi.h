@@ -167,6 +167,7 @@ public:
  */
 struct EditorComponentFactoryBase {
 
+    virtual ~EditorComponentFactoryBase() {}
     /**
      * \brief Construct EditorComponent for a given Editor object.
      */
@@ -214,6 +215,7 @@ struct EditorComponentFactory1 : public EditorComponentFactoryBase {
  * QSyntaxHighlighter subclasses are used.
  */
 struct HighlighterFactory {
+    virtual ~HighlighterFactory() {}
     /**
      * \brief Invoke the factory to create a syntax highlighter.
      */
@@ -284,7 +286,7 @@ public:
     /**
      * \brief Retrieve currently active Editor instance, or NULL, if none is active.
      */
-    Editor *getCurrentEditor();
+    virtual Editor *getCurrentEditor() = 0;
 };
 
 

@@ -21,11 +21,11 @@ ZoneNode::ZoneNode(ZoneNode *parent, ZoneDefinition  zoneDef) : parent(parent), 
 WidgetsAggregate *ZoneNode::_createZoneWidget(ZoneDefinition::Type type, QWidget *parent, ZoneDefinition  zoneDef)
 {
     switch (type) {
-        case ZoneDefinition::Type::Boxed:
+        case ZoneDefinition::Boxed:
             return new WidgetsBoxed(parent);
-        case ZoneDefinition::Type::Tabbed:
+        case ZoneDefinition::Tabbed:
             return new WidgetsTabbed(parent, zoneDef);
-        case ZoneDefinition::Type::Split:
+        case ZoneDefinition::Split:
             return new WidgetsSplitter(parent);
         default:
             throw std::runtime_error("zone type is not set");
