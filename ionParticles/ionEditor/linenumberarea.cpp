@@ -31,7 +31,13 @@ LineNumberArea::LineNumberArea(Editor *parent) :
 
 void LineNumberArea::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    painter.fillRect(event->rect(), QColor(0xe0, 0xe0, 0xe0));
+    QColor bg = palette().color(QPalette::Background);
+    if(bg.lightness() >= 32) {
+        bg = bg.darker(120);
+    } else {
+        bg = bg.lighter(120);
+    }
+    painter.fillRect(event->rect(), bg);
 
     QTextBlock block = ionText->getEditorInfo().firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -131,6 +137,7 @@ void LineNumberArea::editorBlockCountChanged(int /* newBlockCount */)
 void LineNumberArea::editorCursorPositionChanged()
 {
     currentLine = ionText->getEditorInstance()->textCursor().blockNumber();
+    update();
 }
 
 }
