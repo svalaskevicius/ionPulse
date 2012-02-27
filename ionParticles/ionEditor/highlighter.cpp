@@ -13,7 +13,7 @@
 namespace IonEditor {
 namespace Private {
 
-Highlighter::Highlighter(QPlainTextEdit *parent) :
+Highlighter::Highlighter(QPlainTextEdit *parent, QString filetype) :
     QSyntaxHighlighter(parent->document()), ionText(parent)
 {
 

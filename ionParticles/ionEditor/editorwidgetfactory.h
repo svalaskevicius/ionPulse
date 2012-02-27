@@ -25,7 +25,7 @@ class EditorWidget;
 typedef EditorComponentFactory<IonEditor::Private::LineNumberArea> DefaultLineNumberAreaFactory;
 
 struct DefaultHighlighterFactory : public HighlighterFactory {
-    virtual QSyntaxHighlighter *operator()(Editor *);
+    virtual QSyntaxHighlighter *operator()(Editor *, QString);
 };
 
 class EditorWidgetBuilderImpl : public IonEditor::EditorWidgetBuilder

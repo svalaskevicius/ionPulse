@@ -217,9 +217,9 @@ struct EditorComponentFactory1 : public EditorComponentFactoryBase {
 struct HighlighterFactory {
     virtual ~HighlighterFactory() {}
     /**
-     * \brief Invoke the factory to create a syntax highlighter.
+     * \brief Invoke the factory to create a syntax highlighter for the given Editor and filetype.
      */
-    virtual QSyntaxHighlighter *operator()(Editor *) = 0;
+    virtual QSyntaxHighlighter *operator()(Editor *, QString) = 0;
 };
 
 /**

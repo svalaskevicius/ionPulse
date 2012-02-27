@@ -20,7 +20,7 @@ class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    explicit Highlighter(QPlainTextEdit *parent = 0);
+    explicit Highlighter(QPlainTextEdit *parent, QString filetype);
 
 protected:
     void highlightBlock(const QString &);
