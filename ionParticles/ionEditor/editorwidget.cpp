@@ -41,7 +41,6 @@ EditorWidget::EditorWidget(QString filePath)
     }
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(editorCursorPositionChanged()));
     connect(document(), SIGNAL(modificationChanged(bool)), this, SLOT(modificationChanged(bool)));
-    editorCursorPositionChanged();
     document()->setModified(false);
     setWindowModified(false);
 }
@@ -173,7 +172,12 @@ void EditorWidget::addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection>
     if (!this->isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(QColor::fromHsl(90, 70, 220));
+        QColor lineColor = palette().color(QPalette::Background);
+        if(lineColor.lightness() >= 192) {
+            lineColor = lineColor.darker(130);
+        } else {
+            lineColor = lineColor.lighter(130);
+        }
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -192,6 +196,7 @@ void EditorWidget::focusOnLine(int line)
         QTextCursor::MoveAnchor
     );
     setTextCursor(cursor);
+    editorCursorPositionChanged();
 }
 
 void EditorWidget::saveFile() {

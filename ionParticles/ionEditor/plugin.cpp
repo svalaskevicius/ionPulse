@@ -197,6 +197,8 @@ void Plugin::openFile(QString path, int line)
     }
     if (-1 != line) {
         widget->focusOnLine(line);
+    } else {
+        widget->focusOnLine(0);
     }
 }
 
