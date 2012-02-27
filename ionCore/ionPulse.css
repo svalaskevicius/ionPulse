@@ -1078,8 +1078,8 @@ QTabBar[shape="0"]::tab{
 
 
 QTabBar[shape="0"]::tab:selected{
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #555, stop: 0.2 #16100A, stop:0.6 #43311F, stop:1 #444);
-    color: #E3AC75;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(80, 80, 80), stop:1 rgb(50, 50, 50));
+    color: #ccc;
     border-bottom-color: rgb(40, 40, 40);
 }
 
