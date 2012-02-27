@@ -18,7 +18,7 @@ Highlighter::Highlighter(QPlainTextEdit *parent) :
     HighlightingRule rule;
 
     QTextCharFormat keywordFormat;
-    keywordFormat.setForeground(Qt::darkBlue);
+    keywordFormat.setForeground(QColor::fromRgb(230, 150, 200));
     keywordFormat.setFontWeight(QFont::Bold);
     QStringList keywords;
     keywords << "abstract" << "and" << "array" << "as" << "break" << "case"
@@ -37,7 +37,7 @@ Highlighter::Highlighter(QPlainTextEdit *parent) :
     }
 
     QTextCharFormat compileConstantsFormat;
-    compileConstantsFormat.setForeground(Qt::blue);
+    compileConstantsFormat.setForeground(Qt::yellow);
     compileConstantsFormat.setFontWeight(QFont::DemiBold);
     compileConstantsFormat.setFontItalic(true);
     QStringList compileConstants;
@@ -50,7 +50,7 @@ Highlighter::Highlighter(QPlainTextEdit *parent) :
     }
 
     QTextCharFormat languageConstructsFormat;
-    languageConstructsFormat.setForeground(Qt::darkBlue);
+    languageConstructsFormat.setForeground(QColor::fromRgb(90, 200, 90));
     languageConstructsFormat.setFontWeight(QFont::Bold);
     QStringList languageConstructs;
     languageConstructs << "die" << "echo" << "empty" << "exit" << "eval"
@@ -65,13 +65,13 @@ Highlighter::Highlighter(QPlainTextEdit *parent) :
 
 
     QTextCharFormat variableFormat;
-    variableFormat.setForeground(QColor::fromHsv(90, 155, 85));
+    variableFormat.setForeground(QColor::fromRgb(150, 150, 130));
     rule.pattern = QRegExp("\\$[A-Za-z]+\\b");
     rule.format = variableFormat;
     highlightingRules.append(rule);
 
     QTextCharFormat quotationFormat;
-    quotationFormat.setForeground(Qt::darkGreen);
+    quotationFormat.setForeground(QColor::fromRgb(150, 255, 150));
     rule.pattern = QRegExp("([\"']).*\\1");
     rule.pattern.setMinimal(true);
     rule.format = quotationFormat;
@@ -80,19 +80,19 @@ Highlighter::Highlighter(QPlainTextEdit *parent) :
     QTextCharFormat functionFormat;
     functionFormat.setFontWeight(QFont::Bold);
     //functionFormat.setFontItalic(true);
-    functionFormat.setForeground(QColor::fromHsv(20, 205, 105));
+    functionFormat.setForeground(QColor::fromRgb(222, 222, 222));
     rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
     QTextCharFormat singleLineCommentFormat;
-    singleLineCommentFormat.setForeground(Qt::red);
+    singleLineCommentFormat.setForeground(Qt::gray);
     rule.pattern = QRegExp("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
 
-    multiLineCommentFormat.setForeground(Qt::red);
+    multiLineCommentFormat.setForeground(Qt::gray);
     commentStartExpression = QRegExp("/\\*");
     commentEndExpression = QRegExp("\\*/");
 }
