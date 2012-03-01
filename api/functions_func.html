@@ -80,6 +80,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions.html"><span>All</span></a></li>
       <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_eval.html"><span>Enumerator</span></a></li>
     </ul>
   </div>
   <div id="navrow4" class="tabs3">
@@ -202,6 +204,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>getChildRowNr()
 : <a class="el" href="class_ion_project_1_1_tree_item.html#a5155e50f8b3fb96bb36689bb6dc17a0f">IonProject::TreeItem</a>
 </li>
+<li>getCurrentEditor()
+: <a class="el" href="class_ion_editor_1_1_editor_plugin.html#a0fbc9c45c0b1c8d26ed6139184e76a9c">IonEditor::EditorPlugin</a>
+</li>
 <li>getDependencies()
 : <a class="el" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6">IonCore::BasicPlugin</a>
 </li>
@@ -230,9 +235,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>getName()
 : <a class="el" href="class_ion_core_1_1_basic_plugin.html#a74689b60b4033750628fd384d8d86e76">IonCore::BasicPlugin</a>
-</li>
-<li>getPanelTitle()
-: <a class="el" href="class_ion_layout_1_1_panel_widget.html#ad5cb6b3c0235a58fe87e8665c758616f">IonLayout::PanelWidget</a>
 </li>
 <li>getPanelZone()
 : <a class="el" href="class_ion_layout_1_1_panel_widget.html#aae61f64d5c493f5b12e6316c4130dfaa">IonLayout::PanelWidget</a>
@@ -279,7 +281,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="class_ion_editor_1_1_editor_plugin.html#a035de4f61f9f0511377754e4c68fc8cb">IonEditor::EditorPlugin</a>
 </li>
 <li>operator()()
-: <a class="el" href="struct_ion_editor_1_1_highlighter_factory.html#a04960a3833d16e341e37d5f8d263de76">IonEditor::HighlighterFactory</a>
+: <a class="el" href="struct_ion_editor_1_1_highlighter_factory.html#a0d15ab5d36b75f67bd29458a5e374db6">IonEditor::HighlighterFactory</a>
 , <a class="el" href="struct_ion_editor_1_1_editor_component_factory1.html#a8c087cb75438baabe60909a270b8c0da">IonEditor::EditorComponentFactory1&lt; component, targ1 &gt;</a>
 , <a class="el" href="struct_ion_editor_1_1_editor_component_factory.html#a380d1ece212f49ed95fb01e410bcb36b">IonEditor::EditorComponentFactory&lt; component &gt;</a>
 , <a class="el" href="struct_ion_editor_1_1_editor_component_factory_base.html#a221dd0b7aa0221bebfa89c002bd5a3cd">IonEditor::EditorComponentFactoryBase</a>
@@ -339,9 +341,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
-<li>updatePanelTitle()
-: <a class="el" href="class_ion_layout_1_1_layout_manager.html#a2ca6e83b16f64366de14f3ad86d2f423">IonLayout::LayoutManager</a>
-</li>
 <li>updateViewportMargins()
 : <a class="el" href="class_ion_editor_1_1_editor.html#a9ac9fa0223890728a25614f76404c460">IonEditor::Editor</a>
 </li>
@@ -358,11 +357,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>~EditorComponent()
 : <a class="el" href="class_ion_editor_1_1_editor_component.html#ab4eeb95e19653facd73ce93d1da282bf">IonEditor::EditorComponent</a>
 </li>
+<li>~EditorComponentFactoryBase()
+: <a class="el" href="struct_ion_editor_1_1_editor_component_factory_base.html#a6f49196e678aa902d3199ea6fc648c51">IonEditor::EditorComponentFactoryBase</a>
+</li>
 <li>~EditorComponentInfo()
 : <a class="el" href="class_ion_editor_1_1_editor_component_info.html#ab960a9b4c114a09d54d15d11d41de0c2">IonEditor::EditorComponentInfo</a>
 </li>
 <li>~EditorWidgetBuilder()
 : <a class="el" href="class_ion_editor_1_1_editor_widget_builder.html#a00d8a18a3017af69ec97721085d9de20">IonEditor::EditorWidgetBuilder</a>
+</li>
+<li>~HighlighterFactory()
+: <a class="el" href="struct_ion_editor_1_1_highlighter_factory.html#ae5de404e2b79b406030b59c14b7fbe8b">IonEditor::HighlighterFactory</a>
 </li>
 <li>~LayoutManager()
 : <a class="el" href="class_ion_layout_1_1_layout_manager.html#a5afedf4a897173fb57fbcac186ca4143">IonLayout::LayoutManager</a>
@@ -383,7 +388,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

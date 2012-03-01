@@ -84,6 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-attribs">Public Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">IonLayout::ZoneDefinition Struct Reference</div>  </div>
@@ -97,6 +98,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><a href="struct_ion_layout_1_1_zone_definition-members.html">List of all members.</a></p>
 <table class="memberdecls">
+<tr><td colspan="2"><h2><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287">Type</a> { <a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287a7ba8c4e2a5e503a7fe9d4d6933ea82eb">Split</a>, 
+<a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287a959090644734537851a81908edea108c">Boxed</a>, 
+<a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287a914c0a6edf7d75cd396e4fe99fc79e0a">Tabbed</a>
+ }</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines control types used to display zone panels.  <a href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#ae1441d6efa266dce54d50e4d416d5776">parentPath</a></td></tr>
@@ -114,13 +122,47 @@ Public Attributes</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Relative weight [1..1000] of the zone width/height comparing to the sibling-level zones.  <a href="#a9e1fa800c1801a9f924470e17cf4b5aa"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a4ff18e4f1ee70516dad64df27a08d1e2">childrenClosable</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Can subscribed panels be closed?  <a href="#a4ff18e4f1ee70516dad64df27a08d1e2"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a9a06fa1297351e4e4e72a3ef70a24452">subZonesContainerType</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines controls used to display zone panels.  <a href="#a9a06fa1297351e4e4e72a3ef70a24452"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a9429deb60cfab41f8089dac829a9f696">widgetsContainerType</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines controls used to display widget panels.  <a href="#a9429deb60cfab41f8089dac829a9f696"></a><br/></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Zone properties. </p>
 <p>The <a class="el" href="struct_ion_layout_1_1_zone_definition.html" title="Zone properties.">ZoneDefinition</a> entity is used to define a zone - assign zone properties, which then could be passed to create a zone using <a class="el" href="class_ion_layout_1_1_layout_manager.html#a8f2b15e81ae4b8979470ade8c1176a56" title="Add new zone to the tree.">LayoutManager::addZone()</a>. </p>
 
 <p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00031">31</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
-</div><hr/><h2>Member Data Documentation</h2>
+</div><hr/><h2>Member Enumeration Documentation</h2>
+<a class="anchor" id="a2584e8115543066c7de3c770f1f0e287"></a><!-- doxytag: member="IonLayout::ZoneDefinition::Type" ref="a2584e8115543066c7de3c770f1f0e287" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287">IonLayout::ZoneDefinition::Type</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Defines control types used to display zone panels. </p>
+<dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" id="a2584e8115543066c7de3c770f1f0e287a7ba8c4e2a5e503a7fe9d4d6933ea82eb"></a><!-- doxytag: member="Split" ref="a2584e8115543066c7de3c770f1f0e287a7ba8c4e2a5e503a7fe9d4d6933ea82eb" args="" -->Split</em>&nbsp;</td><td>
+<p>Default behaviour where children are displayed in split widgets. </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a2584e8115543066c7de3c770f1f0e287a959090644734537851a81908edea108c"></a><!-- doxytag: member="Boxed" ref="a2584e8115543066c7de3c770f1f0e287a959090644734537851a81908edea108c" args="" -->Boxed</em>&nbsp;</td><td>
+<p>Children of such zone will be placed usign simple QBoxLayout (vertical or horizontal depending on orientation). </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a2584e8115543066c7de3c770f1f0e287a914c0a6edf7d75cd396e4fe99fc79e0a"></a><!-- doxytag: member="Tabbed" ref="a2584e8115543066c7de3c770f1f0e287a914c0a6edf7d75cd396e4fe99fc79e0a" args="" -->Tabbed</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dd>
+</dl>
+
+<p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00071">71</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
+
+</div>
+</div>
+<hr/><h2>Member Data Documentation</h2>
 <a class="anchor" id="af7ac4b94b3f7a2bc19e7c597920e29db"></a><!-- doxytag: member="IonLayout::ZoneDefinition::after" ref="af7ac4b94b3f7a2bc19e7c597920e29db" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -255,13 +297,47 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a9a06fa1297351e4e4e72a3ef70a24452"></a><!-- doxytag: member="IonLayout::ZoneDefinition::subZonesContainerType" ref="a9a06fa1297351e4e4e72a3ef70a24452" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287">Type</a> <a class="el" href="struct_ion_layout_1_1_zone_definition.html#a9a06fa1297351e4e4e72a3ef70a24452">IonLayout::ZoneDefinition::subZonesContainerType</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Defines controls used to display zone panels. </p>
+
+<p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00086">86</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9429deb60cfab41f8089dac829a9f696"></a><!-- doxytag: member="IonLayout::ZoneDefinition::widgetsContainerType" ref="a9429deb60cfab41f8089dac829a9f696" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_ion_layout_1_1_zone_definition.html#a2584e8115543066c7de3c770f1f0e287">Type</a> <a class="el" href="struct_ion_layout_1_1_zone_definition.html#a9429deb60cfab41f8089dac829a9f696">IonLayout::ZoneDefinition::widgetsContainerType</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Defines controls used to display widget panels. </p>
+
+<p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00091">91</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
+
+</div>
+</div>
 </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

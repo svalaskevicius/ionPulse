@@ -78,29 +78,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Please see *Namespaces* section for the detailed information.</p>
 <p>To build and develop IonPulse IDE one should install:</p>
 <ul>
-<li>Gcc 4.6.2 or higher, to support C++11 standard;</li>
+<li>Gcc</li>
 <li>Qt 4.8 or higher;</li>
 <li>Boost;</li>
 <li>Bison and Flex;</li>
+<li>libxml2.</li>
 <li>Sqlite 3;</li>
-<li>GoogleMock.</li>
+<li>GoogleMock;</li>
 </ul>
-<p>PLATFORM SPECIFIC instructions:</p>
-<ul>
-<li>MAC OSX</li>
-</ul>
-<p>As Apple is not a friend of not-only-for-apple developers, one has to manually build the required GCC version required. Please see these links for more instructions:</p>
-<ul>
-<li><a href="http://solarianprogrammer.com/2011/12/01/compiling-gcc-4-6-2-on-mac-osx-lion/">http://solarianprogrammer.com/2011/12/01/compiling-gcc-4-6-2-on-mac-osx-lion/</a></li>
-<li><a href="http://stackoverflow.com/questions/9102030/g-4-6-adds-a-space-between-f-and-the-path-when-calling-ld-on-mac-os-x/9345746#9345746">http://stackoverflow.com/questions/9102030/g-4-6-adds-a-space-between-f-and-the-path-when-calling-ld-on-mac-os-x/9345746#9345746</a> </li>
-</ul>
+<p>Before building main project, you will first need to build lib/qtscriptgenerator, following the instruction in its provided README file.</p>
+<p>Note, if your QT installation is not on the system path, you should set QTDIR environment variable e.g. QTDIR=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/ and use specific paths to qmake, e.g. ~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/bin/qmake also, provide your local QT includes directory when using generator, e.g. ./generator --include-paths=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/include/ </p>
 </div></div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

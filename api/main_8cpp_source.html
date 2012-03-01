@@ -89,31 +89,76 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00009"></a>00009 <span class="preprocessor">#include &lt;QtGui/QApplication&gt;</span>
 <a name="l00010"></a>00010 <span class="preprocessor">#include &lt;QMessageBox&gt;</span>
 <a name="l00011"></a>00011 <span class="preprocessor">#include &lt;stdexcept&gt;</span>
-<a name="l00012"></a>00012 
-<a name="l00013"></a>00013 <span class="preprocessor">#include &quot;shared.h&quot;</span>
-<a name="l00014"></a>00014 <span class="preprocessor">#include &quot;mainwindow.h&quot;</span>
-<a name="l00015"></a>00015 <span class="preprocessor">#include &quot;pluginloader.h&quot;</span>
-<a name="l00016"></a>00016 
-<a name="l00048"></a>00048 <span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])
-<a name="l00049"></a>00049 {
-<a name="l00050"></a>00050     QApplication a(argc, argv);
-<a name="l00051"></a>00051     IonCore::Private::MainWindow w;
-<a name="l00052"></a>00052     IonCore::Private::PluginLoader plugins;
-<a name="l00053"></a>00053     <span class="keywordflow">try</span> {
-<a name="l00054"></a>00054         plugins.loadPlugins(w);
-<a name="l00055"></a>00055         w.show();
-<a name="l00056"></a>00056         <span class="keywordflow">return</span> a.exec();
-<a name="l00057"></a>00057     } <span class="keywordflow">catch</span> (QString &amp;msg) {
-<a name="l00058"></a>00058         QMessageBox::critical(
-<a name="l00059"></a>00059             0,
-<a name="l00060"></a>00060             <span class="stringliteral">&quot;Application error&quot;</span>,
-<a name="l00061"></a>00061             msg+<span class="stringliteral">&quot;\n\nClick Cancel to exit.&quot;</span>,
-<a name="l00062"></a>00062             QMessageBox::Cancel
-<a name="l00063"></a>00063         );
-<a name="l00064"></a>00064         <span class="keywordflow">return</span> 1;
-<a name="l00065"></a>00065     }
-<a name="l00066"></a>00066 
+<a name="l00012"></a>00012 <span class="preprocessor">#include &lt;QProcess&gt;</span>
+<a name="l00013"></a>00013 
+<a name="l00014"></a>00014 <span class="preprocessor">#include &quot;shared.h&quot;</span>
+<a name="l00015"></a>00015 <span class="preprocessor">#include &quot;mainwindow.h&quot;</span>
+<a name="l00016"></a>00016 <span class="preprocessor">#include &quot;pluginloader.h&quot;</span>
+<a name="l00017"></a>00017 <span class="preprocessor">#include &quot;jsengine.h&quot;</span>
+<a name="l00018"></a>00018 
+<a name="l00019"></a>00019 
+<a name="l00050"></a>00050 <span class="keyword">namespace </span>IonCore {
+<a name="l00051"></a>00051 <span class="keyword">namespace </span>Private {
+<a name="l00052"></a>00052 
+<a name="l00053"></a>00053 
+<a name="l00054"></a>00054 QString getBaseDir()
+<a name="l00055"></a>00055 {
+<a name="l00056"></a>00056     QDir baseDir = QDir(qApp-&gt;applicationDirPath());
+<a name="l00057"></a>00057 
+<a name="l00058"></a>00058 <span class="preprocessor">    #if defined(Q_OS_MAC)</span>
+<a name="l00059"></a>00059 <span class="preprocessor"></span>        <span class="keywordflow">if</span> (baseDir.dirName() == <span class="stringliteral">&quot;MacOS&quot;</span>) {
+<a name="l00060"></a>00060             baseDir.cdUp();
+<a name="l00061"></a>00061             baseDir.cdUp();
+<a name="l00062"></a>00062             baseDir.cdUp();
+<a name="l00063"></a>00063         }
+<a name="l00064"></a>00064 <span class="preprocessor">    #endif</span>
+<a name="l00065"></a>00065 <span class="preprocessor"></span>
+<a name="l00066"></a>00066     <span class="keywordflow">return</span> baseDir.absolutePath();
 <a name="l00067"></a>00067 }
+<a name="l00068"></a>00068 
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070 
+<a name="l00071"></a>00071 }
+<a name="l00072"></a>00072 }
+<a name="l00073"></a>00073 
+<a name="l00074"></a>00074 <span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])
+<a name="l00075"></a>00075 {
+<a name="l00076"></a>00076     QApplication app(argc, argv);
+<a name="l00077"></a>00077     IonCore::Private::MainWindow mainWindow;
+<a name="l00078"></a>00078     IonCore::Private::PluginLoader plugins;
+<a name="l00079"></a>00079 
+<a name="l00080"></a>00080     <span class="keywordflow">try</span> {
+<a name="l00081"></a>00081         QString baseDir = IonCore::Private::getBaseDir();
+<a name="l00082"></a>00082 
+<a name="l00083"></a>00083 
+<a name="l00084"></a>00084         QFile styleSheetFile(baseDir+<span class="stringliteral">&quot;/ionPulse.css&quot;</span>);
+<a name="l00085"></a>00085         <span class="keywordflow">if</span> (styleSheetFile.open(QFile::ReadOnly)) {
+<a name="l00086"></a>00086             app.setStyleSheet(styleSheetFile.readAll());
+<a name="l00087"></a>00087         }
+<a name="l00088"></a>00088 
+<a name="l00089"></a>00089         plugins.loadPlugins(mainWindow, baseDir+<span class="stringliteral">&quot;/plugins/&quot;</span>);
+<a name="l00090"></a>00090 
+<a name="l00091"></a>00091         QStringList paths = app.libraryPaths();
+<a name="l00092"></a>00092         paths &lt;&lt;  baseDir+<span class="stringliteral">&quot;/plugins/&quot;</span>;
+<a name="l00093"></a>00093         app.setLibraryPaths(paths);
+<a name="l00094"></a>00094 
+<a name="l00095"></a>00095         IonCore::Private::JsEngine jsEngine;
+<a name="l00096"></a>00096         jsEngine.loadFile(baseDir+<span class="stringliteral">&quot;/ionPulse.js&quot;</span>);
+<a name="l00097"></a>00097 
+<a name="l00098"></a>00098 
+<a name="l00099"></a>00099         mainWindow.show();
+<a name="l00100"></a>00100         <span class="keywordflow">return</span> app.exec();
+<a name="l00101"></a>00101     } <span class="keywordflow">catch</span> (QString &amp;msg) {
+<a name="l00102"></a>00102         QMessageBox::critical(
+<a name="l00103"></a>00103             0,
+<a name="l00104"></a>00104             <span class="stringliteral">&quot;Application error&quot;</span>,
+<a name="l00105"></a>00105             msg+<span class="stringliteral">&quot;\n\nClick Cancel to exit.&quot;</span>,
+<a name="l00106"></a>00106             QMessageBox::Cancel
+<a name="l00107"></a>00107         );
+<a name="l00108"></a>00108         <span class="keywordflow">return</span> 1;
+<a name="l00109"></a>00109     }
+<a name="l00110"></a>00110 
+<a name="l00111"></a>00111 }
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -121,7 +166,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

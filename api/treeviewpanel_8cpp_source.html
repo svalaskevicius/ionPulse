@@ -109,22 +109,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00029"></a>00029     layout-&gt;addWidget(_treeView);
 <a name="l00030"></a>00030     layout-&gt;addWidget(_filterInputField);
 <a name="l00031"></a>00031     setLayout(layout);
-<a name="l00032"></a>00032 }
+<a name="l00032"></a>00032     setWindowTitle(_dataModel-&gt;getTitle());
 <a name="l00033"></a>00033 
-<a name="l00034"></a>00034 <span class="keywordtype">void</span> TreeViewPanel::filterKey(<span class="keywordtype">int</span> key)
-<a name="l00035"></a>00035 {
-<a name="l00036"></a>00036     _filterInputField-&gt;setFocus(Qt::ShortcutFocusReason);
-<a name="l00037"></a>00037     _filterInputField-&gt;setText(QString( (<span class="keywordtype">char</span>) key - Qt::Key_A + <span class="charliteral">&#39;a&#39;</span>));
-<a name="l00038"></a>00038     _filterInputField-&gt;show();
-<a name="l00039"></a>00039 }
-<a name="l00040"></a>00040 <span class="keywordtype">void</span> TreeViewPanel::applyFilter()
-<a name="l00041"></a>00041 {
-<a name="l00042"></a>00042     _filterInputField-&gt;hide();
-<a name="l00043"></a>00043     _treeView-&gt;setFocus(Qt::ShortcutFocusReason);
-<a name="l00044"></a>00044 }
-<a name="l00045"></a>00045 
+<a name="l00034"></a>00034 }
+<a name="l00035"></a>00035 
+<a name="l00036"></a>00036 <span class="keywordtype">void</span> TreeViewPanel::filterKey(<span class="keywordtype">int</span> key)
+<a name="l00037"></a>00037 {
+<a name="l00038"></a>00038     _filterInputField-&gt;setFocus(Qt::ShortcutFocusReason);
+<a name="l00039"></a>00039     _filterInputField-&gt;setText(QString( (<span class="keywordtype">char</span>) key - Qt::Key_A + <span class="charliteral">&#39;a&#39;</span>));
+<a name="l00040"></a>00040     _filterInputField-&gt;show();
+<a name="l00041"></a>00041 }
+<a name="l00042"></a>00042 <span class="keywordtype">void</span> TreeViewPanel::applyFilter()
+<a name="l00043"></a>00043 {
+<a name="l00044"></a>00044     _filterInputField-&gt;hide();
+<a name="l00045"></a>00045     _treeView-&gt;setFocus(Qt::ShortcutFocusReason);
 <a name="l00046"></a>00046 }
-<a name="l00047"></a>00047 }
+<a name="l00047"></a>00047 
+<a name="l00048"></a>00048 }
+<a name="l00049"></a>00049 }
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -132,7 +134,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

@@ -98,7 +98,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00018"></a>00018     HighlightingRule rule;
 <a name="l00019"></a>00019 
 <a name="l00020"></a>00020     QTextCharFormat keywordFormat;
-<a name="l00021"></a>00021     keywordFormat.setForeground(Qt::darkBlue);
+<a name="l00021"></a>00021     keywordFormat.setForeground(QColor::fromRgb(230, 150, 200));
 <a name="l00022"></a>00022     keywordFormat.setFontWeight(QFont::Bold);
 <a name="l00023"></a>00023     QStringList keywords;
 <a name="l00024"></a>00024     keywords &lt;&lt; <span class="stringliteral">&quot;abstract&quot;</span> &lt;&lt; <span class="stringliteral">&quot;and&quot;</span> &lt;&lt; <span class="stringliteral">&quot;array&quot;</span> &lt;&lt; <span class="stringliteral">&quot;as&quot;</span> &lt;&lt; <span class="stringliteral">&quot;break&quot;</span> &lt;&lt; <span class="stringliteral">&quot;case&quot;</span>
@@ -117,7 +117,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00037"></a>00037     }
 <a name="l00038"></a>00038 
 <a name="l00039"></a>00039     QTextCharFormat compileConstantsFormat;
-<a name="l00040"></a>00040     compileConstantsFormat.setForeground(Qt::blue);
+<a name="l00040"></a>00040     compileConstantsFormat.setForeground(Qt::yellow);
 <a name="l00041"></a>00041     compileConstantsFormat.setFontWeight(QFont::DemiBold);
 <a name="l00042"></a>00042     compileConstantsFormat.setFontItalic(<span class="keyword">true</span>);
 <a name="l00043"></a>00043     QStringList compileConstants;
@@ -130,7 +130,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00050"></a>00050     }
 <a name="l00051"></a>00051 
 <a name="l00052"></a>00052     QTextCharFormat languageConstructsFormat;
-<a name="l00053"></a>00053     languageConstructsFormat.setForeground(Qt::darkBlue);
+<a name="l00053"></a>00053     languageConstructsFormat.setForeground(QColor::fromRgb(90, 200, 90));
 <a name="l00054"></a>00054     languageConstructsFormat.setFontWeight(QFont::Bold);
 <a name="l00055"></a>00055     QStringList languageConstructs;
 <a name="l00056"></a>00056     languageConstructs &lt;&lt; <span class="stringliteral">&quot;die&quot;</span> &lt;&lt; <span class="stringliteral">&quot;echo&quot;</span> &lt;&lt; <span class="stringliteral">&quot;empty&quot;</span> &lt;&lt; <span class="stringliteral">&quot;exit&quot;</span> &lt;&lt; <span class="stringliteral">&quot;eval&quot;</span>
@@ -145,13 +145,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00065"></a>00065 
 <a name="l00066"></a>00066 
 <a name="l00067"></a>00067     QTextCharFormat variableFormat;
-<a name="l00068"></a>00068     variableFormat.setForeground(QColor::fromHsv(90, 155, 85));
+<a name="l00068"></a>00068     variableFormat.setForeground(QColor::fromRgb(150, 150, 130));
 <a name="l00069"></a>00069     rule.pattern = QRegExp(<span class="stringliteral">&quot;\\$[A-Za-z]+\\b&quot;</span>);
 <a name="l00070"></a>00070     rule.format = variableFormat;
 <a name="l00071"></a>00071     highlightingRules.append(rule);
 <a name="l00072"></a>00072 
 <a name="l00073"></a>00073     QTextCharFormat quotationFormat;
-<a name="l00074"></a>00074     quotationFormat.setForeground(Qt::darkGreen);
+<a name="l00074"></a>00074     quotationFormat.setForeground(QColor::fromRgb(150, 255, 150));
 <a name="l00075"></a>00075     rule.pattern = QRegExp(<span class="stringliteral">&quot;([\&quot;&#39;]).*\\1&quot;</span>);
 <a name="l00076"></a>00076     rule.pattern.setMinimal(<span class="keyword">true</span>);
 <a name="l00077"></a>00077     rule.format = quotationFormat;
@@ -160,19 +160,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00080"></a>00080     QTextCharFormat functionFormat;
 <a name="l00081"></a>00081     functionFormat.setFontWeight(QFont::Bold);
 <a name="l00082"></a>00082     <span class="comment">//functionFormat.setFontItalic(true);</span>
-<a name="l00083"></a>00083     functionFormat.setForeground(QColor::fromHsv(20, 205, 105));
+<a name="l00083"></a>00083     functionFormat.setForeground(QColor::fromRgb(222, 222, 222));
 <a name="l00084"></a>00084     rule.pattern = QRegExp(<span class="stringliteral">&quot;\\b[A-Za-z0-9_]+(?=\\()&quot;</span>);
 <a name="l00085"></a>00085     rule.format = functionFormat;
 <a name="l00086"></a>00086     highlightingRules.append(rule);
 <a name="l00087"></a>00087 
 <a name="l00088"></a>00088     QTextCharFormat singleLineCommentFormat;
-<a name="l00089"></a>00089     singleLineCommentFormat.setForeground(Qt::red);
+<a name="l00089"></a>00089     singleLineCommentFormat.setForeground(Qt::gray);
 <a name="l00090"></a>00090     rule.pattern = QRegExp(<span class="stringliteral">&quot;//[^\n]*&quot;</span>);
 <a name="l00091"></a>00091     rule.format = singleLineCommentFormat;
 <a name="l00092"></a>00092     highlightingRules.append(rule);
 <a name="l00093"></a>00093 
 <a name="l00094"></a>00094 
-<a name="l00095"></a>00095     multiLineCommentFormat.setForeground(Qt::red);
+<a name="l00095"></a>00095     multiLineCommentFormat.setForeground(Qt::gray);
 <a name="l00096"></a>00096     commentStartExpression = QRegExp(<span class="stringliteral">&quot;/\\*&quot;</span>);
 <a name="l00097"></a>00097     commentEndExpression = QRegExp(<span class="stringliteral">&quot;\\*/&quot;</span>);
 <a name="l00098"></a>00098 }
@@ -218,7 +218,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

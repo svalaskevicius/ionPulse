@@ -107,16 +107,36 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual QSyntaxHighlighter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_editor_1_1_highlighter_factory.html#a04960a3833d16e341e37d5f8d263de76">operator()</a> (<a class="el" href="class_ion_editor_1_1_editor.html">Editor</a> *)=0</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoke the factory to create a syntax highlighter.  <a href="#a04960a3833d16e341e37d5f8d263de76"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_editor_1_1_highlighter_factory.html#ae5de404e2b79b406030b59c14b7fbe8b">~HighlighterFactory</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual QSyntaxHighlighter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_editor_1_1_highlighter_factory.html#a0d15ab5d36b75f67bd29458a5e374db6">operator()</a> (<a class="el" href="class_ion_editor_1_1_editor.html">Editor</a> *, QString)=0</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoke the factory to create a syntax highlighter for the given <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> and filetype.  <a href="#a0d15ab5d36b75f67bd29458a5e374db6"></a><br/></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> highlighter factory. </p>
 <p>Syntax highlighters are not created using components functionality. Instead, QSyntaxHighlighter subclasses are used. </p>
 
-<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00216">216</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
-</div><hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="a04960a3833d16e341e37d5f8d263de76"></a><!-- doxytag: member="IonEditor::HighlighterFactory::operator()" ref="a04960a3833d16e341e37d5f8d263de76" args="(Editor *)=0" -->
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00217">217</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ae5de404e2b79b406030b59c14b7fbe8b"></a><!-- doxytag: member="IonEditor::HighlighterFactory::~HighlighterFactory" ref="ae5de404e2b79b406030b59c14b7fbe8b" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual IonEditor::HighlighterFactory::~HighlighterFactory </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [inline, virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00218">218</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+
+</div>
+</div>
+<hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="a0d15ab5d36b75f67bd29458a5e374db6"></a><!-- doxytag: member="IonEditor::HighlighterFactory::operator()" ref="a0d15ab5d36b75f67bd29458a5e374db6" args="(Editor *, QString)=0" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -124,14 +144,24 @@ Public Member Functions</h2></td></tr>
           <td class="memname">virtual QSyntaxHighlighter* IonEditor::HighlighterFactory::operator() </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_ion_editor_1_1_editor.html">Editor</a> *&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [pure virtual]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Invoke the factory to create a syntax highlighter. </p>
+<p>Invoke the factory to create a syntax highlighter for the given <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> and filetype. </p>
 
 </div>
 </div>
@@ -141,7 +171,7 @@ Public Member Functions</h2></td></tr>
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

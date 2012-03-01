@@ -91,18 +91,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00011"></a>00011 <span class="preprocessor"></span>
 <a name="l00012"></a>00012 <span class="preprocessor">#include &quot;projectapi.h&quot;</span>
 <a name="l00013"></a>00013 <span class="preprocessor">#include &lt;QDir&gt;</span>
-<a name="l00014"></a>00014 <span class="preprocessor">#include &lt;boost/shared_ptr.hpp&gt;</span>
-<a name="l00015"></a>00015 
-<a name="l00016"></a>00016 <span class="keyword">namespace </span>IonProject {
-<a name="l00017"></a>00017 <span class="keyword">namespace </span>Private {
-<a name="l00018"></a>00018 
-<a name="l00019"></a>00019 <span class="keyword">class </span>DirectoryTreeSource : <span class="keyword">public</span> TreeModelSource {
-<a name="l00020"></a>00020 <span class="keyword">public</span>:
-<a name="l00021"></a>00021     <span class="keyword">class </span>DirectoryInfo {
-<a name="l00022"></a>00022     <span class="keyword">private</span>:
-<a name="l00023"></a>00023         QDir dir;
-<a name="l00024"></a>00024     <span class="keyword">public</span>:
-<a name="l00025"></a>00025         DirectoryInfo(QString path) : dir(path) {}
+<a name="l00014"></a>00014 
+<a name="l00015"></a>00015 <span class="keyword">namespace </span>IonProject {
+<a name="l00016"></a>00016 <span class="keyword">namespace </span>Private {
+<a name="l00017"></a>00017 
+<a name="l00018"></a>00018 <span class="keyword">class </span>DirectoryTreeSource : <span class="keyword">public</span> TreeModelSource {
+<a name="l00019"></a>00019 <span class="keyword">public</span>:
+<a name="l00020"></a>00020     <span class="keyword">class </span>DirectoryInfo {
+<a name="l00021"></a>00021     <span class="keyword">private</span>:
+<a name="l00022"></a>00022         QDir dir;
+<a name="l00023"></a>00023     <span class="keyword">public</span>:
+<a name="l00024"></a>00024         DirectoryInfo(QString path) : dir(path) {}
+<a name="l00025"></a>00025         <span class="keyword">virtual</span> ~DirectoryInfo() {}
 <a name="l00026"></a>00026         <span class="keyword">inline</span> <span class="keyword">virtual</span> QStringList dirnames() {<span class="keywordflow">return</span> dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);}
 <a name="l00027"></a>00027         <span class="keyword">inline</span> <span class="keyword">virtual</span> QStringList filenames() {<span class="keywordflow">return</span> dir.entryList(QDir::Files, QDir::Name);}
 <a name="l00028"></a>00028         <span class="keyword">inline</span> <span class="keyword">virtual</span> QString absolutePath() {<span class="keywordflow">return</span> dir.absolutePath();}
@@ -119,7 +119,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00039"></a>00039 <span class="keyword">protected</span>:
 <a name="l00040"></a>00040     <span class="keywordtype">void</span> addDirectory(TreeItem *parent);
 <a name="l00041"></a>00041     TreeItem *findChildForPath(TreeItem *node, QString path);
-<a name="l00042"></a>00042     <span class="keyword">inline</span> <span class="keyword">virtual</span> boost::shared_ptr&lt;DirectoryInfo&gt; _getDir(<span class="keyword">const</span> QString path);
+<a name="l00042"></a>00042     <span class="keyword">inline</span> <span class="keyword">virtual</span> QSharedPointer&lt;DirectoryInfo&gt; _getDir(<span class="keyword">const</span> QString path);
 <a name="l00043"></a>00043 <span class="keyword">private</span>:
 <a name="l00044"></a>00044     TreeItemImpl* root;
 <a name="l00045"></a>00045     QString initialDir;
@@ -136,7 +136,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

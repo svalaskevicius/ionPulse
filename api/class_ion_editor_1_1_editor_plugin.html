@@ -120,6 +120,8 @@ Public Member Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve an instance of <a class="el" href="class_ion_editor_1_1_editor_widget_builder.html" title="Editor builder class to create an Editor for a given file.">EditorWidgetBuilder</a>.  <a href="#ac2ca56035b26562c462efe05278a8f8f"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor_plugin.html#a035de4f61f9f0511377754e4c68fc8cb">openFile</a> (QString path, int line)=0</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Open a requested file path and focus on the specified line.  <a href="#a035de4f61f9f0511377754e4c68fc8cb"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_ion_editor_1_1_editor.html">Editor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor_plugin.html#a0fbc9c45c0b1c8d26ed6139184e76a9c">getCurrentEditor</a> ()=0</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve currently active <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> instance, or NULL, if none is active.  <a href="#a0fbc9c45c0b1c8d26ed6139184e76a9c"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor_plugin.html#a47c971409dbc162346174d5a98532f14">name</a> ()</td></tr>
@@ -130,8 +132,26 @@ Static Public Member Functions</h2></td></tr>
 <p>The <a class="el" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">EditorPlugin</a> interface provides an unified application scope access to the <a class="el" href="class_ion_editor_1_1_editor_widget_builder.html" title="Editor builder class to create an Editor for a given file.">EditorWidgetBuilder</a>.</p>
 <p>To use it, client plugins should list EditorPlugin::EditorPlugin::name() in their dependencies. This way the client plugins will receive an instance of <a class="el" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">EditorPlugin</a> in their <a class="el" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">IonCore::BasicPlugin::addParent()</a> method. </p>
 
-<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00265">265</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00267">267</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
 </div><hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="a0fbc9c45c0b1c8d26ed6139184e76a9c"></a><!-- doxytag: member="IonEditor::EditorPlugin::getCurrentEditor" ref="a0fbc9c45c0b1c8d26ed6139184e76a9c" args="()=0" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="class_ion_editor_1_1_editor.html">Editor</a>* IonEditor::EditorPlugin::getCurrentEditor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [pure virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Retrieve currently active <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> instance, or NULL, if none is active. </p>
+
+</div>
+</div>
 <a class="anchor" id="ac2ca56035b26562c462efe05278a8f8f"></a><!-- doxytag: member="IonEditor::EditorPlugin::getEditorWidgetBuilder" ref="ac2ca56035b26562c462efe05278a8f8f" args="()=0" -->
 <div class="memitem">
 <div class="memproto">
@@ -166,7 +186,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Plugin name to be used in <a class="el" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6" title="List of the plugin names that should be initialised before this plugin.">IonCore::BasicPlugin::getDependencies()</a> method of the subscribed plugins. </p>
 
-<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00272">272</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00274">274</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
 
 </div>
 </div>
@@ -205,7 +225,7 @@ Static Public Member Functions</h2></td></tr>
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

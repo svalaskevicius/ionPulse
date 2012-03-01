@@ -99,6 +99,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr><td class="indexkey"><b>ionPhp/highlighter.h</b> <a href="ion_php_2highlighter_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>ionParserLib.cpp</b> <a href="ion_parser_lib_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>ionParserLib.h</b> <a href="ion_parser_lib_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>jsengine.cpp</b> <a href="jsengine_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>jsengine.h</b> <a href="jsengine_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>layoutapi.h</b> <a href="layoutapi_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>layoutmanager.cpp</b> <a href="layoutmanager_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>layoutmanager.h</b> <a href="layoutmanager_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
@@ -124,6 +126,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr><td class="indexkey"><b>pluginloader.cpp</b> <a href="pluginloader_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>pluginloader.h</b> <a href="pluginloader_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>projectapi.h</b> <a href="projectapi_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>searchpanel.cpp</b> <a href="searchpanel_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>searchpanel.h</b> <a href="searchpanel_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>shared.h</b> <a href="shared_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>structurestorage.cpp</b> <a href="structurestorage_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>structurestorage.h</b> <a href="structurestorage_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
@@ -139,6 +143,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <tr><td class="indexkey"><b>treeviewitemdelegate.h</b> <a href="treeviewitemdelegate_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>treeviewpanel.cpp</b> <a href="treeviewpanel_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
   <tr><td class="indexkey"><b>treeviewpanel.h</b> <a href="treeviewpanel_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>widgetsaggregate.cpp</b> <a href="widgetsaggregate_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>widgetsaggregate.h</b> <a href="widgetsaggregate_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>zonenode.cpp</b> <a href="zonenode_8cpp_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey"><b>zonenode.h</b> <a href="zonenode_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
 </table>
 </div>
 <!-- window showing the filter options -->
@@ -146,7 +154,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

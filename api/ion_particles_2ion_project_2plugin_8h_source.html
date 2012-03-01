@@ -94,67 +94,65 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00014"></a>00014 <span class="preprocessor">#include &lt;ionParticles/ionEditor/editorapi.h&gt;</span>
 <a name="l00015"></a>00015 <span class="preprocessor">#include &lt;ionParticles/ionLayout/layoutapi.h&gt;</span>
 <a name="l00016"></a>00016 <span class="preprocessor">#include &quot;projectapi.h&quot;</span>
-<a name="l00017"></a>00017 
+<a name="l00017"></a>00017 <span class="preprocessor">#include &quot;treemodeladapter.h&quot;</span>
 <a name="l00018"></a>00018 <span class="keyword">namespace </span>IonProject {
 <a name="l00019"></a>00019 
 <a name="l00020"></a>00020 <span class="keyword">namespace </span>Private {
 <a name="l00021"></a>00021 
-<a name="l00022"></a>00022 <span class="keyword">class </span>TreeModelAdapter;
-<a name="l00023"></a>00023 
-<a name="l00024"></a>00024 <span class="keyword">class </span>Plugin : <span class="keyword">public</span> QObject, <span class="keyword">public</span> ProjectPlugin
-<a name="l00025"></a>00025 {
-<a name="l00026"></a>00026     Q_OBJECT
-<a name="l00027"></a>00027     Q_INTERFACES(<a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">IonCore::BasicPlugin</a>)
-<a name="l00028"></a>00028 public:
-<a name="l00029"></a>00029     explicit Plugin(QObject *parent = 0);
-<a name="l00030"></a>00030     ~Plugin() {}
-<a name="l00031"></a>00031     <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7ddebb56c2194998287d8a195acbbcfa" title="Plugin initialisation.">postLoad</a>();
-<a name="l00032"></a>00032     QString <a class="code" href="class_ion_core_1_1_basic_plugin.html#a74689b60b4033750628fd384d8d86e76" title="Unique plugin name.">getName</a>() {
-<a name="l00033"></a>00033         <span class="keywordflow">return</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#ac3282bd1a3809336a51aa6fc1961577e" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">ProjectPlugin::name</a>();
-<a name="l00034"></a>00034     }
-<a name="l00035"></a>00035     <span class="keyword">virtual</span> QList&lt;QString&gt; <a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6" title="List of the plugin names that should be initialised before this plugin.">getDependencies</a>() {
-<a name="l00036"></a>00036         QList&lt;QString&gt; ret;
-<a name="l00037"></a>00037         ret.append(<a class="code" href="class_ion_layout_1_1_layout_plugin.html#a5acc9781ccf5e4252cffedae928f49f1" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonLayout::LayoutPlugin::name</a>());
-<a name="l00038"></a>00038         ret.append(<a class="code" href="class_ion_editor_1_1_editor_plugin.html#a47c971409dbc162346174d5a98532f14" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonEditor::EditorPlugin::name</a>());
-<a name="l00039"></a>00039         <span class="keywordflow">return</span> ret;
-<a name="l00040"></a>00040     }
-<a name="l00041"></a>00041     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(BasicPlugin *parent);
-<a name="l00042"></a>00042     QSharedPointer&lt;TreeModelAdapter&gt; getProjectFileTreeModel();
-<a name="l00043"></a>00043     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#a8abba06c83a49ceae87bed99c82a0943" title="Add a tree widget based on the provided TreeModelSource generator.">addTreeWidget</a>(QSharedPointer&lt;TreeModelAdapter&gt; model);
-<a name="l00044"></a>00044     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#a8abba06c83a49ceae87bed99c82a0943" title="Add a tree widget based on the provided TreeModelSource generator.">addTreeWidget</a>(QSharedPointer&lt;TreeModelSource&gt; modelSource);
-<a name="l00045"></a>00045     <span class="keyword">virtual</span> QSharedPointer&lt;TreeItemFactory&gt; <a class="code" href="class_ion_project_1_1_project_plugin.html#a3c8ad38cb83c2b442e68c2bab3a86609" title="Retrieve a factory instance to create basic TreeItem nodes.">createTreeItemFactory</a>();
-<a name="l00046"></a>00046     <span class="keyword">virtual</span> <span class="keyword">const</span> boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; &amp;<a class="code" href="class_ion_project_1_1_project_plugin.html#a3f0bd97fd5d1df185f208b5a4d93fd07" title="Retrieve the set factory to instantiate a TreeModelSource for the project files tree.">getTreeModelSourceFactory</a>();
-<a name="l00047"></a>00047     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#a68a96263d3f35cc10b386f9ec8ea01d3" title="Set the factory to instantiate a TreeModelSource for the project files tree.">setTreeModelSourceFactory</a>(boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; factory);
-<a name="l00048"></a>00048 
-<a name="l00049"></a>00049 <span class="keyword">private</span>:
-<a name="l00050"></a>00050     <span class="keyword">struct </span>_defaultTreeModelSourceFactory {
-<a name="l00051"></a>00051         QSharedPointer&lt;TreeModelSource&gt; operator()(QString dirname);
-<a name="l00052"></a>00052     };
-<a name="l00053"></a>00053 
-<a name="l00054"></a>00054     <a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a> *editorPlugin;
-<a name="l00055"></a>00055     <a class="code" href="class_ion_layout_1_1_layout_manager.html" title="Provides a frontend to the layout management tasks.">IonLayout::LayoutManager</a> *layoutManager;
-<a name="l00056"></a>00056     QSharedPointer&lt;TreeModelAdapter&gt; projectTreeModel;
+<a name="l00022"></a>00022 <span class="keyword">class </span>Plugin : <span class="keyword">public</span> QObject, <span class="keyword">public</span> ProjectPlugin
+<a name="l00023"></a>00023 {
+<a name="l00024"></a>00024     Q_OBJECT
+<a name="l00025"></a>00025     Q_INTERFACES(<a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">IonCore::BasicPlugin</a>)
+<a name="l00026"></a>00026 public:
+<a name="l00027"></a>00027     explicit Plugin(QObject *parent = 0);
+<a name="l00028"></a>00028     ~Plugin() {}
+<a name="l00029"></a>00029     <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7ddebb56c2194998287d8a195acbbcfa" title="Plugin initialisation.">postLoad</a>();
+<a name="l00030"></a>00030     QString <a class="code" href="class_ion_core_1_1_basic_plugin.html#a74689b60b4033750628fd384d8d86e76" title="Unique plugin name.">getName</a>() {
+<a name="l00031"></a>00031         <span class="keywordflow">return</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#ac3282bd1a3809336a51aa6fc1961577e" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">ProjectPlugin::name</a>();
+<a name="l00032"></a>00032     }
+<a name="l00033"></a>00033     <span class="keyword">virtual</span> QList&lt;QString&gt; <a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6" title="List of the plugin names that should be initialised before this plugin.">getDependencies</a>() {
+<a name="l00034"></a>00034         QList&lt;QString&gt; ret;
+<a name="l00035"></a>00035         ret.append(<a class="code" href="class_ion_layout_1_1_layout_plugin.html#a5acc9781ccf5e4252cffedae928f49f1" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonLayout::LayoutPlugin::name</a>());
+<a name="l00036"></a>00036         ret.append(<a class="code" href="class_ion_editor_1_1_editor_plugin.html#a47c971409dbc162346174d5a98532f14" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonEditor::EditorPlugin::name</a>());
+<a name="l00037"></a>00037         <span class="keywordflow">return</span> ret;
+<a name="l00038"></a>00038     }
+<a name="l00039"></a>00039     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(BasicPlugin *parent);
+<a name="l00040"></a>00040     QSharedPointer&lt;TreeModelAdapter&gt; getProjectFileTreeModel();
+<a name="l00041"></a>00041     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#a8abba06c83a49ceae87bed99c82a0943" title="Add a tree widget based on the provided TreeModelSource generator.">addTreeWidget</a>(QSharedPointer&lt;TreeModelAdapter&gt; model);
+<a name="l00042"></a>00042     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#a8abba06c83a49ceae87bed99c82a0943" title="Add a tree widget based on the provided TreeModelSource generator.">addTreeWidget</a>(QSharedPointer&lt;TreeModelSource&gt; modelSource);
+<a name="l00043"></a>00043     <span class="keyword">virtual</span> QSharedPointer&lt;TreeItemFactory&gt; <a class="code" href="class_ion_project_1_1_project_plugin.html#a3c8ad38cb83c2b442e68c2bab3a86609" title="Retrieve a factory instance to create basic TreeItem nodes.">createTreeItemFactory</a>();
+<a name="l00044"></a>00044     <span class="keyword">virtual</span> <span class="keyword">const</span> boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; &amp;<a class="code" href="class_ion_project_1_1_project_plugin.html#a3f0bd97fd5d1df185f208b5a4d93fd07" title="Retrieve the set factory to instantiate a TreeModelSource for the project files tree.">getTreeModelSourceFactory</a>();
+<a name="l00045"></a>00045     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_project_1_1_project_plugin.html#a68a96263d3f35cc10b386f9ec8ea01d3" title="Set the factory to instantiate a TreeModelSource for the project files tree.">setTreeModelSourceFactory</a>(boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; factory);
+<a name="l00046"></a>00046 
+<a name="l00047"></a>00047 <span class="keyword">private</span>:
+<a name="l00048"></a>00048     <span class="keyword">struct </span>_defaultTreeModelSourceFactory {
+<a name="l00049"></a>00049         QSharedPointer&lt;TreeModelSource&gt; operator()(QString dirname);
+<a name="l00050"></a>00050     };
+<a name="l00051"></a>00051 
+<a name="l00052"></a>00052     <a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a> *editorPlugin;
+<a name="l00053"></a>00053     <a class="code" href="class_ion_layout_1_1_layout_manager.html" title="Provides a frontend to the layout management tasks.">IonLayout::LayoutManager</a> *layoutManager;
+<a name="l00054"></a>00054     QSharedPointer&lt;TreeModelAdapter&gt; projectTreeModel;
+<a name="l00055"></a>00055 
+<a name="l00056"></a>00056     boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; _treeModelSourceFactory;
 <a name="l00057"></a>00057 
-<a name="l00058"></a>00058     boost::function&lt;QSharedPointer&lt;TreeModelSource&gt; (QString dirname)&gt; _treeModelSourceFactory;
+<a name="l00058"></a>00058 signals:
 <a name="l00059"></a>00059 
-<a name="l00060"></a>00060 signals:
-<a name="l00061"></a>00061 
-<a name="l00062"></a>00062 <span class="keyword">public</span> slots:
-<a name="l00063"></a>00063     <span class="keywordtype">void</span> onNewProject();
-<a name="l00064"></a>00064     <span class="keywordtype">void</span> onUpdateProject();
-<a name="l00065"></a>00065 <span class="keyword">protected</span> slots:
-<a name="l00066"></a>00066     <span class="keywordtype">void</span> openFile(QString path, <span class="keywordtype">int</span>);
+<a name="l00060"></a>00060 <span class="keyword">public</span> slots:
+<a name="l00061"></a>00061     <span class="keywordtype">void</span> onNewProject();
+<a name="l00062"></a>00062     <span class="keywordtype">void</span> onUpdateProject();
+<a name="l00063"></a>00063 <span class="keyword">protected</span> slots:
+<a name="l00064"></a>00064     <span class="keywordtype">void</span> openFile(QString path, <span class="keywordtype">int</span>);
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066 };
 <a name="l00067"></a>00067 
-<a name="l00068"></a>00068 };
-<a name="l00069"></a>00069 
-<a name="l00070"></a>00070 }
-<a name="l00071"></a>00071 }
-<a name="l00072"></a>00072 
-<a name="l00073"></a>00073 <span class="preprocessor">#endif // IONEDITORPROJECT_H</span>
-<a name="l00074"></a>00074 <span class="preprocessor"></span>
+<a name="l00068"></a>00068 }
+<a name="l00069"></a>00069 }
+<a name="l00070"></a>00070 
+<a name="l00071"></a>00071 <span class="preprocessor">#endif // IONEDITORPROJECT_H</span>
+<a name="l00072"></a>00072 <span class="preprocessor"></span>
+<a name="l00073"></a>00073 
+<a name="l00074"></a>00074 
 <a name="l00075"></a>00075 
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077 
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -162,7 +160,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

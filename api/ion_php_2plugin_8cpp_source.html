@@ -109,51 +109,54 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00029"></a>00029 Plugin::Plugin(QObject *parent) :
 <a name="l00030"></a>00030     QObject(parent)
 <a name="l00031"></a>00031 {
-<a name="l00032"></a>00032     QSqlDatabase db = QSqlDatabase::addDatabase(<span class="stringliteral">&quot;QSQLITE&quot;</span>, <span class="stringliteral">&quot;phpStructureStorage&quot;</span>);
-<a name="l00033"></a>00033 <span class="comment">//    db.setDatabaseName(&quot;/tmp/db.sqlite&quot;);</span>
-<a name="l00034"></a>00034     db.setDatabaseName(<span class="stringliteral">&quot;:memory:&quot;</span>);
-<a name="l00035"></a>00035     <span class="keywordflow">if</span> (!db.open()) {
-<a name="l00036"></a>00036         <span class="keywordflow">throw</span> QString(<span class="stringliteral">&quot;Unable to establish a database connection.\nPhp plugin requires SQLite support.&quot;</span>);
-<a name="l00037"></a>00037     }
-<a name="l00038"></a>00038     structureStorage = QSharedPointer&lt;StructureStorage&gt;(<span class="keyword">new</span> StructureStorage(<span class="stringliteral">&quot;phpStructureStorage&quot;</span>));
-<a name="l00039"></a>00039 }
-<a name="l00040"></a>00040 
-<a name="l00041"></a>00041 <span class="keywordtype">void</span> Plugin::postLoad()
-<a name="l00042"></a>00042 {
+<a name="l00032"></a>00032 }
+<a name="l00033"></a>00033 
+<a name="l00034"></a>00034 <span class="keywordtype">void</span> Plugin::preLoad()
+<a name="l00035"></a>00035 {
+<a name="l00036"></a>00036     QSqlDatabase db = QSqlDatabase::addDatabase(<span class="stringliteral">&quot;QSQLITE&quot;</span>, <span class="stringliteral">&quot;phpStructureStorage&quot;</span>);
+<a name="l00037"></a>00037 <span class="comment">//    db.setDatabaseName(&quot;/tmp/db.sqlite&quot;);</span>
+<a name="l00038"></a>00038     db.setDatabaseName(<span class="stringliteral">&quot;:memory:&quot;</span>);
+<a name="l00039"></a>00039     <span class="keywordflow">if</span> (!db.open()) {
+<a name="l00040"></a>00040         <span class="keywordflow">throw</span> QString(<span class="stringliteral">&quot;Unable to establish a database connection.\nPhp plugin requires SQLite support.&quot;</span>);
+<a name="l00041"></a>00041     }
+<a name="l00042"></a>00042     structureStorage = QSharedPointer&lt;StructureStorage&gt;(<span class="keyword">new</span> StructureStorage(<span class="stringliteral">&quot;phpStructureStorage&quot;</span>));
 <a name="l00043"></a>00043 }
 <a name="l00044"></a>00044 
-<a name="l00045"></a>00045 
-<a name="l00046"></a>00046 <span class="keywordtype">void</span> Plugin::addParent(BasicPlugin *parent) {
-<a name="l00047"></a>00047     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a>, addEditorParent(target));
-<a name="l00048"></a>00048     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin.">IonProject::ProjectPlugin</a>, addProjectParent(target));
-<a name="l00049"></a>00049 }
-<a name="l00050"></a>00050 
-<a name="l00051"></a>00051 <span class="keywordtype">void</span> Plugin::addEditorParent(<a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a> *editorPlugin)
-<a name="l00052"></a>00052 {
-<a name="l00053"></a>00053     <a class="code" href="class_ion_editor_1_1_editor_widget_builder.html" title="Editor builder class to create an Editor for a given file.">IonEditor::EditorWidgetBuilder</a> *wf = editorPlugin-&gt;<a class="code" href="class_ion_editor_1_1_editor_plugin.html#ac2ca56035b26562c462efe05278a8f8f" title="Retrieve an instance of EditorWidgetBuilder.">getEditorWidgetBuilder</a>();
-<a name="l00054"></a>00054     Q_ASSERT(wf);
-<a name="l00055"></a>00055 
-<a name="l00056"></a>00056     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#ace8bc8bae969a0b8b0df60f97b45bf21" title="Register a EditorComponentFactoryBase for given file type.">registerComponentFactory</a>(<span class="stringliteral">&quot;text/php&quot;</span>, <span class="keyword">new</span> Private::EditorSourceBrowserFactory(structureStorage));
-<a name="l00057"></a>00057     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a46e7f6ac8725fcbfd21376e97d99bd7d" title="Register a syntax highlighter for given file type.">registerHighlighterFactory</a>(<span class="stringliteral">&quot;text/php&quot;</span>, <span class="keyword">new</span> HighlighterFactory());
+<a name="l00045"></a>00045 <span class="keywordtype">void</span> Plugin::postLoad()
+<a name="l00046"></a>00046 {
+<a name="l00047"></a>00047 }
+<a name="l00048"></a>00048 
+<a name="l00049"></a>00049 <span class="keywordtype">void</span> Plugin::addParent(BasicPlugin *parent) {
+<a name="l00050"></a>00050     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a>, addEditorParent(target));
+<a name="l00051"></a>00051     CHECK_AND_ADD_PARENT(parent, <a class="code" href="class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin.">IonProject::ProjectPlugin</a>, addProjectParent(target));
+<a name="l00052"></a>00052 }
+<a name="l00053"></a>00053 
+<a name="l00054"></a>00054 <span class="keywordtype">void</span> Plugin::addEditorParent(<a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a> *editorPlugin)
+<a name="l00055"></a>00055 {
+<a name="l00056"></a>00056     <a class="code" href="class_ion_editor_1_1_editor_widget_builder.html" title="Editor builder class to create an Editor for a given file.">IonEditor::EditorWidgetBuilder</a> *wf = editorPlugin-&gt;<a class="code" href="class_ion_editor_1_1_editor_plugin.html#ac2ca56035b26562c462efe05278a8f8f" title="Retrieve an instance of EditorWidgetBuilder.">getEditorWidgetBuilder</a>();
+<a name="l00057"></a>00057     Q_ASSERT(wf);
 <a name="l00058"></a>00058 
-<a name="l00059"></a>00059     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a69034d7fb187b14cfbb6c5d910d243a5" title="Register a filetype for given file extension.">registerFileType</a>(<span class="stringliteral">&quot;php&quot;</span>, <span class="stringliteral">&quot;text/php&quot;</span>);
-<a name="l00060"></a>00060     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a69034d7fb187b14cfbb6c5d910d243a5" title="Register a filetype for given file extension.">registerFileType</a>(<span class="stringliteral">&quot;php3&quot;</span>, <span class="stringliteral">&quot;text/php&quot;</span>);
-<a name="l00061"></a>00061     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a69034d7fb187b14cfbb6c5d910d243a5" title="Register a filetype for given file extension.">registerFileType</a>(<span class="stringliteral">&quot;phtml&quot;</span>, <span class="stringliteral">&quot;text/php&quot;</span>);
-<a name="l00062"></a>00062 }
-<a name="l00063"></a>00063 
-<a name="l00064"></a>00064 <span class="keywordtype">void</span> Plugin::addProjectParent(<a class="code" href="class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin.">IonProject::ProjectPlugin</a> *projectPlugin)
-<a name="l00065"></a>00065 {
-<a name="l00066"></a>00066     projectPlugin-&gt;<a class="code" href="class_ion_project_1_1_project_plugin.html#a68a96263d3f35cc10b386f9ec8ea01d3" title="Set the factory to instantiate a TreeModelSource for the project files tree.">setTreeModelSourceFactory</a>(
-<a name="l00067"></a>00067         phpTreeModelSourceDecoratorFactory(
-<a name="l00068"></a>00068             projectPlugin-&gt;<a class="code" href="class_ion_project_1_1_project_plugin.html#a3f0bd97fd5d1df185f208b5a4d93fd07" title="Retrieve the set factory to instantiate a TreeModelSource for the project files tree.">getTreeModelSourceFactory</a>(), *structureStorage, projectPlugin-&gt;<a class="code" href="class_ion_project_1_1_project_plugin.html#a3c8ad38cb83c2b442e68c2bab3a86609" title="Retrieve a factory instance to create basic TreeItem nodes.">createTreeItemFactory</a>()
-<a name="l00069"></a>00069         )
-<a name="l00070"></a>00070     );
-<a name="l00071"></a>00071 }
-<a name="l00072"></a>00072 
-<a name="l00073"></a>00073 }
+<a name="l00059"></a>00059     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#ace8bc8bae969a0b8b0df60f97b45bf21" title="Register a EditorComponentFactoryBase for given file type.">registerComponentFactory</a>(<span class="stringliteral">&quot;text/php&quot;</span>, <span class="keyword">new</span> Private::EditorSourceBrowserFactory(structureStorage));
+<a name="l00060"></a>00060     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a46e7f6ac8725fcbfd21376e97d99bd7d" title="Register a syntax highlighter for given file type.">registerHighlighterFactory</a>(<span class="stringliteral">&quot;text/php&quot;</span>, <span class="keyword">new</span> HighlighterFactory());
+<a name="l00061"></a>00061 
+<a name="l00062"></a>00062     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a69034d7fb187b14cfbb6c5d910d243a5" title="Register a filetype for given file extension.">registerFileType</a>(<span class="stringliteral">&quot;php&quot;</span>, <span class="stringliteral">&quot;text/php&quot;</span>);
+<a name="l00063"></a>00063     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a69034d7fb187b14cfbb6c5d910d243a5" title="Register a filetype for given file extension.">registerFileType</a>(<span class="stringliteral">&quot;php3&quot;</span>, <span class="stringliteral">&quot;text/php&quot;</span>);
+<a name="l00064"></a>00064     wf-&gt;<a class="code" href="class_ion_editor_1_1_editor_widget_builder.html#a69034d7fb187b14cfbb6c5d910d243a5" title="Register a filetype for given file extension.">registerFileType</a>(<span class="stringliteral">&quot;phtml&quot;</span>, <span class="stringliteral">&quot;text/php&quot;</span>);
+<a name="l00065"></a>00065 }
+<a name="l00066"></a>00066 
+<a name="l00067"></a>00067 <span class="keywordtype">void</span> Plugin::addProjectParent(<a class="code" href="class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin.">IonProject::ProjectPlugin</a> *projectPlugin)
+<a name="l00068"></a>00068 {
+<a name="l00069"></a>00069     projectPlugin-&gt;<a class="code" href="class_ion_project_1_1_project_plugin.html#a68a96263d3f35cc10b386f9ec8ea01d3" title="Set the factory to instantiate a TreeModelSource for the project files tree.">setTreeModelSourceFactory</a>(
+<a name="l00070"></a>00070         phpTreeModelSourceDecoratorFactory(
+<a name="l00071"></a>00071             projectPlugin-&gt;<a class="code" href="class_ion_project_1_1_project_plugin.html#a3f0bd97fd5d1df185f208b5a4d93fd07" title="Retrieve the set factory to instantiate a TreeModelSource for the project files tree.">getTreeModelSourceFactory</a>(), *structureStorage, projectPlugin-&gt;<a class="code" href="class_ion_project_1_1_project_plugin.html#a3c8ad38cb83c2b442e68c2bab3a86609" title="Retrieve a factory instance to create basic TreeItem nodes.">createTreeItemFactory</a>()
+<a name="l00072"></a>00072         )
+<a name="l00073"></a>00073     );
 <a name="l00074"></a>00074 }
 <a name="l00075"></a>00075 
-<a name="l00076"></a>00076 Q_EXPORT_PLUGIN2 ( ionPhp, IonPhp::Private::Plugin )
+<a name="l00076"></a>00076 }
+<a name="l00077"></a>00077 }
+<a name="l00078"></a>00078 
+<a name="l00079"></a>00079 Q_EXPORT_PLUGIN2 ( ionPhp, IonPhp::Private::Plugin )
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -161,7 +164,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

@@ -97,19 +97,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00017"></a>00017 
 <a name="l00018"></a>00018 QMap&lt;QString, QString&gt; EditorWidgetBuilderImpl::fileExtToTypeMap; <span class="comment">// file ending -&gt; file type in factories</span>
 <a name="l00019"></a>00019 
-<a name="l00020"></a>00020 QSyntaxHighlighter *DefaultHighlighterFactory::operator ()(Editor *widget)
+<a name="l00020"></a>00020 QSyntaxHighlighter *DefaultHighlighterFactory::operator ()(Editor *widget, QString filetype)
 <a name="l00021"></a>00021 {
-<a name="l00022"></a>00022     <span class="keywordflow">return</span> <span class="keyword">new</span> IonEditor::Private::Highlighter(widget-&gt;getEditorInstance());
+<a name="l00022"></a>00022     <span class="keywordflow">return</span> <span class="keyword">new</span> IonEditor::Private::Highlighter(widget-&gt;getEditorInstance(), filetype);
 <a name="l00023"></a>00023 }
 <a name="l00024"></a>00024 
 <a name="l00025"></a>00025 QSyntaxHighlighter *EditorWidgetBuilderImpl::createHighlighter(Editor *widget, QString filetype)
 <a name="l00026"></a>00026 {
 <a name="l00027"></a>00027     QMap&lt;QString, QSharedPointer&lt;HighlighterFactory&gt; &gt;::const_iterator it = typeToHighlighterFactoryMap.find(filetype);
 <a name="l00028"></a>00028     <span class="keywordflow">if</span> (it != typeToHighlighterFactoryMap.end()) {
-<a name="l00029"></a>00029         <span class="keywordflow">return</span> (*(*it))(widget);
+<a name="l00029"></a>00029         <span class="keywordflow">return</span> (*(*it))(widget, filetype);
 <a name="l00030"></a>00030     }
 <a name="l00031"></a>00031     DefaultHighlighterFactory _default;
-<a name="l00032"></a>00032     <span class="keywordflow">return</span> _default(widget);
+<a name="l00032"></a>00032     <span class="keywordflow">return</span> _default(widget, filetype);
 <a name="l00033"></a>00033 }
 <a name="l00034"></a>00034 
 <a name="l00035"></a>00035 QList&lt;EditorComponent*&gt; EditorWidgetBuilderImpl::createComponents(Editor *widget, QString fileType)
@@ -174,7 +174,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
