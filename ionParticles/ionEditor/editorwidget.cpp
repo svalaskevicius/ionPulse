@@ -86,7 +86,7 @@ void EditorWidget::keyPressEvent(QKeyEvent * e)
                 std::pair<int, int> range = getSelectedBlockRange();
                 QTextBlock b = document()->findBlockByNumber(range.first);
                 QTextCursor c(document());
-                while (range.second >= b.blockNumber()) {
+                while ((b.blockNumber() >= 0) && (range.second >= b.blockNumber())) {
                     QString bt = b.text();
                     int indentPos = 0;
                     while((indentPos < 4)&&((0x20 == bt[indentPos]) || (0x09 == bt[indentPos]))) {
@@ -104,7 +104,7 @@ void EditorWidget::keyPressEvent(QKeyEvent * e)
                 std::pair<int, int> range = getSelectedBlockRange();
                 QTextBlock b = document()->findBlockByNumber(range.first);
                 QTextCursor c(document());
-                while (range.second >= b.blockNumber()) {
+                while ((b.blockNumber() >= 0) && (range.second >= b.blockNumber())) {
                     c.setPosition(b.position());
                     c.insertText("    ");
                     b = b.next();
