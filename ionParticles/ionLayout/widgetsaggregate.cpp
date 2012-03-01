@@ -244,7 +244,7 @@ void WidgetsTabbed::onTabCloseRequested(int index)
 
 void WidgetsTabbed::onTabChanged(int index)
 {
-    if (tabWidget->count() > index) {
+    if ((index >= 0) && (tabWidget->count() > index)) {
         tabWidget->widget(index)->setFocus();
     }
 }
