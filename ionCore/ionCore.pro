@@ -12,12 +12,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        pluginloader.cpp
+        pluginloader.cpp \
+    jsengine.cpp
 
 HEADERS  += mainwindow.h \
     shared.h \
     plugin.h \
-    pluginloader.h
+    pluginloader.h \
+    jsengine.h
 
 FORMS    +=
 
@@ -35,6 +37,8 @@ distrib_js.files += ionPulse.js
 js_plugins.path = "$${INSTALL_DIR}/plugins/"
 js_plugins.files = ../lib/qtscriptgenerator/plugins/script/
 INSTALLS += distrib_css distrib_js js_plugins
+
+
 
 
 

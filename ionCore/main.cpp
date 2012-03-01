@@ -9,13 +9,13 @@
 #include <QtGui/QApplication>
 #include <QMessageBox>
 #include <stdexcept>
-
-#include <QScriptEngine>
-#include <QScriptEngineDebugger>
+#include <QProcess>
 
 #include "shared.h"
 #include "mainwindow.h"
 #include "pluginloader.h"
+#include "jsengine.h"
+
 
 /**
  * \mainpage Overview
@@ -27,24 +27,23 @@
  * Please see *Namespaces* section for the detailed information.
  *
  * To build and develop IonPulse IDE one should install:
- * -  Gcc 4.6.2 or higher, to support C++11 standard;
+ * -  Gcc
  * -  Qt 4.8 or higher;
  * -  Boost;
  * -  Bison and Flex;
+ * -  libxml2.
  * -  Sqlite 3;
- * -  GoogleMock.
+ * -  GoogleMock;
  *
  *
- * PLATFORM SPECIFIC instructions:
+ * Before building main project, you will first need to build lib/qtscriptgenerator,
+ * following the instruction in its provided README file.
  *
- * - MAC OSX
- *
- * As Apple is not a friend of not-only-for-apple developers, one has to manually
- * build the required GCC version required.
- * Please see these links for more instructions:
- * - http://solarianprogrammer.com/2011/12/01/compiling-gcc-4-6-2-on-mac-osx-lion/
- * - http://stackoverflow.com/questions/9102030/g-4-6-adds-a-space-between-f-and-the-path-when-calling-ld-on-mac-os-x/9345746#9345746
- *
+ * Note, if your QT installation is not on the system path, you should set QTDIR environment
+ * variable e.g. QTDIR=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/ and use
+ * specific paths to qmake, e.g. ~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/bin/qmake
+ * also, provide your local QT includes directory when using generator, e.g.
+ * ./generator --include-paths=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/include/
  */
 
 
@@ -67,36 +66,38 @@ QString getBaseDir()
     return baseDir.absolutePath();
 }
 
+
+
 }
 }
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    IonCore::Private::MainWindow w;
+    QApplication app(argc, argv);
+    IonCore::Private::MainWindow mainWindow;
     IonCore::Private::PluginLoader plugins;
 
     try {
         QString baseDir = IonCore::Private::getBaseDir();
 
+
         QFile styleSheetFile(baseDir+"/ionPulse.css");
         if (styleSheetFile.open(QFile::ReadOnly)) {
-            a.setStyleSheet(styleSheetFile.readAll());
+            app.setStyleSheet(styleSheetFile.readAll());
         }
 
-        plugins.loadPlugins(w, baseDir+"/plugins/");
+        plugins.loadPlugins(mainWindow, baseDir+"/plugins/");
 
-        QScriptEngine scriptEngine;
-        QScriptEngineDebugger debugger;
-        debugger.attachTo(&scriptEngine);
-        QFile jsFile(baseDir+"/ionPulse.js");
-        if (jsFile.open(QFile::ReadOnly)) {
-            scriptEngine.evaluate(jsFile.readAll(), "ionPulse.js");
-        }
+        QStringList paths = app.libraryPaths();
+        paths <<  baseDir+"/plugins/";
+        app.setLibraryPaths(paths);
+
+        IonCore::Private::JsEngine jsEngine;
+        jsEngine.loadFile(baseDir+"/ionPulse.js");
 
 
-        w.show();
-        return a.exec();
+        mainWindow.show();
+        return app.exec();
     } catch (QString &msg) {
         QMessageBox::critical(
             0,
