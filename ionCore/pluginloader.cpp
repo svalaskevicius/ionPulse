@@ -28,7 +28,7 @@ PluginLoader::~PluginLoader()
 }
 
 
-void PluginLoader::loadPlugins(MainWindow &mainWindow, QString pluginsDir)
+void PluginLoader::loadPlugins(MainWindow &mainWindow, JsEngine &jsEngine, QString pluginsDir)
 {
     QString oldPwd = QDir::currentPath();
     QDir::setCurrent(pluginsDir);
@@ -48,6 +48,7 @@ void PluginLoader::loadPlugins(MainWindow &mainWindow, QString pluginsDir)
 
     foreach (BasicPlugin *plugin, _includedPlugins.values()) {
         plugin->postLoad();
+        plugin->registerJsApi(jsEngine.getScriptEngine());
     }
 }
 
@@ -73,7 +74,7 @@ void PluginLoader::_loadPluginsList(PluginsList &plugins)
     }
 }
 
-bool  PluginLoader::_arePluginsIncluded(QStringList pluginNames)
+bool PluginLoader::_arePluginsIncluded(QStringList pluginNames)
 {
     foreach (QString dep, pluginNames) {
         if (!_includedPlugins.contains(dep)) {

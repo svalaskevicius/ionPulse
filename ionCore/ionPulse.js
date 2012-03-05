@@ -18,3 +18,5 @@ Array.prototype.each = function(callback) {
 
 //debugger
 //QMessageBox.information(this, "QMessageBox::information()", "test");
+
+//layoutManager.add("central/central_footer", new QLabel("asd"))

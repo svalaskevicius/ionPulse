@@ -13,7 +13,7 @@
 #include <QDir>
 
 #include "mainwindow.h"
-
+#include "jsengine.h"
 
 namespace IonCore {
 
@@ -34,7 +34,7 @@ protected:
 public:
     PluginLoader();
     ~PluginLoader();
-    void loadPlugins(MainWindow &mainWindow, QString pluginsDir);
+    void loadPlugins(MainWindow &mainWindow, JsEngine &jsEngine, QString pluginsDir);
 private:
     QMap<QString, BasicPlugin *> _includedPlugins;
     bool _arePluginsIncluded(QStringList pluginNames);

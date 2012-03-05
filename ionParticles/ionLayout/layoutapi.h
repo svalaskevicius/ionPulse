@@ -102,6 +102,7 @@ class LayoutManager : public QObject
 public:
     virtual ~LayoutManager() {}
 
+public slots:
     /**
      * \brief Add a widget to the zones tree.
      */

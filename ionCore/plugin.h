@@ -11,6 +11,7 @@
 
 #include <QList>
 #include <QMainWindow>
+#include <QScriptEngine>
 
 /**
  * \brief Holds the bare window creation and plugin management functionality.
@@ -115,6 +116,13 @@ public:
      * \see CHECK_AND_ADD_PARENT
      */
     virtual void addParent(BasicPlugin * /* parent */) {}
+
+    /**
+     * \brief Allows plugin to register its own JS api
+     *
+     * Each plugin can extend JS API by setting properties on the provided QScriptEngine instance.
+     */
+    virtual void registerJsApi(QScriptEngine & /* jsEngine */) {}
 };
 
 }

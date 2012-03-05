@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     IonCore::Private::MainWindow mainWindow;
     IonCore::Private::PluginLoader plugins;
+    IonCore::Private::JsEngine jsEngine;
 
     try {
         QString baseDir = IonCore::Private::getBaseDir();
@@ -86,13 +87,12 @@ int main(int argc, char *argv[])
             app.setStyleSheet(styleSheetFile.readAll());
         }
 
-        plugins.loadPlugins(mainWindow, baseDir+"/plugins/");
+        plugins.loadPlugins(mainWindow, jsEngine, baseDir+"/plugins/");
 
         QStringList paths = app.libraryPaths();
         paths <<  baseDir+"/plugins/";
         app.setLibraryPaths(paths);
 
-        IonCore::Private::JsEngine jsEngine;
         jsEngine.loadFile(baseDir+"/ionPulse.js");
 
 

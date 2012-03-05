@@ -34,6 +34,12 @@ LayoutManager *Plugin::getLayoutManager()
     return layoutManager;
 }
 
+void Plugin::registerJsApi(QScriptEngine & jsEngine)
+{
+    jsEngine.globalObject().setProperty("layoutManager", jsEngine.newQObject(getLayoutManager()));
+}
+
+
 }
 }
 

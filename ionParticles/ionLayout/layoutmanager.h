@@ -44,6 +44,7 @@ protected:
     QMap<QWidget *, QString> widgetZoneMap;
 public:
     LayoutManagerImpl(QMainWindow *mainWindow);
+public slots:
     virtual void add(QString zonePath, QWidget *widget);
     virtual void remove(QWidget *widget);
     virtual void focus(QWidget *widget);

@@ -18,6 +18,7 @@ protected:
 public:
     JsEngine();
     void loadFile(QString);
+    QScriptEngine &getScriptEngine() {return scriptEngine;}
 };
 
 }
