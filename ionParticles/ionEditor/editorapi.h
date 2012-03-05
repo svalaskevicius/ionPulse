@@ -117,8 +117,9 @@ public:
 /**
  * \brief Defines an interface to access and manipulate the Editor widget.
  */
-class Editor : public IonLayout::PanelWidget {
+class Editor : public QPlainTextEdit {
 public:
+    Editor() : QPlainTextEdit(NULL) {}
     virtual ~Editor() {}
 
     /**
@@ -144,11 +145,6 @@ public:
      * \brief Set active editor components.
      */
     virtual void setComponents(QList<EditorComponent* > components) = 0;
-
-    /**
-     * \brief Retrieve the underlying QPlainTextEdit instance.
-     */
-    virtual QPlainTextEdit* getEditorInstance() = 0;
 
     /**
      * \brief Set editor focus on the requested line.

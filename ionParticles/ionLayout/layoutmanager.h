@@ -11,7 +11,7 @@
 
 #include "layoutapi.h"
 //#include <QString>
-//#include <QMap>
+#include <QMap>
 #include <stdexcept>
 #include <QMainWindow>
 
@@ -41,11 +41,12 @@ class LayoutManagerImpl : public LayoutManager
     Q_OBJECT
 protected:
     LayoutZonesManager zonesManager;
+    QMap<QWidget *, QString> widgetZoneMap;
 public:
     LayoutManagerImpl(QMainWindow *mainWindow);
-    virtual void add(PanelWidget *panel);
-    virtual void remove(PanelWidget *panel);
-    virtual void focus(PanelWidget *panel);
+    virtual void add(QString zonePath, QWidget *widget);
+    virtual void remove(QWidget *widget);
+    virtual void focus(QWidget *widget);
     virtual void addZone(ZoneDefinition &zone);
 };
 }

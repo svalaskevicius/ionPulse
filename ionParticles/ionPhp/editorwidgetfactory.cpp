@@ -15,7 +15,7 @@ namespace Private {
 
 QSyntaxHighlighter *HighlighterFactory::operator()(IonEditor::Editor *parent, QString filetype)
 {
-    return new IonPhp::Private::Highlighter(parent->getEditorInstance());
+    return new IonPhp::Private::Highlighter(parent);
 }
 
 }

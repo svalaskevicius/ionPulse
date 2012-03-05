@@ -6,8 +6,8 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#ifndef PANELWIDGET_H
-#define PANELWIDGET_H
+#ifndef LAYOUTAPI_H
+#define LAYOUTAPI_H
 
 #include <QWidget>
 #include <ionCore/plugin.h>
@@ -92,26 +92,6 @@ struct ZoneDefinition
 };
 
 /**
- * \brief Interface of the zone client panel.
- *
- * For a widget to be added to the zone, a PanelWidget should be provided to LayoutManager::add().
- * It provides all the info needed for the widget to be positioned in the zones tree.
- */
-class PanelWidget
-{
-public:
-    /**
-     * \brief Retrieve QWidget to be added.
-     */
-    virtual QWidget *getWidget() = 0;
-
-    /**
-     * \brief A UNIX-like path to the target zone.
-     */
-    virtual QString getPanelZone() = 0;
-};
-
-/**
  * \brief Provides a frontend to the layout management tasks.
  *
  * The interface defines main zone and panel management tasks such as addition and removal.
@@ -123,19 +103,19 @@ public:
     virtual ~LayoutManager() {}
 
     /**
-     * \brief Add a PanelWidget to the zones tree.
+     * \brief Add a widget to the zones tree.
      */
-    virtual void add(PanelWidget *panel) = 0;
+    virtual void add(QString zonePath, QWidget *widget) = 0;
 
     /**
-     * \brief Remove a PanelWidget from the zones tree.
+     * \brief Remove a widget from the zones tree.
      */
-    virtual void remove(PanelWidget *panel) = 0;
+    virtual void remove(QWidget *widget) = 0;
 
     /**
-     * \brief Focus a PanelWidget.
+     * \brief Focus a widget.
      */
-    virtual void focus(PanelWidget *panel) = 0;
+    virtual void focus(QWidget *widget) = 0;
 
     /**
      * \brief Add new zone to the tree.
@@ -171,4 +151,4 @@ public:
 
 }
 
-#endif // PANELWIDGET_H
+#endif // LAYOUTAPI_H

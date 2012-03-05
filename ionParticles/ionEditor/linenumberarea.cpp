@@ -16,14 +16,14 @@ namespace IonEditor {
 namespace Private {
 
 LineNumberArea::LineNumberArea(Editor *parent) :
-    QWidget(parent->getEditorInstance()),
+    QWidget(parent),
     ionText(parent),
     currentLine(0)
 {
     ionText->addEventListener(QEvent::Resize, this);
-    connect(ionText->getEditorInstance(), SIGNAL(updateRequest(const QRect &, int)), this, SLOT(editorUpdateRequest(const QRect &, int)));
-    connect(ionText->getEditorInstance(), SIGNAL(blockCountChanged(int)), this, SLOT(editorBlockCountChanged(int)));
-    connect(ionText->getEditorInstance(), SIGNAL(cursorPositionChanged()), this, SLOT(editorCursorPositionChanged()));
+    connect(ionText, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(editorUpdateRequest(const QRect &, int)));
+    connect(ionText, SIGNAL(blockCountChanged(int)), this, SLOT(editorBlockCountChanged(int)));
+    connect(ionText, SIGNAL(cursorPositionChanged()), this, SLOT(editorCursorPositionChanged()));
 
     editorBlockCountChanged(0);
 }
@@ -86,7 +86,7 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
 int LineNumberArea::getWidth()
 {
     int digits = 1;
-    int max = qMax(1, ionText->getEditorInstance()->blockCount());
+    int max = qMax(1, ionText->blockCount());
     while (max >= 10) {
         max /= 10;
         ++digits;
@@ -102,7 +102,7 @@ bool LineNumberArea::editorEvent(QEvent * event)
     switch(event->type()) {
         case QEvent::Resize:
         {
-            QRect cr = ionText->getEditorInstance()->contentsRect();
+            QRect cr = ionText->contentsRect();
             setGeometry(QRect(cr.left(), cr.top(), getWidth(), cr.height()));
         }
         break;
@@ -120,7 +120,7 @@ void LineNumberArea::editorUpdateRequest(const QRect &rect, int dy)
         update(0, rect.y(), width(), rect.height());
     }
 
-    if (rect.contains(ionText->getEditorInstance()->viewport()->rect())) {
+    if (rect.contains(ionText->viewport()->rect())) {
         ionText->updateViewportMargins();
     }
 }
@@ -130,13 +130,13 @@ void LineNumberArea::editorBlockCountChanged(int /* newBlockCount */)
     //DEBUG_MSG((QString(">> #")+QString("%1").arg(this->getWidth())).toStdString());
     //TODO: performance: check if width changed, and only then set geom and update margins
     ionText->updateViewportMargins();
-    QRect cr = ionText->getEditorInstance()->contentsRect();
+    QRect cr = ionText->contentsRect();
     setGeometry(QRect(cr.left(), cr.top(), getWidth(), cr.height()));
 }
 
 void LineNumberArea::editorCursorPositionChanged()
 {
-    currentLine = ionText->getEditorInstance()->textCursor().blockNumber();
+    currentLine = ionText->textCursor().blockNumber();
     update();
 }
 

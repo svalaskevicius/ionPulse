@@ -20,13 +20,13 @@ SearchPanel::SearchPanel(QWidget *parent) : QWidget(parent)
 void SearchPanel::findNext() {
     Editor *editor = editorPlugin->getCurrentEditor();
     if (editor) {
-        editor->getEditorInstance()->find(searchText->text());
+        editor->find(searchText->text());
     }
 }
 void SearchPanel::findPrevious() {
     Editor *editor = editorPlugin->getCurrentEditor();
     if (editor) {
-        editor->getEditorInstance()->find(searchText->text(), QTextDocument::FindBackward);
+        editor->find(searchText->text(), QTextDocument::FindBackward);
     }
 }
 

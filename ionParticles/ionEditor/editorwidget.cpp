@@ -23,7 +23,7 @@ namespace Private {
 
 EditorWidget::EditorWidget(QString filePath)
     :
-      QPlainTextEdit(NULL),
+      Editor(),
       highlighter(NULL),
       filePath(filePath),
       componentInfo(this)

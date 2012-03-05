@@ -100,9 +100,9 @@ public:
     virtual ZoneNodeBranch *getZoneAsBranch();
     virtual QWidget *getWidget();
     virtual void show();
-    void add(IonLayout::PanelWidget *panel);
-    void remove(IonLayout::PanelWidget *panel);
-    void focus(IonLayout::PanelWidget *panel);
+    void add(QWidget *panel);
+    void remove(QWidget *panel);
+    void focus(QWidget *panel);
 };
 
 }

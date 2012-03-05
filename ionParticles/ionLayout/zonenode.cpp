@@ -205,18 +205,18 @@ ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
     return br;
 }
 
-void ZoneNodeLeaf::add(IonLayout::PanelWidget *panel)
+void ZoneNodeLeaf::add(QWidget *panel)
 {
-    zoneWidget->addWidget(panel->getWidget());
-    zoneWidget->focus(panel->getWidget());
+    zoneWidget->addWidget(panel);
+    zoneWidget->focus(panel);
 }
-void ZoneNodeLeaf::remove(IonLayout::PanelWidget *panel)
+void ZoneNodeLeaf::remove(QWidget *panel)
 {
-    zoneWidget->remove(panel->getWidget());
+    zoneWidget->remove(panel);
 }
-void ZoneNodeLeaf::focus(IonLayout::PanelWidget *panel)
+void ZoneNodeLeaf::focus(QWidget *panel)
 {
-    zoneWidget->focus(panel->getWidget());
+    zoneWidget->focus(panel);
 }
 
 

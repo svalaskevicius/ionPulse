@@ -61,7 +61,7 @@ public:
 
     QString getWordUnderCursor()
     {
-        const QTextCursor &tc = editor->getEditorInstance()->textCursor();
+        const QTextCursor &tc = editor->textCursor();
         QString block = tc.block().text();
         int pos = tc.positionInBlock();
         int rpos = pos-1;

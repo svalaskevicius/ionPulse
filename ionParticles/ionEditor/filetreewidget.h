@@ -18,7 +18,7 @@ namespace IonEditor {
 
 namespace Private {
 
-class FileTreeWidget : public QTreeView, public IonLayout::PanelWidget
+class FileTreeWidget : public QTreeView
 {
     Q_OBJECT
 protected:
@@ -27,8 +27,6 @@ protected:
     virtual void keyPressEvent ( QKeyEvent * event );
 public:
     explicit FileTreeWidget(QWidget *parent = 0);
-    virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelZone() {return "left";}
 
 signals:
     void fileActivated(QString filename, int line);

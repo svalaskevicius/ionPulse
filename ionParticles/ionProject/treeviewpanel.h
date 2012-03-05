@@ -13,7 +13,7 @@ namespace IonProject {
 namespace Private {
 
 
-class TreeViewPanel : public QWidget, public IonLayout::PanelWidget
+class TreeViewPanel : public QWidget
 {
     Q_OBJECT
 protected:
@@ -22,8 +22,6 @@ protected:
     QSharedPointer<TreeModelAdapter> _dataModel;
 public:
     explicit TreeViewPanel(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
-    virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelZone() {return "left";}
 
     TreeView *getTreeView(){return _treeView;}
 

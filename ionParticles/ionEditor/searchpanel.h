@@ -16,7 +16,7 @@ namespace IonEditor {
 
 namespace Private {
 
-class SearchPanel : public QWidget, public IonLayout::PanelWidget
+class SearchPanel : public QWidget
 {
     Q_OBJECT
 protected:
@@ -26,8 +26,6 @@ protected:
 
 public:
     explicit SearchPanel(QWidget *parent = 0);
-    virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelZone() {return "central/central_footer";}
 
     void paintEvent(QPaintEvent*) {
         QStyleOption styleOption;

@@ -20,7 +20,7 @@ namespace IonEditor {
 
 namespace Private {
 
-class EditorWidget : public QPlainTextEdit, public Editor
+class EditorWidget : public Editor
 {
     Q_OBJECT
 public:
@@ -66,10 +66,6 @@ protected:
     void keyReleaseEvent ( QKeyEvent * e );
 
 public:
-    virtual QWidget *getWidget() {return this;}
-    virtual QString getPanelZone() {return "central";}
-
-public:
     virtual const EditorComponentInfo &getEditorInfo() const {
         return componentInfo;
     }
@@ -82,7 +78,6 @@ public:
         this->components = components;
         updateViewportMargins();
     }
-    virtual QPlainTextEdit* getEditorInstance() {return this;}
 
 protected slots:
     void editorCursorPositionChanged();
@@ -101,7 +96,6 @@ private:
 signals:
     void editorClosing( Editor *editor );
     void editorFocusing( Editor *editor );
-    void updatePanelTitle( IonLayout::PanelWidget *panel );
 public slots:
 public:
     virtual void saveFile();

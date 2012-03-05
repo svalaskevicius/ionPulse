@@ -90,7 +90,7 @@ QSharedPointer<TreeModelAdapter> Plugin::getProjectFileTreeModel()
 void Plugin::addTreeWidget(QSharedPointer<TreeModelAdapter> model)
 {
     Private::TreeViewPanel *fileTree = new Private::TreeViewPanel(model);
-    layoutManager->add(fileTree);
+    layoutManager->add("left", fileTree);
     connect(fileTree->getTreeView(), SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 }
 

@@ -110,7 +110,7 @@ void Plugin::postLoad()
     layoutManager->addZone(def);
 
     Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();
-    layoutManager->add(fileTree);
+    layoutManager->add("left", fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 
     getEditorWidgetBuilder()->registerComponentFactory("text", new Private::DefaultLineNumberAreaFactory());
@@ -127,7 +127,7 @@ void Plugin::postLoad()
 
     searchPanel = new SearchPanel();
     searchPanel->setEditorPlugin(this);
-    layoutManager->add(searchPanel);
+    layoutManager->add("central/central_footer", searchPanel);
 
 }
 
@@ -160,9 +160,9 @@ void Plugin::onFileClose()
     if (focusedEditor) {
         Editor *widget = focusedEditor;
         int ret = QMessageBox::Discard;
-        if (widget->getEditorInstance()->document()->isModified()) {
+        if (widget->document()->isModified()) {
             QMessageBox msgBox;
-            msgBox.setText("The document '"+widget->getWidget()->windowTitle()+"' has been modified.");
+            msgBox.setText("The document '"+widget->windowTitle()+"' has been modified.");
             msgBox.setInformativeText("Do you want to save your changes?");
             msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
             msgBox.setDefaultButton(QMessageBox::Save);
@@ -188,9 +188,9 @@ void Plugin::openFile(QString path, int line)
     if (openedFiles.end() == it) {
         widget = getEditorWidgetBuilder()->createEditor(path);
         openedFiles[path] = widget;
-        connect(widget->getWidget(), SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
-        connect(widget->getWidget(), SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
-        layoutManager->add(widget);
+        connect(widget, SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
+        connect(widget, SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
+        layoutManager->add("central", widget);
     } else {
         widget = it.value();
         layoutManager->focus(widget);

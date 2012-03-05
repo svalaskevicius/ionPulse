@@ -19,7 +19,7 @@ QMap<QString, QString> EditorWidgetBuilderImpl::fileExtToTypeMap; // file ending
 
 QSyntaxHighlighter *DefaultHighlighterFactory::operator ()(Editor *widget, QString filetype)
 {
-    return new IonEditor::Private::Highlighter(widget->getEditorInstance(), filetype);
+    return new IonEditor::Private::Highlighter(widget, filetype);
 }
 
 QSyntaxHighlighter *EditorWidgetBuilderImpl::createHighlighter(Editor *widget, QString filetype)

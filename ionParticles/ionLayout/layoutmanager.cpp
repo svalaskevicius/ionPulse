@@ -66,26 +66,34 @@ LayoutManagerImpl::LayoutManagerImpl(QMainWindow *mainWindow) : zonesManager()
     mainWidget->setParent(mainWindow);
 }
 
-void LayoutManagerImpl::add(PanelWidget *panel)
+void LayoutManagerImpl::add(QString zonePath, QWidget *widget)
 {
-    ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
+    widgetZoneMap[widget] = zonePath;
+    ZoneNodeLeaf *leaf = zonesManager.getZone(zonePath);
     Q_ASSERT(leaf);
-    leaf->add(panel);
+    leaf->add(widget);
     leaf->show();
 }
 
-void LayoutManagerImpl::remove(PanelWidget *panel)
+void LayoutManagerImpl::remove(QWidget *widget)
 {
-    ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
+    if (!widgetZoneMap.contains(widget)) {
+        throw new std::runtime_error("widget has to be added first");
+    }
+    ZoneNodeLeaf *leaf = zonesManager.getZone(widgetZoneMap[widget]);
+    widgetZoneMap.remove(widget);
     Q_ASSERT(leaf);
-    leaf->remove(panel);
+    leaf->remove(widget);
 }
 
-void LayoutManagerImpl::focus(PanelWidget *panel)
+void LayoutManagerImpl::focus(QWidget *widget)
 {
-    ZoneNodeLeaf *leaf = zonesManager.getZone(panel->getPanelZone());
+    if (!widgetZoneMap.contains(widget)) {
+        throw new std::runtime_error("widget has to be added first");
+    }
+    ZoneNodeLeaf *leaf = zonesManager.getZone(widgetZoneMap[widget]);
     Q_ASSERT(leaf);
-    leaf->focus(panel);
+    leaf->focus(widget);
     leaf->show();
 }
 
@@ -93,6 +101,7 @@ void LayoutManagerImpl::addZone(ZoneDefinition &zone)
 {
     zonesManager.addZone(zone);
 }
+
 
 }
 }
