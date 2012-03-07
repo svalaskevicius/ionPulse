@@ -8,7 +8,8 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QProcess>
-
+#include <QCoreApplication>
+#include <QKeyEvent>
 
 namespace IonCore {
 
@@ -29,7 +30,6 @@ bool loadFile(QString fileName, QScriptEngine *engine)
         return true;
     }
     loadedFiles.insert(canonicalFileName);
-    QString path = fileInfo.path();
 
     // load the file
     QFile file(fileName);
@@ -90,6 +90,14 @@ QScriptValue importExtension(QScriptContext *context, QScriptEngine *engine)
     return engine->importExtension(context->argument(0).toString());
 }
 
+QScriptValue installAppShortcut(QScriptContext *context, QScriptEngine *engine)
+{
+    return engine->newQObject(
+        new AppShortcut((Qt::Key)context->argument(0).toInt32()),
+        QScriptEngine::ScriptOwnership
+    );
+}
+
 
 
 JsEngine::JsEngine()
@@ -133,12 +141,32 @@ void JsEngine::initialiseJsFramework()
         else
             envMap.insert(keyVal.at(0), keyVal.at(1));
     }
+
+    system.setProperty("installAppShortcut", scriptEngine.newFunction(IonCore::Private::installAppShortcut));
     system.setProperty("env", scriptEngine.toScriptValue(envMap));
 
     // add the include functionality to qt.script.include
     script.setProperty("include", scriptEngine.newFunction(IonCore::Private::includeScript));
     // add the importExtension functionality to qt.script.importExtension
     script.setProperty("importExtension", scriptEngine.newFunction(IonCore::Private::importExtension));
+}
+
+
+AppShortcut::AppShortcut(Qt::Key key) : key(key)
+{
+    qApp->installEventFilter(this);
+}
+
+bool AppShortcut::eventFilter(QObject *obj, QEvent *event)
+{
+    if (QEvent::KeyPress == event->type()) {
+        QKeyEvent *kev = static_cast<QKeyEvent*>(event);
+        if (kev->key() == key) {
+            emit callback();
+            return true;
+        }
+    }
+    return false;
 }
 
 }

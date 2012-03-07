@@ -21,6 +21,23 @@ public:
     QScriptEngine &getScriptEngine() {return scriptEngine;}
 };
 
+
+
+class AppShortcut : public QObject {
+
+    Q_OBJECT
+
+private:
+    Qt::Key key;
+public:
+    AppShortcut(Qt::Key key);
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+signals:
+    void callback();
+};
+
 }
 }
 
