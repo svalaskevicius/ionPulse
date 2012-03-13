@@ -19,19 +19,36 @@ Array.prototype.each = function(callback) {
 //debugger
 function alert(text)
 {
+    text = "<html><pre>"+text.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
     QMessageBox.information(this, "ionPulse - alert", text);
 }
-//layoutManager.add("central/central_footer", new QLabel("asd"))
-
 
 
 function JsConsoleWidget(parent) {
     QWidget.call(this, parent);
 
     this.textEdit = new QTextEdit(this);
+    this.textEdit.readOnly = true;
+    this.htmlPrefix = "<html><head>        \
+        <STYLE type=\"text/css\">          \
+            .prefix {color: #aaee77;}      \
+        </STYLE>                           \
+    </head><body>";
+    this.htmlSuffix = "</body></html>";
+    this.htmlContent = "";
+
+    this.lineInput = new QLineEdit(this);
+    this.lineInput.editingFinished.connect(
+        this,
+        function() {
+            eval(this.lineInput.text);
+            this.lineInput.text = "";
+        }
+    );
 
     var layout = new QVBoxLayout();
     layout.addWidget(this.textEdit, 0, 0);
+    layout.addWidget(this.lineInput, 0, 0);
     this.setLayout(layout);
 
     this.setWindowTitle("Javascript console");
@@ -42,6 +59,7 @@ function JsConsoleWidget(parent) {
                 this.hide();
             } else {
                 this.show();
+                this.lineInput.setFocus();
             }
         }
     );
@@ -49,6 +67,15 @@ function JsConsoleWidget(parent) {
 
 
 JsConsoleWidget.prototype = new QWidget();
+JsConsoleWidget.prototype.log = function (text)
+{
+    this.htmlContent += "<div class='line'><span class='prefix'>&gt; </span>"+text+"</div>";
+    this.textEdit.html = this.htmlPrefix + this.htmlContent + this.htmlSuffix;
+}
+
+
 console = new JsConsoleWidget(window);
 console.hide();
 layoutManager.add("central/central_footer", console);
+
+console.log("ionPulse.js initialised");

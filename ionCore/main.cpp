@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
         paths <<  baseDir+"/plugins/";
         app.setLibraryPaths(paths);
 
+        jsEngine.getScriptEngine().globalObject().setProperty("window", jsEngine.getScriptEngine().newQObject(&mainWindow));
         jsEngine.loadFile(baseDir+"/ionPulse.js");
 
 
