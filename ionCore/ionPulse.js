@@ -16,11 +16,37 @@ Array.prototype.each = function(callback) {
  "qt.sql", "qt.opengl", "qt.webkit", "qt.xmlpatterns",
  "qt.uitools"].each(qs.script.importExtension);
 
-//debugger
+function is_string(input)
+{
+    return typeof(input)=='string';
+}
+
+function to_string(input)
+{
+    if (is_string(input)) {
+        return input;
+    }
+    if (null === input) {
+        return "null";
+    }
+    return input.toString();
+}
+
+function escape(text)
+{
+    return to_string(text).replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
+}
+
+function trim(str) {
+    str = to_string(str).replace(/^\s\s*/, '')
+    var ws = /\s/, i = str.length;
+    while ((i>0) && ws.test(str.charAt(--i)));
+    return str.slice(0, i + 1);
+}
+
 function alert(text)
 {
-    text = "<html><pre>"+text.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
-    QMessageBox.information(this, "ionPulse - alert", text);
+    QMessageBox.information(this, "ionPulse - alert", "<html><pre>"+escape(text));
 }
 
 
@@ -31,22 +57,38 @@ function JsConsoleWidget(parent) {
     this.textEdit.readOnly = true;
     this.htmlPrefix = "<html><head>        \
         <STYLE type=\"text/css\">          \
-            .prefix {color: #aaee77;}      \
+                .log {color: #aaee77;}     \
+                .error {color: #ee8855;}   \
         </STYLE>                           \
     </head><body>";
     this.htmlSuffix = "</body></html>";
     this.htmlContent = "";
 
     this.lineInput = new QLineEdit(this);
-    this.lineInput.editingFinished.connect(
+    this.lineInput.returnPressed.connect(
         this,
         function() {
-            eval(this.lineInput.text);
+            var line = trim(this.lineInput.text);
             this.lineInput.text = "";
+            if (line) {
+                // wrap to catch thrown exceptions
+                line = "try {ret = "+line+";console.log(typeof(ret)+ret?ret:\"\");} catch (err) {"
+                     + "console.error('An error has occurred: '+err.message);"
+                     + "}"
+                try {
+                    eval(line);
+                } catch (err) {
+                    // catches parse errors
+                    console.error('An error has occurred: '+err.message);
+                }
+            }
+            var scrollBar = this.textEdit.verticalScrollBar();
+            scrollBar.value = scrollBar.maximum;
         }
     );
 
     var layout = new QVBoxLayout();
+    layout.setSpacing(1);
     layout.addWidget(this.textEdit, 0, 0);
     layout.addWidget(this.lineInput, 0, 0);
     this.setLayout(layout);
@@ -69,7 +111,12 @@ function JsConsoleWidget(parent) {
 JsConsoleWidget.prototype = new QWidget();
 JsConsoleWidget.prototype.log = function (text)
 {
-    this.htmlContent += "<div class='line'><span class='prefix'>&gt; </span>"+text+"</div>";
+    this.htmlContent += "<div class='line'><span class='log'>&gt; </span>"+escape(text)+"</div>";
+    this.textEdit.html = this.htmlPrefix + this.htmlContent + this.htmlSuffix;
+}
+JsConsoleWidget.prototype.error = function (text)
+{
+    this.htmlContent += "<div class='line'><span class='error'>&gt; </span>"+escape(text)+"</div>";
     this.textEdit.html = this.htmlPrefix + this.htmlContent + this.htmlSuffix;
 }
 
