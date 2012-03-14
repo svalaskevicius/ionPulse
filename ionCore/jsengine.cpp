@@ -93,7 +93,7 @@ QScriptValue importExtension(QScriptContext *context, QScriptEngine *engine)
 QScriptValue installAppShortcut(QScriptContext *context, QScriptEngine *engine)
 {
     return engine->newQObject(
-        new AppShortcut((Qt::Key)context->argument(0).toInt32()),
+        new AppShortcut((Qt::Key)context->argument(0).toInt32(), (context->argumentCount()==2)?context->argument(1).toQObject():NULL),
         QScriptEngine::ScriptOwnership
     );
 }
@@ -152,13 +152,16 @@ void JsEngine::initialiseJsFramework()
 }
 
 
-AppShortcut::AppShortcut(Qt::Key key) : key(key)
+AppShortcut::AppShortcut(Qt::Key key, QObject *owner) : key(key), owner(owner)
 {
     qApp->installEventFilter(this);
 }
 
 bool AppShortcut::eventFilter(QObject *obj, QEvent *event)
 {
+    if (owner && (owner != obj)) {
+        return false;
+    }
     if (QEvent::KeyPress == event->type()) {
         QKeyEvent *kev = static_cast<QKeyEvent*>(event);
         if (kev->key() == key) {

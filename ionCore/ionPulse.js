@@ -26,6 +26,10 @@ function to_string(input)
     if (is_string(input)) {
         return input;
     }
+
+    if (undefined === input) {
+        return "undefined";
+    }
     if (null === input) {
         return "null";
     }
@@ -50,9 +54,12 @@ function alert(text)
 }
 
 
-function JsConsoleWidget(parent) {
+function JsConsoleWidget(parent)
+{
     QWidget.call(this, parent);
 
+    this.history = [];
+    this.historyIdx = null;
     this.textEdit = new QTextEdit(this);
     this.textEdit.readOnly = true;
     this.htmlPrefix = "<html><head>        \
@@ -71,6 +78,8 @@ function JsConsoleWidget(parent) {
             var line = trim(this.lineInput.text);
             this.lineInput.text = "";
             if (line) {
+                this.history.push(line);
+                this.historyIdx = null;
                 // wrap to catch thrown exceptions
                 line = "try {ret = "+line+";console.log(typeof(ret)+ret?ret:\"\");} catch (err) {"
                      + "console.error('An error has occurred: '+err.message);"
@@ -82,8 +91,6 @@ function JsConsoleWidget(parent) {
                     console.error('An error has occurred: '+err.message);
                 }
             }
-            var scrollBar = this.textEdit.verticalScrollBar();
-            scrollBar.value = scrollBar.maximum;
         }
     );
 
@@ -105,6 +112,29 @@ function JsConsoleWidget(parent) {
             }
         }
     );
+    qs.system.installAppShortcut(Qt.Key_Up, this.lineInput).callback.connect(
+        this,
+        function() {
+            if (null === this.historyIdx) {
+                this.historyIdx = this.history.length;
+            }
+            if (this.historyIdx > 0) {
+                this.lineInput.text = this.history[--this.historyIdx];
+            }
+        }
+    );
+    qs.system.installAppShortcut(Qt.Key_Down, this.lineInput).callback.connect(
+        this,
+        function() {
+            if (null === this.historyIdx) {
+                return;
+            }
+            if (this.historyIdx < this.history.length) {
+                this.lineInput.text = this.history[++this.historyIdx];
+            }
+        }
+    );
+
 }
 
 
@@ -112,12 +142,18 @@ JsConsoleWidget.prototype = new QWidget();
 JsConsoleWidget.prototype.log = function (text)
 {
     this.htmlContent += "<div class='line'><span class='log'>&gt; </span>"+escape(text)+"</div>";
-    this.textEdit.html = this.htmlPrefix + this.htmlContent + this.htmlSuffix;
+    this.updateHtml();
 }
 JsConsoleWidget.prototype.error = function (text)
 {
     this.htmlContent += "<div class='line'><span class='error'>&gt; </span>"+escape(text)+"</div>";
+    this.updateHtml();
+}
+JsConsoleWidget.prototype.updateHtml = function()
+{
     this.textEdit.html = this.htmlPrefix + this.htmlContent + this.htmlSuffix;
+    var scrollBar = this.textEdit.verticalScrollBar();
+    scrollBar.value = scrollBar.maximum;
 }
 
 
