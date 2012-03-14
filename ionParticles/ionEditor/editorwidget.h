@@ -56,7 +56,6 @@ public:
         resetHighlighter();
         this->highlighter = highlighter;
     }
-    void focusOnLine(int line);
 protected:
     std::pair<int, int> getSelectedBlockRange();
     bool event ( QEvent * event );
@@ -69,16 +68,6 @@ public:
     virtual const EditorComponentInfo &getEditorInfo() const {
         return componentInfo;
     }
-    virtual void addEventListener(QEvent::Type type, EditorComponent *component) {
-        eventListeners[type].append(component);
-    }
-    void updateViewportMargins();
-    void setComponents(QList<EditorComponent*> components) {
-        resetComponents();
-        this->components = components;
-        updateViewportMargins();
-    }
-
 protected slots:
     void editorCursorPositionChanged();
     void modificationChanged(bool changed);
@@ -97,8 +86,17 @@ signals:
     void editorClosing( Editor *editor );
     void editorFocusing( Editor *editor );
 public slots:
-public:
-    virtual void saveFile();
+    virtual void addEventListener(QEvent::Type type, EditorComponent *component) {
+        eventListeners[type].append(component);
+    }
+    void updateViewportMargins();
+    void setComponents(QList<EditorComponent*> components) {
+        resetComponents();
+        this->components = components;
+        updateViewportMargins();
+    }
+    void focusOnLine(int line);
+    void saveFile();
 };
 
 }

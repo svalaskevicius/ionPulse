@@ -26,6 +26,7 @@ class Plugin : public QObject, public EditorPlugin
 {
     Q_OBJECT
     Q_INTERFACES(IonCore::BasicPlugin)
+    Q_PROPERTY( IonEditor::Editor * focusedEditor READ getCurrentEditor )
 public:
     explicit Plugin(QObject *parent = 0);
     ~Plugin();
@@ -42,12 +43,14 @@ public:
     EditorWidgetBuilder *getEditorWidgetBuilder();
 private:
     QScopedPointer<Private::EditorWidgetBuilderImpl> _editorWidgetFactory;
-    IonLayout::LayoutManager *layoutManager;
-    QMap<QString, Editor *> openedFiles;
-    Editor *focusedEditor;
-    SearchPanel *searchPanel;
+    IonLayout::LayoutManager *_layoutManager;
+    QMap<QString, Editor *> _openedFiles;
+    Editor *_focusedEditor;
+    SearchPanel *_searchPanel;
 public:
+    virtual void registerJsApi(QScriptEngine & jsEngine);
     Editor *getCurrentEditor();
+    QMap<QString, Editor *> getOpenedFiles();
 signals:
 
 public slots:
@@ -65,6 +68,8 @@ private:
 
 }
 }
+
+Q_DECLARE_METATYPE(IonEditor::Editor*)
 
 #endif // IONEDITOR_H
 

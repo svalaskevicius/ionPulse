@@ -118,6 +118,7 @@ public:
  * \brief Defines an interface to access and manipulate the Editor widget.
  */
 class Editor : public QPlainTextEdit {
+    Q_OBJECT
 public:
     Editor() : QPlainTextEdit(NULL) {}
     virtual ~Editor() {}
@@ -127,6 +128,7 @@ public:
      */
     virtual const EditorComponentInfo &getEditorInfo() const = 0;
 
+public slots:
     /**
      * \brief Register an event listener.
      *
@@ -156,7 +158,6 @@ public:
      */
     virtual void saveFile() = 0;
 };
-
 
 /**
  * \brief A base interface for EditorComponent factories.

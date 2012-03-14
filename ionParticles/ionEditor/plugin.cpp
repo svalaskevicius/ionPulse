@@ -26,8 +26,18 @@ namespace IonEditor {
 
 namespace Private {
 
+QScriptValue editorToScriptValue(QScriptEngine *engine, Editor* const &in)
+{
+    return engine->newQObject(in);
+}
+
+void editorFromScriptValue(const QScriptValue &object, Editor* &out)
+{
+    out = qobject_cast<Editor*>(object.toQObject());
+}
+
 Plugin::Plugin(QObject *parent) :
-    QObject(parent), layoutManager(NULL), openedFiles(), focusedEditor(NULL)
+    QObject(parent), _layoutManager(NULL), _openedFiles(), _focusedEditor(NULL)
 {
 }
 
@@ -38,13 +48,13 @@ Plugin::~Plugin()
 }
 
 void Plugin::addParent(BasicPlugin *parent) {
-    CHECK_AND_ADD_PARENT(parent, IonLayout::LayoutPlugin, layoutManager = target->getLayoutManager());
+    CHECK_AND_ADD_PARENT(parent, IonLayout::LayoutPlugin, _layoutManager = target->getLayoutManager());
 }
 
 
 void Plugin::postLoad()
 {
-    Q_ASSERT(layoutManager);
+    Q_ASSERT(_layoutManager);
     Q_ASSERT(mainWindow);
 
     IonLayout::ZoneDefinition def;
@@ -59,10 +69,10 @@ void Plugin::postLoad()
     def.childrenClosable = true;
     def.subZonesContainerType = IonLayout::ZoneDefinition::Boxed;
     def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
-    layoutManager->addZone(def);
+    _layoutManager->addZone(def);
 
     def.name = "central_footer";
-    def.orientation = Qt::Horizontal;
+    def.orientation = Qt::Vertical;
     def.parentPath = "central";
     def.after = "central";
     def.before = "";
@@ -71,7 +81,7 @@ void Plugin::postLoad()
     def.childrenClosable = false;
     def.subZonesContainerType = IonLayout::ZoneDefinition::Tabbed;
     def.widgetsContainerType = IonLayout::ZoneDefinition::Boxed;
-    layoutManager->addZone(def);
+    _layoutManager->addZone(def);
 
     def.name = "left";
     def.orientation = Qt::Vertical;
@@ -83,7 +93,7 @@ void Plugin::postLoad()
     def.childrenClosable = false;
     def.subZonesContainerType = IonLayout::ZoneDefinition::Split;
     def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
-    layoutManager->addZone(def);
+    _layoutManager->addZone(def);
 
     def.name = "leftbottom";
     def.orientation = Qt::Vertical;
@@ -95,7 +105,7 @@ void Plugin::postLoad()
     def.childrenClosable = false;
     def.subZonesContainerType = IonLayout::ZoneDefinition::Split;
     def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
-    layoutManager->addZone(def);
+    _layoutManager->addZone(def);
 
     def.name = "right";
     def.orientation = Qt::Vertical;
@@ -107,10 +117,10 @@ void Plugin::postLoad()
     def.childrenClosable = false;
     def.subZonesContainerType = IonLayout::ZoneDefinition::Split;
     def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
-    layoutManager->addZone(def);
+    _layoutManager->addZone(def);
 
     Private::FileTreeWidget *fileTree = new Private::FileTreeWidget();
-    layoutManager->add("left", fileTree);
+    _layoutManager->add("left", fileTree);
     connect(fileTree, SIGNAL(fileActivated(QString, int)), this, SLOT(openFile(QString, int)));
 
     getEditorWidgetBuilder()->registerComponentFactory("text", new Private::DefaultLineNumberAreaFactory());
@@ -125,40 +135,44 @@ void Plugin::postLoad()
     editMenu->addAction("Find &Next", this, SLOT(onEditSearchNext()), QKeySequence(Qt::CTRL + Qt::Key_G));
     editMenu->addAction("Find &Previous", this, SLOT(onEditSearchPrev()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_G));
 
-    searchPanel = new SearchPanel();
-    searchPanel->setEditorPlugin(this);
-    layoutManager->add("central/central_footer", searchPanel);
+    _searchPanel = new SearchPanel();
+    _searchPanel->setEditorPlugin(this);
+    _layoutManager->add("central/central_footer", _searchPanel);
 
 }
 
 Editor *Plugin::getCurrentEditor() {
-    return focusedEditor;
+    return _focusedEditor;
+}
+
+QMap<QString, Editor *> Plugin::getOpenedFiles() {
+    return _openedFiles;
 }
 
 void Plugin::onEditSearch()
 {
-    searchPanel->focusSearchInput();
+    _searchPanel->focusSearchInput();
 }
 
 void Plugin::onEditSearchNext()
 {
-    searchPanel->findNext();
+    _searchPanel->findNext();
 }
 void Plugin::onEditSearchPrev()
 {
-    searchPanel->findPrevious();
+    _searchPanel->findPrevious();
 }
 
 void Plugin::onFileSave()
 {
-    if (focusedEditor) {
-        focusedEditor->saveFile();
+    if (_focusedEditor) {
+        _focusedEditor->saveFile();
     }
 }
 void Plugin::onFileClose()
 {
-    if (focusedEditor) {
-        Editor *widget = focusedEditor;
+    if (_focusedEditor) {
+        Editor *widget = _focusedEditor;
         int ret = QMessageBox::Discard;
         if (widget->document()->isModified()) {
             QMessageBox msgBox;
@@ -175,8 +189,8 @@ void Plugin::onFileClose()
                 widget->saveFile();
                 // fall through to remove it
             case QMessageBox::Discard:
-                focusedEditor = NULL;
-                layoutManager->remove(widget);
+                _focusedEditor = NULL;
+                _layoutManager->remove(widget);
         }
     }
 }
@@ -184,16 +198,16 @@ void Plugin::onFileClose()
 void Plugin::openFile(QString path, int line)
 {
     Editor *widget = NULL;
-    QMap<QString, Editor *>::Iterator it = openedFiles.find(path);
-    if (openedFiles.end() == it) {
+    QMap<QString, Editor *>::Iterator it = _openedFiles.find(path);
+    if (_openedFiles.end() == it) {
         widget = getEditorWidgetBuilder()->createEditor(path);
-        openedFiles[path] = widget;
+        _openedFiles[path] = widget;
         connect(widget, SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
         connect(widget, SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
-        layoutManager->add("central", widget);
+        _layoutManager->add("central", widget);
     } else {
         widget = it.value();
-        layoutManager->focus(widget);
+        _layoutManager->focus(widget);
     }
     if (-1 != line) {
         widget->focusOnLine(line);
@@ -204,14 +218,14 @@ void Plugin::openFile(QString path, int line)
 
 void Plugin::focusFileEditor(Editor *editor)
 {
-    focusedEditor = editor;
+    _focusedEditor = editor;
 }
 
 void Plugin::closeFileEditor(Editor *editor)
 {
-    for (QMap<QString, Editor *>::Iterator it = openedFiles.begin(); it != openedFiles.end(); it++) {
+    for (QMap<QString, Editor *>::Iterator it = _openedFiles.begin(); it != _openedFiles.end(); it++) {
         if (it.value() == editor) {
-            it = openedFiles.erase(it);
+            it = _openedFiles.erase(it);
             return;
         }
     }
@@ -224,6 +238,12 @@ EditorWidgetBuilder *Plugin::getEditorWidgetBuilder()
         _editorWidgetFactory.reset(new Private::EditorWidgetBuilderImpl());
     }
     return _editorWidgetFactory.data();
+}
+
+void Plugin::registerJsApi(QScriptEngine & jsEngine)
+{
+    qScriptRegisterMetaType(&jsEngine, editorToScriptValue, editorFromScriptValue);
+    jsEngine.globalObject().setProperty("editorPlugin", jsEngine.newQObject(this));
 }
 
 }
