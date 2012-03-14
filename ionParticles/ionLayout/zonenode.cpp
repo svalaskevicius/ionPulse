@@ -170,6 +170,7 @@ ZoneNodeLeaf::ZoneNodeLeaf(ZoneNodeBranch *parent, ZoneDefinition zoneDef)
     : ZoneNode(parent, zoneDef), parent(parent)
 {
     zoneWidget = _createZoneWidget(zoneDef.widgetsContainerType, parent->getWidget(), zoneDef);
+    zoneWidget->setOrientation(zoneDef.orientation);
 }
 ZoneNodeLeaf::~ZoneNodeLeaf()
 {
