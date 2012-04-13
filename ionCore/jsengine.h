@@ -23,8 +23,8 @@ public:
 
 
 
-class AppShortcut : public QObject {
-
+class AppShortcut : public QObject
+{
     Q_OBJECT
 
 private:

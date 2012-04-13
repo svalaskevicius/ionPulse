@@ -89,8 +89,12 @@ void EditorWidget::keyPressEvent(QKeyEvent * e)
                 while ((b.blockNumber() >= 0) && (range.second >= b.blockNumber())) {
                     QString bt = b.text();
                     int indentPos = 0;
-                    while((indentPos < 4)&&((0x20 == bt[indentPos]) || (0x09 == bt[indentPos]))) {
+                    if (0x09 == bt[indentPos]) {
                         indentPos++;
+                    } else {
+                        while ((indentPos < 4) && (0x20 == bt[indentPos])) {
+                            indentPos++;
+                        }
                     }
                     c.setPosition(b.position());
                     c.setPosition(b.position()+indentPos, QTextCursor::KeepAnchor);
@@ -106,7 +110,7 @@ void EditorWidget::keyPressEvent(QKeyEvent * e)
                 QTextCursor c(document());
                 while ((b.blockNumber() >= 0) && (range.second >= b.blockNumber())) {
                     c.setPosition(b.position());
-                    c.insertText("    ");
+                    c.insertText("\t");
                     b = b.next();
                 }
             }
