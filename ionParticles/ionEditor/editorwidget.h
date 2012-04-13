@@ -68,6 +68,14 @@ public:
     virtual const EditorComponentInfo &getEditorInfo() const {
         return componentInfo;
     }
+
+    int textOptionFlags() { return (int)document()->defaultTextOption().flags(); }
+    void setTextOptionFlags(int flags) {
+        QTextOption option = document()->defaultTextOption();
+        option.setFlags((QTextOption::Flags)flags);
+        document()->setDefaultTextOption(option);
+    }
+
 protected slots:
     void editorCursorPositionChanged();
     void modificationChanged(bool changed);

@@ -10,7 +10,7 @@ TEMPLATE = lib
 CONFIG += core plugin
 VERSION = 0.1.0
 
-QT       += core sql script
+QT       += core widgets sql script
 TARGET = ionPhp
 INCLUDEPATH +=  ../.. /opt/local/include/libxml2
 LIBS += -L/opt/local/lib -lxml2 -lz -lpthread -liconv -lm

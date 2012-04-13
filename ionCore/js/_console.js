@@ -6,55 +6,7 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-Array.prototype.each = function(callback) {
-    for (var i=0; i<this.length;i++) {
-        callback(this[i]);
-    }
-};
-
-["qt.core", "qt.gui", "qt.xml", "qt.svg", "qt.network",
- "qt.sql", "qt.opengl", "qt.webkit", "qt.xmlpatterns",
- "qt.uitools"].each(qs.script.importExtension);
-
-function is_string(input)
-{
-    return typeof(input)=='string';
-}
-
-function to_string(input)
-{
-    if (is_string(input)) {
-        return input;
-    }
-
-    if (undefined === input) {
-        return "undefined";
-    }
-    if (null === input) {
-        return "null";
-    }
-    return input.toString();
-}
-
-function escape(text)
-{
-    return to_string(text).replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
-}
-
-function trim(str) {
-    str = to_string(str).replace(/^\s\s*/, '')
-    var ws = /\s/, i = str.length;
-    while ((i>0) && ws.test(str.charAt(--i)));
-    return str.slice(0, i + 1);
-}
-
-function alert(text)
-{
-    QMessageBox.information(this, "ionPulse - alert", "<html><pre>"+escape(text));
-}
-
-
-function JsConsoleWidget(parent)
+ionJs.JsConsoleWidget = function(parent)
 {
     QWidget.call(this, parent);
 
@@ -75,7 +27,7 @@ function JsConsoleWidget(parent)
     this.lineInput.returnPressed.connect(
         this,
         function() {
-            var line = trim(this.lineInput.text);
+            var line = ionJs.trim(this.lineInput.text);
             this.lineInput.text = "";
             if (line) {
                 this.history.push(line);
@@ -138,27 +90,20 @@ function JsConsoleWidget(parent)
 }
 
 
-JsConsoleWidget.prototype = new QWidget();
-JsConsoleWidget.prototype.log = function (text)
+ionJs.JsConsoleWidget.prototype = new QWidget();
+ionJs.JsConsoleWidget.prototype.log = function (text)
 {
-    this.htmlContent += "<div class='line'><span class='log'>&gt; </span>"+escape(text)+"</div>";
+    this.htmlContent += "<div class='line'><span class='log'>&gt; </span>"+ionJs.escape(text)+"</div>";
     this.updateHtml();
 }
-JsConsoleWidget.prototype.error = function (text)
+ionJs.JsConsoleWidget.prototype.error = function (text)
 {
-    this.htmlContent += "<div class='line'><span class='error'>&gt; </span>"+escape(text)+"</div>";
+    this.htmlContent += "<div class='line'><span class='error'>&gt; </span>"+ionJs.escape(text)+"</div>";
     this.updateHtml();
 }
-JsConsoleWidget.prototype.updateHtml = function()
+ionJs.JsConsoleWidget.prototype.updateHtml = function()
 {
     this.textEdit.html = this.htmlPrefix + this.htmlContent + this.htmlSuffix;
     var scrollBar = this.textEdit.verticalScrollBar();
     scrollBar.value = scrollBar.maximum;
 }
-
-
-console = new JsConsoleWidget(window);
-console.hide();
-layoutManager.add("central/central_footer", console);
-
-console.log("ionPulse.js initialised");

@@ -10,7 +10,7 @@ TEMPLATE = lib
 CONFIG += core plugin
 VERSION = 0.1.0
 
-QT       += core script
+QT       += core widgets script
 TARGET = ionProject
 INCLUDEPATH +=  ../..
 

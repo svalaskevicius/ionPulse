@@ -26,6 +26,37 @@ namespace IonEditor {
 
 namespace Private {
 
+QScriptValue JsSyntaxHighlighterToScriptValue(QScriptEngine *engine, JsSyntaxHighlighter* const &in)
+{ return engine->newQObject(in); }
+
+void JsSyntaxHighlighterFromScriptValue(const QScriptValue &object, JsSyntaxHighlighter* &out)
+{ out = qobject_cast<JsSyntaxHighlighter*>(object.toQObject()); }
+
+
+struct JsHighlighterFactory : virtual public IonEditor::HighlighterFactory {
+    QScriptEngine *engine;
+    QScriptValue function;
+    JsHighlighterFactory(QScriptEngine *engine, QScriptValue function) : engine(engine), function(function) {}
+    virtual QSyntaxHighlighter *operator()(IonEditor::Editor *editor, QString filetype)
+    {
+        return new JsSyntaxHighlighter(editor, engine, function);
+    }
+};
+
+
+
+QScriptValue registerJsFileHighlighter(QScriptContext *context, QScriptEngine *engine)
+{
+    Plugin *plugin = qobject_cast<Plugin *>(engine->globalObject().property("editorPlugin").toQObject());
+    plugin->getEditorWidgetBuilder()->registerHighlighterFactory(
+        context->argument(0).toString(),
+        new JsHighlighterFactory(engine, context->argument(1))
+    );
+    return engine->nullValue();
+}
+
+
+
 QScriptValue editorToScriptValue(QScriptEngine *engine, Editor* const &in)
 {
     return engine->newQObject(in);
@@ -205,6 +236,7 @@ void Plugin::openFile(QString path, int line)
         connect(widget, SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
         connect(widget, SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
         _layoutManager->add("central", widget);
+        emit editorOpened(widget);
     } else {
         widget = it.value();
         _layoutManager->focus(widget);
@@ -243,8 +275,12 @@ EditorWidgetBuilder *Plugin::getEditorWidgetBuilder()
 void Plugin::registerJsApi(QScriptEngine & jsEngine)
 {
     qScriptRegisterMetaType(&jsEngine, editorToScriptValue, editorFromScriptValue);
-    jsEngine.globalObject().setProperty("editorPlugin", jsEngine.newQObject(this));
+    QScriptValue editorPlugin = jsEngine.newQObject(this);
+    jsEngine.globalObject().setProperty("editorPlugin", editorPlugin);
+    jsEngine.globalObject().setProperty("registerJsFileHighlighter", jsEngine.newFunction(IonEditor::Private::registerJsFileHighlighter));
+    qScriptRegisterMetaType(&jsEngine, JsSyntaxHighlighterToScriptValue, JsSyntaxHighlighterFromScriptValue);
 }
+
 
 }
 }

@@ -5,7 +5,7 @@
 #-------------------------------------------------
 include (../ionPulse.pri)
 
-QT       += testlib sql script
+QT       += testlib widgets sql script
 
 #QT       -= gui
 

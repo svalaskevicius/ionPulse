@@ -51,8 +51,9 @@ public:
     virtual void registerJsApi(QScriptEngine & jsEngine);
     Editor *getCurrentEditor();
     QMap<QString, Editor *> getOpenedFiles();
-signals:
 
+signals:
+    void editorOpened(QPlainTextEdit *editor);
 public slots:
     void openFile(QString path, int line);
     void closeFileEditor(Editor *editor);
@@ -66,10 +67,54 @@ private:
     Q_DISABLE_COPY(Plugin)
 };
 
+
+class JsSyntaxHighlighter : public QSyntaxHighlighter
+{
+    Q_OBJECT
+
+    Q_PROPERTY(int previousBlockState READ previousBlockState)
+    Q_PROPERTY(int currentBlockState READ currentBlockState WRITE setCurrentBlockState)
+    Q_PROPERTY(QTextBlock currentBlock READ currentBlock)
+private:
+    QScriptEngine *engine;
+    QScriptValue function;
+
+public:
+    JsSyntaxHighlighter(IonEditor::Editor *editor, QScriptEngine *engine, QScriptValue function) : engine(engine), function(function), QSyntaxHighlighter(editor->document()) {}
+//    QTextBlock currentBlock() const {return QSyntaxHighlighter::currentBlock();}
+//    int currentBlockState() const {return QSyntaxHighlighter::currentBlockState();}
+//    QTextBlockUserData * currentBlockUserData() const {return QSyntaxHighlighter::currentBlockUserData();}
+//    QTextCharFormat format(int position) const {return QSyntaxHighlighter::currentBlock();}
+    virtual void highlightBlock(const QString & text) {function.call(function, QScriptValueList()<<engine->toScriptValue(this)<<engine->toScriptValue(text));}
+//    int previousBlockState() const {return QSyntaxHighlighter::currentBlock();}
+//    void setCurrentBlockState(int newState) {return QSyntaxHighlighter::currentBlock();}
+//    void setCurrentBlockUserData(QTextBlockUserData * data) {return QSyntaxHighlighter::currentBlock();}
+    Q_INVOKABLE void dbg(){DEBUG_MSG("ASasdasdasd");}
+
+//    int previousBlockState() const;
+//    int currentBlockState() const;
+//    void setCurrentBlockState(int newState);
+
+//    void setCurrentBlockUserData(QTextBlockUserData *data);
+//    QTextBlockUserData *currentBlockUserData() const;
+
+//    QTextBlock currentBlock() const;
+
+    Q_INVOKABLE void setFormat(int start, int count, QTextCharFormat format) {
+       // DEBUG_MSG("set fmt for " << start << count << format.foreground());
+        QSyntaxHighlighter::setFormat(start, count, format);
+    }
+//    void setFormat(int start, int count, const QColor & color) {return QSyntaxHighlighter::currentBlock();}
+//    void setFormat(int start, int count, const QFont & font) {return QSyntaxHighlighter::currentBlock();}
+};
+
+
 }
 }
 
 Q_DECLARE_METATYPE(IonEditor::Editor*)
+
+Q_DECLARE_METATYPE(IonEditor::Private::JsSyntaxHighlighter*);
 
 #endif // IONEDITOR_H
 

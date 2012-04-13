@@ -6,7 +6,7 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QMessageBox>
 #include <stdexcept>
 #include <QProcess>
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
         app.setLibraryPaths(paths);
 
         jsEngine.getScriptEngine().globalObject().setProperty("window", jsEngine.getScriptEngine().newQObject(&mainWindow));
-        jsEngine.loadFile(baseDir+"/ionPulse.js");
+        jsEngine.loadFile(baseDir+"/js/ionPulse.js");
 
 
         mainWindow.show();

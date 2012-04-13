@@ -10,7 +10,7 @@ TEMPLATE = lib
 CONFIG += core gui plugin
 VERSION = 0.1.0
 
-QT       += core gui script
+QT       += core gui widgets script
 TARGET = ionEditor
 INCLUDEPATH +=  ../../
 HEADERS += \

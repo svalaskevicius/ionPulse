@@ -119,6 +119,7 @@ public:
  */
 class Editor : public QPlainTextEdit {
     Q_OBJECT
+    Q_PROPERTY(int textOptionFlags READ textOptionFlags WRITE setTextOptionFlags)
 public:
     Editor() : QPlainTextEdit(NULL) {}
     virtual ~Editor() {}
@@ -127,6 +128,9 @@ public:
      * \brief Defer and open some usefull protected Editor methods.
      */
     virtual const EditorComponentInfo &getEditorInfo() const = 0;
+
+    virtual int textOptionFlags() = 0;
+    virtual void setTextOptionFlags(int) = 0;
 
 public slots:
     /**
@@ -157,6 +161,8 @@ public slots:
      * \brief Save file buffer to file.
      */
     virtual void saveFile() = 0;
+
+
 };
 
 /**

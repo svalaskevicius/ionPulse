@@ -71,12 +71,12 @@ bool loadFile(QString fileName, QScriptEngine *engine)
 
 QScriptValue includeScript(QScriptContext *context, QScriptEngine *engine)
 {
-    QString currentFileName = engine->globalObject().property("qs").property("script").property("absoluteFilePath").toString();
-    QFileInfo currentFileInfo(currentFileName);
-    QString path = currentFileInfo.path();
     QString importFile = context->argument(0).toString();
     QFileInfo importInfo(importFile);
     if (importInfo.isRelative()) {
+        QString currentFileName = engine->globalObject().property("qs").property("script").property("absoluteFilePath").toString();
+        QFileInfo currentFileInfo(currentFileName);
+        QString path = currentFileInfo.path();
         importFile =  path + "/" + importInfo.filePath();
     }
     if (!loadFile(importFile, engine)) {
@@ -119,12 +119,7 @@ JsEngine::JsEngine()
 
 void JsEngine::loadFile(QString file)
 {
-    QFile jsFile(file);
-    if (jsFile.open(QFile::ReadOnly)) {
-        scriptEngine.evaluate(jsFile.readAll(), file);
-        return;
-    }
-    throw std::runtime_error("cannot include the requested file");
+    IonCore::Private::loadFile(file, &scriptEngine);
 }
 
 
