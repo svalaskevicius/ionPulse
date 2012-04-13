@@ -6,7 +6,7 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-ionJs.JsConsoleWidget = function(parent)
+JsConsoleWidget = function(parent)
 {
     QWidget.call(this, parent);
 
@@ -27,7 +27,7 @@ ionJs.JsConsoleWidget = function(parent)
     this.lineInput.returnPressed.connect(
         this,
         function() {
-            var line = ionJs.trim(this.lineInput.text);
+            var line = trim(this.lineInput.text);
             this.lineInput.text = "";
             if (line) {
                 this.history.push(line);
@@ -90,18 +90,18 @@ ionJs.JsConsoleWidget = function(parent)
 }
 
 
-ionJs.JsConsoleWidget.prototype = new QWidget();
-ionJs.JsConsoleWidget.prototype.log = function (text)
+JsConsoleWidget.prototype = new QWidget();
+JsConsoleWidget.prototype.log = function (text)
 {
-    this.htmlContent += "<div class='line'><span class='log'>&gt; </span>"+ionJs.escape(text)+"</div>";
+    this.htmlContent += "<div class='line'><span class='log'>&gt; </span>"+escape(text)+"</div>";
     this.updateHtml();
 }
-ionJs.JsConsoleWidget.prototype.error = function (text)
+JsConsoleWidget.prototype.error = function (text)
 {
-    this.htmlContent += "<div class='line'><span class='error'>&gt; </span>"+ionJs.escape(text)+"</div>";
+    this.htmlContent += "<div class='line'><span class='error'>&gt; </span>"+escape(text)+"</div>";
     this.updateHtml();
 }
-ionJs.JsConsoleWidget.prototype.updateHtml = function()
+JsConsoleWidget.prototype.updateHtml = function()
 {
     this.textEdit.html = this.htmlPrefix + this.htmlContent + this.htmlSuffix;
     var scrollBar = this.textEdit.verticalScrollBar();

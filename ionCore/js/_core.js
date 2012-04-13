@@ -28,44 +28,43 @@ var importFailures = new Array();
 
 
 
-ionJs = {
-    is_string : function(input)
-    {
-        return typeof(input)=='string';
-    },
+is_string = function(input)
+{
+    return typeof(input)=='string';
+};
 
-    to_string : function(input)
-    {
-        if (this.is_string(input)) {
-            return input;
-        }
-
-        if (undefined === input) {
-            return "undefined";
-        }
-        if (null === input) {
-            return "null";
-        }
-        return input.toString();
-    },
-
-    escape : function(text)
-    {
-        return this.to_string(text).replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
-    },
-
-    trim : function(str) {
-        str = this.to_string(str).replace(/^\s\s*/, '')
-        var ws = /\s/, i = str.length;
-        while ((i>0) && ws.test(str.charAt(--i)));
-        return str.slice(0, i + 1);
-    },
-
-    alert : function(text)
-    {
-        QMessageBox.information(this, "ionPulse - alert", "<html><pre>"+this.escape(text));
+to_string = function(input)
+{
+    if (this.is_string(input)) {
+        return input;
     }
-}
+
+    if (undefined === input) {
+        return "undefined";
+    }
+    if (null === input) {
+        return "null";
+    }
+    return input.toString();
+};
+
+escape = function(text)
+{
+    return this.to_string(text).replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;');
+};
+
+trim = function(str) {
+    str = this.to_string(str).replace(/^\s\s*/, '')
+    var ws = /\s/, i = str.length;
+    while ((i>0) && ws.test(str.charAt(--i)));
+    return str.slice(0, i + 1);
+};
+
+alert = function(text)
+{
+    QMessageBox.information(this, "ionPulse - alert", "<html><pre>"+this.escape(text));
+};
+
 for (var i = 0; i < importFailures.length; i++) {
-    ionJs.alert(importFailures[i]);
+    alert(importFailures[i]);
 }

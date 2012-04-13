@@ -9,7 +9,7 @@
 qs.script.include("_core.js");
 qs.script.include("_console.js");
 
-console = new ionJs.JsConsoleWidget(window);
+console = new JsConsoleWidget(window);
 console.hide();
 layoutManager.add("central/central_footer", console);
 
@@ -19,7 +19,6 @@ console.log("ionPulse.js initialised");
 
 // other hacks - testing place
 
-
 //editorPlugin.focusedEditor.focusOnLine(7)
 editorPlugin.editorOpened.connect(
     this,
@@ -28,7 +27,6 @@ editorPlugin.editorOpened.connect(
         //editor.textOptionFlags |= 1 | 2;// | 4;
     }
 );
-
 
 
 
