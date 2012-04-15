@@ -53,7 +53,10 @@ JsConsoleWidget = function(parent)
     this.setLayout(layout);
 
     this.setWindowTitle("Javascript console");
-    qs.system.installAppShortcut(Qt.Key_F12).callback.connect(
+
+
+    this._appShortcutF12 = qs.system.installAppShortcut(Qt.Key_F12);
+    this._appShortcutF12.callback.connect(
         this,
         function() {
             if (this.visible) {
@@ -64,7 +67,8 @@ JsConsoleWidget = function(parent)
             }
         }
     );
-    qs.system.installAppShortcut(Qt.Key_Up, this.lineInput).callback.connect(
+    this._lineInpShortcutUp = qs.system.installAppShortcut(Qt.Key_Up, this.lineInput);
+    this._lineInpShortcutUp.callback.connect(
         this,
         function() {
             if (null === this.historyIdx) {
@@ -75,7 +79,8 @@ JsConsoleWidget = function(parent)
             }
         }
     );
-    qs.system.installAppShortcut(Qt.Key_Down, this.lineInput).callback.connect(
+    this._lineInpShortcutDown = qs.system.installAppShortcut(Qt.Key_Down, this.lineInput);
+    this._lineInpShortcutDown.callback.connect(
         this,
         function() {
             if (null === this.historyIdx) {
