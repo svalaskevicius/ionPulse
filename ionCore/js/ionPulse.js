@@ -24,7 +24,7 @@ editorPlugin.editorOpened.connect(
     this,
     function(editor) {
         editor.tabStopWidth = 30;
-        //editor.textOptionFlags |= 1 | 2;// | 4;
+        editor.textOptionFlags |= 1;// | 2;// | 4;
     }
 );
 
@@ -32,12 +32,17 @@ editorPlugin.editorOpened.connect(
 phpHighlighter =
 (function() {
     var _self, _text, _pos;
-    var _createColoredCharFormat = function (color){
+    var _createCharFormat = function (color, weight, italic){
         var format = new QTextCharFormat();
         var brush = new QBrush();
+        var font = new QFont("Monaco", 14, weight, italic);
+        if (!font.exactMatch()) {
+            font = new QFont("Courier New", 14, weight, italic);
+        }
         brush.setColor(color);
         brush.setStyle(Qt.SolidPattern);
         format.setForeground(brush);
+        format.setFont(font);
         return format;
     };
 
@@ -50,9 +55,15 @@ phpHighlighter =
     };
 
     var charFormatting = {
-        "html" : _createColoredCharFormat(Qt.white),
-        "php" : _createColoredCharFormat(Qt.darkGray),
-        "php/number" : _createColoredCharFormat(Qt.red)
+        "html" :           _createCharFormat(Qt.lightGray,              QFont.Normal, false),
+        "php" :            _createCharFormat(Qt.white,                  QFont.Normal, false),
+        "php/number" :     _createCharFormat(Qt.red,                    QFont.Normal, false),
+        "php/whitespace" : _createCharFormat(new QColor(128, 100, 96),  QFont.Light,  false),
+        "php/keyword" :    _createCharFormat(new QColor(191, 127, 255), QFont.Bold,   true),
+        "php/variable" :   _createCharFormat(new QColor(164, 158, 64),  QFont.Normal, false),
+        "php/property" :   _createCharFormat(new QColor(158, 140, 44),  QFont.Normal, false),
+        "php/function" :   _createCharFormat(new QColor(164, 158, 96),  QFont.Normal, false),
+        "php/separator" :  _createCharFormat(new QColor(191, 255, 127), QFont.Black,  false),
     };
     var states = ["html", "php"];
     var transitions = {
@@ -65,7 +76,13 @@ phpHighlighter =
     };
     var highlightRules = {
          "php" : {
-             "number" : /-?([0-9]+)?\.?[0-9]+/g
+             "number" :     /-?([0-9]+)?\.?[0-9]+/g,
+             "whitespace" : /\s+/g,
+             "keyword" :    /<\?php|\?>|return|class|function|protected|private|public|abstract|extends|interface|implements/g,
+             "variable" :   /\$[a-z_][a-z0-9_]*/ig,
+             "property" :   /->[a-z_][a-z0-9_]*/ig,
+             "function" :   /[a-z_][a-z0-9_]*\s*\(/ig,
+             "separator" :  /->|;|\+|-|\*|\/|=|\(|\)/g,
          }
     };
 
