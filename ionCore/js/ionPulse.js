@@ -32,6 +32,7 @@ editorPlugin.editorOpened.connect(
 phpHighlighter =
 (function() {
     var _self, _text, _pos;
+
     var _createCharFormat = function (color, weight, italic){
         var format = new QTextCharFormat();
         var brush = new QBrush();
@@ -46,43 +47,73 @@ phpHighlighter =
         return format;
     };
 
-    var _regexTransition = function(re) {
+    var _regexTransition = function(re, atStart) {
         return function(){
             re.lastIndex = _pos;
             var m = re.exec(_text);
-            return m ? m.index : -1;
+            return m ? m.index + (atStart?0:m[0].length) : -1;
         };
     };
 
     var charFormatting = {
-        "html" :           _createCharFormat(Qt.lightGray,              QFont.Normal, false),
-        "php" :            _createCharFormat(Qt.white,                  QFont.Normal, false),
-        "php/number" :     _createCharFormat(Qt.red,                    QFont.Normal, false),
-        "php/whitespace" : _createCharFormat(new QColor(128, 100, 96),  QFont.Light,  false),
-        "php/keyword" :    _createCharFormat(new QColor(191, 127, 255), QFont.Bold,   true),
-        "php/variable" :   _createCharFormat(new QColor(164, 158, 64),  QFont.Normal, false),
-        "php/property" :   _createCharFormat(new QColor(158, 140, 44),  QFont.Normal, false),
-        "php/function" :   _createCharFormat(new QColor(164, 158, 96),  QFont.Normal, false),
-        "php/separator" :  _createCharFormat(new QColor(191, 255, 127), QFont.Black,  false),
+        "html" :                 _createCharFormat(Qt.lightGray,              QFont.Normal, false),
+        "php" :                  _createCharFormat(Qt.white,                  QFont.Normal, false),
+        "php/constructs" :       _createCharFormat(new QColor(255, 255, 127), QFont.Bold,   true),
+        "php/number" :           _createCharFormat(Qt.red,                    QFont.Normal, false),
+        "php/whitespace" :       _createCharFormat(new QColor(128, 100, 96),  QFont.Light,  false),
+        "php/keyword" :          _createCharFormat(new QColor(191, 127, 255), QFont.Bold,   false),
+        "php/compileConstants" : _createCharFormat(new QColor(255, 255, 127), QFont.Bold,   true),
+        "php/variable" :         _createCharFormat(new QColor(164, 158, 64),  QFont.Normal, false),
+        "php/property" :         _createCharFormat(new QColor(158, 140, 44),  QFont.Normal, false),
+        "php/function" :         _createCharFormat(new QColor(164, 158, 96),  QFont.Normal, false),
+        "php/separator" :        _createCharFormat(new QColor(191, 255, 127), QFont.Black,  false),
+        "php/comment" :          _createCharFormat(new QColor(100, 100, 100), QFont.Normal, true),
+        "php/string_dq" :        _createCharFormat(new QColor(127, 225, 127), QFont.Normal, false),
+        "php/string_sq" :        _createCharFormat(new QColor(127, 191, 127), QFont.Normal, false),
     };
-    var states = ["html", "php"];
+    var states = ["html", "php", "php/comment", "php/string_dq", "php/string_sq"];
     var transitions = {
         "html" : {
-            "php" : _regexTransition(/<\?php\b/g)
+            "php" : _regexTransition(/<\?php\b/g, true)
         },
         "php" : {
-            "html" : _regexTransition(/\?>/g)
+            "html" : _regexTransition(/\?>/g, false),
+            "php/comment" : _regexTransition(/\/\*/g, true),
+            "php/string_dq" : _regexTransition(/"/g, true),
+            "php/string_sq" : _regexTransition(/'/g, true),
+        },
+        "php/comment" : {
+            "php" : _regexTransition(/\*\//g, false),
+        },
+        "php/string_dq" : {
+             "php" : _regexTransition(/(\\\\)*([^\\]|^)"/g, false),
+        },
+        "php/string_sq" : {
+             "php" : _regexTransition(/(\\\\)*([^\\]|^)'/g, false),
         }
     };
     var highlightRules = {
          "php" : {
+             "constructs" : new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
+                                       +"|die|echo|empty|exit|eval|include|include_once|isset|list|require|require_once"
+                                       +"|return|print|unset", "ig"),
              "number" :     /-?([0-9]+)?\.?[0-9]+/g,
              "whitespace" : /\s+/g,
-             "keyword" :    /<\?php|\?>|return|class|function|protected|private|public|abstract|extends|interface|implements/g,
+             "keyword" :    new RegExp("<\\?php|\\?>|return|class|function|protected|private|public"
+                                       +"|abstract|extends|interface|implements|abstract|and|array"
+                                       +"|as|break|case|catch|clone|const|continue|declare"
+                                       +"|default|do|else|elseif|enddeclare|endfor"
+                                       +"|endforeach|endif|endswitch|endwhile|extends"
+                                       +"|final|for|foreach|function|global|goto"
+                                       +"|if|instanceof|namespace"
+                                       +"|new|or|static"
+                                       +"|switch|throw|try|use|var|while|xor", "g"),
+             "compileConstants" : /__CLASS__|__DIR__|__FILE__|__LINE__|__FUNCTION__|__METHOD__|__NAMESPACE__/g,
              "variable" :   /\$[a-z_][a-z0-9_]*/ig,
              "property" :   /->[a-z_][a-z0-9_]*/ig,
              "function" :   /[a-z_][a-z0-9_]*\s*\(/ig,
-             "separator" :  /->|;|\+|-|\*|\/|=|\(|\)/g,
+             "separator" :  /->|;|\+|-|\*|\/|=|\(|\)|\||&/g,
+             "comment" :  /\/\/.*/g,
          }
     };
 
