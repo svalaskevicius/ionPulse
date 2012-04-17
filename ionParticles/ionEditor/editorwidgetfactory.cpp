@@ -17,19 +17,19 @@ namespace Private {
 
 QMap<QString, QString> EditorWidgetBuilderImpl::fileExtToTypeMap; // file ending -> file type in factories
 
-QSyntaxHighlighter *DefaultHighlighterFactory::operator ()(Editor *widget, QString filetype)
+QSyntaxHighlighter *DefaultHighlighterFactory::operator ()(Editor *widget)
 {
-    return new IonEditor::Private::Highlighter(widget, filetype);
+    return new IonEditor::Private::Highlighter(widget);
 }
 
 QSyntaxHighlighter *EditorWidgetBuilderImpl::createHighlighter(Editor *widget, QString filetype)
 {
     QMap<QString, QSharedPointer<HighlighterFactory> >::const_iterator it = typeToHighlighterFactoryMap.find(filetype);
     if (it != typeToHighlighterFactoryMap.end()) {
-        return (*(*it))(widget, filetype);
+        return (*(*it))(widget);
     }
     DefaultHighlighterFactory _default;
-    return _default(widget, filetype);
+    return _default(widget);
 }
 
 QList<EditorComponent*> EditorWidgetBuilderImpl::createComponents(Editor *widget, QString fileType)

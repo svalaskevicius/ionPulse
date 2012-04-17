@@ -37,7 +37,7 @@ struct JsHighlighterFactory : virtual public IonEditor::HighlighterFactory {
     QScriptEngine *engine;
     QScriptValue function;
     JsHighlighterFactory(QScriptEngine *engine, QScriptValue function) : engine(engine), function(function) {}
-    virtual QSyntaxHighlighter *operator()(IonEditor::Editor *editor, QString filetype)
+    virtual QSyntaxHighlighter *operator()(IonEditor::Editor *editor)
     {
         return new JsSyntaxHighlighter(editor, engine, function);
     }

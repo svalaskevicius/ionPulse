@@ -11,6 +11,7 @@
 
 #include <QSyntaxHighlighter>
 #include <QPlainTextEdit>
+#include "editorapi.h"
 
 namespace IonEditor {
 namespace Private {
@@ -20,7 +21,7 @@ class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 public:
-    explicit Highlighter(QPlainTextEdit *parent, QString filetype);
+    explicit Highlighter(Editor *parent);
 
 protected:
     void highlightBlock(const QString &);

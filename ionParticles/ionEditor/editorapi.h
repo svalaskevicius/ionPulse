@@ -222,7 +222,7 @@ struct HighlighterFactory {
     /**
      * \brief Invoke the factory to create a syntax highlighter for the given Editor and filetype.
      */
-    virtual QSyntaxHighlighter *operator()(Editor *, QString) = 0;
+    virtual QSyntaxHighlighter *operator()(Editor *) = 0;
 };
 
 /**

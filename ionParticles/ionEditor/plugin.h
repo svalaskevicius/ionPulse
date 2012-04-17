@@ -80,7 +80,7 @@ private:
     QScriptValue function;
 
 public:
-    JsSyntaxHighlighter(IonEditor::Editor *editor, QScriptEngine *engine, QScriptValue function) : engine(engine), function(function), QSyntaxHighlighter(editor->document()) {}
+    JsSyntaxHighlighter(IonEditor::Editor *editor, QScriptEngine *engine, QScriptValue function) : QSyntaxHighlighter(editor->document()), engine(engine), function(function) {}
 //    QTextBlock currentBlock() const {return QSyntaxHighlighter::currentBlock();}
 //    int currentBlockState() const {return QSyntaxHighlighter::currentBlockState();}
 //    QTextBlockUserData * currentBlockUserData() const {return QSyntaxHighlighter::currentBlockUserData();}
