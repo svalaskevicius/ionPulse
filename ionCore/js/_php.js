@@ -75,7 +75,7 @@ phpHighlighter = (function () {
 
         this.parent.initialize.call(this);
     }
-    php = new PhpHighlighter();
+    var php = new PhpHighlighter();
     php.initialize();
     return function (cppApi, text) {
         php.highlight(cppApi, text);
