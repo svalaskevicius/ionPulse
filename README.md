@@ -4,8 +4,6 @@ ionPulse IDE
 Todo
 ----
 
-change QSharedPtr to boost::shared_ptr which works
-
 ### 0.1 CODE REVIEW, documentation
 
 #### search & replace
