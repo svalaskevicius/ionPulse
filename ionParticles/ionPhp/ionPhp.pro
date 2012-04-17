@@ -22,8 +22,6 @@ LIBS += -L/opt/local/lib -lxml2 -lz -lpthread -liconv -lm
 
 HEADERS += \
     plugin.h \
-    editorwidgetfactory.h \
-    highlighter.h \
     phpparser.h \
     phpParser/ionParserLib.h \
     structurestorage.h \
@@ -34,8 +32,6 @@ HEADERS += \
 
 SOURCES += \
     plugin.cpp \
-    editorwidgetfactory.cpp \
-    highlighter.cpp \
     gen_php_parser.cpp \
     gen_php_scanner.cpp \
     phpparser.cpp \

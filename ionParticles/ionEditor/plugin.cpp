@@ -55,6 +55,15 @@ QScriptValue registerJsFileHighlighter(QScriptContext *context, QScriptEngine *e
     return engine->nullValue();
 }
 
+QScriptValue registerJsFileType(QScriptContext *context, QScriptEngine *engine)
+{
+    Plugin *plugin = qobject_cast<Plugin *>(engine->globalObject().property("editorPlugin").toQObject());
+    plugin->getEditorWidgetBuilder()->registerFileType(
+        context->argument(0).toString(),
+        context->argument(1).toString()
+    );
+    return engine->nullValue();
+}
 
 
 QScriptValue editorToScriptValue(QScriptEngine *engine, Editor* const &in)
@@ -277,7 +286,8 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
     qScriptRegisterMetaType(&jsEngine, editorToScriptValue, editorFromScriptValue);
     QScriptValue editorPlugin = jsEngine.newQObject(this);
     jsEngine.globalObject().setProperty("editorPlugin", editorPlugin);
-    jsEngine.globalObject().setProperty("registerJsFileHighlighter", jsEngine.newFunction(IonEditor::Private::registerJsFileHighlighter));
+    jsEngine.globalObject().setProperty("registerFileHighlighter", jsEngine.newFunction(IonEditor::Private::registerJsFileHighlighter));
+    jsEngine.globalObject().setProperty("registerFileType", jsEngine.newFunction(IonEditor::Private::registerJsFileType));
     qScriptRegisterMetaType(&jsEngine, JsSyntaxHighlighterToScriptValue, JsSyntaxHighlighterFromScriptValue);
 }
 

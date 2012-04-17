@@ -12,7 +12,6 @@
 #include <ionParticles/ionEditor/editorwidget.h>
 #include "ionCore/shared.h"
 
-#include "editorwidgetfactory.h"
 #include "phptreemodelsource.h"
 #include "editorsourcebrowser.h"
 
@@ -57,7 +56,6 @@ void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
     Q_ASSERT(wf);
 
     wf->registerComponentFactory("text/php", new Private::EditorSourceBrowserFactory(structureStorage));
-    wf->registerHighlighterFactory("text/php", new HighlighterFactory());
 
     wf->registerFileType("php", "text/php");
     wf->registerFileType("php3", "text/php");
