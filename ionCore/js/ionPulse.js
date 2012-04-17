@@ -208,16 +208,6 @@ phpHighlighter =
 textHighlighter = function(self, text)
 {
     phpHighlighter(self, text);
-    /*
-    var myClassFormat = new QTextCharFormat();
-    myClassFormat.setFontWeight(QFont.Bold);
-    var brush = new QBrush();
-    brush.setColor(Qt.darkGray);
-    brush.setStyle(Qt.SolidPattern);
-
-    self.currentBlockState = self.previousBlockState + 1;
-    myClassFormat.setForeground(brush);
-    self.setFormat(0, 10, myClassFormat);*/
  }
 
 registerFileHighlighter("text", textHighlighter);

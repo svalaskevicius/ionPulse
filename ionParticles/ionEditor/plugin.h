@@ -80,32 +80,23 @@ private:
     QScriptValue function;
 
 public:
-    JsSyntaxHighlighter(IonEditor::Editor *editor, QScriptEngine *engine, QScriptValue function) : QSyntaxHighlighter(editor->document()), engine(engine), function(function) {}
-//    QTextBlock currentBlock() const {return QSyntaxHighlighter::currentBlock();}
-//    int currentBlockState() const {return QSyntaxHighlighter::currentBlockState();}
-//    QTextBlockUserData * currentBlockUserData() const {return QSyntaxHighlighter::currentBlockUserData();}
-//    QTextCharFormat format(int position) const {return QSyntaxHighlighter::currentBlock();}
-    virtual void highlightBlock(const QString & text) {function.call(function, QScriptValueList()<<engine->toScriptValue(this)<<engine->toScriptValue(text));}
-//    int previousBlockState() const {return QSyntaxHighlighter::currentBlock();}
-//    void setCurrentBlockState(int newState) {return QSyntaxHighlighter::currentBlock();}
-//    void setCurrentBlockUserData(QTextBlockUserData * data) {return QSyntaxHighlighter::currentBlock();}
-    Q_INVOKABLE void dbg(){DEBUG_MSG("ASasdasdasd");}
+    JsSyntaxHighlighter(IonEditor::Editor *editor, QScriptEngine *engine, QScriptValue function)
+        : QSyntaxHighlighter(editor->document()), engine(engine), function(function)
+    {
+    }
 
-//    int previousBlockState() const;
-//    int currentBlockState() const;
-//    void setCurrentBlockState(int newState);
+    virtual void highlightBlock(const QString & text)
+    {
+        function.call(
+            function,
+            QScriptValueList() << engine->toScriptValue(this) << engine->toScriptValue(text)
+        );
+    }
 
-//    void setCurrentBlockUserData(QTextBlockUserData *data);
-//    QTextBlockUserData *currentBlockUserData() const;
-
-//    QTextBlock currentBlock() const;
-
-    Q_INVOKABLE void setFormat(int start, int count, QTextCharFormat format) {
-       // DEBUG_MSG("set fmt for " << start << count << format.foreground());
+    Q_INVOKABLE void setFormat(int start, int count, QTextCharFormat format)
+    {
         QSyntaxHighlighter::setFormat(start, count, format);
     }
-//    void setFormat(int start, int count, const QColor & color) {return QSyntaxHighlighter::currentBlock();}
-//    void setFormat(int start, int count, const QFont & font) {return QSyntaxHighlighter::currentBlock();}
 };
 
 
@@ -113,8 +104,7 @@ public:
 }
 
 Q_DECLARE_METATYPE(IonEditor::Editor*)
-
-Q_DECLARE_METATYPE(IonEditor::Private::JsSyntaxHighlighter*);
+Q_DECLARE_METATYPE(IonEditor::Private::JsSyntaxHighlighter*)
 
 #endif // IONEDITOR_H
 
