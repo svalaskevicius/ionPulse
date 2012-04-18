@@ -8,16 +8,15 @@
 
 TextHighlighterFactory = function () {};
 TextHighlighterFactory.prototype = {
-    _cppApi: null,
-    _text: null,
-    _stateMatcher: null,
-
-    createCharFormat: function (color, weight, italic) {
+    createCharFormat: function (color, weight, italic, size) {
+        if (typeof size === 'undefined') {
+            size = 14;
+        }
         var format = new QTextCharFormat();
         var brush = new QBrush();
-        var font = new QFont("Monaco", 14, weight, italic);
+        var font = new QFont("Monaco", size, weight, italic);
         if (!font.exactMatch()) {
-            font = new QFont("Courier New", 14, weight, italic);
+            font = new QFont("Courier New", size, weight, italic);
         }
         brush.setColor(color);
         brush.setStyle(Qt.SolidPattern);
@@ -64,7 +63,6 @@ TextHighlighterFactory.prototype = {
     charFormatting: {},
     transitions: {},
     highlightRules: {},
-    states: [],
 
     _hightlightState: function (state, from, to) {
         this._cppApi.setFormat(from, to - from, this.charFormatting[state]);
@@ -108,6 +106,7 @@ TextHighlighterFactory.prototype = {
     },
 
     initialize: function () {
+        this.states = [];
         for (var state in this.transitions) {
             this.states.push(state);
         }
