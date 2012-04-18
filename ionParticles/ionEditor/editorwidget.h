@@ -76,6 +76,8 @@ public:
         document()->setDefaultTextOption(option);
     }
 
+    QString getFilePath() { return filePath;}
+
 protected slots:
     void editorCursorPositionChanged();
     void modificationChanged(bool changed);

@@ -120,6 +120,7 @@ public:
 class Editor : public QPlainTextEdit {
     Q_OBJECT
     Q_PROPERTY(int textOptionFlags READ textOptionFlags WRITE setTextOptionFlags)
+    Q_PROPERTY(QString path READ getFilePath)
 public:
     Editor() : QPlainTextEdit(NULL) {}
     virtual ~Editor() {}
@@ -131,6 +132,8 @@ public:
 
     virtual int textOptionFlags() = 0;
     virtual void setTextOptionFlags(int) = 0;
+
+    virtual QString getFilePath() = 0;
 
 public slots:
     /**
