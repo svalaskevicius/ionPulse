@@ -28,7 +28,7 @@ protected:
     void decorateNode(IonProject::TreeItem *node);
     void addPhpFileInfo(IonProject::TreeItem *node, QString path);
     int getStoredFile(QString path);
-    int storeFile(QString path);
+    void storeFile(QString path);
 private:
     QSharedPointer<IonProject::TreeModelSource> origTreeModelSource;
     QSharedPointer<IonProject::TreeItemFactory> treeItemFactory;

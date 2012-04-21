@@ -15,8 +15,6 @@
 #include "phptreemodelsource.h"
 #include "editorsourcebrowser.h"
 
-#include <QSqlDatabase>
-
 namespace IonPhp {
 namespace Private {
 
@@ -32,13 +30,7 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::preLoad()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "phpStructureStorage");
-//    db.setDatabaseName("/tmp/db.sqlite");
-    db.setDatabaseName(":memory:");
-    if (!db.open()) {
-        throw QString("Unable to establish a database connection.\nPhp plugin requires SQLite support.");
-    }
-    structureStorage = QSharedPointer<StructureStorage>(new StructureStorage("phpStructureStorage"));
+    structureStorage = QSharedPointer<StructureStorage>(new StructureStorage());
 }
 
 void Plugin::postLoad()

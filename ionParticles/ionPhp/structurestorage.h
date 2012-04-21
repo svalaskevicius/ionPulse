@@ -10,8 +10,6 @@
 #define STRUCTURESTORAGE_H
 
 #include <QString>
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
 #include <QSharedPointer>
 
@@ -23,26 +21,15 @@ namespace Private {
 class StructureStorage
 {
 public:
-    StructureStorage(QString connName);
-    QSharedPointer<QSqlQuery> getClasses();
-    QSharedPointer<QSqlQuery> getFile(QString filename);
-    QSharedPointer<QSqlQuery> getFileClasses(int fileId);
-    QSharedPointer<QSqlQuery> getClassMethods(int classId);
+    StructureStorage();
 
-    void removeFile(int file_id);
+    void addFile(QString path, int timestamp, ASTRoot &astRoot);
+    void removeFile(QString path);
 
-    int addFile(QString path, int timestamp, ASTRoot &astRoot);
-
-    bool beginTransaction();
-    bool commitTransaction();
-    bool rollbackTransaction();
+    void beginTransaction() {}
+    void commitTransaction() {}
+    void rollbackTransaction() {}
 protected:
-    QSqlDatabase db;
-
-    void createTables();
-
-    void addClasses(QSqlQuery &classInsertQuery, QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &classes);
-    void addMethods(QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &methods);
 };
 
 
