@@ -19,10 +19,6 @@
 
 #include <ionCore/shared.h>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
-
 namespace IonPhp {
 namespace Private {
 
@@ -30,14 +26,16 @@ class ASTNode;
 typedef ASTNode *pASTNode;
 
 class ASTNode {
-protected:
+public:
+    typedef QMap<QString, QString> AttributesMap;
     QVector<pASTNode> children;
-    xmlNodePtr xmlNode;
+    AttributesMap attributes;
+    QString text;
+    QString name;
     int lineNr, columnNr;
 public:
     ASTNode(QString name);
     ~ASTNode();
-    xmlNodePtr getXmlNode();
     pASTNode setPosition(int lineNr, int columnNr);
     int getLine() const;
     int getColumn() const;
@@ -54,13 +52,22 @@ public:
 class ASTRoot {
 protected:
     pASTNode rootNode;
-    xmlDocPtr xmlDoc;
-    xmlXPathContextPtr xpathCtx;
+//    xmlDocPtr xmlDoc;
+//    xmlXPathContextPtr xpathCtx;
 public:
     ASTRoot(pASTNode rootNode);
     ~ASTRoot();
-    QString dumpXml();
-    QList<pASTNode> xpath(QString xpathExpr, pASTNode parent = NULL) const ;
+//    QString dumpXml();
+//    QList<pASTNode> xpath(QString xpathExpr, pASTNode parent = NULL) const ;
+//    void setTimestamp(ulong time) {
+//        rootNode->setData("timestamp", QString("%1").arg(time));
+//    }
+//    void setFilename(QString filename) {
+//        rootNode->setData("filename", filename);
+//    }
+    pASTNode getRootNode() {
+        return rootNode;
+    }
 };
 
 }

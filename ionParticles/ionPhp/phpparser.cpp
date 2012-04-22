@@ -13,6 +13,8 @@
 
 #include "phpParser/gen_php_parser.hpp"
 #include <QFile>
+#include <QFileInfo>
+#include <QDateTime>
 
 extern int _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
 
@@ -66,7 +68,11 @@ QSharedPointer<ASTRoot> phpParser::parseFile(QString path)
     QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         try {
-            return parseString(file.readAll());
+            QSharedPointer<ASTRoot> ast = parseString(file.readAll());
+//            QFileInfo fileInfo(path);
+//            ast->setFilename(path);
+//            ast->setTimestamp(fileInfo.lastModified().toTime_t());
+            return ast;
         } catch (std::runtime_error &err) {
             throw std::runtime_error("parsing of the file failed: "+path.toStdString()+"\n"+err.what());
         }

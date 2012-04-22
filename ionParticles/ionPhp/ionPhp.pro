@@ -12,13 +12,8 @@ VERSION = 0.1.0
 
 QT       += core widgets script
 TARGET = ionPhp
-INCLUDEPATH +=  ../.. /opt/local/include/libxml2
-LIBS += -L/opt/local/lib -lxml2 -lz -lpthread -liconv -lm
-
-#LIBS += -L../ionEditor \
-#            -lionEditor \
-
-#-lantlr3c
+INCLUDEPATH += ../.. /opt/berkeleyDbXml/include
+LIBS += -L/opt/local/lib -lz -lpthread -liconv -lm -L/opt/berkeleyDbXml/lib -ldbxml-2.5
 
 HEADERS += \
     plugin.h \
