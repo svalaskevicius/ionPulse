@@ -125,7 +125,6 @@ void JsEngine::loadFile(QString file)
 
 void JsEngine::initialiseJsFramework()
 {
-
     // add environment variables to qt.system.env
     QMap<QString,QVariant> envMap;
     QStringList envList = QProcess::systemEnvironment();
