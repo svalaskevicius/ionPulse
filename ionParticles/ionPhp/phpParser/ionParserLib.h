@@ -52,19 +52,9 @@ public:
 class ASTRoot {
 protected:
     pASTNode rootNode;
-//    xmlDocPtr xmlDoc;
-//    xmlXPathContextPtr xpathCtx;
 public:
     ASTRoot(pASTNode rootNode);
     ~ASTRoot();
-//    QString dumpXml();
-//    QList<pASTNode> xpath(QString xpathExpr, pASTNode parent = NULL) const ;
-//    void setTimestamp(ulong time) {
-//        rootNode->setData("timestamp", QString("%1").arg(time));
-//    }
-//    void setFilename(QString filename) {
-//        rootNode->setData("filename", filename);
-//    }
     pASTNode getRootNode() {
         return rootNode;
     }
