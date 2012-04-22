@@ -18,6 +18,7 @@
 #include <stdexcept>
 
 #include <ionCore/shared.h>
+#include <ionParticles/ionDbXml/dbxmlapi.h>
 
 namespace IonPhp {
 namespace Private {
@@ -25,10 +26,9 @@ namespace Private {
 class ASTNode;
 typedef ASTNode *pASTNode;
 
-class ASTNode {
-public:
-    typedef QMap<QString, QString> AttributesMap;
-    QVector<pASTNode> children;
+class ASTNode : public IonDbXml::XmlNode {
+private:
+    QVector<XmlNode*> children;
     AttributesMap attributes;
     QString text;
     QString name;
@@ -42,9 +42,13 @@ public:
     pASTNode addChild(pASTNode child);
     pASTNode setData(QString name, QString data);
     pASTNode setText(QString data);
-    QString getName();
     QString getData(QString name);
+
+    QString getName();
     QString getText();
+    AttributesMap &getAttributes() { return attributes;}
+    QVector<XmlNode*> &getChildren() {return children;}
+
     static pASTNode create(QString name);
     static void destroy(pASTNode node);
 };

@@ -43,26 +43,26 @@ do {\
 
 
 struct ast2xml {
-    QString operator()(IonPhp::Private::pASTNode node, int indent = 0)
+    QString operator()(IonDbXml::XmlNode * node, int indent = 0)
     {
         QString ws = "  ";
         QString ret = ws.repeated(indent) + "<" + node->getName();
-        for (IonPhp::Private::ASTNode::AttributesMap::const_iterator it = node->attributes.begin(); it != node->attributes.end(); it++) {
+        for (IonPhp::Private::ASTNode::AttributesMap::const_iterator it = node->getAttributes().begin(); it != node->getAttributes().end(); it++) {
             ret += QString(" %1=\"%2\"").arg(it.key()).arg(it.value());
         }
 
         bool content = false;
-        if (node->text.length()) {
+        if (node->getText().length()) {
             ret += ">";
-            QString t = node->text;
+            QString t = node->getText();
             ret += t.replace("\r", "&#xD;").replace("<", "&lt;").replace(">", "&gt;");
             content = true;
         }
-        if (node->children.count()) {
+        if (node->getChildren().count()) {
             if (!content) {
                 ret += ">\n";
             }
-            foreach (IonPhp::Private::pASTNode child, node->children) {
+            foreach (IonDbXml::XmlNode * child, node->getChildren()) {
                 ret += this->operator ()(child, indent + 1);
             }
             ret += ws.repeated(indent);

@@ -58,16 +58,16 @@ void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QSt
 //            node->clearChildren();
 //        }
 
-        storage.beginTransaction();
+//        storage.beginTransaction();
         storeFile(path);
-        storage.commitTransaction();
+//        storage.commitTransaction();
     } catch (std::exception &err) {
         DEBUG_MSG(err.what());// << phpParser().parseFile(path)->dumpXml());
-        storage.rollbackTransaction();
+//        storage.rollbackTransaction();
         //TODO: mark node red
     } catch (...) {
         DEBUG_MSG("cought unknown exception.");
-        storage.rollbackTransaction();
+//        storage.rollbackTransaction();
     }
 }
 

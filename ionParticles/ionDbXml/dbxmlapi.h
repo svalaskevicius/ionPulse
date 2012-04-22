@@ -31,6 +31,7 @@ class StorageQueryResults;
 
 class XmlNode {
 public:
+    virtual ~XmlNode() {}
     typedef QMap<QString, QString> AttributesMap;
     virtual QString getName() = 0;
     virtual QString getText() = 0;
@@ -40,6 +41,8 @@ public:
 
 class StorageValue {
 public:
+    virtual ~StorageValue() {}
+
     /// Returns the node name as per the DOM Spec or throws an
     /// XMLExpection if this value is not a node
     virtual QString getNodeName() const = 0;
@@ -100,6 +103,8 @@ public:
 
 class StorageQueryResults {
 public:
+    virtual ~StorageQueryResults() {}
+
     virtual bool next() = 0;
     virtual bool previous() = 0;
     virtual bool peek() = 0;
@@ -114,7 +119,7 @@ public:
 class StructureStorage
 {
 public:
-    virtual void addFile(QString path, int timestamp, XmlNode &root) = 0;
+    virtual void addFile(QString path, int timestamp, XmlNode *root) = 0;
     virtual void removeFile(QString path) = 0;
 
     virtual void beginTransaction() = 0;
@@ -142,6 +147,8 @@ public:
 class DbXmlPlugin : public IonCore::BasicPlugin
 {
 public:
+    virtual ~DbXmlPlugin() {}
+
     /**
      * \brief Plugin name to be used in IonCore::BasicPlugin::getDependencies()
      *        method of the subscribed plugins.

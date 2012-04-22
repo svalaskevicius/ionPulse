@@ -70,7 +70,7 @@ private:
 class StructureStorageImpl : public StructureStorage
 {
 public:
-    void addFile(QString path, int timestamp, XmlNode &root);
+    void addFile(QString path, int timestamp, XmlNode *root);
     void removeFile(QString path);
     void executeXQuery(QString query) {
 

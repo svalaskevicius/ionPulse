@@ -42,7 +42,7 @@ void StructureStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlN
     eventWriter.writeEndElement((const unsigned char*)name.constData(), NULL, NULL);
 }
 
-void StructureStorageImpl::addFile(QString path, int timestamp, XmlNode &root)
+void StructureStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
 {
     XmlUpdateContext uc = mgr.createUpdateContext();
     XmlDocument doc = mgr.createDocument();
@@ -54,7 +54,7 @@ void StructureStorageImpl::addFile(QString path, int timestamp, XmlNode &root)
                                         uc
                                     );
     eventWriter.writeStartDocument(NULL, NULL, NULL);
-    _writeEventsForNode(eventWriter, &root);
+    _writeEventsForNode(eventWriter, root);
     eventWriter.writeEndDocument();
     eventWriter.close();
 

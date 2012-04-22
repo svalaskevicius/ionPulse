@@ -19,7 +19,7 @@ ASTNode::ASTNode(QString name)
 
 ASTNode::~ASTNode()
 {
-    foreach (pASTNode n, children) {
+    foreach (XmlNode* n, children) {
         delete n;
     }
     children.clear();
