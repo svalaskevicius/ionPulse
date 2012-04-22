@@ -33,6 +33,10 @@ void StructureStorage::_writeEventsForNode(XmlEventWriter &eventWriter, ASTNode 
         _writeEventsForNode(eventWriter, child);
     }
 
+    if (node->text.length()) {
+        eventWriter.writeText(XmlEventReader::CDATA, (const unsigned char*)node->text.toAscii().constData(), node->text.length());
+    }
+
     eventWriter.writeEndElement((const unsigned char*)name.constData(), NULL, NULL);
 }
 
@@ -49,6 +53,7 @@ void StructureStorage::addFile(QString path, int timestamp, ASTRoot &astRoot)
     eventWriter.writeStartDocument(NULL, NULL, NULL);
     _writeEventsForNode(eventWriter, astRoot.getRootNode());
     eventWriter.writeEndDocument();
+    eventWriter.close();
 
     getXmlContainer("filetimes")->putDocument(
         path.toStdString(),
