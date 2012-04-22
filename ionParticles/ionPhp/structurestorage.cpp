@@ -16,6 +16,12 @@ namespace Private {
 using namespace DbXml;
 
 
+StorageQueryResults * StorageValueImpl::getAttributes() const
+{
+    return new StorageQueryResultsImpl(value.getAttributes());
+}
+
+
 StructureStorage::StructureStorage()
 {
 }
