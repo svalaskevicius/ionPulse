@@ -29,9 +29,9 @@ public:
         return DbXmlPlugin::name();
     }
     void preLoad();
-    virtual StructureStorage *getStorage() { return structureStorage; }
+    virtual DataStorage *getStorage() { return structureStorage; }
 protected:
-    StructureStorage* structureStorage;
+    DataStorage* structureStorage;
 signals:
 
 public slots:

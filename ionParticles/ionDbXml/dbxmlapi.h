@@ -26,7 +26,7 @@
 
 namespace IonDbXml {
 
-class StorageQueryResults;
+class DataQueryResults;
 
 
 class XmlNode {
@@ -39,9 +39,9 @@ public:
     virtual QVector<XmlNode*> &getChildren() = 0;
 };
 
-class StorageValue {
+class DataValue {
 public:
-    virtual ~StorageValue() {}
+    virtual ~DataValue() {}
 
     /// Returns the node name as per the DOM Spec or throws an
     /// XMLExpection if this value is not a node
@@ -53,31 +53,31 @@ public:
 
     /// Returns the parent node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual StorageValue * getParentNode() const = 0;
+    virtual DataValue * getParentNode() const = 0;
 
     /// Returns the first child node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual StorageValue * getFirstChild() const = 0;
+    virtual DataValue * getFirstChild() const = 0;
 
     /// Returns the last child node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual StorageValue * getLastChild() const = 0;
+    virtual DataValue * getLastChild() const = 0;
 
     /// Returns the previous sibling node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual StorageValue * getPreviousSibling() const = 0;
+    virtual DataValue * getPreviousSibling() const = 0;
 
     /// Returns the next sibling node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual StorageValue * getNextSibling() const = 0;
+    virtual DataValue * getNextSibling() const = 0;
 
     /// Returns the attribute nodes if this value is a node
     /// XMLExpection if this value is not a node
-    virtual StorageQueryResults * getAttributes() const = 0;
+    virtual DataQueryResults * getAttributes() const = 0;
 
     /// Returns the owner element if this value is a attribute
     /// XMLExpection if this value is not a attribute
-    virtual StorageValue * getOwnerElement() const = 0;
+    virtual DataValue * getOwnerElement() const = 0;
 
     /** @name Information Methods */
 
@@ -101,9 +101,9 @@ public:
     virtual bool asBoolean() const = 0;
 };
 
-class StorageQueryResults {
+class DataQueryResults {
 public:
-    virtual ~StorageQueryResults() {}
+    virtual ~DataQueryResults() {}
 
     virtual bool next() = 0;
     virtual bool previous() = 0;
@@ -113,10 +113,10 @@ public:
     virtual bool hasPrevious() = 0;
     virtual void reset() = 0;
 
-    virtual StorageValue &value() = 0;
+    virtual DataValue &value() = 0;
 };
 
-class StructureStorage
+class DataStorage
 {
 public:
     virtual void addFile(QString path, int timestamp, XmlNode *root) = 0;
@@ -158,7 +158,7 @@ public:
     /**
      * \brief Retrieve an instance of StructureStorage.
      */
-    virtual StructureStorage *getStorage() = 0;
+    virtual DataStorage *getStorage() = 0;
 };
 
 }

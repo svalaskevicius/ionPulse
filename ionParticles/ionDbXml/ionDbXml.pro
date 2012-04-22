@@ -18,16 +18,20 @@ LIBS += -L/opt/berkeleyDbXml/lib -ldbxml-2.5
 HEADERS += \
     plugin.h \
     dbxmlapi.h \
-    structurestorage.h
+    datastorage.h
 
 
 SOURCES += \
     plugin.cpp \
-    structurestorage.cpp
+    datastorage.cpp
 
 
 target.path += "$${INSTALL_DIR}/plugins/"
 INSTALLS += target
+
+
+
+
 
 
 

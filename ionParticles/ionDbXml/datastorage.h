@@ -21,21 +21,21 @@
 namespace IonDbXml {
 namespace Private {
 
-class StorageValueImpl : public StorageValue {
+class DataValueImpl : public DataValue {
 public:
     DbXml::XmlValue value;
 
-    StorageValueImpl() {}
-    StorageValueImpl(const DbXml::XmlValue &value) : value(value) {}
+    DataValueImpl() {}
+    DataValueImpl(const DbXml::XmlValue &value) : value(value) {}
     QString getNodeName() const {return QString::fromStdString(value.getNodeName());}
     QString getNodeValue() const {return QString::fromStdString(value.getNodeValue());}
-    StorageValue * getParentNode() const {return new StorageValueImpl(value.getParentNode());}
-    StorageValue * getFirstChild() const {return new StorageValueImpl(value.getFirstChild());}
-    StorageValue * getLastChild() const {return new StorageValueImpl(value.getLastChild());}
-    StorageValue * getPreviousSibling() const {return new StorageValueImpl(value.getPreviousSibling());}
-    StorageValue * getNextSibling() const {return new StorageValueImpl(value.getNextSibling());}
-    StorageQueryResults * getAttributes() const;
-    StorageValue * getOwnerElement() const {return new StorageValueImpl(value.getOwnerElement());}
+    DataValue * getParentNode() const {return new DataValueImpl(value.getParentNode());}
+    DataValue * getFirstChild() const {return new DataValueImpl(value.getFirstChild());}
+    DataValue * getLastChild() const {return new DataValueImpl(value.getLastChild());}
+    DataValue * getPreviousSibling() const {return new DataValueImpl(value.getPreviousSibling());}
+    DataValue * getNextSibling() const {return new DataValueImpl(value.getNextSibling());}
+    DataQueryResults * getAttributes() const;
+    DataValue * getOwnerElement() const {return new DataValueImpl(value.getOwnerElement());}
 
     bool isNull() const {return value.isNull();}
     bool isNumber() const {return value.isNumber();}
@@ -49,9 +49,9 @@ public:
     bool asBoolean() const {return value.asBoolean();}
 };
 
-class StorageQueryResultsImpl : public StorageQueryResults {
+class DataQueryResultsImpl : public DataQueryResults {
 public:
-    StorageQueryResultsImpl(const DbXml::XmlResults &results) : results(results) {}
+    DataQueryResultsImpl(const DbXml::XmlResults &results) : results(results) {}
 
     bool next() {return results.next(data.value);}
     bool previous() {return results.previous(data.value);}
@@ -61,13 +61,13 @@ public:
     bool hasPrevious() {return results.hasPrevious();}
     void reset() {return results.reset();}
 
-    StorageValue &value() {return data;}
+    DataValue &value() {return data;}
 private:
-    StorageValueImpl data;
+    DataValueImpl data;
     DbXml::XmlResults results;
 };
 
-class StructureStorageImpl : public StructureStorage
+class DataStorageImpl : public DataStorage
 {
 public:
     void addFile(QString path, int timestamp, XmlNode *root);

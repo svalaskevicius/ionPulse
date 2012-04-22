@@ -6,7 +6,7 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include "structurestorage.h"
+#include "datastorage.h"
 
 #include <stdexcept>
 
@@ -15,13 +15,13 @@ namespace Private {
 
 using namespace DbXml;
 
-StorageQueryResults * StorageValueImpl::getAttributes() const
+DataQueryResults * DataValueImpl::getAttributes() const
 {
-    return new StorageQueryResultsImpl(value.getAttributes());
+    return new DataQueryResultsImpl(value.getAttributes());
 }
 
 
-void StructureStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *node)
+void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *node)
 {
     QByteArray name = node->getName().toAscii();
     XmlNode::AttributesMap &attributes = node->getAttributes();
@@ -42,7 +42,7 @@ void StructureStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlN
     eventWriter.writeEndElement((const unsigned char*)name.constData(), NULL, NULL);
 }
 
-void StructureStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
+void DataStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
 {
     XmlUpdateContext uc = mgr.createUpdateContext();
     XmlDocument doc = mgr.createDocument();
@@ -66,7 +66,7 @@ void StructureStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
 
 }
 
-void StructureStorageImpl::removeFile(QString path)
+void DataStorageImpl::removeFile(QString path)
 {
 }
 

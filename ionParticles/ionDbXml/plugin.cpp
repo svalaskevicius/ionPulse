@@ -11,7 +11,7 @@
 #include <QtPlugin>
 #include "ionCore/shared.h"
 
-#include "structurestorage.h"
+#include "datastorage.h"
 
 namespace IonDbXml {
 namespace Private {
@@ -28,7 +28,7 @@ Plugin::~Plugin()
 
 void Plugin::preLoad()
 {
-    structureStorage = new StructureStorageImpl();
+    structureStorage = new DataStorageImpl();
 }
 
 }
