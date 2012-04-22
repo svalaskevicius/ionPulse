@@ -23,11 +23,12 @@ namespace Private {
 class StructureStorage
 {
 public:
-    StructureStorage();
+    StructureStorage(IonDbXml::DataStorage * dataStorage);
 
     void addFile(QString path, int timestamp, ASTRoot &astRoot);
 protected:
 private:
+    IonDbXml::DataStorage * dataStorage;
 };
 
 

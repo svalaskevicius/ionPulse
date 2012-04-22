@@ -13,7 +13,7 @@ namespace IonPhp {
 namespace Private {
 
 ASTNode::ASTNode(QString name)
-    : lineNr(-1), columnNr(-1), name(name)
+    :  name(name), lineNr(-1), columnNr(-1)
 {
 }
 

@@ -31,7 +31,20 @@ void Plugin::preLoad()
     structureStorage = new DataStorageImpl();
 }
 
+
+void Plugin::registerJsApi(QScriptEngine & jsEngine)
+{
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonDbXml::DataValue>, qObjectPtrFromScriptValue<IonDbXml::DataValue>);
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonDbXml::DataQueryResults>, qObjectPtrFromScriptValue<IonDbXml::DataQueryResults>);
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonDbXml::DataStorage>, qObjectPtrFromScriptValue<IonDbXml::DataStorage>);
+
+    QScriptValue thisPlugin = jsEngine.newQObject(this);
+    jsEngine.globalObject().setProperty("dbxml", thisPlugin);
+}
+
 }
 }
+
+
 
 Q_EXPORT_PLUGIN2 ( ionDbXml, IonDbXml::Private::Plugin )

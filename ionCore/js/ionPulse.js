@@ -31,3 +31,8 @@ editorPlugin.editorOpened.connect(
 
 registerFileHighlighter("text", phpHighlighter);
 registerFileHighlighter("text/php", phpHighlighter);
+
+
+
+
+//dbxml.getStorage().query('for $a in collection()/top_statement_list return dbxml:metadata("dbxml:name", $a)')

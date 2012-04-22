@@ -39,94 +39,102 @@ public:
     virtual QVector<XmlNode*> &getChildren() = 0;
 };
 
-class DataValue {
+class DataValue : public QObject
+{
+    Q_OBJECT
 public:
     virtual ~DataValue() {}
 
     /// Returns the node name as per the DOM Spec or throws an
     /// XMLExpection if this value is not a node
-    virtual QString getNodeName() const = 0;
+    Q_INVOKABLE virtual QString getNodeName() const = 0;
 
     /// Returns the node value as per the DOM Spec or throws an
     /// XMLExpection if this value is not a node
-    virtual QString getNodeValue() const = 0;
+    Q_INVOKABLE virtual QString getNodeValue() const = 0;
 
     /// Returns the parent node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual DataValue * getParentNode() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getParentNode() const = 0;
 
     /// Returns the first child node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual DataValue * getFirstChild() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getFirstChild() const = 0;
 
     /// Returns the last child node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual DataValue * getLastChild() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getLastChild() const = 0;
 
     /// Returns the previous sibling node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual DataValue * getPreviousSibling() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getPreviousSibling() const = 0;
 
     /// Returns the next sibling node if this value is a node
     /// XMLExpection if this value is not a node
-    virtual DataValue * getNextSibling() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getNextSibling() const = 0;
 
     /// Returns the attribute nodes if this value is a node
     /// XMLExpection if this value is not a node
-    virtual DataQueryResults * getAttributes() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataQueryResults * getAttributes() const = 0;
 
     /// Returns the owner element if this value is a attribute
     /// XMLExpection if this value is not a attribute
-    virtual DataValue * getOwnerElement() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getOwnerElement() const = 0;
 
     /** @name Information Methods */
 
     /// Does the value have no value.
-    virtual bool isNull() const = 0;
+    Q_INVOKABLE virtual bool isNull() const = 0;
 
     /// Is the value of the given Type.
-    virtual bool isNumber() const = 0;
-    virtual bool isString() const = 0;
-    virtual bool isBoolean() const = 0;
-    virtual bool isBinary() const = 0;
-    virtual bool isNode() const = 0;
+    Q_INVOKABLE virtual bool isNumber() const = 0;
+    Q_INVOKABLE virtual bool isString() const = 0;
+    Q_INVOKABLE virtual bool isBoolean() const = 0;
+    Q_INVOKABLE virtual bool isBinary() const = 0;
+    Q_INVOKABLE virtual bool isNode() const = 0;
 
     /** @name Accessor Methods */
 
     /// Return the value as a Number.
-    virtual double asNumber() const = 0;
+    Q_INVOKABLE virtual double asNumber() const = 0;
     /// Return the value as a String.
-    virtual QString asString() const = 0;
+    Q_INVOKABLE virtual QString asString() const = 0;
     /// Return the value as a Boolean.
-    virtual bool asBoolean() const = 0;
+    Q_INVOKABLE virtual bool asBoolean() const = 0;
 };
 
-class DataQueryResults {
+class DataQueryResults : public QObject
+{
+    Q_OBJECT
 public:
     virtual ~DataQueryResults() {}
 
-    virtual bool next() = 0;
-    virtual bool previous() = 0;
-    virtual bool peek() = 0;
+    Q_INVOKABLE virtual bool next() = 0;
+    Q_INVOKABLE virtual bool previous() = 0;
+    Q_INVOKABLE virtual bool peek() = 0;
 
-    virtual bool hasNext() = 0;
-    virtual bool hasPrevious() = 0;
-    virtual void reset() = 0;
+    Q_INVOKABLE virtual bool hasNext() = 0;
+    Q_INVOKABLE virtual bool hasPrevious() = 0;
+    Q_INVOKABLE virtual void reset() = 0;
 
-    virtual DataValue &value() = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue *value() = 0;
 };
 
-class DataStorage
+class DataStorage : public QObject
 {
+    Q_OBJECT
 public:
-    virtual void addFile(QString path, int timestamp, XmlNode *root) = 0;
-    virtual void removeFile(QString path) = 0;
+    virtual ~DataStorage() {}
 
-    virtual void beginTransaction() = 0;
-    virtual void commitTransaction() = 0;
-    virtual void rollbackTransaction() = 0;
+    Q_INVOKABLE virtual void addFile(QString path, int timestamp, XmlNode *root) = 0;
+    Q_INVOKABLE virtual void removeFile(QString path) = 0;
+
+    Q_INVOKABLE virtual void beginTransaction() = 0;
+    Q_INVOKABLE virtual void commitTransaction() = 0;
+    Q_INVOKABLE virtual void rollbackTransaction() = 0;
 
     // execute query
+    Q_INVOKABLE virtual IonDbXml::DataQueryResults *query(QString xquery) = 0;
     // prepare query
     // execute prepared query
 };
@@ -158,7 +166,7 @@ public:
     /**
      * \brief Retrieve an instance of StructureStorage.
      */
-    virtual DataStorage *getStorage() = 0;
+    Q_INVOKABLE virtual IonDbXml::DataStorage *getStorage() = 0;
 };
 
 }

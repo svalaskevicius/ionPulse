@@ -6,8 +6,8 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#ifndef STRUCTURESTORAGE_H
-#define STRUCTURESTORAGE_H
+#ifndef DATASTORAGE_H
+#define DATASTORAGE_H
 
 #include <QString>
 #include <QMap>
@@ -17,6 +17,7 @@
 #include "dbxmlapi.h"
 
 #include <dbxml/DbXml.hpp>
+#include <ionCore/shared.h>
 
 namespace IonDbXml {
 namespace Private {
@@ -51,7 +52,9 @@ public:
 
 class DataQueryResultsImpl : public DataQueryResults {
 public:
-    DataQueryResultsImpl(const DbXml::XmlResults &results) : results(results) {}
+    DataQueryResultsImpl(const DbXml::XmlResults &results) : results(results)
+    {
+    }
 
     bool next() {return results.next(data.value);}
     bool previous() {return results.previous(data.value);}
@@ -61,7 +64,7 @@ public:
     bool hasPrevious() {return results.hasPrevious();}
     void reset() {return results.reset();}
 
-    DataValue &value() {return data;}
+    DataValue *value() {return &data;}
 private:
     DataValueImpl data;
     DbXml::XmlResults results;
@@ -72,29 +75,61 @@ class DataStorageImpl : public DataStorage
 public:
     void addFile(QString path, int timestamp, XmlNode *root);
     void removeFile(QString path);
-    void executeXQuery(QString query) {
-
-    }
 
     void beginTransaction() {}
     void commitTransaction() {}
     void rollbackTransaction() {}
 
+    IonDbXml::DataQueryResults *query(QString xquery)
+    {
+//        XmlQueryContext context = xmlManager.createQueryContext();
+//        XmlQueryExpression qe = xmlManager.prepare(q, context);
+//        XmlResults results = qe.execute(context);
+        DEBUG_MSG("cont name: " << QString::fromStdString(getXmlContainer("files")->getName()));
+        DbXml::XmlQueryContext context = xmlManager.createQueryContext();
+        DEBUG_MSG("ctx created");
+        context.setDefaultCollection("files");
+        DEBUG_MSG("collection set");
+        try {
+            DbXml::XmlResults res = xmlManager.query(xquery.toStdString(), context);
+            DEBUG_MSG("got results");
+            return (IonDbXml::DataQueryResults *) new DataQueryResultsImpl(res);
+        } catch (std::exception &e) {
+            DEBUG_MSG("error "<<e.what());
+        } catch (...) {
+            DEBUG_MSG("fff");
+        }
+return NULL;
+        //todo: use default context
+//        while (results.hasNext()) {
+//        XmlValue xmlValue = results.next();
+//        System.out.println(xmlValue.asString());
+//        }
+    }
+
 protected:
-    DbXml::XmlManager mgr;
+    DbXml::XmlManager xmlManager;
     DbXml::XmlContainer *getXmlContainer(QString name) {
         name.replace("/", "").replace("\\", "");
         QMap<QString, DbXml::XmlContainer>::iterator it = xmlContainers.find(name);
         if (xmlContainers.end() == it) {
             QString path = getDbDir() + name + ".dbxml";
-            if (mgr.existsContainer(path.toStdString())) {
-                return &xmlContainers.insert(name, mgr.openContainer(path.toStdString())).value();
+            if (xmlManager.existsContainer(path.toStdString())) {
+                DbXml::XmlContainer container = xmlManager.openContainer(path.toStdString());
+                container.addAlias("files");
+                return &xmlContainers.insert(name, container).value();
             } else {
-                return &xmlContainers.insert(name, mgr.createContainer(path.toStdString())).value();
+                DbXml::XmlContainer container = xmlManager.createContainer(path.toStdString());
+                container.addAlias("files");
+                return &xmlContainers.insert(name, container).value();
             }
         } else {
             return &it.value();
         }
+    }
+    QString getCollectionPath(QString name) {
+        name.replace("/", "").replace("\\", "");
+        return getDbDir() + name + ".dbxml";
     }
     QString getDbDir() {
          QString path = QDir::homePath() + "/.ionPulse/";
@@ -112,4 +147,4 @@ private:
 }
 }
 
-#endif // STRUCTURESTORAGE_H
+#endif // DATASTORAGE_H

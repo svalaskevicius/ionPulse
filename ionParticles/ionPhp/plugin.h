@@ -38,6 +38,7 @@ public:
         QList<QString> ret;
         ret.append(IonEditor::EditorPlugin::name());
         ret.append(IonProject::ProjectPlugin::name());
+        ret.append(IonDbXml::DbXmlPlugin::name());
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
@@ -59,9 +60,13 @@ protected:
         QSharedPointer<IonProject::TreeModelSource> operator()(QString dirname);
     };
 
+private:
+    IonEditor::EditorPlugin *editorPlugin;
+    IonProject::ProjectPlugin *projectPlugin;
+    IonDbXml::DbXmlPlugin *dbXmlPlugin;
+
     QSharedPointer<StructureStorage> structureStorage;
-    void addEditorParent(IonEditor::EditorPlugin *editorPlugin);
-    void addProjectParent(IonProject::ProjectPlugin *projectPlugin);
+
 signals:
 
 public slots:

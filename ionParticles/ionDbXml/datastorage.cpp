@@ -44,8 +44,8 @@ void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *
 
 void DataStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
 {
-    XmlUpdateContext uc = mgr.createUpdateContext();
-    XmlDocument doc = mgr.createDocument();
+    XmlUpdateContext uc = xmlManager.createUpdateContext();
+    XmlDocument doc = xmlManager.createDocument();
     doc.setName(path.toStdString());
 
     XmlEventWriter &eventWriter = getXmlContainer("files")
