@@ -74,9 +74,9 @@ QString getBaseDir()
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    IonCore::Private::MainWindow mainWindow;
-    IonCore::Private::PluginLoader plugins;
     IonCore::Private::JsEngine jsEngine;
+    IonCore::Private::PluginLoader plugins;
+    IonCore::Private::MainWindow mainWindow;
 
     try {
         QString baseDir = IonCore::Private::getBaseDir();
