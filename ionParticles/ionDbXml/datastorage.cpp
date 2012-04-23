@@ -9,6 +9,7 @@
 #include "datastorage.h"
 
 #include <stdexcept>
+#include <QUrl>
 
 namespace IonDbXml {
 namespace Private {
@@ -46,6 +47,9 @@ void DataStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
 {
     XmlUpdateContext uc = xmlManager.createUpdateContext();
     XmlDocument doc = xmlManager.createDocument();
+
+    path = QString(QUrl(path).toEncoded()).replace("/","%47");
+
     doc.setName(path.toStdString());
 
     XmlEventWriter &eventWriter = getXmlContainer("files")
