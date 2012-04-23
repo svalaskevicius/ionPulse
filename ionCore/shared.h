@@ -44,7 +44,7 @@
 template <typename type>
 QScriptValue qObjectPtrToScriptValue(QScriptEngine *engine, type* const &in)
 {
-    return engine->newQObject(in);
+    return engine->newQObject(in, QScriptEngine::AutoOwnership);
 }
 
 template <typename type>
