@@ -45,9 +45,9 @@ public:
     bool isBinary() const {return value.isBinary();}
     bool isNode() const {return value.isNode();}
 
-    double asNumber() const {return value.asNumber();}
-    QString asString() const {return QString::fromStdString(value.asString());}
-    bool asBoolean() const {return value.asBoolean();}
+    double toNumber() const {return value.asNumber();}
+    QString toString() const {return QString::fromStdString(value.asString());}
+    bool toBoolean() const {return value.asBoolean();}
 };
 
 class DataQueryResultsImpl : public DataQueryResults {
@@ -73,74 +73,37 @@ private:
 class DataStorageImpl : public DataStorage
 {
 public:
+    DataStorageImpl() {
+        getXmlContainer("files");
+        getXmlContainer("filetimes");
+        default_query_context = xmlManager.createQueryContext();
+        default_query_context.setDefaultCollection("files");
+    }
+
     void addFile(QString path, int timestamp, XmlNode *root);
+    uint getTimeStamp(QString path);
     void removeFile(QString path);
 
     void beginTransaction() {}
     void commitTransaction() {}
     void rollbackTransaction() {}
 
-    IonDbXml::DataQueryResults *query(QString xquery)
-    {
-//        XmlQueryContext context = xmlManager.createQueryContext();
-//        XmlQueryExpression qe = xmlManager.prepare(q, context);
-//        XmlResults results = qe.execute(context);
-        DEBUG_MSG("cont name: " << QString::fromStdString(getXmlContainer("files")->getName()));
-        DbXml::XmlQueryContext context = xmlManager.createQueryContext();
-        DEBUG_MSG("ctx created");
-        context.setDefaultCollection("files");
-        DEBUG_MSG("collection set");
-        try {
-            DbXml::XmlResults res = xmlManager.query(xquery.toStdString(), context);
-            DEBUG_MSG("got results");
-            return (IonDbXml::DataQueryResults *) new DataQueryResultsImpl(res);
-        } catch (std::exception &e) {
-            DEBUG_MSG("error "<<e.what());
-        } catch (...) {
-            DEBUG_MSG("fff");
-        }
-return NULL;
-        //todo: use default context
-//        while (results.hasNext()) {
-//        XmlValue xmlValue = results.next();
-//        System.out.println(xmlValue.asString());
-//        }
-    }
+    QString getLastError() { return lastError; }
+
+    IonDbXml::DataQueryResults *query(QString xquery);
 
 protected:
     DbXml::XmlManager xmlManager;
-    DbXml::XmlContainer *getXmlContainer(QString name) {
-        name.replace("/", "").replace("\\", "");
-        QMap<QString, DbXml::XmlContainer>::iterator it = xmlContainers.find(name);
-        if (xmlContainers.end() == it) {
-            QString path = getDbDir() + name + ".dbxml";
-            if (xmlManager.existsContainer(path.toStdString())) {
-                DbXml::XmlContainer container = xmlManager.openContainer(path.toStdString());
-                container.addAlias("files");
-                return &xmlContainers.insert(name, container).value();
-            } else {
-                DbXml::XmlContainer container = xmlManager.createContainer(path.toStdString());
-                container.addAlias("files");
-                return &xmlContainers.insert(name, container).value();
-            }
-        } else {
-            return &it.value();
-        }
-    }
-    QString getCollectionPath(QString name) {
-        name.replace("/", "").replace("\\", "");
-        return getDbDir() + name + ".dbxml";
-    }
-    QString getDbDir() {
-         QString path = QDir::homePath() + "/.ionPulse/";
-         if (!QDir::home().exists(path)) {
-             QDir::home().mkdir(path);
-         }
-         return path;
-    }
+    DbXml::XmlQueryContext default_query_context;
+    QString lastError;
+
+    DbXml::XmlContainer *getXmlContainer(QString name);
+    QString getCollectionPath(QString name);
+    QString getDbDir();
 private:
     QMap<QString, DbXml::XmlContainer> xmlContainers;
     void _writeEventsForNode(DbXml::XmlEventWriter &eventWriter, XmlNode *node);
+    QString pathToDocumentUri(QString path);
 };
 
 

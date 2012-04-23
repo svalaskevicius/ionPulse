@@ -96,11 +96,11 @@ public:
     /** @name Accessor Methods */
 
     /// Return the value as a Number.
-    Q_INVOKABLE virtual double asNumber() const = 0;
+    Q_INVOKABLE virtual double toNumber() const = 0;
     /// Return the value as a String.
-    Q_INVOKABLE virtual QString asString() const = 0;
+    Q_INVOKABLE virtual QString toString() const = 0;
     /// Return the value as a Boolean.
-    Q_INVOKABLE virtual bool asBoolean() const = 0;
+    Q_INVOKABLE virtual bool toBoolean() const = 0;
 };
 
 class DataQueryResults : public QObject
@@ -127,6 +127,7 @@ public:
     virtual ~DataStorage() {}
 
     Q_INVOKABLE virtual void addFile(QString path, int timestamp, XmlNode *root) = 0;
+    Q_INVOKABLE virtual uint getTimeStamp(QString path) = 0;
     Q_INVOKABLE virtual void removeFile(QString path) = 0;
 
     Q_INVOKABLE virtual void beginTransaction() = 0;
@@ -137,6 +138,7 @@ public:
     Q_INVOKABLE virtual IonDbXml::DataQueryResults *query(QString xquery) = 0;
     // prepare query
     // execute prepared query
+    Q_INVOKABLE virtual QString getLastError() = 0;
 };
 
 

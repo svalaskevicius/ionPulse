@@ -48,9 +48,9 @@ void DataStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
     XmlUpdateContext uc = xmlManager.createUpdateContext();
     XmlDocument doc = xmlManager.createDocument();
 
-    path = QString(QUrl(path).toEncoded()).replace("/","%47");
+    QString uri = pathToDocumentUri(path);
 
-    doc.setName(path.toStdString());
+    doc.setName(uri.toStdString());
 
     XmlEventWriter &eventWriter = getXmlContainer("files")
                                     ->putDocumentAsEventWriter(
@@ -63,15 +63,77 @@ void DataStorageImpl::addFile(QString path, int timestamp, XmlNode *root)
     eventWriter.close();
 
     getXmlContainer("filetimes")->putDocument(
-        path.toStdString(),
+        uri.toStdString(),
         QString("<filetime>%1</filetime>").arg(timestamp).toStdString(),
         uc
     );
 
 }
 
+uint DataStorageImpl::getTimeStamp(QString path)
+{
+    DataQueryResults *pRet = query("doc(\"dbxml:/filetimes/"+pathToDocumentUri(path)+"\")/filetime/text()");
+    if (!pRet) {
+        return 0;
+    }
+    QScopedPointer<DataQueryResults> ret(pRet);
+    if (ret->next()) {
+        return ret->value()->toNumber();
+    }
+    return 0;
+}
+
 void DataStorageImpl::removeFile(QString path)
 {
+}
+
+IonDbXml::DataQueryResults *DataStorageImpl::query(QString xquery)
+{
+//        XmlQueryContext context = xmlManager.createQueryContext();
+//        XmlQueryExpression qe = xmlManager.prepare(q, context);
+//        XmlResults results = qe.execute(context);
+    try {
+        DbXml::XmlResults res = xmlManager.query(xquery.toStdString(), default_query_context);
+        return (IonDbXml::DataQueryResults *) new DataQueryResultsImpl(res);
+    } catch (std::exception &e) {
+        lastError = e.what();
+    }
+    return NULL;
+}
+
+
+
+
+DbXml::XmlContainer *DataStorageImpl::getXmlContainer(QString name) {
+    QMap<QString, DbXml::XmlContainer>::iterator it = xmlContainers.find(name);
+    if (xmlContainers.end() == it) {
+        QString path = getDbDir() + name + ".dbxml";
+        if (xmlManager.existsContainer(path.toStdString())) {
+            DbXml::XmlContainer container = xmlManager.openContainer(path.toStdString());
+            container.addAlias(name.toStdString());
+            return &xmlContainers.insert(name, container).value();
+        } else {
+            DbXml::XmlContainer container = xmlManager.createContainer(path.toStdString());
+            container.addAlias(name.toStdString());
+            return &xmlContainers.insert(name, container).value();
+        }
+    } else {
+        return &it.value();
+    }
+}
+QString DataStorageImpl::getCollectionPath(QString name) {
+    name.replace("/", "").replace("\\", "");
+    return getDbDir() + name + ".dbxml";
+}
+QString DataStorageImpl::getDbDir() {
+     QString path = QDir::homePath() + "/.ionPulse/";
+     if (!QDir::home().exists(path)) {
+         QDir::home().mkdir(path);
+     }
+     return path;
+}
+QString DataStorageImpl::pathToDocumentUri(QString path) {
+    return QString(QUrl(path).toEncoded()).replace("/","%47");
 }
 
 }

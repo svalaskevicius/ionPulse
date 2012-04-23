@@ -37,3 +37,4 @@ registerFileHighlighter("text/php", phpHighlighter);
 
 //a = dbxml.getStorage().query('for $a in collection()/top_statement_list return dbxml:metadata("dbxml:name", $a)')
 //b = dbxml.getStorage().query('for $a in doc("dbxml:/files/%47Volumes%47Disk%20Image%47Disclosure_Varnish%47tests%47features%47bootstrap%47FeatureContext.php")/top_statement_list return dbxml:metadata("dbxml:name", $a)')
+//    dbxml.getStorage().getTimeStamp("/Volumes/Disk Image/Disclosure_Varnish/tests/features/bootstrap/FeatureContext.php")
