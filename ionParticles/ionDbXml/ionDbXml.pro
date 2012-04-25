@@ -13,7 +13,7 @@ VERSION = 0.1.0
 QT       += core script
 TARGET = ionDbXml
 INCLUDEPATH += ../.. /opt/berkeleyDbXml/include
-LIBS += -L/opt/berkeleyDbXml/lib -ldbxml-2.5
+LIBS += -L/opt/berkeleyDbXml/lib -ldbxml-2.5 -ldb-4.8
 
 HEADERS += \
     plugin.h \

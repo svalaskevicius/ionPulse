@@ -137,8 +137,13 @@ public:
     // execute query
     Q_INVOKABLE virtual IonDbXml::DataQueryResults *query(QString xquery) = 0;
     // prepare query
+    Q_INVOKABLE virtual int prepareQuery(QString xquery, QMap<QString,QString> params) = 0;
     // execute prepared query
+    Q_INVOKABLE virtual IonDbXml::DataQueryResults *executePrepared(int queryId, const QMap<QString,QString> &params) = 0;
+
     Q_INVOKABLE virtual QString getLastError() = 0;
+
+    Q_INVOKABLE virtual QString pathToDocumentUri(QString path) = 0;
 };
 
 

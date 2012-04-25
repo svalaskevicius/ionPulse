@@ -49,48 +49,41 @@ void PhpTreeModelSourceDecorator::decorateNode(IonProject::TreeItem *node)
 
 void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QString path)
 {
-    int fileId = getStoredFile(path);
-    if (-1 != fileId) {
-        return;
-    }
     try {
-//        if (node->childrenCount()) {
-//            node->clearChildren();
-//        }
+        if (node->childrenCount()) {
+            node->clearChildren();
+        }
 
-//        storage.beginTransaction();
-        storeFile(path);
-//        storage.commitTransaction();
+        updateFile(path);
+
+        QScopedPointer<IonDbXml::DataQueryResults> q(storage.getFileClasses(path));
+        while (q->next()) {
+            QString className = q->value()->getFirstChild()->getFirstChild()->toString();
+            IonProject::TreeItem* classNode = treeItemFactory->createTreeItem("phpclass", className, className, path, q->value()->getLastChild()->getFirstChild()->toNumber(), node);
+            node->appendChild(classNode);
+
+            QScopedPointer<IonDbXml::DataQueryResults> qm(storage.getClassMethods(path, className));
+            while (qm->next()) {
+                QString methodName = qm->value()->getFirstChild()->getFirstChild()->toString();
+                classNode->appendChild(treeItemFactory->createTreeItem("phpmethod", methodName, className+"::"+methodName, path, qm->value()->getLastChild()->getFirstChild()->toNumber(), classNode));
+            }
+        }
     } catch (std::exception &err) {
-        DEBUG_MSG(err.what());// << phpParser().parseFile(path)->dumpXml());
-//        storage.rollbackTransaction();
+        DEBUG_MSG(err.what());
         //TODO: mark node red
     } catch (...) {
         DEBUG_MSG("cought unknown exception.");
-//        storage.rollbackTransaction();
     }
 }
 
-int PhpTreeModelSourceDecorator::getStoredFile(QString path)
+void PhpTreeModelSourceDecorator::updateFile(QString path)
 {
-//    QSharedPointer<QSqlQuery> fileQuery = storage.getFile(path);
-//    if (fileQuery->first()) {
-//        unsigned int mtimeStored = fileQuery->value(1).toInt();
-//        QFileInfo fileInfo(path);
-//        if (fileInfo.lastModified().toTime_t() > mtimeStored) {
-//            storage.removeFile(fileQuery->value(0).toInt());
-//            return -1;
-//        }
-//        return fileQuery->value(0).toInt();
-//    }
-    return -1;
-}
-
-void PhpTreeModelSourceDecorator::storeFile(QString path)
-{
+    uint mtimeStored = storage.getTimeStamp(path);
     QFileInfo fileInfo(path);
-    QSharedPointer<ASTRoot> fileAst = phpParser().parseFile(path);
-    storage.addFile(path, fileInfo.lastModified().toTime_t(), *fileAst);
+    if (fileInfo.lastModified().toTime_t() > mtimeStored) {
+        QSharedPointer<ASTRoot> fileAst = phpParser().parseFile(path);
+        storage.addFile(path, fileInfo.lastModified().toTime_t(), *fileAst);
+    }
 }
 
 

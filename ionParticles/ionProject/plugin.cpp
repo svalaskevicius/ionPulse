@@ -57,7 +57,9 @@ void Plugin::postLoad()
 
 void Plugin::onNewProject()
 {
-    QString dir = QFileDialog::getExistingDirectory(mainWindow, tr("Open Directory"));
+    QString dir =
+            // "/Users/svalaskevicius/csDisk/propular/cms";
+            QFileDialog::getExistingDirectory(mainWindow, tr("Open Directory"));
     if (dir.length()) {
         getProjectFileTreeModel()->setDirectoryTreeSource(getTreeModelSourceFactory()(dir));
     }

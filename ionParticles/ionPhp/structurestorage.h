@@ -26,9 +26,13 @@ public:
     StructureStorage(IonDbXml::DataStorage * dataStorage);
 
     void addFile(QString path, int timestamp, ASTRoot &astRoot);
+    uint getTimeStamp(QString path);
+    IonDbXml::DataQueryResults *getFileClasses(QString path);
+    IonDbXml::DataQueryResults *getClassMethods(QString path, QString className);
 protected:
 private:
     IonDbXml::DataStorage * dataStorage;
+    int classQueryId, methodQueryId;
 };
 
 

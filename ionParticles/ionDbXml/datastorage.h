@@ -74,12 +74,44 @@ class DataStorageImpl : public DataStorage
 {
 public:
     DataStorageImpl() {
-        getXmlContainer("files");
-        getXmlContainer("filetimes");
-        default_query_context = xmlManager.createQueryContext();
+        u_int32_t flags = (/*DB_RECOVER|*/DB_CREATE|DB_INIT_LOCK|DB_INIT_LOG|DB_INIT_MPOOL|DB_PRIVATE);//|DB_INIT_TXN);
+        DB_ENV *bdb_env;
+
+        int ret = db_env_create(&bdb_env, flags);
+        if (ret) {
+            throw std::runtime_error(QString("Environment open failed: %1").arg(db_strerror(ret)).toStdString());
+        }
+        bdb_env->set_cachesize(bdb_env, 0, 1024*1024*1024, 1);
+        bdb_env->set_errpfx(bdb_env, "BDB XML");
+        bdb_env->set_errfile(bdb_env, stderr);
+        bdb_env->mutex_set_increment(bdb_env, 5000);
+        //bdb_env->open(bdb_env, getDbDir().toAscii().constData(), flags, 0);
+        bdb_env->open(bdb_env, NULL, flags, 0);
+        uint iii;
+        DEBUG_MSG(bdb_env->mutex_get_max(bdb_env, &iii));
+        DEBUG_MSG(iii);
+
+        xmlManager = new DbXml::XmlManager(bdb_env, DbXml::DBXML_ADOPT_DBENV);
+
+        DbXml::XmlUpdateContext up = xmlManager->createUpdateContext();
+        getXmlContainer("files")->setAutoIndexing(false, up);
+        getXmlContainer("filetimes")->setAutoIndexing(false, up);
+
+        default_query_context = xmlManager->createQueryContext();
+        default_query_context.setEvaluationType(DbXml::XmlQueryContext::Lazy);
         default_query_context.setDefaultCollection("files");
+
+        QMap<QString, QString> p;
+        p["document"] = "";
+        timeStampQueryId = this->prepareQuery(
+                        "doc($document)/filetime/text()"
+                    ,p);
+
     }
 
+    ~DataStorageImpl() {
+        delete xmlManager;
+    }
     void addFile(QString path, int timestamp, XmlNode *root);
     uint getTimeStamp(QString path);
     void removeFile(QString path);
@@ -91,11 +123,17 @@ public:
     QString getLastError() { return lastError; }
 
     IonDbXml::DataQueryResults *query(QString xquery);
+    int prepareQuery(QString xquery, QMap<QString,QString> params);
+    IonDbXml::DataQueryResults *executePrepared(int queryId, const QMap<QString,QString> &params);
+
+    QString pathToDocumentUri(QString path);
 
 protected:
-    DbXml::XmlManager xmlManager;
+    QVector<DbXml::XmlQueryExpression> preparedQueries;
+    DbXml::XmlManager *xmlManager;
     DbXml::XmlQueryContext default_query_context;
     QString lastError;
+    int timeStampQueryId;
 
     DbXml::XmlContainer *getXmlContainer(QString name);
     QString getCollectionPath(QString name);
@@ -103,7 +141,6 @@ protected:
 private:
     QMap<QString, DbXml::XmlContainer> xmlContainers;
     void _writeEventsForNode(DbXml::XmlEventWriter &eventWriter, XmlNode *node);
-    QString pathToDocumentUri(QString path);
 };
 
 
