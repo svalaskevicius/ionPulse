@@ -37,7 +37,7 @@ void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *
     }
 
     if (node->getText().length()) {
-        eventWriter.writeText(XmlEventReader::CDATA, (const unsigned char*)node->getText().toAscii().constData(), node->getText().length());
+        eventWriter.writeText(XmlEventReader::Characters, (const unsigned char*)node->getText().toAscii().constData(), node->getText().length());
     }
 
     eventWriter.writeEndElement((const unsigned char*)name.constData(), NULL, NULL);
