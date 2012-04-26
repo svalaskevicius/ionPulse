@@ -35,12 +35,13 @@ phpHighlighter = (function () {
                 "php/comment_ml": this.regexTransition(/\/\*/g, true),
                 "php/string_dq": this.regexTransition(/"/g, true),
                 "php/string_sq": this.regexTransition(/'/g, true),
-                "php/comment_sl": this.regexTransition(/\/\/.*/g, true),
+                "php/comment_sl": this.regexTransition(/\/\//g, true),
             },
             "php/comment_ml": {
                 "php": this.regexTransition(/\*\//g, false),
             },
             "php/comment_sl": {
+                "html": this.regexTransition(/\?>/g, false),
                 "php": this.regexTransition(/$/g, false),
             },
             "php/string_dq": {
