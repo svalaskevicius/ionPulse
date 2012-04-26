@@ -96,6 +96,7 @@ public:
         DbXml::XmlUpdateContext up = xmlManager->createUpdateContext();
         getXmlContainer("files")->setAutoIndexing(false, up);
         getXmlContainer("filetimes")->setAutoIndexing(false, up);
+        getXmlContainer("files")->addIndex("", "string", "edge-element-equality-string", up);
 
         default_query_context = xmlManager->createQueryContext();
         default_query_context.setEvaluationType(DbXml::XmlQueryContext::Lazy);

@@ -19,12 +19,12 @@ StructureStorage::StructureStorage(IonDbXml::DataStorage * dataStorage) : dataSt
     p["document"] = "";
     p["className"] = "";
     classQueryId = dataStorage->prepareQuery(
-                    QString("for $x in doc($document)//class_declaration")
-                    + " return <ret><name>{ string($x/string) }</name><line>{ string($x/class/@lineNr) }</line></ret>"
+                    "for $x in doc($document)//class_declaration"
+                    " return <ret><name>{ string($x/string) }</name><line>{ string($x/class/@lineNr) }</line></ret>"
                 ,p);
     methodQueryId = dataStorage->prepareQuery(
-                    QString("for $x in doc($document)//class_declaration/string[text()=$className]/..//METHOD/string")
-                    + " return <ret><name>{ string($x) }</name><line>{ string($x/@lineNr) }</line></ret>"
+                    "for $x in doc($document)//class_declaration[string=$className]//METHOD/string"
+                    " return <ret><name>{ string($x) }</name><line>{ string($x/@lineNr) }</line></ret>"
                ,p );
 }
 
