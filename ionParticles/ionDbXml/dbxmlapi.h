@@ -55,31 +55,31 @@ public:
 
     /// Returns the parent node if this value is a node
     /// XMLExpection if this value is not a node
-    Q_INVOKABLE virtual IonDbXml::DataValue * getParentNode() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getParentNode() = 0;
 
     /// Returns the first child node if this value is a node
     /// XMLExpection if this value is not a node
-    Q_INVOKABLE virtual IonDbXml::DataValue * getFirstChild() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getFirstChild() = 0;
 
     /// Returns the last child node if this value is a node
     /// XMLExpection if this value is not a node
-    Q_INVOKABLE virtual IonDbXml::DataValue * getLastChild() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getLastChild() = 0;
 
     /// Returns the previous sibling node if this value is a node
     /// XMLExpection if this value is not a node
-    Q_INVOKABLE virtual IonDbXml::DataValue * getPreviousSibling() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getPreviousSibling() = 0;
 
     /// Returns the next sibling node if this value is a node
     /// XMLExpection if this value is not a node
-    Q_INVOKABLE virtual IonDbXml::DataValue * getNextSibling() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getNextSibling() = 0;
 
     /// Returns the attribute nodes if this value is a node
     /// XMLExpection if this value is not a node
-    Q_INVOKABLE virtual IonDbXml::DataQueryResults * getAttributes() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataQueryResults * getAttributes() = 0;
 
     /// Returns the owner element if this value is a attribute
     /// XMLExpection if this value is not a attribute
-    Q_INVOKABLE virtual IonDbXml::DataValue * getOwnerElement() const = 0;
+    Q_INVOKABLE virtual IonDbXml::DataValue * getOwnerElement() = 0;
 
     /** @name Information Methods */
 

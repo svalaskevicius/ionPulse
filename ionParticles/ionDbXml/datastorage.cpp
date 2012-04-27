@@ -10,15 +10,18 @@
 
 #include <stdexcept>
 #include <QUrl>
+#include <ionCore/shared.h>
 
 namespace IonDbXml {
 namespace Private {
 
 using namespace DbXml;
 
-DataQueryResults * DataValueImpl::getAttributes() const
+DataQueryResults * DataValueImpl::getAttributes()
 {
-    return new DataQueryResultsImpl(value.getAttributes());
+    DataQueryResults *ret = new DataQueryResultsImpl(value.getAttributes());
+    ret->setParent(this);
+    return ret;
 }
 
 

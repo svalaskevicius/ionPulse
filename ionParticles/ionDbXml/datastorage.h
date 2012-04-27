@@ -30,13 +30,13 @@ public:
     DataValueImpl(const DbXml::XmlValue &value) : value(value) {}
     QString getNodeName() const {return QString::fromStdString(value.getNodeName());}
     QString getNodeValue() const {return QString::fromStdString(value.getNodeValue());}
-    DataValue * getParentNode() const {return new DataValueImpl(value.getParentNode());}
-    DataValue * getFirstChild() const {return new DataValueImpl(value.getFirstChild());}
-    DataValue * getLastChild() const {return new DataValueImpl(value.getLastChild());}
-    DataValue * getPreviousSibling() const {return new DataValueImpl(value.getPreviousSibling());}
-    DataValue * getNextSibling() const {return new DataValueImpl(value.getNextSibling());}
-    DataQueryResults * getAttributes() const;
-    DataValue * getOwnerElement() const {return new DataValueImpl(value.getOwnerElement());}
+    DataValue * getParentNode() {DataValue *ret = new DataValueImpl(value.getParentNode()); ret->setParent(this); return ret;}
+    DataValue * getFirstChild() {DataValue *ret = new DataValueImpl(value.getFirstChild()); ret->setParent(this); return ret;}
+    DataValue * getLastChild() {DataValue *ret = new DataValueImpl(value.getLastChild()); ret->setParent(this); return ret;}
+    DataValue * getPreviousSibling() {DataValue *ret = new DataValueImpl(value.getPreviousSibling()); ret->setParent(this); return ret;}
+    DataValue * getNextSibling() {DataValue *ret = new DataValueImpl(value.getNextSibling()); ret->setParent(this); return ret;}
+    DataQueryResults * getAttributes();
+    DataValue * getOwnerElement() {DataValue *ret = new DataValueImpl(value.getOwnerElement()); ret->setParent(this); return ret;}
 
     bool isNull() const {return value.isNull();}
     bool isNumber() const {return value.isNumber();}
