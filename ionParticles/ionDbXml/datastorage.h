@@ -97,7 +97,11 @@ public:
     void addIndex(QString container, QString node, QString index);
 
 protected:
-    QVector<DbXml::XmlQueryExpression> preparedQueries;
+    struct PreparedQuery {
+        DbXml::XmlQueryExpression query;
+        DbXml::XmlQueryContext ctx;
+    };
+    QVector<QSharedPointer<PreparedQuery> > preparedQueries;
     DbXml::XmlManager *xmlManager;
     DbXml::XmlQueryContext default_query_context;
     QString lastError;

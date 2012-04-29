@@ -190,11 +190,14 @@ QString DataStorageImpl::pathToDocumentUri(QString path) {
 int DataStorageImpl::prepareQuery(QString xquery, QMap<QString,QString> params)
 {
     try {
-        DbXml::XmlQueryContext ctx = default_query_context;
+        PreparedQuery *queryInfo = new PreparedQuery();
+        queryInfo->ctx = default_query_context;
         for (QMap<QString,QString>::const_iterator it = params.begin(); it != params.end(); it++) {
-            ctx.setVariableValue(it.key().toStdString(), it.value().toStdString());
+            queryInfo->ctx.setVariableValue(it.key().toStdString(), it.value().toStdString());
         }
-        preparedQueries.push_back(xmlManager->prepare(xquery.toStdString(), ctx));
+        queryInfo->query = xmlManager->prepare(xquery.toStdString(), queryInfo->ctx);
+        preparedQueries.push_back(QSharedPointer<PreparedQuery>(queryInfo));
+        DEBUG_MSG( QString::fromStdString(preparedQueries.back()->query.getQueryPlan()) );
         return preparedQueries.count() - 1;
     } catch (std::exception &e) {
         lastError = e.what();
@@ -205,11 +208,11 @@ int DataStorageImpl::prepareQuery(QString xquery, QMap<QString,QString> params)
 IonDbXml::DataQueryResults *DataStorageImpl::executePrepared(int queryId, const QMap<QString,QString> &params)
 {
     try {
-        DbXml::XmlQueryContext ctx = default_query_context;
+        QSharedPointer<PreparedQuery> &queryInfo = preparedQueries[queryId];
         for (QMap<QString,QString>::const_iterator it = params.begin(); it != params.end(); it++) {
-            ctx.setVariableValue(it.key().toStdString(), it.value().toStdString());
+            queryInfo->ctx.setVariableValue(it.key().toStdString(), it.value().toStdString());
         }
-        return (IonDbXml::DataQueryResults *) new DataQueryResultsImpl(preparedQueries[queryId].execute(ctx));
+        return (IonDbXml::DataQueryResults *) new DataQueryResultsImpl(queryInfo->query.execute(queryInfo->ctx));
     } catch (std::exception &e) {
         lastError = e.what();
         DEBUG_MSG("failed to execute prepared: " << lastError);
