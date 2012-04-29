@@ -144,6 +144,8 @@ public:
     Q_INVOKABLE virtual QString getLastError() = 0;
 
     Q_INVOKABLE virtual QString pathToDocumentUri(QString path) = 0;
+
+    Q_INVOKABLE virtual void addIndex(QString container, QString node, QString index) = 0;
 };
 
 

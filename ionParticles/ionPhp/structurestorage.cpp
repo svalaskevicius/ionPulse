@@ -15,6 +15,13 @@ namespace Private {
 
 StructureStorage::StructureStorage(IonDbXml::DataStorage * dataStorage) : dataStorage(dataStorage)
 {
+    dataStorage->addIndex("files", "string", "edge-element-presence-none");
+    dataStorage->addIndex("files", "string", "edge-element-equality-string");
+    dataStorage->addIndex("files", "lineNr", "node-attribute-presence-none");
+    dataStorage->addIndex("files", "class_declaration", "node-element-presence-none");
+    dataStorage->addIndex("files", "METHOD", "node-element-presence-none");
+
+
     QMap<QString, QString> p;
     p["document"] = "";
     p["className"] = "";

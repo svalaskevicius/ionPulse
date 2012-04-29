@@ -25,6 +25,48 @@ DataQueryResults * DataValueImpl::getAttributes()
 }
 
 
+DataStorageImpl::DataStorageImpl() {
+    u_int32_t flags = (DB_CREATE|DB_INIT_LOCK|DB_INIT_LOG|DB_INIT_MPOOL|DB_PRIVATE);
+    DB_ENV *bdb_env;
+
+    int ret = db_env_create(&bdb_env, flags);
+    if (ret) {
+        throw std::runtime_error(QString("Environment open failed: %1").arg(db_strerror(ret)).toStdString());
+    }
+
+    bdb_env->set_cachesize(bdb_env, 0, 1024*1024*1024, 1);
+    bdb_env->set_errpfx(bdb_env, "BDB XML");
+    bdb_env->set_errfile(bdb_env, stderr);
+    bdb_env->mutex_set_increment(bdb_env, 5000);
+    bdb_env->set_mp_max_openfd(bdb_env, 50);
+
+    ret = bdb_env->log_set_config(bdb_env, DB_LOG_IN_MEMORY, 1);
+    if (ret != 0) {
+        throw std::runtime_error(QString("Attempt failed to set logging in memory: %1").arg(db_strerror(ret)).toStdString());
+    }
+
+    bdb_env->open(bdb_env, NULL, flags, 0);
+
+    xmlManager = new DbXml::XmlManager(bdb_env, DbXml::DBXML_ADOPT_DBENV);
+
+    DbXml::XmlUpdateContext up = xmlManager->createUpdateContext();
+    getXmlContainer("files")->setAutoIndexing(false, up);
+    getXmlContainer("filetimes")->setAutoIndexing(false, up);
+
+
+    default_query_context = xmlManager->createQueryContext();
+    default_query_context.setEvaluationType(DbXml::XmlQueryContext::Lazy);
+    default_query_context.setDefaultCollection("files");
+
+    QMap<QString, QString> p;
+    p["document"] = "";
+    timeStampQueryId = this->prepareQuery(
+                    "doc($document)/filetime/text()"
+                ,p);
+
+}
+
+
 void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *node)
 {
     QByteArray name = node->getName().toAscii();
@@ -79,7 +121,6 @@ uint DataStorageImpl::getTimeStamp(QString path)
     p["document"] = "dbxml:/filetimes/"+pathToDocumentUri(path);
 
     DataQueryResults *pRet = executePrepared(timeStampQueryId, p);
-//    DataQueryResults *pRet = query("doc(\"dbxml:/filetimes/"+pathToDocumentUri(path)+"\")/filetime/text()");
     if (!pRet) {
         return 0;
     }
@@ -100,9 +141,6 @@ void DataStorageImpl::removeFile(QString path)
 
 IonDbXml::DataQueryResults *DataStorageImpl::query(QString xquery)
 {
-//        XmlQueryContext context = xmlManager.createQueryContext();
-//        XmlQueryExpression qe = xmlManager.prepare(q, context);
-//        XmlResults results = qe.execute(context);
     try {
         DbXml::XmlResults res = xmlManager->query(xquery.toStdString(), default_query_context);
         return (IonDbXml::DataQueryResults *) new DataQueryResultsImpl(res);
@@ -178,6 +216,13 @@ IonDbXml::DataQueryResults *DataStorageImpl::executePrepared(int queryId, const 
     }
     return NULL;
 }
+
+void DataStorageImpl::addIndex(QString container, QString node, QString index)
+{
+    XmlUpdateContext uc = xmlManager->createUpdateContext();
+    getXmlContainer(container)->addIndex("", node.toStdString(), index.toStdString(), uc);
+}
+
 
 }
 }
