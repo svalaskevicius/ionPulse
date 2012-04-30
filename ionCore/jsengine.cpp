@@ -98,6 +98,11 @@ QScriptValue installAppShortcut(QScriptContext *context, QScriptEngine *engine)
     );
 }
 
+QScriptValue jsDebug(QScriptContext *context, QScriptEngine *engine)
+{
+    DEBUG_MSG(context->argument(0).toString());
+    return engine->nullValue();
+}
 
 
 JsEngine::JsEngine()
@@ -112,9 +117,9 @@ JsEngine::JsEngine()
     system = scriptEngine.newObject();
     global.property("qs").setProperty("system", system);
 
-    initialiseJsFramework();
-    debugger.attachTo(&scriptEngine);
+    global.setProperty("debug", scriptEngine.newFunction(IonCore::Private::jsDebug));
 
+    initialiseJsFramework();
 }
 
 void JsEngine::loadFile(QString file)
@@ -125,7 +130,6 @@ void JsEngine::loadFile(QString file)
 
 void JsEngine::initialiseJsFramework()
 {
-
     // add environment variables to qt.system.env
     QMap<QString,QVariant> envMap;
     QStringList envList = QProcess::systemEnvironment();

@@ -2,7 +2,6 @@
 #define JSENGINE_H
 
 #include <QScriptEngine>
-#include <QScriptEngineDebugger>
 
 namespace IonCore {
 
@@ -12,7 +11,6 @@ class JsEngine
 {
 protected:
     QScriptEngine scriptEngine;
-    QScriptEngineDebugger debugger;
     QScriptValue global, script, system;
     void initialiseJsFramework();
 public:

@@ -14,6 +14,7 @@
 
 #include <stdexcept>
 #include <QSharedPointer>
+#include <QScriptEngine>
 
 /**
  * \brief Helper code to apply the correct code to different loaded plugin dependencies.
@@ -39,5 +40,17 @@
  * Handles the debug output in one place for easier code management.
  */
 #define DEBUG_MSG(str) { qDebug() << str; }
+
+template <typename type>
+QScriptValue qObjectPtrToScriptValue(QScriptEngine *engine, type* const &in)
+{
+    return engine->newQObject(in, QScriptEngine::AutoOwnership);
+}
+
+template <typename type>
+void qObjectPtrFromScriptValue(const QScriptValue &object, type* &out)
+{
+    out = qobject_cast<type*>(object.toQObject());
+}
 
 #endif // IONSHARED_H

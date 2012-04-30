@@ -18,10 +18,7 @@
 #include <stdexcept>
 
 #include <ionCore/shared.h>
-
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
+#include <ionParticles/ionDbXml/dbxmlapi.h>
 
 namespace IonPhp {
 namespace Private {
@@ -29,24 +26,29 @@ namespace Private {
 class ASTNode;
 typedef ASTNode *pASTNode;
 
-class ASTNode {
-protected:
-    QVector<pASTNode> children;
-    xmlNodePtr xmlNode;
+class ASTNode : public IonDbXml::XmlNode {
+private:
+    QVector<XmlNode*> children;
+    AttributesMap attributes;
+    QString text;
+    QString name;
     int lineNr, columnNr;
 public:
     ASTNode(QString name);
     ~ASTNode();
-    xmlNodePtr getXmlNode();
     pASTNode setPosition(int lineNr, int columnNr);
     int getLine() const;
     int getColumn() const;
     pASTNode addChild(pASTNode child);
     pASTNode setData(QString name, QString data);
     pASTNode setText(QString data);
-    QString getName();
     QString getData(QString name);
+
+    QString getName();
     QString getText();
+    AttributesMap &getAttributes() { return attributes;}
+    QVector<XmlNode*> &getChildren() {return children;}
+
     static pASTNode create(QString name);
     static void destroy(pASTNode node);
 };
@@ -54,13 +56,12 @@ public:
 class ASTRoot {
 protected:
     pASTNode rootNode;
-    xmlDocPtr xmlDoc;
-    xmlXPathContextPtr xpathCtx;
 public:
     ASTRoot(pASTNode rootNode);
     ~ASTRoot();
-    QString dumpXml();
-    QList<pASTNode> xpath(QString xpathExpr, pASTNode parent = NULL) const ;
+    pASTNode getRootNode() {
+        return rootNode;
+    }
 };
 
 }

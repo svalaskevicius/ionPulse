@@ -26,12 +26,6 @@ namespace IonEditor {
 
 namespace Private {
 
-QScriptValue JsSyntaxHighlighterToScriptValue(QScriptEngine *engine, JsSyntaxHighlighter* const &in)
-{ return engine->newQObject(in); }
-
-void JsSyntaxHighlighterFromScriptValue(const QScriptValue &object, JsSyntaxHighlighter* &out)
-{ out = qobject_cast<JsSyntaxHighlighter*>(object.toQObject()); }
-
 
 struct JsHighlighterFactory : virtual public IonEditor::HighlighterFactory {
     QScriptEngine *engine;
@@ -66,15 +60,7 @@ QScriptValue registerJsFileType(QScriptContext *context, QScriptEngine *engine)
 }
 
 
-QScriptValue editorToScriptValue(QScriptEngine *engine, Editor* const &in)
-{
-    return engine->newQObject(in);
-}
 
-void editorFromScriptValue(const QScriptValue &object, Editor* &out)
-{
-    out = qobject_cast<Editor*>(object.toQObject());
-}
 
 Plugin::Plugin(QObject *parent) :
     QObject(parent), _layoutManager(NULL), _openedFiles(), _focusedEditor(NULL)
@@ -283,12 +269,13 @@ EditorWidgetBuilder *Plugin::getEditorWidgetBuilder()
 
 void Plugin::registerJsApi(QScriptEngine & jsEngine)
 {
-    qScriptRegisterMetaType(&jsEngine, editorToScriptValue, editorFromScriptValue);
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<Editor>, qObjectPtrFromScriptValue<Editor>);
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<JsSyntaxHighlighter>, qObjectPtrFromScriptValue<JsSyntaxHighlighter>);
+
     QScriptValue editorPlugin = jsEngine.newQObject(this);
     jsEngine.globalObject().setProperty("editorPlugin", editorPlugin);
     jsEngine.globalObject().setProperty("registerFileHighlighter", jsEngine.newFunction(IonEditor::Private::registerJsFileHighlighter));
     jsEngine.globalObject().setProperty("registerFileType", jsEngine.newFunction(IonEditor::Private::registerJsFileType));
-    qScriptRegisterMetaType(&jsEngine, JsSyntaxHighlighterToScriptValue, JsSyntaxHighlighterFromScriptValue);
 }
 
 

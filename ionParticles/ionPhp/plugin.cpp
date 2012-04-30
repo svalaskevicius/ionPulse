@@ -15,8 +15,6 @@
 #include "phptreemodelsource.h"
 #include "editorsourcebrowser.h"
 
-#include <QSqlDatabase>
-
 namespace IonPhp {
 namespace Private {
 
@@ -32,26 +30,17 @@ Plugin::Plugin(QObject *parent) :
 
 void Plugin::preLoad()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "phpStructureStorage");
-//    db.setDatabaseName("/tmp/db.sqlite");
-    db.setDatabaseName(":memory:");
-    if (!db.open()) {
-        throw QString("Unable to establish a database connection.\nPhp plugin requires SQLite support.");
-    }
-    structureStorage = QSharedPointer<StructureStorage>(new StructureStorage("phpStructureStorage"));
+    structureStorage = QSharedPointer<StructureStorage>(NULL);
 }
 
 void Plugin::postLoad()
 {
-}
+    Q_ASSERT(dbXmlPlugin);
+    Q_ASSERT(projectPlugin);
+    Q_ASSERT(editorPlugin);
 
-void Plugin::addParent(BasicPlugin *parent) {
-    CHECK_AND_ADD_PARENT(parent, IonEditor::EditorPlugin, addEditorParent(target));
-    CHECK_AND_ADD_PARENT(parent, IonProject::ProjectPlugin, addProjectParent(target));
-}
+    structureStorage = QSharedPointer<StructureStorage>(new StructureStorage(dbXmlPlugin->getStorage()));
 
-void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
-{
     IonEditor::EditorWidgetBuilder *wf = editorPlugin->getEditorWidgetBuilder();
     Q_ASSERT(wf);
 
@@ -60,15 +49,18 @@ void Plugin::addEditorParent(IonEditor::EditorPlugin *editorPlugin)
     wf->registerFileType("php", "text/php");
     wf->registerFileType("php3", "text/php");
     wf->registerFileType("phtml", "text/php");
-}
 
-void Plugin::addProjectParent(IonProject::ProjectPlugin *projectPlugin)
-{
     projectPlugin->setTreeModelSourceFactory(
         phpTreeModelSourceDecoratorFactory(
             projectPlugin->getTreeModelSourceFactory(), *structureStorage, projectPlugin->createTreeItemFactory()
         )
     );
+}
+
+void Plugin::addParent(BasicPlugin *parent) {
+    CHECK_AND_ADD_PARENT(parent, IonEditor::EditorPlugin, editorPlugin = target);
+    CHECK_AND_ADD_PARENT(parent, IonProject::ProjectPlugin, projectPlugin = target);
+    CHECK_AND_ADD_PARENT(parent, IonDbXml::DbXmlPlugin, dbXmlPlugin = target);
 }
 
 }

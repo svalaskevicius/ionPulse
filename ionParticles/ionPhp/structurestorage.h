@@ -10,9 +10,8 @@
 #define STRUCTURESTORAGE_H
 
 #include <QString>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-
+#include <QMap>
+#include <QDir>
 #include <QSharedPointer>
 
 #include "phpParser/ionParserLib.h"
@@ -20,29 +19,21 @@
 namespace IonPhp {
 namespace Private {
 
+
 class StructureStorage
 {
 public:
-    StructureStorage(QString connName);
-    QSharedPointer<QSqlQuery> getClasses();
-    QSharedPointer<QSqlQuery> getFile(QString filename);
-    QSharedPointer<QSqlQuery> getFileClasses(int fileId);
-    QSharedPointer<QSqlQuery> getClassMethods(int classId);
+    StructureStorage(IonDbXml::DataStorage * dataStorage);
 
-    void removeFile(int file_id);
-
-    int addFile(QString path, int timestamp, ASTRoot &astRoot);
-
-    bool beginTransaction();
-    bool commitTransaction();
-    bool rollbackTransaction();
+    void addFile(QString path, int timestamp, ASTRoot &astRoot);
+    void removeFile(QString path);
+    uint getTimeStamp(QString path);
+    IonDbXml::DataQueryResults *getFileClasses(QString path);
+    IonDbXml::DataQueryResults *getClassMethods(QString path, QString className);
 protected:
-    QSqlDatabase db;
-
-    void createTables();
-
-    void addClasses(QSqlQuery &classInsertQuery, QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &classes);
-    void addMethods(QSqlQuery &methodInsertQuery, const ASTRoot & astRoot, const QList<ASTNode *> &methods);
+private:
+    IonDbXml::DataStorage * dataStorage;
+    int classQueryId, methodQueryId;
 };
 
 

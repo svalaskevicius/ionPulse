@@ -33,11 +33,16 @@ JsConsoleWidget = function(parent)
                 this.history.push(line);
                 this.historyIdx = null;
                 // wrap to catch thrown exceptions
-                line = "try {ret = "+line+";console.log(typeof(ret)+ret?ret:\"\");} catch (err) {"
+                line = "try {"+line+"} catch (err) {"
                      + "console.error('An error has occurred: '+err.message);"
                      + "}"
                 try {
-                    eval(line);
+                    var ret = eval(line);
+                    if ("undefined" === typeof(ret)) {
+                        console.log("undefined");
+                    } else {
+                        console.log(typeof(ret)+": "+to_string(ret));
+                    }
                 } catch (err) {
                     // catches parse errors
                     console.error('An error has occurred: '+err.message);
