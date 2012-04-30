@@ -31,8 +31,7 @@
  * -  Qt 4.8 or higher;
  * -  Boost;
  * -  Bison and Flex;
- * -  libxml2.
- * -  Sqlite 3;
+ * -  Berkeley DB XML;
  * -  GoogleMock;
  *
  *
@@ -40,10 +39,18 @@
  * following the instruction in its provided README file.
  *
  * Note, if your QT installation is not on the system path, you should set QTDIR environment
- * variable e.g. QTDIR=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/ and use
- * specific paths to qmake, e.g. ~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/bin/qmake
+ * variable e.g.
+ * @code
+ *   QTDIR=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/
+ * @endcode
+ * and use specific paths to qmake, e.g.
+ * @code
+ *   ~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/bin/qmake
+ * @endcode
  * also, provide your local QT includes directory when using generator, e.g.
- * ./generator --include-paths=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/include/
+ * @code
+ *   ./generator --include-paths=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/include/
+ * @endcode
  */
 
 
