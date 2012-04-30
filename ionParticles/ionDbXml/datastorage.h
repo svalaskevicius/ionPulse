@@ -82,10 +82,6 @@ public:
     uint getTimeStamp(QString path);
     void removeFile(QString path);
 
-    void beginTransaction() {}
-    void commitTransaction() {}
-    void rollbackTransaction() {}
-
     QString getLastError() { return lastError; }
 
     IonDbXml::DataQueryResults *query(QString xquery);
