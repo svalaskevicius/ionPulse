@@ -23,12 +23,12 @@ Plugin::Plugin(QObject *parent) :
 
 Plugin::~Plugin()
 {
-    delete structureStorage;
 }
 
 void Plugin::preLoad()
 {
     structureStorage = new DataStorageImpl();
+    structureStorage->setParent(this);
 }
 
 

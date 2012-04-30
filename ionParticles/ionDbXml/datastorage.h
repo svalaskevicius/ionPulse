@@ -54,19 +54,21 @@ class DataQueryResultsImpl : public DataQueryResults {
 public:
     DataQueryResultsImpl(const DbXml::XmlResults &results) : results(results)
     {
+        data = new DataValueImpl();
+        data->setParent(this);
     }
 
-    bool next() {return results.next(data.value);}
-    bool previous() {return results.previous(data.value);}
-    bool peek() {return results.peek(data.value);}
+    bool next() {return results.next(data->value);}
+    bool previous() {return results.previous(data->value);}
+    bool peek() {return results.peek(data->value);}
 
     bool hasNext() {return results.hasNext();}
     bool hasPrevious() {return results.hasPrevious();}
     void reset() {return results.reset();}
 
-    DataValue *value() {return &data;}
+    DataValue *value() {return data;}
 private:
-    DataValueImpl data;
+    DataValueImpl *data;
     DbXml::XmlResults results;
 };
 
