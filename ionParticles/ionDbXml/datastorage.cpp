@@ -137,6 +137,12 @@ uint DataStorageImpl::getTimeStamp(QString path)
 
 void DataStorageImpl::removeFile(QString path)
 {
+    XmlUpdateContext uc = xmlManager->createUpdateContext();
+
+    QString uri = pathToDocumentUri(path);
+
+    getXmlContainer("files")->deleteDocument(uri.toStdString(), uc);
+    getXmlContainer("filetimes")->deleteDocument(uri.toStdString(), uc);
 }
 
 IonDbXml::DataQueryResults *DataStorageImpl::query(QString xquery)

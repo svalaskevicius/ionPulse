@@ -41,6 +41,11 @@ void StructureStorage::addFile(QString path, int timestamp, ASTRoot &astRoot)
     dataStorage->addFile(path, timestamp, astRoot.getRootNode());
 }
 
+void StructureStorage::removeFile(QString path)
+{
+    dataStorage->removeFile(path);
+}
+
 uint StructureStorage::getTimeStamp(QString path)
 {
     return dataStorage->getTimeStamp(path);

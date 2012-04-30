@@ -81,6 +81,9 @@ void PhpTreeModelSourceDecorator::updateFile(QString path)
     uint mtimeStored = storage.getTimeStamp(path);
     QFileInfo fileInfo(path);
     if (fileInfo.lastModified().toTime_t() > mtimeStored) {
+        if (mtimeStored) {
+            storage.removeFile(path);
+        }
         QSharedPointer<ASTRoot> fileAst = phpParser().parseFile(path);
         storage.addFile(path, fileInfo.lastModified().toTime_t(), *fileAst);
     }
