@@ -53,11 +53,6 @@ uint StructureStorage::getTimeStamp(QString path)
 
 IonDbXml::DataQueryResults *StructureStorage::getFileClasses(QString path)
 {
-//    return dataStorage->query(
-//        "for $x in doc(\"dbxml:/files/"+dataStorage->pathToDocumentUri(path)+"\")//class_declaration"
-//        + " return <ret><name>{ string($x/string) }</name><line>{ string($x/class/@lineNr) }</line></ret>"
-//    );
-    //DEBUG_MSG(classQueryId);
     QMap<QString, QString> p;
     p["document"] = "dbxml:/files/"+dataStorage->pathToDocumentUri(path);
     return dataStorage->executePrepared(classQueryId, p);
@@ -65,15 +60,10 @@ IonDbXml::DataQueryResults *StructureStorage::getFileClasses(QString path)
 
 IonDbXml::DataQueryResults *StructureStorage::getClassMethods(QString path, QString className)
 {
-    //DEBUG_MSG(classQueryId);
     QMap<QString, QString> p;
     p["document"] = "dbxml:/files/"+dataStorage->pathToDocumentUri(path);
     p["className"] = className;
     return dataStorage->executePrepared(methodQueryId, p);
-//    return dataStorage->query(
-//        "for $x in doc(\"dbxml:/files/"+dataStorage->pathToDocumentUri(path)+"\")//class_declaration/string[text()=\""+className+"\"]/..//METHOD/string"
-//        + " return <ret><name>{ string($x) }</name><line>{ string($x/@lineNr) }</line></ret>"
-//    );
 }
 
 
