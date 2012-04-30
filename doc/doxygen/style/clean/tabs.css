@@ -5,10 +5,10 @@
 }
 
 .tabs2 {
-    font-size: 15px;
+    font-size: 80%;
 }
 .tabs3 {
-    font-size: 14px;
+    font-size: 60%;
 }
 
 .tablist {
@@ -25,6 +25,7 @@
 }
 
 .tablist a {
+    font-family: Metrophobic,Ubuntu,sans-serif;
     display: block;
     padding: 0 20px;
     color: #1A1F22;
