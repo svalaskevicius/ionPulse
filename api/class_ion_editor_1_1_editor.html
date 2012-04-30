@@ -84,12 +84,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-slots">Public Slots</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#properties">Properties</a>  </div>
   <div class="headertitle">
 <div class="title">IonEditor::Editor Class Reference</div>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="IonEditor::Editor" --><!-- doxytag: inherits="IonLayout::PanelWidget" -->
+<!-- doxytag: class="IonEditor::Editor" -->
 <p>Defines an interface to access and manipulate the <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> widget.  
  <a href="class_ion_editor_1_1_editor.html#details">More...</a></p>
 
@@ -99,43 +101,61 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
-<div class="center"><iframe scrolling="no" frameborder="0" src="class_ion_editor_1_1_editor__inherit__graph.svg" width="216" height="195"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
-<div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-1-trigger" src="closed.png" alt="+"/> Collaboration diagram for IonEditor::Editor:</div>
-<div id="dynsection-1-summary" class="dynsummary" style="display:block;">
-</div>
-<div id="dynsection-1-content" class="dyncontent" style="display:none;">
-<div class="center"><iframe scrolling="no" frameborder="0" src="class_ion_editor_1_1_editor__coll__graph.svg" width="174" height="118"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="class_ion_editor_1_1_editor__inherit__graph.svg" width="216" height="118"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 
 <p><a href="class_ion_editor_1_1_editor-members.html">List of all members.</a></p>
 <table class="memberdecls">
-<tr><td colspan="2"><h2><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#ac98113410f9abda62f1024056bd664a8">~Editor</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="class_ion_editor_1_1_editor_component_info.html">EditorComponentInfo</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#acfc4bcb79e274dd29afee6543e0bd3b6">getEditorInfo</a> () const =0</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Defer and open some usefull protected <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> methods.  <a href="#acfc4bcb79e274dd29afee6543e0bd3b6"></a><br/></td></tr>
+<tr><td colspan="2"><h2><a name="pub-slots"></a>
+Public Slots</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#adc680cf9930cdbce8f98b33509da6099">addEventListener</a> (QEvent::Type type, <a class="el" href="class_ion_editor_1_1_editor_component.html">EditorComponent</a> *component)=0</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Register an event listener.  <a href="#adc680cf9930cdbce8f98b33509da6099"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a9ac9fa0223890728a25614f76404c460">updateViewportMargins</a> ()=0</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Notify parent scroll area about changes in viewport margins.  <a href="#a9ac9fa0223890728a25614f76404c460"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a365476e0886cc812a64dd297fca5735c">setComponents</a> (QList&lt; <a class="el" href="class_ion_editor_1_1_editor_component.html">EditorComponent</a> * &gt; components)=0</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set active editor components.  <a href="#a365476e0886cc812a64dd297fca5735c"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual QPlainTextEdit *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a4c791c633829389c8a692f849d8349e9">getEditorInstance</a> ()=0</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the underlying QPlainTextEdit instance.  <a href="#a4c791c633829389c8a692f849d8349e9"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a3e9a9f1c0cabca7f4e1f48d8d1afa845">focusOnLine</a> (int line)=0</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Set editor focus on the requested line.  <a href="#a3e9a9f1c0cabca7f4e1f48d8d1afa845"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a8546eeda299b77621ebdd34b10806b34">saveFile</a> ()=0</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Save file buffer to file.  <a href="#a8546eeda299b77621ebdd34b10806b34"></a><br/></td></tr>
+<tr><td colspan="2"><h2><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a591f96255026ae06c87b0de41302ceee">Editor</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#ac98113410f9abda62f1024056bd664a8">~Editor</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="class_ion_editor_1_1_editor_component_info.html">EditorComponentInfo</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#acfc4bcb79e274dd29afee6543e0bd3b6">getEditorInfo</a> () const =0</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Defer and open some usefull protected <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> methods.  <a href="#acfc4bcb79e274dd29afee6543e0bd3b6"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a507c5554f81cd136a717416dc18f926d">textOptionFlags</a> ()=0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a7b645a7226ba1e7faf0c22fd1745ee4d">setTextOptionFlags</a> (int)=0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a67ee103a2e79f42d9eab7170630e8526">getFilePath</a> ()=0</td></tr>
+<tr><td colspan="2"><h2><a name="properties"></a>
+Properties</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#ac34a161629a652538a15f6e284f07090">textOptionFlags</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_editor_1_1_editor.html#a7d88cedd8a746bc956bd239a3996d3da">path</a></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Defines an interface to access and manipulate the <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> widget. </p>
 
 <p>Definition at line <a class="el" href="editorapi_8h_source.html#l00120">120</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a591f96255026ae06c87b0de41302ceee"></a><!-- doxytag: member="IonEditor::Editor::Editor" ref="a591f96255026ae06c87b0de41302ceee" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IonEditor::Editor::Editor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [inline]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00125">125</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ac98113410f9abda62f1024056bd664a8"></a><!-- doxytag: member="IonEditor::Editor::~Editor" ref="ac98113410f9abda62f1024056bd664a8" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +170,7 @@ Public Member Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00122">122</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00126">126</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
 
 </div>
 </div>
@@ -174,7 +194,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td><code> [pure virtual]</code></td>
+          <td></td><td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
@@ -194,7 +214,7 @@ Public Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>line</em></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
@@ -222,12 +242,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a4c791c633829389c8a692f849d8349e9"></a><!-- doxytag: member="IonEditor::Editor::getEditorInstance" ref="a4c791c633829389c8a692f849d8349e9" args="()=0" -->
+<a class="anchor" id="a67ee103a2e79f42d9eab7170630e8526"></a><!-- doxytag: member="IonEditor::Editor::getFilePath" ref="a67ee103a2e79f42d9eab7170630e8526" args="()=0" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">virtual QPlainTextEdit* IonEditor::Editor::getEditorInstance </td>
+          <td class="memname">virtual QString IonEditor::Editor::getFilePath </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td><code> [pure virtual]</code></td>
@@ -235,8 +255,6 @@ Public Member Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-
-<p>Retrieve the underlying QPlainTextEdit instance. </p>
 
 </div>
 </div>
@@ -248,7 +266,7 @@ Public Member Functions</h2></td></tr>
           <td class="memname">virtual void IonEditor::Editor::saveFile </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
@@ -267,13 +285,46 @@ Public Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">QList&lt; <a class="el" href="class_ion_editor_1_1_editor_component.html">EditorComponent</a> * &gt;&#160;</td>
           <td class="paramname"><em>components</em></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>Set active editor components. </p>
+
+</div>
+</div>
+<a class="anchor" id="a7b645a7226ba1e7faf0c22fd1745ee4d"></a><!-- doxytag: member="IonEditor::Editor::setTextOptionFlags" ref="a7b645a7226ba1e7faf0c22fd1745ee4d" args="(int)=0" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void IonEditor::Editor::setTextOptionFlags </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [pure virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a507c5554f81cd136a717416dc18f926d"></a><!-- doxytag: member="IonEditor::Editor::textOptionFlags" ref="a507c5554f81cd136a717416dc18f926d" args="()=0" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual int IonEditor::Editor::textOptionFlags </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [pure virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
 
 </div>
 </div>
@@ -285,7 +336,7 @@ Public Member Functions</h2></td></tr>
           <td class="memname">virtual void IonEditor::Editor::updateViewportMargins </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
@@ -296,13 +347,44 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<hr/><h2>Property Documentation</h2>
+<a class="anchor" id="a7d88cedd8a746bc956bd239a3996d3da"></a><!-- doxytag: member="IonEditor::Editor::path" ref="a7d88cedd8a746bc956bd239a3996d3da" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString IonEditor::Editor::path<code> [read]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00123">123</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac34a161629a652538a15f6e284f07090"></a><!-- doxytag: member="IonEditor::Editor::textOptionFlags" ref="ac34a161629a652538a15f6e284f07090" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int IonEditor::Editor::textOptionFlags<code> [read, write]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00122">122</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+
+</div>
+</div>
 </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

@@ -84,6 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="summary">
+<a href="#pub-slots">Public Slots</a> &#124;
 <a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">IonLayout::LayoutManager Class Reference</div>  </div>
@@ -105,23 +106,25 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><a href="class_ion_layout_1_1_layout_manager-members.html">List of all members.</a></p>
 <table class="memberdecls">
+<tr><td colspan="2"><h2><a name="pub-slots"></a>
+Public Slots</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a4b448b9f35fd402135d1b150e30944ff">add</a> (QString zonePath, QWidget *widget)=0</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a widget to the zones tree.  <a href="#a4b448b9f35fd402135d1b150e30944ff"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a939925a3ab05327b0da5a26f84a39841">remove</a> (QWidget *widget)=0</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a widget from the zones tree.  <a href="#a939925a3ab05327b0da5a26f84a39841"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a136874936946bfea27fdbf3d150a01fb">focus</a> (QWidget *widget)=0</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus a widget.  <a href="#a136874936946bfea27fdbf3d150a01fb"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a8f2b15e81ae4b8979470ade8c1176a56">addZone</a> (<a class="el" href="struct_ion_layout_1_1_zone_definition.html">ZoneDefinition</a> &amp;zone)=0</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add new zone to the tree.  <a href="#a8f2b15e81ae4b8979470ade8c1176a56"></a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a5afedf4a897173fb57fbcac186ca4143">~LayoutManager</a> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a76cc681e49562a2baaef101745ee1661">add</a> (<a class="el" href="class_ion_layout_1_1_panel_widget.html">PanelWidget</a> *panel)=0</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a <a class="el" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">PanelWidget</a> to the zones tree.  <a href="#a76cc681e49562a2baaef101745ee1661"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#ac78fd88dfc7170850844c3ba2a90cec5">remove</a> (<a class="el" href="class_ion_layout_1_1_panel_widget.html">PanelWidget</a> *panel)=0</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a <a class="el" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">PanelWidget</a> from the zones tree.  <a href="#ac78fd88dfc7170850844c3ba2a90cec5"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a79c7efa45b0595a68a9068ecfd2fa285">focus</a> (<a class="el" href="class_ion_layout_1_1_panel_widget.html">PanelWidget</a> *panel)=0</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus a <a class="el" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">PanelWidget</a>.  <a href="#a79c7efa45b0595a68a9068ecfd2fa285"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_ion_layout_1_1_layout_manager.html#a8f2b15e81ae4b8979470ade8c1176a56">addZone</a> (<a class="el" href="struct_ion_layout_1_1_zone_definition.html">ZoneDefinition</a> &amp;zone)=0</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add new zone to the tree.  <a href="#a8f2b15e81ae4b8979470ade8c1176a56"></a><br/></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Provides a frontend to the layout management tasks. </p>
 <p>The interface defines main zone and panel management tasks such as addition and removal. </p>
 
-<p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00119">119</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
+<p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00099">99</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a5afedf4a897173fb57fbcac186ca4143"></a><!-- doxytag: member="IonLayout::LayoutManager::~LayoutManager" ref="a5afedf4a897173fb57fbcac186ca4143" args="()" -->
 <div class="memitem">
@@ -137,27 +140,37 @@ Public Member Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00123">123</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
+<p>Definition at line <a class="el" href="layoutapi_8h_source.html#l00103">103</a> of file <a class="el" href="layoutapi_8h_source.html">layoutapi.h</a>.</p>
 
 </div>
 </div>
 <hr/><h2>Member Function Documentation</h2>
-<a class="anchor" id="a76cc681e49562a2baaef101745ee1661"></a><!-- doxytag: member="IonLayout::LayoutManager::add" ref="a76cc681e49562a2baaef101745ee1661" args="(PanelWidget *panel)=0" -->
+<a class="anchor" id="a4b448b9f35fd402135d1b150e30944ff"></a><!-- doxytag: member="IonLayout::LayoutManager::add" ref="a4b448b9f35fd402135d1b150e30944ff" args="(QString zonePath, QWidget *widget)=0" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">virtual void IonLayout::LayoutManager::add </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_ion_layout_1_1_panel_widget.html">PanelWidget</a> *&#160;</td>
-          <td class="paramname"><em>panel</em></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td class="paramtype">QString&#160;</td>
+          <td class="paramname"><em>zonePath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QWidget *&#160;</td>
+          <td class="paramname"><em>widget</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Add a <a class="el" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">PanelWidget</a> to the zones tree. </p>
+<p>Add a widget to the zones tree. </p>
 
 </div>
 </div>
@@ -170,7 +183,7 @@ Public Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="struct_ion_layout_1_1_zone_definition.html">ZoneDefinition</a> &amp;&#160;</td>
           <td class="paramname"><em>zone</em></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
@@ -180,41 +193,41 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a79c7efa45b0595a68a9068ecfd2fa285"></a><!-- doxytag: member="IonLayout::LayoutManager::focus" ref="a79c7efa45b0595a68a9068ecfd2fa285" args="(PanelWidget *panel)=0" -->
+<a class="anchor" id="a136874936946bfea27fdbf3d150a01fb"></a><!-- doxytag: member="IonLayout::LayoutManager::focus" ref="a136874936946bfea27fdbf3d150a01fb" args="(QWidget *widget)=0" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">virtual void IonLayout::LayoutManager::focus </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_ion_layout_1_1_panel_widget.html">PanelWidget</a> *&#160;</td>
-          <td class="paramname"><em>panel</em></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td class="paramtype">QWidget *&#160;</td>
+          <td class="paramname"><em>widget</em></td><td>)</td>
+          <td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Focus a <a class="el" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">PanelWidget</a>. </p>
+<p>Focus a widget. </p>
 
 </div>
 </div>
-<a class="anchor" id="ac78fd88dfc7170850844c3ba2a90cec5"></a><!-- doxytag: member="IonLayout::LayoutManager::remove" ref="ac78fd88dfc7170850844c3ba2a90cec5" args="(PanelWidget *panel)=0" -->
+<a class="anchor" id="a939925a3ab05327b0da5a26f84a39841"></a><!-- doxytag: member="IonLayout::LayoutManager::remove" ref="a939925a3ab05327b0da5a26f84a39841" args="(QWidget *widget)=0" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">virtual void IonLayout::LayoutManager::remove </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_ion_layout_1_1_panel_widget.html">PanelWidget</a> *&#160;</td>
-          <td class="paramname"><em>panel</em></td><td>)</td>
-          <td><code> [pure virtual]</code></td>
+          <td class="paramtype">QWidget *&#160;</td>
+          <td class="paramname"><em>widget</em></td><td>)</td>
+          <td><code> [pure virtual, slot]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Remove a <a class="el" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">PanelWidget</a> from the zones tree. </p>
+<p>Remove a widget from the zones tree. </p>
 
 </div>
 </div>
@@ -224,7 +237,7 @@ Public Member Functions</h2></td></tr>
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

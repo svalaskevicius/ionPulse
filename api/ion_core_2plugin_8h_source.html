@@ -91,37 +91,40 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00011"></a>00011 <span class="preprocessor"></span>
 <a name="l00012"></a>00012 <span class="preprocessor">#include &lt;QList&gt;</span>
 <a name="l00013"></a>00013 <span class="preprocessor">#include &lt;QMainWindow&gt;</span>
-<a name="l00014"></a>00014 
-<a name="l00026"></a>00026 <span class="keyword">namespace </span>IonCore {
-<a name="l00027"></a>00027 
-<a name="l00036"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html">00036</a> <span class="keyword">class </span><a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">BasicPlugin</a>
-<a name="l00037"></a>00037 {
-<a name="l00038"></a>00038 <span class="keyword">protected</span>:
-<a name="l00049"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0">00049</a>     QMainWindow *<a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0" title="Main application window handle.">mainWindow</a>;
-<a name="l00050"></a>00050 
-<a name="l00051"></a>00051 <span class="keyword">public</span>:
-<a name="l00055"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#aef4a891d254698e6bd46bd319f193b76">00055</a>     <span class="keyword">virtual</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#aef4a891d254698e6bd46bd319f193b76" title="Class desctructor.">~BasicPlugin</a>() {}
-<a name="l00056"></a>00056 
-<a name="l00066"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#ae77dce9d56e0bd190ae26da8432dd53e">00066</a>     <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#ae77dce9d56e0bd190ae26da8432dd53e" title="Main window handle setter.">setMainWindow</a>(QMainWindow *<a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0" title="Main application window handle.">mainWindow</a>) {this-&gt;mainWindow = <a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0" title="Main application window handle.">mainWindow</a>;}
-<a name="l00067"></a>00067 
-<a name="l00076"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a0686153e8dfa8cb6e4261f57078059f1">00076</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a0686153e8dfa8cb6e4261f57078059f1" title="Early plugin initialisation.">preLoad</a>() {}
-<a name="l00077"></a>00077 
-<a name="l00084"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a7ddebb56c2194998287d8a195acbbcfa">00084</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7ddebb56c2194998287d8a195acbbcfa" title="Plugin initialisation.">postLoad</a>() {}
-<a name="l00085"></a>00085 
-<a name="l00094"></a>00094     <span class="keyword">virtual</span> QString <a class="code" href="class_ion_core_1_1_basic_plugin.html#a74689b60b4033750628fd384d8d86e76" title="Unique plugin name.">getName</a>() = 0;
-<a name="l00095"></a>00095 
-<a name="l00104"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6">00104</a>     <span class="keyword">virtual</span> QList&lt;QString&gt; <a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6" title="List of the plugin names that should be initialised before this plugin.">getDependencies</a>() {
-<a name="l00105"></a>00105         <span class="keywordflow">return</span> QList&lt;QString&gt;();
-<a name="l00106"></a>00106     }
-<a name="l00107"></a>00107 
-<a name="l00117"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9">00117</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(<a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">BasicPlugin</a> * <span class="comment">/* parent */</span>) {}
-<a name="l00118"></a>00118 };
+<a name="l00014"></a>00014 <span class="preprocessor">#include &lt;QScriptEngine&gt;</span>
+<a name="l00015"></a>00015 
+<a name="l00027"></a>00027 <span class="keyword">namespace </span>IonCore {
+<a name="l00028"></a>00028 
+<a name="l00037"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html">00037</a> <span class="keyword">class </span><a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">BasicPlugin</a>
+<a name="l00038"></a>00038 {
+<a name="l00039"></a>00039 <span class="keyword">protected</span>:
+<a name="l00050"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0">00050</a>     QMainWindow *<a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0" title="Main application window handle.">mainWindow</a>;
+<a name="l00051"></a>00051 
+<a name="l00052"></a>00052 <span class="keyword">public</span>:
+<a name="l00056"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#aef4a891d254698e6bd46bd319f193b76">00056</a>     <span class="keyword">virtual</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#aef4a891d254698e6bd46bd319f193b76" title="Class desctructor.">~BasicPlugin</a>() {}
+<a name="l00057"></a>00057 
+<a name="l00067"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#ae77dce9d56e0bd190ae26da8432dd53e">00067</a>     <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#ae77dce9d56e0bd190ae26da8432dd53e" title="Main window handle setter.">setMainWindow</a>(QMainWindow *<a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0" title="Main application window handle.">mainWindow</a>) {this-&gt;mainWindow = <a class="code" href="class_ion_core_1_1_basic_plugin.html#a9187597f5a23e928a45710b5fc19b3b0" title="Main application window handle.">mainWindow</a>;}
+<a name="l00068"></a>00068 
+<a name="l00077"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a0686153e8dfa8cb6e4261f57078059f1">00077</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a0686153e8dfa8cb6e4261f57078059f1" title="Early plugin initialisation.">preLoad</a>() {}
+<a name="l00078"></a>00078 
+<a name="l00085"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a7ddebb56c2194998287d8a195acbbcfa">00085</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7ddebb56c2194998287d8a195acbbcfa" title="Plugin initialisation.">postLoad</a>() {}
+<a name="l00086"></a>00086 
+<a name="l00095"></a>00095     <span class="keyword">virtual</span> QString <a class="code" href="class_ion_core_1_1_basic_plugin.html#a74689b60b4033750628fd384d8d86e76" title="Unique plugin name.">getName</a>() = 0;
+<a name="l00096"></a>00096 
+<a name="l00105"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6">00105</a>     <span class="keyword">virtual</span> QList&lt;QString&gt; <a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6" title="List of the plugin names that should be initialised before this plugin.">getDependencies</a>() {
+<a name="l00106"></a>00106         <span class="keywordflow">return</span> QList&lt;QString&gt;();
+<a name="l00107"></a>00107     }
+<a name="l00108"></a>00108 
+<a name="l00118"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9">00118</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(<a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">BasicPlugin</a> * <span class="comment">/* parent */</span>) {}
 <a name="l00119"></a>00119 
-<a name="l00120"></a>00120 }
-<a name="l00121"></a>00121 
-<a name="l00122"></a>00122 Q_DECLARE_INTERFACE(<a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">IonCore::BasicPlugin</a>, <span class="stringliteral">&quot;com.ionPulse.PluginInterface&quot;</span>)
-<a name="l00123"></a>00123 
-<a name="l00124"></a>00124 <span class="preprocessor">#endif // INTERFACES_H</span>
+<a name="l00125"></a><a class="code" href="class_ion_core_1_1_basic_plugin.html#a485360c86c469309ed180029a3ac32c8">00125</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a485360c86c469309ed180029a3ac32c8" title="Allows plugin to register its own JS api.">registerJsApi</a>(QScriptEngine &amp; <span class="comment">/* jsEngine */</span>) {}
+<a name="l00126"></a>00126 };
+<a name="l00127"></a>00127 
+<a name="l00128"></a>00128 }
+<a name="l00129"></a>00129 
+<a name="l00130"></a>00130 Q_DECLARE_INTERFACE(<a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">IonCore::BasicPlugin</a>, <span class="stringliteral">&quot;com.ionPulse.PluginInterface&quot;</span>)
+<a name="l00131"></a>00131 
+<a name="l00132"></a>00132 <span class="preprocessor">#endif // INTERFACES_H</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -129,7 +132,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

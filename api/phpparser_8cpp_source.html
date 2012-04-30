@@ -93,115 +93,121 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00013"></a>00013 
 <a name="l00014"></a>00014 <span class="preprocessor">#include &quot;phpParser/gen_php_parser.hpp&quot;</span>
 <a name="l00015"></a>00015 <span class="preprocessor">#include &lt;QFile&gt;</span>
-<a name="l00016"></a>00016 
-<a name="l00017"></a>00017 <span class="keyword">extern</span> <span class="keywordtype">int</span> _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
+<a name="l00016"></a>00016 <span class="preprocessor">#include &lt;QFileInfo&gt;</span>
+<a name="l00017"></a>00017 <span class="preprocessor">#include &lt;QDateTime&gt;</span>
 <a name="l00018"></a>00018 
-<a name="l00019"></a>00019 <span class="keyword">extern</span> <span class="keywordtype">int</span> ion_php_parse(IonPhp::Private::phpParser* context);
+<a name="l00019"></a>00019 <span class="keyword">extern</span> <span class="keywordtype">int</span> _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
 <a name="l00020"></a>00020 
-<a name="l00021"></a>00021 
-<a name="l00022"></a>00022 <span class="keyword">namespace </span>IonPhp {
-<a name="l00023"></a>00023 <span class="keyword">namespace </span>Private {
-<a name="l00024"></a>00024 
-<a name="l00025"></a>00025 
-<a name="l00026"></a>00026 phpParser::phpParser()
-<a name="l00027"></a>00027 {
-<a name="l00028"></a>00028     init_scanner();
-<a name="l00029"></a>00029 }
-<a name="l00030"></a>00030 
-<a name="l00031"></a>00031 phpParser::~phpParser()
-<a name="l00032"></a>00032 {
-<a name="l00033"></a>00033     destroy_scanner();
-<a name="l00034"></a>00034 }
-<a name="l00035"></a>00035 
-<a name="l00036"></a>00036 QSharedPointer&lt;ASTRoot&gt; phpParser::parseString(QString doc)
-<a name="l00037"></a>00037 {
-<a name="l00038"></a>00038     <span class="keywordtype">void</span> * buf = setBuf(doc.toAscii().constData());
-<a name="l00039"></a>00039     __result = NULL;
-<a name="l00040"></a>00040     <span class="keywordtype">int</span> ret = 1;
-<a name="l00041"></a>00041     QString errorText = <span class="stringliteral">&quot;unknown error&quot;</span>;
-<a name="l00042"></a>00042     <span class="keywordflow">try</span> {
-<a name="l00043"></a>00043         ret = ion_php_parse(<span class="keyword">this</span>);
-<a name="l00044"></a>00044     } <span class="keywordflow">catch</span> (std::exception&amp; e) {
-<a name="l00045"></a>00045         errorText = QString(<span class="stringliteral">&quot;exception while parsing: %1 at: %2,%3 : %4,%5&quot;</span>)
-<a name="l00046"></a>00046                         .arg(e.what())
-<a name="l00047"></a>00047                         .arg(__line).arg(__col)
-<a name="l00048"></a>00048                         .arg(__posLine).arg(__posCol)
-<a name="l00049"></a>00049                     ;
-<a name="l00050"></a>00050     }
-<a name="l00051"></a>00051     delBuf(buf);
-<a name="l00052"></a>00052 
-<a name="l00053"></a>00053     <span class="keywordflow">if</span> (ret || !__result) {
-<a name="l00054"></a>00054         <span class="keywordflow">if</span> (__result) {
-<a name="l00055"></a>00055             <span class="keyword">delete</span> __result;
-<a name="l00056"></a>00056             __result = NULL;
-<a name="l00057"></a>00057         }
-<a name="l00058"></a>00058         <span class="keywordflow">throw</span> std::runtime_error(errorText.toStdString());
-<a name="l00059"></a>00059     }
-<a name="l00060"></a>00060 
-<a name="l00061"></a>00061     <span class="keywordflow">return</span> QSharedPointer&lt;ASTRoot&gt;(<span class="keyword">new</span> ASTRoot(__result));
-<a name="l00062"></a>00062 }
-<a name="l00063"></a>00063 
-<a name="l00064"></a>00064 QSharedPointer&lt;ASTRoot&gt; phpParser::parseFile(QString path)
-<a name="l00065"></a>00065 {
-<a name="l00066"></a>00066     QFile file(path);
-<a name="l00067"></a>00067     <span class="keywordflow">if</span> (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-<a name="l00068"></a>00068         <span class="keywordflow">try</span> {
-<a name="l00069"></a>00069             <span class="keywordflow">return</span> parseString(file.readAll());
-<a name="l00070"></a>00070         } <span class="keywordflow">catch</span> (std::runtime_error &amp;err) {
-<a name="l00071"></a>00071             <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;parsing of the file failed: &quot;</span>+path.toStdString()+<span class="stringliteral">&quot;\n&quot;</span>+err.what());
-<a name="l00072"></a>00072         }
-<a name="l00073"></a>00073     }
-<a name="l00074"></a>00074     <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;parsing of the file failed: file not found: &quot;</span>+path.toStdString());
-<a name="l00075"></a>00075 }
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077 <span class="keywordtype">void</span> phpParser::__error(phpParser *myself, <span class="keyword">const</span> <span class="keywordtype">char</span> *error) {
-<a name="l00078"></a>00078     Q_ASSERT(<span class="keyword">this</span> == myself);
-<a name="l00079"></a>00079     <span class="keywordflow">throw</span> std::logic_error(error);
-<a name="l00080"></a>00080 }
-<a name="l00081"></a>00081 
-<a name="l00082"></a>00082 <span class="keywordtype">int</span> phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
-<a name="l00083"></a>00083 {
-<a name="l00084"></a>00084     pASTNode lastNode = *astNode;
-<a name="l00085"></a>00085     <span class="keywordflow">while</span>(1) {
-<a name="l00086"></a>00086         *astNode = NULL;
-<a name="l00087"></a>00087         <span class="keywordtype">int</span> ret = _impl_ionPhp_lex(astNode, yyscanner);
-<a name="l00088"></a>00088         <span class="keywordflow">switch</span> (ret) {
-<a name="l00089"></a>00089             <span class="keywordflow">case</span> T_COMMENT:
-<a name="l00090"></a>00090             <span class="keywordflow">case</span> T_DOC_COMMENT:
-<a name="l00091"></a>00091             <span class="keywordflow">case</span> T_OPEN_TAG:
-<a name="l00092"></a>00092             <span class="keywordflow">case</span> T_WHITESPACE:
-<a name="l00093"></a>00093                 <span class="keywordflow">if</span> (*astNode) {
-<a name="l00094"></a>00094                     ASTNode::destroy(*astNode);
-<a name="l00095"></a>00095                 }
-<a name="l00096"></a>00096                 <span class="keywordflow">continue</span>;
-<a name="l00097"></a>00097 
-<a name="l00098"></a>00098             <span class="keywordflow">case</span> T_CLOSE_TAG:
-<a name="l00099"></a>00099                   <span class="keywordflow">return</span> <span class="charliteral">&#39;;&#39;</span>; <span class="comment">/* implicit ; */</span>
-<a name="l00100"></a>00100             <span class="keywordflow">case</span> T_OPEN_TAG_WITH_ECHO:
-<a name="l00101"></a>00101                   <span class="keywordflow">return</span> T_ECHO;
-<a name="l00102"></a>00102             <span class="keywordflow">case</span> T_INLINE_HTML:
-<a name="l00103"></a>00103                 <span class="keywordflow">if</span> (lastNode &amp;&amp; (lastNode-&gt;getName() == <span class="stringliteral">&quot;inline_html&quot;</span>)) {
-<a name="l00104"></a>00104                     <span class="comment">// join them</span>
-<a name="l00105"></a>00105                     lastNode-&gt;setText(lastNode-&gt;getText()+(*astNode)-&gt;getText());
-<a name="l00106"></a>00106                     ASTNode::destroy(*astNode);
-<a name="l00107"></a>00107                     <span class="keywordflow">continue</span>;
-<a name="l00108"></a>00108                 }
-<a name="l00109"></a>00109             <span class="keywordflow">default</span>:
-<a name="l00110"></a>00110                 <span class="keywordflow">return</span> ret;
-<a name="l00111"></a>00111         }
-<a name="l00112"></a>00112     }
-<a name="l00113"></a>00113 }
-<a name="l00117"></a>00117 <span class="keywordtype">void</span> phpParser::__echo(<span class="keyword">const</span> <span class="keywordtype">char</span> *text, <span class="keywordtype">int</span> size)
-<a name="l00118"></a>00118 {
-<a name="l00119"></a>00119     QString txt;
-<a name="l00120"></a>00120     <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0;i&lt;size;i++) {
-<a name="l00121"></a>00121         txt += text[i];
-<a name="l00122"></a>00122     }
-<a name="l00123"></a>00123     <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;failed to match in scanner: &quot;</span>+txt.toStdString());
-<a name="l00124"></a>00124 }
-<a name="l00125"></a>00125 
-<a name="l00126"></a>00126 }
-<a name="l00127"></a>00127 }
+<a name="l00021"></a>00021 <span class="keyword">extern</span> <span class="keywordtype">int</span> ion_php_parse(IonPhp::Private::phpParser* context);
+<a name="l00022"></a>00022 
+<a name="l00023"></a>00023 
+<a name="l00024"></a>00024 <span class="keyword">namespace </span>IonPhp {
+<a name="l00025"></a>00025 <span class="keyword">namespace </span>Private {
+<a name="l00026"></a>00026 
+<a name="l00027"></a>00027 
+<a name="l00028"></a>00028 phpParser::phpParser()
+<a name="l00029"></a>00029 {
+<a name="l00030"></a>00030     init_scanner();
+<a name="l00031"></a>00031 }
+<a name="l00032"></a>00032 
+<a name="l00033"></a>00033 phpParser::~phpParser()
+<a name="l00034"></a>00034 {
+<a name="l00035"></a>00035     destroy_scanner();
+<a name="l00036"></a>00036 }
+<a name="l00037"></a>00037 
+<a name="l00038"></a>00038 QSharedPointer&lt;ASTRoot&gt; phpParser::parseString(QString doc)
+<a name="l00039"></a>00039 {
+<a name="l00040"></a>00040     <span class="keywordtype">void</span> * buf = setBuf(doc.toAscii().constData());
+<a name="l00041"></a>00041     __result = NULL;
+<a name="l00042"></a>00042     <span class="keywordtype">int</span> ret = 1;
+<a name="l00043"></a>00043     QString errorText = <span class="stringliteral">&quot;unknown error&quot;</span>;
+<a name="l00044"></a>00044     <span class="keywordflow">try</span> {
+<a name="l00045"></a>00045         ret = ion_php_parse(<span class="keyword">this</span>);
+<a name="l00046"></a>00046     } <span class="keywordflow">catch</span> (std::exception&amp; e) {
+<a name="l00047"></a>00047         errorText = QString(<span class="stringliteral">&quot;exception while parsing: %1 at: %2,%3 : %4,%5&quot;</span>)
+<a name="l00048"></a>00048                         .arg(e.what())
+<a name="l00049"></a>00049                         .arg(__line).arg(__col)
+<a name="l00050"></a>00050                         .arg(__posLine).arg(__posCol)
+<a name="l00051"></a>00051                     ;
+<a name="l00052"></a>00052     }
+<a name="l00053"></a>00053     delBuf(buf);
+<a name="l00054"></a>00054 
+<a name="l00055"></a>00055     <span class="keywordflow">if</span> (ret || !__result) {
+<a name="l00056"></a>00056         <span class="keywordflow">if</span> (__result) {
+<a name="l00057"></a>00057             <span class="keyword">delete</span> __result;
+<a name="l00058"></a>00058             __result = NULL;
+<a name="l00059"></a>00059         }
+<a name="l00060"></a>00060         <span class="keywordflow">throw</span> std::runtime_error(errorText.toStdString());
+<a name="l00061"></a>00061     }
+<a name="l00062"></a>00062 
+<a name="l00063"></a>00063     <span class="keywordflow">return</span> QSharedPointer&lt;ASTRoot&gt;(<span class="keyword">new</span> ASTRoot(__result));
+<a name="l00064"></a>00064 }
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066 QSharedPointer&lt;ASTRoot&gt; phpParser::parseFile(QString path)
+<a name="l00067"></a>00067 {
+<a name="l00068"></a>00068     QFile file(path);
+<a name="l00069"></a>00069     <span class="keywordflow">if</span> (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+<a name="l00070"></a>00070         <span class="keywordflow">try</span> {
+<a name="l00071"></a>00071             QSharedPointer&lt;ASTRoot&gt; ast = parseString(file.readAll());
+<a name="l00072"></a>00072 <span class="comment">//            QFileInfo fileInfo(path);</span>
+<a name="l00073"></a>00073 <span class="comment">//            ast-&gt;setFilename(path);</span>
+<a name="l00074"></a>00074 <span class="comment">//            ast-&gt;setTimestamp(fileInfo.lastModified().toTime_t());</span>
+<a name="l00075"></a>00075             <span class="keywordflow">return</span> ast;
+<a name="l00076"></a>00076         } <span class="keywordflow">catch</span> (std::runtime_error &amp;err) {
+<a name="l00077"></a>00077             <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;parsing of the file failed: &quot;</span>+path.toStdString()+<span class="stringliteral">&quot;\n&quot;</span>+err.what());
+<a name="l00078"></a>00078         }
+<a name="l00079"></a>00079     }
+<a name="l00080"></a>00080     <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;parsing of the file failed: file not found: &quot;</span>+path.toStdString());
+<a name="l00081"></a>00081 }
+<a name="l00082"></a>00082 
+<a name="l00083"></a>00083 <span class="keywordtype">void</span> phpParser::__error(phpParser *myself, <span class="keyword">const</span> <span class="keywordtype">char</span> *error) {
+<a name="l00084"></a>00084     Q_ASSERT(<span class="keyword">this</span> == myself);
+<a name="l00085"></a>00085     <span class="keywordflow">throw</span> std::logic_error(error);
+<a name="l00086"></a>00086 }
+<a name="l00087"></a>00087 
+<a name="l00088"></a>00088 <span class="keywordtype">int</span> phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
+<a name="l00089"></a>00089 {
+<a name="l00090"></a>00090     pASTNode lastNode = *astNode;
+<a name="l00091"></a>00091     <span class="keywordflow">while</span>(1) {
+<a name="l00092"></a>00092         *astNode = NULL;
+<a name="l00093"></a>00093         <span class="keywordtype">int</span> ret = _impl_ionPhp_lex(astNode, yyscanner);
+<a name="l00094"></a>00094         <span class="keywordflow">switch</span> (ret) {
+<a name="l00095"></a>00095             <span class="keywordflow">case</span> T_COMMENT:
+<a name="l00096"></a>00096             <span class="keywordflow">case</span> T_DOC_COMMENT:
+<a name="l00097"></a>00097             <span class="keywordflow">case</span> T_OPEN_TAG:
+<a name="l00098"></a>00098             <span class="keywordflow">case</span> T_WHITESPACE:
+<a name="l00099"></a>00099                 <span class="keywordflow">if</span> (*astNode) {
+<a name="l00100"></a>00100                     ASTNode::destroy(*astNode);
+<a name="l00101"></a>00101                 }
+<a name="l00102"></a>00102                 <span class="keywordflow">continue</span>;
+<a name="l00103"></a>00103 
+<a name="l00104"></a>00104             <span class="keywordflow">case</span> T_CLOSE_TAG:
+<a name="l00105"></a>00105                   <span class="keywordflow">return</span> <span class="charliteral">&#39;;&#39;</span>; <span class="comment">/* implicit ; */</span>
+<a name="l00106"></a>00106             <span class="keywordflow">case</span> T_OPEN_TAG_WITH_ECHO:
+<a name="l00107"></a>00107                   <span class="keywordflow">return</span> T_ECHO;
+<a name="l00108"></a>00108             <span class="keywordflow">case</span> T_INLINE_HTML:
+<a name="l00109"></a>00109                 <span class="keywordflow">if</span> (lastNode &amp;&amp; (lastNode-&gt;getName() == <span class="stringliteral">&quot;inline_html&quot;</span>)) {
+<a name="l00110"></a>00110                     <span class="comment">// join them</span>
+<a name="l00111"></a>00111                     lastNode-&gt;setText(lastNode-&gt;getText()+(*astNode)-&gt;getText());
+<a name="l00112"></a>00112                     ASTNode::destroy(*astNode);
+<a name="l00113"></a>00113                     <span class="keywordflow">continue</span>;
+<a name="l00114"></a>00114                 }
+<a name="l00115"></a>00115             <span class="keywordflow">default</span>:
+<a name="l00116"></a>00116                 <span class="keywordflow">return</span> ret;
+<a name="l00117"></a>00117         }
+<a name="l00118"></a>00118     }
+<a name="l00119"></a>00119 }
+<a name="l00123"></a>00123 <span class="keywordtype">void</span> phpParser::__echo(<span class="keyword">const</span> <span class="keywordtype">char</span> *text, <span class="keywordtype">int</span> size)
+<a name="l00124"></a>00124 {
+<a name="l00125"></a>00125     QString txt;
+<a name="l00126"></a>00126     <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0;i&lt;size;i++) {
+<a name="l00127"></a>00127         txt += text[i];
+<a name="l00128"></a>00128     }
+<a name="l00129"></a>00129     <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;failed to match in scanner: &quot;</span>+txt.toStdString());
+<a name="l00130"></a>00130 }
+<a name="l00131"></a>00131 
+<a name="l00132"></a>00132 }
+<a name="l00133"></a>00133 }
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -209,7 +215,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

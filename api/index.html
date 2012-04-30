@@ -82,19 +82,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>Qt 4.8 or higher;</li>
 <li>Boost;</li>
 <li>Bison and Flex;</li>
-<li>libxml2.</li>
-<li>Sqlite 3;</li>
+<li>Berkeley DB XML;</li>
 <li>GoogleMock;</li>
 </ul>
 <p>Before building main project, you will first need to build lib/qtscriptgenerator, following the instruction in its provided README file.</p>
-<p>Note, if your QT installation is not on the system path, you should set QTDIR environment variable e.g. QTDIR=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/ and use specific paths to qmake, e.g. ~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/bin/qmake also, provide your local QT includes directory when using generator, e.g. ./generator --include-paths=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/include/ </p>
-</div></div>
+<p>Note, if your QT installation is not on the system path, you should set QTDIR environment variable e.g. </p>
+<div class="fragment"><pre class="fragment">   QTDIR=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/
+</pre></div><p> and use specific paths to qmake, e.g. </p>
+<div class="fragment"><pre class="fragment">   ~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/bin/qmake
+</pre></div><p> also, provide your local QT includes directory when using generator, e.g. </p>
+<div class="fragment"><pre class="fragment">   ./generator --include-paths=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/include/
+</pre></div> </div></div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

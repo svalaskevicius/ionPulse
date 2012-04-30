@@ -107,18 +107,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00027"></a>00027 <span class="keyword">protected</span>:
 <a name="l00028"></a>00028     <span class="keywordtype">void</span> decorateNode(<a class="code" href="class_ion_project_1_1_tree_item.html" title="Describes a file tree element model and provides file tree management functionality.">IonProject::TreeItem</a> *node);
 <a name="l00029"></a>00029     <span class="keywordtype">void</span> addPhpFileInfo(<a class="code" href="class_ion_project_1_1_tree_item.html" title="Describes a file tree element model and provides file tree management functionality.">IonProject::TreeItem</a> *node, QString path);
-<a name="l00030"></a>00030     <span class="keywordtype">int</span> getStoredFile(QString path);
-<a name="l00031"></a>00031     <span class="keywordtype">int</span> storeFile(QString path);
-<a name="l00032"></a>00032 <span class="keyword">private</span>:
-<a name="l00033"></a>00033     QSharedPointer&lt;IonProject::TreeModelSource&gt; origTreeModelSource;
-<a name="l00034"></a>00034     QSharedPointer&lt;IonProject::TreeItemFactory&gt; treeItemFactory;
-<a name="l00035"></a>00035     StructureStorage &amp;storage;
-<a name="l00036"></a>00036 };
-<a name="l00037"></a>00037 
+<a name="l00030"></a>00030     <span class="keywordtype">void</span> updateFile(QString path);
+<a name="l00031"></a>00031 <span class="keyword">private</span>:
+<a name="l00032"></a>00032     QSharedPointer&lt;IonProject::TreeModelSource&gt; origTreeModelSource;
+<a name="l00033"></a>00033     QSharedPointer&lt;IonProject::TreeItemFactory&gt; treeItemFactory;
+<a name="l00034"></a>00034     StructureStorage &amp;storage;
+<a name="l00035"></a>00035 };
+<a name="l00036"></a>00036 
+<a name="l00037"></a>00037 }
 <a name="l00038"></a>00038 }
-<a name="l00039"></a>00039 }
-<a name="l00040"></a>00040 
-<a name="l00041"></a>00041 <span class="preprocessor">#endif // PHPTREEMODEL_H</span>
+<a name="l00039"></a>00039 
+<a name="l00040"></a>00040 <span class="preprocessor">#endif // PHPTREEMODEL_H</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -126,7 +125,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

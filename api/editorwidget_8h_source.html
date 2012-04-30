@@ -100,7 +100,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00020"></a>00020 
 <a name="l00021"></a>00021 <span class="keyword">namespace </span>Private {
 <a name="l00022"></a>00022 
-<a name="l00023"></a>00023 <span class="keyword">class </span>EditorWidget : <span class="keyword">public</span> QPlainTextEdit, <span class="keyword">public</span> Editor
+<a name="l00023"></a>00023 <span class="keyword">class </span>EditorWidget : <span class="keyword">public</span> Editor
 <a name="l00024"></a>00024 {
 <a name="l00025"></a>00025     Q_OBJECT
 <a name="l00026"></a>00026 <span class="keyword">public</span>:
@@ -132,63 +132,65 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00056"></a>00056         resetHighlighter();
 <a name="l00057"></a>00057         this-&gt;highlighter = highlighter;
 <a name="l00058"></a>00058     }
-<a name="l00059"></a>00059     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a3e9a9f1c0cabca7f4e1f48d8d1afa845" title="Set editor focus on the requested line.">focusOnLine</a>(<span class="keywordtype">int</span> line);
-<a name="l00060"></a>00060 <span class="keyword">protected</span>:
-<a name="l00061"></a>00061     std::pair&lt;int, int&gt; getSelectedBlockRange();
-<a name="l00062"></a>00062     <span class="keywordtype">bool</span> event ( QEvent * event );
-<a name="l00063"></a>00063     <span class="keywordtype">void</span> resetComponents();
-<a name="l00064"></a>00064     <span class="keywordtype">void</span> resetHighlighter();
-<a name="l00065"></a>00065     <span class="keywordtype">void</span> keyPressEvent ( QKeyEvent * e );
-<a name="l00066"></a>00066     <span class="keywordtype">void</span> keyReleaseEvent ( QKeyEvent * e );
-<a name="l00067"></a>00067 
-<a name="l00068"></a>00068 <span class="keyword">public</span>:
-<a name="l00069"></a>00069     <span class="keyword">virtual</span> QWidget *<a class="code" href="class_ion_layout_1_1_panel_widget.html#af15a4b61035bb51fffbe9b8830fca694" title="Retrieve QWidget to be added.">getWidget</a>() {<span class="keywordflow">return</span> <span class="keyword">this</span>;}
-<a name="l00070"></a>00070     <span class="keyword">virtual</span> QString <a class="code" href="class_ion_layout_1_1_panel_widget.html#aae61f64d5c493f5b12e6316c4130dfaa" title="A UNIX-like path to the target zone.">getPanelZone</a>() {<span class="keywordflow">return</span> <span class="stringliteral">&quot;central&quot;</span>;}
+<a name="l00059"></a>00059 <span class="keyword">protected</span>:
+<a name="l00060"></a>00060     std::pair&lt;int, int&gt; getSelectedBlockRange();
+<a name="l00061"></a>00061     <span class="keywordtype">bool</span> event ( QEvent * event );
+<a name="l00062"></a>00062     <span class="keywordtype">void</span> resetComponents();
+<a name="l00063"></a>00063     <span class="keywordtype">void</span> resetHighlighter();
+<a name="l00064"></a>00064     <span class="keywordtype">void</span> keyPressEvent ( QKeyEvent * e );
+<a name="l00065"></a>00065     <span class="keywordtype">void</span> keyReleaseEvent ( QKeyEvent * e );
+<a name="l00066"></a>00066 
+<a name="l00067"></a>00067 <span class="keyword">public</span>:
+<a name="l00068"></a>00068     <span class="keyword">virtual</span> <span class="keyword">const</span> EditorComponentInfo &amp;<a class="code" href="class_ion_editor_1_1_editor.html#acfc4bcb79e274dd29afee6543e0bd3b6" title="Defer and open some usefull protected Editor methods.">getEditorInfo</a>()<span class="keyword"> const </span>{
+<a name="l00069"></a>00069         <span class="keywordflow">return</span> componentInfo;
+<a name="l00070"></a>00070     }
 <a name="l00071"></a>00071 
-<a name="l00072"></a>00072 <span class="keyword">public</span>:
-<a name="l00073"></a>00073     <span class="keyword">virtual</span> <span class="keyword">const</span> EditorComponentInfo &amp;<a class="code" href="class_ion_editor_1_1_editor.html#acfc4bcb79e274dd29afee6543e0bd3b6" title="Defer and open some usefull protected Editor methods.">getEditorInfo</a>()<span class="keyword"> const </span>{
-<a name="l00074"></a>00074         <span class="keywordflow">return</span> componentInfo;
-<a name="l00075"></a>00075     }
-<a name="l00076"></a>00076     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#adc680cf9930cdbce8f98b33509da6099" title="Register an event listener.">addEventListener</a>(QEvent::Type type, EditorComponent *component) {
-<a name="l00077"></a>00077         eventListeners[type].append(component);
-<a name="l00078"></a>00078     }
-<a name="l00079"></a>00079     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a9ac9fa0223890728a25614f76404c460" title="Notify parent scroll area about changes in viewport margins.">updateViewportMargins</a>();
-<a name="l00080"></a>00080     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a365476e0886cc812a64dd297fca5735c" title="Set active editor components.">setComponents</a>(QList&lt;EditorComponent*&gt; components) {
-<a name="l00081"></a>00081         resetComponents();
-<a name="l00082"></a>00082         this-&gt;components = components;
-<a name="l00083"></a>00083         <a class="code" href="class_ion_editor_1_1_editor.html#a9ac9fa0223890728a25614f76404c460" title="Notify parent scroll area about changes in viewport margins.">updateViewportMargins</a>();
-<a name="l00084"></a>00084     }
-<a name="l00085"></a>00085     <span class="keyword">virtual</span> QPlainTextEdit* <a class="code" href="class_ion_editor_1_1_editor.html#a4c791c633829389c8a692f849d8349e9" title="Retrieve the underlying QPlainTextEdit instance.">getEditorInstance</a>() {<span class="keywordflow">return</span> <span class="keyword">this</span>;}
-<a name="l00086"></a>00086 
-<a name="l00087"></a>00087 <span class="keyword">protected</span> slots:
-<a name="l00088"></a>00088     <span class="keywordtype">void</span> editorCursorPositionChanged();
-<a name="l00089"></a>00089     <span class="keywordtype">void</span> modificationChanged(<span class="keywordtype">bool</span> changed);
-<a name="l00090"></a>00090 <span class="keyword">protected</span>:
-<a name="l00091"></a>00091     <span class="keywordtype">void</span> addCurrentLineExtraSelection(QList&lt;QTextEdit::ExtraSelection&gt; &amp;extraSelections);
-<a name="l00092"></a>00092     <span class="keywordtype">void</span> closeEvent ( QCloseEvent * event ) {emit(editorClosing(<span class="keyword">this</span>)); QWidget::closeEvent( event );}
-<a name="l00093"></a>00093     <span class="keywordtype">void</span> focusInEvent ( QFocusEvent * event ) {emit(editorFocusing(<span class="keyword">this</span>)); QWidget::focusInEvent( event );}
-<a name="l00094"></a>00094     <span class="keyword">virtual</span> <span class="keywordtype">void</span> scrollContentsBy (<span class="keywordtype">int</span> dx, <span class="keywordtype">int</span> dy) {QPlainTextEdit::scrollContentsBy (  dx,  dy );viewport()-&gt;update();}
-<a name="l00095"></a>00095 <span class="keyword">private</span>:
-<a name="l00096"></a>00096     QList&lt;EditorComponent* &gt; components;
-<a name="l00097"></a>00097     QSyntaxHighlighter *highlighter;
-<a name="l00098"></a>00098     QMap&lt;QEvent::Type, QList&lt;EditorComponent *&gt; &gt; eventListeners;
-<a name="l00099"></a>00099     QString filePath;
-<a name="l00100"></a>00100     ComponentInfo componentInfo;
-<a name="l00101"></a>00101 signals:
-<a name="l00102"></a>00102     <span class="keywordtype">void</span> editorClosing( Editor *editor );
-<a name="l00103"></a>00103     <span class="keywordtype">void</span> editorFocusing( Editor *editor );
-<a name="l00104"></a>00104     <span class="keywordtype">void</span> updatePanelTitle( <a class="code" href="class_ion_layout_1_1_panel_widget.html" title="Interface of the zone client panel.">IonLayout::PanelWidget</a> *panel );
-<a name="l00105"></a>00105 <span class="keyword">public</span> slots:
-<a name="l00106"></a>00106 <span class="keyword">public</span>:
-<a name="l00107"></a>00107     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a8546eeda299b77621ebdd34b10806b34" title="Save file buffer to file.">saveFile</a>();
-<a name="l00108"></a>00108 };
-<a name="l00109"></a>00109 
-<a name="l00110"></a>00110 }
+<a name="l00072"></a>00072     <span class="keywordtype">int</span> <a class="code" href="class_ion_editor_1_1_editor.html#ac34a161629a652538a15f6e284f07090">textOptionFlags</a>() { <span class="keywordflow">return</span> (<span class="keywordtype">int</span>)document()-&gt;defaultTextOption().flags(); }
+<a name="l00073"></a>00073     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a7b645a7226ba1e7faf0c22fd1745ee4d">setTextOptionFlags</a>(<span class="keywordtype">int</span> flags) {
+<a name="l00074"></a>00074         QTextOption option = document()-&gt;defaultTextOption();
+<a name="l00075"></a>00075         option.setFlags((QTextOption::Flags)flags);
+<a name="l00076"></a>00076         document()-&gt;setDefaultTextOption(option);
+<a name="l00077"></a>00077     }
+<a name="l00078"></a>00078 
+<a name="l00079"></a>00079     QString <a class="code" href="class_ion_editor_1_1_editor.html#a67ee103a2e79f42d9eab7170630e8526">getFilePath</a>() { <span class="keywordflow">return</span> filePath;}
+<a name="l00080"></a>00080 
+<a name="l00081"></a>00081 <span class="keyword">protected</span> slots:
+<a name="l00082"></a>00082     <span class="keywordtype">void</span> editorCursorPositionChanged();
+<a name="l00083"></a>00083     <span class="keywordtype">void</span> modificationChanged(<span class="keywordtype">bool</span> changed);
+<a name="l00084"></a>00084 <span class="keyword">protected</span>:
+<a name="l00085"></a>00085     <span class="keywordtype">void</span> addCurrentLineExtraSelection(QList&lt;QTextEdit::ExtraSelection&gt; &amp;extraSelections);
+<a name="l00086"></a>00086     <span class="keywordtype">void</span> closeEvent ( QCloseEvent * event ) {emit(editorClosing(<span class="keyword">this</span>)); QWidget::closeEvent( event );}
+<a name="l00087"></a>00087     <span class="keywordtype">void</span> focusInEvent ( QFocusEvent * event ) {emit(editorFocusing(<span class="keyword">this</span>)); QWidget::focusInEvent( event );}
+<a name="l00088"></a>00088     <span class="keyword">virtual</span> <span class="keywordtype">void</span> scrollContentsBy (<span class="keywordtype">int</span> dx, <span class="keywordtype">int</span> dy) {QPlainTextEdit::scrollContentsBy (  dx,  dy );viewport()-&gt;update();}
+<a name="l00089"></a>00089 <span class="keyword">private</span>:
+<a name="l00090"></a>00090     QList&lt;EditorComponent* &gt; components;
+<a name="l00091"></a>00091     QSyntaxHighlighter *highlighter;
+<a name="l00092"></a>00092     QMap&lt;QEvent::Type, QList&lt;EditorComponent *&gt; &gt; eventListeners;
+<a name="l00093"></a>00093     QString filePath;
+<a name="l00094"></a>00094     ComponentInfo componentInfo;
+<a name="l00095"></a>00095 signals:
+<a name="l00096"></a>00096     <span class="keywordtype">void</span> editorClosing( Editor *editor );
+<a name="l00097"></a>00097     <span class="keywordtype">void</span> editorFocusing( Editor *editor );
+<a name="l00098"></a>00098 <span class="keyword">public</span> slots:
+<a name="l00099"></a>00099     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#adc680cf9930cdbce8f98b33509da6099" title="Register an event listener.">addEventListener</a>(QEvent::Type type, EditorComponent *component) {
+<a name="l00100"></a>00100         eventListeners[type].append(component);
+<a name="l00101"></a>00101     }
+<a name="l00102"></a>00102     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a9ac9fa0223890728a25614f76404c460" title="Notify parent scroll area about changes in viewport margins.">updateViewportMargins</a>();
+<a name="l00103"></a>00103     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a365476e0886cc812a64dd297fca5735c" title="Set active editor components.">setComponents</a>(QList&lt;EditorComponent*&gt; components) {
+<a name="l00104"></a>00104         resetComponents();
+<a name="l00105"></a>00105         this-&gt;components = components;
+<a name="l00106"></a>00106         <a class="code" href="class_ion_editor_1_1_editor.html#a9ac9fa0223890728a25614f76404c460" title="Notify parent scroll area about changes in viewport margins.">updateViewportMargins</a>();
+<a name="l00107"></a>00107     }
+<a name="l00108"></a>00108     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a3e9a9f1c0cabca7f4e1f48d8d1afa845" title="Set editor focus on the requested line.">focusOnLine</a>(<span class="keywordtype">int</span> line);
+<a name="l00109"></a>00109     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor.html#a8546eeda299b77621ebdd34b10806b34" title="Save file buffer to file.">saveFile</a>();
+<a name="l00110"></a>00110 };
 <a name="l00111"></a>00111 
 <a name="l00112"></a>00112 }
 <a name="l00113"></a>00113 
-<a name="l00114"></a>00114 
-<a name="l00115"></a>00115 <span class="preprocessor">#endif // IONTEXTEDITORWIDGET_H</span>
+<a name="l00114"></a>00114 }
+<a name="l00115"></a>00115 
+<a name="l00116"></a>00116 
+<a name="l00117"></a>00117 <span class="preprocessor">#endif // IONTEXTEDITORWIDGET_H</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -196,7 +198,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

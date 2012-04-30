@@ -98,55 +98,56 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00018"></a>00018 <span class="preprocessor">#include &lt;stdexcept&gt;</span>
 <a name="l00019"></a>00019 
 <a name="l00020"></a>00020 <span class="preprocessor">#include &lt;ionCore/shared.h&gt;</span>
-<a name="l00021"></a>00021 
-<a name="l00022"></a>00022 <span class="preprocessor">#include &lt;libxml/parser.h&gt;</span>
-<a name="l00023"></a>00023 <span class="preprocessor">#include &lt;libxml/tree.h&gt;</span>
-<a name="l00024"></a>00024 <span class="preprocessor">#include &lt;libxml/xpath.h&gt;</span>
+<a name="l00021"></a>00021 <span class="preprocessor">#include &lt;ionParticles/ionDbXml/dbxmlapi.h&gt;</span>
+<a name="l00022"></a>00022 
+<a name="l00023"></a>00023 <span class="keyword">namespace </span>IonPhp {
+<a name="l00024"></a>00024 <span class="keyword">namespace </span>Private {
 <a name="l00025"></a>00025 
-<a name="l00026"></a>00026 <span class="keyword">namespace </span>IonPhp {
-<a name="l00027"></a>00027 <span class="keyword">namespace </span>Private {
+<a name="l00026"></a>00026 <span class="keyword">class </span>ASTNode;
+<a name="l00027"></a>00027 <span class="keyword">typedef</span> ASTNode *pASTNode;
 <a name="l00028"></a>00028 
-<a name="l00029"></a>00029 <span class="keyword">class </span>ASTNode;
-<a name="l00030"></a>00030 <span class="keyword">typedef</span> ASTNode *pASTNode;
-<a name="l00031"></a>00031 
-<a name="l00032"></a>00032 <span class="keyword">class </span>ASTNode {
-<a name="l00033"></a>00033 <span class="keyword">protected</span>:
-<a name="l00034"></a>00034     QVector&lt;pASTNode&gt; children;
-<a name="l00035"></a>00035     xmlNodePtr xmlNode;
-<a name="l00036"></a>00036     <span class="keywordtype">int</span> lineNr, columnNr;
-<a name="l00037"></a>00037 <span class="keyword">public</span>:
-<a name="l00038"></a>00038     ASTNode(QString name);
-<a name="l00039"></a>00039     ~ASTNode();
-<a name="l00040"></a>00040     xmlNodePtr getXmlNode();
-<a name="l00041"></a>00041     pASTNode setPosition(<span class="keywordtype">int</span> lineNr, <span class="keywordtype">int</span> columnNr);
-<a name="l00042"></a>00042     <span class="keywordtype">int</span> getLine() <span class="keyword">const</span>;
-<a name="l00043"></a>00043     <span class="keywordtype">int</span> getColumn() <span class="keyword">const</span>;
-<a name="l00044"></a>00044     pASTNode addChild(pASTNode child);
-<a name="l00045"></a>00045     pASTNode setData(QString name, QString data);
-<a name="l00046"></a>00046     pASTNode setText(QString data);
-<a name="l00047"></a>00047     QString getName();
-<a name="l00048"></a>00048     QString getData(QString name);
-<a name="l00049"></a>00049     QString getText();
-<a name="l00050"></a>00050     <span class="keyword">static</span> pASTNode create(QString name);
-<a name="l00051"></a>00051     <span class="keyword">static</span> <span class="keywordtype">void</span> destroy(pASTNode node);
-<a name="l00052"></a>00052 };
-<a name="l00053"></a>00053 
-<a name="l00054"></a>00054 <span class="keyword">class </span>ASTRoot {
-<a name="l00055"></a>00055 <span class="keyword">protected</span>:
-<a name="l00056"></a>00056     pASTNode rootNode;
-<a name="l00057"></a>00057     xmlDocPtr xmlDoc;
-<a name="l00058"></a>00058     xmlXPathContextPtr xpathCtx;
+<a name="l00029"></a>00029 <span class="keyword">class </span>ASTNode : <span class="keyword">public</span> IonDbXml::XmlNode {
+<a name="l00030"></a>00030 <span class="keyword">private</span>:
+<a name="l00031"></a>00031     QVector&lt;XmlNode*&gt; children;
+<a name="l00032"></a>00032     <a class="code" href="class_ion_db_xml_1_1_xml_node.html#ae78783ad7f4edd5460de6e4cdc69f6af" title="Node attributes type definition.">AttributesMap</a> attributes;
+<a name="l00033"></a>00033     QString text;
+<a name="l00034"></a>00034     QString name;
+<a name="l00035"></a>00035     <span class="keywordtype">int</span> lineNr, columnNr;
+<a name="l00036"></a>00036 <span class="keyword">public</span>:
+<a name="l00037"></a>00037     ASTNode(QString name);
+<a name="l00038"></a>00038     ~ASTNode();
+<a name="l00039"></a>00039     pASTNode setPosition(<span class="keywordtype">int</span> lineNr, <span class="keywordtype">int</span> columnNr);
+<a name="l00040"></a>00040     <span class="keywordtype">int</span> getLine() <span class="keyword">const</span>;
+<a name="l00041"></a>00041     <span class="keywordtype">int</span> getColumn() <span class="keyword">const</span>;
+<a name="l00042"></a>00042     pASTNode addChild(pASTNode child);
+<a name="l00043"></a>00043     pASTNode setData(QString name, QString data);
+<a name="l00044"></a>00044     pASTNode setText(QString data);
+<a name="l00045"></a>00045     QString getData(QString name);
+<a name="l00046"></a>00046 
+<a name="l00047"></a>00047     QString <a class="code" href="class_ion_db_xml_1_1_xml_node.html#ace503ada63f5b8279e0d39bbcdc4133e" title="Node name.">getName</a>();
+<a name="l00048"></a>00048     QString <a class="code" href="class_ion_db_xml_1_1_xml_node.html#ab34beb4a264b42511677a09df3ace540" title="Node content text.">getText</a>();
+<a name="l00049"></a>00049     <a class="code" href="class_ion_db_xml_1_1_xml_node.html#ae78783ad7f4edd5460de6e4cdc69f6af" title="Node attributes type definition.">AttributesMap</a> &amp;<a class="code" href="class_ion_db_xml_1_1_xml_node.html#aed041ba3e86a655ca7285c43fb898cc9" title="Node attributes.">getAttributes</a>() { <span class="keywordflow">return</span> attributes;}
+<a name="l00050"></a>00050     QVector&lt;XmlNode*&gt; &amp;<a class="code" href="class_ion_db_xml_1_1_xml_node.html#a872524cd5e6a4ca21dd057ff78b317b0" title="Node children.">getChildren</a>() {<span class="keywordflow">return</span> children;}
+<a name="l00051"></a>00051 
+<a name="l00052"></a>00052     <span class="keyword">static</span> pASTNode create(QString name);
+<a name="l00053"></a>00053     <span class="keyword">static</span> <span class="keywordtype">void</span> destroy(pASTNode node);
+<a name="l00054"></a>00054 };
+<a name="l00055"></a>00055 
+<a name="l00056"></a>00056 <span class="keyword">class </span>ASTRoot {
+<a name="l00057"></a>00057 <span class="keyword">protected</span>:
+<a name="l00058"></a>00058     pASTNode rootNode;
 <a name="l00059"></a>00059 <span class="keyword">public</span>:
 <a name="l00060"></a>00060     ASTRoot(pASTNode rootNode);
 <a name="l00061"></a>00061     ~ASTRoot();
-<a name="l00062"></a>00062     QString dumpXml();
-<a name="l00063"></a>00063     QList&lt;pASTNode&gt; xpath(QString xpathExpr, pASTNode parent = NULL) <span class="keyword">const</span> ;
-<a name="l00064"></a>00064 };
-<a name="l00065"></a>00065 
-<a name="l00066"></a>00066 }
+<a name="l00062"></a>00062     pASTNode getRootNode() {
+<a name="l00063"></a>00063         <span class="keywordflow">return</span> rootNode;
+<a name="l00064"></a>00064     }
+<a name="l00065"></a>00065 };
+<a name="l00066"></a>00066 
 <a name="l00067"></a>00067 }
-<a name="l00068"></a>00068 
-<a name="l00069"></a>00069 <span class="preprocessor">#endif // IONPARSERLIB_H</span>
+<a name="l00068"></a>00068 }
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070 <span class="preprocessor">#endif // IONPARSERLIB_H</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -154,7 +155,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

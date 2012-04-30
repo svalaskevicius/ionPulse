@@ -106,51 +106,91 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00026"></a>00026 {
 <a name="l00027"></a>00027     Q_OBJECT
 <a name="l00028"></a>00028     Q_INTERFACES(<a class="code" href="class_ion_core_1_1_basic_plugin.html" title="Defines an interface for every loadable plugin.">IonCore::BasicPlugin</a>)
-<a name="l00029"></a>00029 public:
-<a name="l00030"></a>00030     explicit Plugin(QObject *parent = 0);
-<a name="l00031"></a>00031     ~Plugin();
-<a name="l00032"></a>00032     <span class="keywordtype">void</span> postLoad();
-<a name="l00033"></a>00033     QString getName() {
-<a name="l00034"></a>00034         <span class="keywordflow">return</span> <a class="code" href="class_ion_editor_1_1_editor_plugin.html#a47c971409dbc162346174d5a98532f14" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">EditorPlugin::name</a>();
-<a name="l00035"></a>00035     }
-<a name="l00036"></a>00036     <span class="keyword">virtual</span> QList&lt;QString&gt; <a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6" title="List of the plugin names that should be initialised before this plugin.">getDependencies</a>() {
-<a name="l00037"></a>00037         QList&lt;QString&gt; ret;
-<a name="l00038"></a>00038         ret.append(<a class="code" href="class_ion_layout_1_1_layout_plugin.html#a5acc9781ccf5e4252cffedae928f49f1" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonLayout::LayoutPlugin::name</a>());
-<a name="l00039"></a>00039         <span class="keywordflow">return</span> ret;
-<a name="l00040"></a>00040     }
-<a name="l00041"></a>00041     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(BasicPlugin *parent);
-<a name="l00042"></a>00042     EditorWidgetBuilder *<a class="code" href="class_ion_editor_1_1_editor_plugin.html#ac2ca56035b26562c462efe05278a8f8f" title="Retrieve an instance of EditorWidgetBuilder.">getEditorWidgetBuilder</a>();
-<a name="l00043"></a>00043 <span class="keyword">private</span>:
-<a name="l00044"></a>00044     QScopedPointer&lt;Private::EditorWidgetBuilderImpl&gt; _editorWidgetFactory;
-<a name="l00045"></a>00045     <a class="code" href="class_ion_layout_1_1_layout_manager.html" title="Provides a frontend to the layout management tasks.">IonLayout::LayoutManager</a> *layoutManager;
-<a name="l00046"></a>00046     QMap&lt;QString, Editor *&gt; openedFiles;
-<a name="l00047"></a>00047     Editor *focusedEditor;
-<a name="l00048"></a>00048     SearchPanel *searchPanel;
-<a name="l00049"></a>00049 <span class="keyword">public</span>:
-<a name="l00050"></a>00050     Editor *<a class="code" href="class_ion_editor_1_1_editor_plugin.html#a0fbc9c45c0b1c8d26ed6139184e76a9c" title="Retrieve currently active Editor instance, or NULL, if none is active.">getCurrentEditor</a>();
-<a name="l00051"></a>00051 signals:
-<a name="l00052"></a>00052 
-<a name="l00053"></a>00053 <span class="keyword">public</span> slots:
-<a name="l00054"></a>00054     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor_plugin.html#a035de4f61f9f0511377754e4c68fc8cb" title="Open a requested file path and focus on the specified line.">openFile</a>(QString path, <span class="keywordtype">int</span> line);
-<a name="l00055"></a>00055     <span class="keywordtype">void</span> closeFileEditor(Editor *editor);
-<a name="l00056"></a>00056     <span class="keywordtype">void</span> focusFileEditor(Editor *editor);
-<a name="l00057"></a>00057     <span class="keywordtype">void</span> onFileSave();
-<a name="l00058"></a>00058     <span class="keywordtype">void</span> onFileClose();
-<a name="l00059"></a>00059     <span class="keywordtype">void</span> onEditSearch();
-<a name="l00060"></a>00060     <span class="keywordtype">void</span> onEditSearchNext();
-<a name="l00061"></a>00061     <span class="keywordtype">void</span> onEditSearchPrev();
-<a name="l00062"></a>00062 <span class="keyword">private</span>:
-<a name="l00063"></a>00063     Q_DISABLE_COPY(Plugin)
-<a name="l00064"></a>00064 };
-<a name="l00065"></a>00065 
-<a name="l00066"></a>00066 }
-<a name="l00067"></a>00067 }
-<a name="l00068"></a>00068 
-<a name="l00069"></a>00069 <span class="preprocessor">#endif // IONEDITOR_H</span>
-<a name="l00070"></a>00070 <span class="preprocessor"></span>
-<a name="l00071"></a>00071 
-<a name="l00072"></a>00072 
-<a name="l00073"></a>00073 
+<a name="l00029"></a>00029     Q_PROPERTY( IonEditor::Editor * focusedEditor READ getCurrentEditor )
+<a name="l00030"></a>00030 public:
+<a name="l00031"></a>00031     explicit Plugin(QObject *parent = 0);
+<a name="l00032"></a>00032     ~Plugin();
+<a name="l00033"></a>00033     <span class="keywordtype">void</span> postLoad();
+<a name="l00034"></a>00034     QString getName() {
+<a name="l00035"></a>00035         <span class="keywordflow">return</span> <a class="code" href="class_ion_editor_1_1_editor_plugin.html#a47c971409dbc162346174d5a98532f14" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">EditorPlugin::name</a>();
+<a name="l00036"></a>00036     }
+<a name="l00037"></a>00037     <span class="keyword">virtual</span> QList&lt;QString&gt; <a class="code" href="class_ion_core_1_1_basic_plugin.html#abe069e84de6ffdc123c791cfa6df3cf6" title="List of the plugin names that should be initialised before this plugin.">getDependencies</a>() {
+<a name="l00038"></a>00038         QList&lt;QString&gt; ret;
+<a name="l00039"></a>00039         ret.append(<a class="code" href="class_ion_layout_1_1_layout_plugin.html#a5acc9781ccf5e4252cffedae928f49f1" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonLayout::LayoutPlugin::name</a>());
+<a name="l00040"></a>00040         <span class="keywordflow">return</span> ret;
+<a name="l00041"></a>00041     }
+<a name="l00042"></a>00042     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(BasicPlugin *parent);
+<a name="l00043"></a>00043     EditorWidgetBuilder *<a class="code" href="class_ion_editor_1_1_editor_plugin.html#ac2ca56035b26562c462efe05278a8f8f" title="Retrieve an instance of EditorWidgetBuilder.">getEditorWidgetBuilder</a>();
+<a name="l00044"></a>00044 <span class="keyword">private</span>:
+<a name="l00045"></a>00045     QScopedPointer&lt;Private::EditorWidgetBuilderImpl&gt; _editorWidgetFactory;
+<a name="l00046"></a>00046     <a class="code" href="class_ion_layout_1_1_layout_manager.html" title="Provides a frontend to the layout management tasks.">IonLayout::LayoutManager</a> *_layoutManager;
+<a name="l00047"></a>00047     QMap&lt;QString, Editor *&gt; _openedFiles;
+<a name="l00048"></a>00048     Editor *_focusedEditor;
+<a name="l00049"></a>00049     SearchPanel *_searchPanel;
+<a name="l00050"></a>00050 <span class="keyword">public</span>:
+<a name="l00051"></a>00051     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a485360c86c469309ed180029a3ac32c8" title="Allows plugin to register its own JS api.">registerJsApi</a>(QScriptEngine &amp; jsEngine);
+<a name="l00052"></a>00052     Editor *<a class="code" href="class_ion_editor_1_1_editor_plugin.html#a0fbc9c45c0b1c8d26ed6139184e76a9c" title="Retrieve currently active Editor instance, or NULL, if none is active.">getCurrentEditor</a>();
+<a name="l00053"></a>00053     QMap&lt;QString, Editor *&gt; getOpenedFiles();
+<a name="l00054"></a>00054 
+<a name="l00055"></a>00055 signals:
+<a name="l00056"></a>00056     <span class="keywordtype">void</span> editorOpened(QPlainTextEdit *editor);
+<a name="l00057"></a>00057 <span class="keyword">public</span> slots:
+<a name="l00058"></a>00058     <span class="keywordtype">void</span> <a class="code" href="class_ion_editor_1_1_editor_plugin.html#a035de4f61f9f0511377754e4c68fc8cb" title="Open a requested file path and focus on the specified line.">openFile</a>(QString path, <span class="keywordtype">int</span> line);
+<a name="l00059"></a>00059     <span class="keywordtype">void</span> closeFileEditor(Editor *editor);
+<a name="l00060"></a>00060     <span class="keywordtype">void</span> focusFileEditor(Editor *editor);
+<a name="l00061"></a>00061     <span class="keywordtype">void</span> onFileSave();
+<a name="l00062"></a>00062     <span class="keywordtype">void</span> onFileClose();
+<a name="l00063"></a>00063     <span class="keywordtype">void</span> onEditSearch();
+<a name="l00064"></a>00064     <span class="keywordtype">void</span> onEditSearchNext();
+<a name="l00065"></a>00065     <span class="keywordtype">void</span> onEditSearchPrev();
+<a name="l00066"></a>00066 <span class="keyword">private</span>:
+<a name="l00067"></a>00067     Q_DISABLE_COPY(Plugin)
+<a name="l00068"></a>00068 };
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070 
+<a name="l00071"></a>00071 <span class="keyword">class </span>JsSyntaxHighlighter : <span class="keyword">public</span> QSyntaxHighlighter
+<a name="l00072"></a>00072 {
+<a name="l00073"></a>00073     Q_OBJECT
+<a name="l00074"></a>00074 
+<a name="l00075"></a>00075     Q_PROPERTY(<span class="keywordtype">int</span> previousBlockState READ previousBlockState)
+<a name="l00076"></a>00076     Q_PROPERTY(<span class="keywordtype">int</span> currentBlockState READ currentBlockState WRITE setCurrentBlockState)
+<a name="l00077"></a>00077     Q_PROPERTY(QTextBlock currentBlock READ currentBlock)
+<a name="l00078"></a>00078 <span class="keyword">private</span>:
+<a name="l00079"></a>00079     QScriptEngine *engine;
+<a name="l00080"></a>00080     QScriptValue <span class="keyword">function</span>;
+<a name="l00081"></a>00081 
+<a name="l00082"></a>00082 <span class="keyword">public</span>:
+<a name="l00083"></a>00083     JsSyntaxHighlighter(<a class="code" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">IonEditor::Editor</a> *editor, QScriptEngine *engine, QScriptValue <span class="keyword">function</span>)
+<a name="l00084"></a>00084         : QSyntaxHighlighter(editor-&gt;document()), engine(engine), function(function)
+<a name="l00085"></a>00085     {
+<a name="l00086"></a>00086     }
+<a name="l00087"></a>00087 
+<a name="l00088"></a>00088     <span class="keyword">virtual</span> <span class="keywordtype">void</span> highlightBlock(<span class="keyword">const</span> QString &amp; text)
+<a name="l00089"></a>00089     {
+<a name="l00090"></a>00090         <span class="keyword">function</span>.call(
+<a name="l00091"></a>00091             <span class="keyword">function</span>,
+<a name="l00092"></a>00092             QScriptValueList() &lt;&lt; engine-&gt;toScriptValue(<span class="keyword">this</span>) &lt;&lt; engine-&gt;toScriptValue(text)
+<a name="l00093"></a>00093         );
+<a name="l00094"></a>00094     }
+<a name="l00095"></a>00095 
+<a name="l00096"></a>00096     Q_INVOKABLE <span class="keywordtype">void</span> setFormat(<span class="keywordtype">int</span> start, <span class="keywordtype">int</span> count, QTextCharFormat format)
+<a name="l00097"></a>00097     {
+<a name="l00098"></a>00098         QSyntaxHighlighter::setFormat(start, count, format);
+<a name="l00099"></a>00099     }
+<a name="l00100"></a>00100 };
+<a name="l00101"></a>00101 
+<a name="l00102"></a>00102 
+<a name="l00103"></a>00103 }
+<a name="l00104"></a>00104 }
+<a name="l00105"></a>00105 
+<a name="l00106"></a>00106 Q_DECLARE_METATYPE(<a class="code" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">IonEditor::Editor</a>*)
+<a name="l00107"></a>00107 Q_DECLARE_METATYPE(IonEditor::Private::JsSyntaxHighlighter*)
+<a name="l00108"></a>00108 
+<a name="l00109"></a>00109 <span class="preprocessor">#endif // IONEDITOR_H</span>
+<a name="l00110"></a>00110 <span class="preprocessor"></span>
+<a name="l00111"></a>00111 
+<a name="l00112"></a>00112 
+<a name="l00113"></a>00113 
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -158,7 +198,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

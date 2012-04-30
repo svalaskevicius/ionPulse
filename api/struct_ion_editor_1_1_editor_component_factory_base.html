@@ -84,6 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="summary">
+<a href="#pub-slots">Public Slots</a> &#124;
 <a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">IonEditor::EditorComponentFactoryBase Struct Reference</div>  </div>
@@ -105,9 +106,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><a href="struct_ion_editor_1_1_editor_component_factory_base-members.html">List of all members.</a></p>
 <table class="memberdecls">
+<tr><td colspan="2"><h2><a name="pub-slots"></a>
+Public Slots</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_editor_1_1_editor_component_factory_base.html#a6f49196e678aa902d3199ea6fc648c51">~EditorComponentFactoryBase</a> ()</td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_editor_1_1_editor_component_factory_base.html#a6f49196e678aa902d3199ea6fc648c51">~EditorComponentFactoryBase</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual <br class="typebreak"/>
 <a class="el" href="class_ion_editor_1_1_editor_component.html">IonEditor::EditorComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_ion_editor_1_1_editor_component_factory_base.html#a221dd0b7aa0221bebfa89c002bd5a3cd">operator()</a> (<a class="el" href="class_ion_editor_1_1_editor.html">Editor</a> *)=0</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct <a class="el" href="class_ion_editor_1_1_editor_component.html" title="Define an interface to create Editor components.">EditorComponent</a> for a given <a class="el" href="class_ion_editor_1_1_editor.html" title="Defines an interface to access and manipulate the Editor widget.">Editor</a> object.  <a href="#a221dd0b7aa0221bebfa89c002bd5a3cd"></a><br/></td></tr>
@@ -117,27 +120,8 @@ Public Member Functions</h2></td></tr>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>A base interface for <a class="el" href="class_ion_editor_1_1_editor_component.html" title="Define an interface to create Editor components.">EditorComponent</a> factories. </p>
 
-<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00168">168</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
-</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a6f49196e678aa902d3199ea6fc648c51"></a><!-- doxytag: member="IonEditor::EditorComponentFactoryBase::~EditorComponentFactoryBase" ref="a6f49196e678aa902d3199ea6fc648c51" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual IonEditor::EditorComponentFactoryBase::~EditorComponentFactoryBase </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td><code> [inline, virtual]</code></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00170">170</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
-
-</div>
-</div>
-<hr/><h2>Member Function Documentation</h2>
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00174">174</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+</div><hr/><h2>Member Function Documentation</h2>
 <a class="anchor" id="a58c073ab75f6fd13da921b5f2b68a0f4"></a><!-- doxytag: member="IonEditor::EditorComponentFactoryBase::getIdentifier" ref="a58c073ab75f6fd13da921b5f2b68a0f4" args="()=0" -->
 <div class="memitem">
 <div class="memproto">
@@ -180,13 +164,31 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a6f49196e678aa902d3199ea6fc648c51"></a><!-- doxytag: member="IonEditor::EditorComponentFactoryBase::~EditorComponentFactoryBase" ref="a6f49196e678aa902d3199ea6fc648c51" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual IonEditor::EditorComponentFactoryBase::~EditorComponentFactoryBase </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [inline, virtual, slot]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="editorapi_8h_source.html#l00176">176</a> of file <a class="el" href="editorapi_8h_source.html">editorapi.h</a>.</p>
+
+</div>
+</div>
 </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

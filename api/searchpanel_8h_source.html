@@ -96,7 +96,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00016"></a>00016 
 <a name="l00017"></a>00017 <span class="keyword">namespace </span>Private {
 <a name="l00018"></a>00018 
-<a name="l00019"></a>00019 <span class="keyword">class </span>SearchPanel : <span class="keyword">public</span> QWidget, <span class="keyword">public</span> IonLayout::PanelWidget
+<a name="l00019"></a>00019 <span class="keyword">class </span>SearchPanel : <span class="keyword">public</span> QWidget
 <a name="l00020"></a>00020 {
 <a name="l00021"></a>00021     Q_OBJECT
 <a name="l00022"></a>00022 <span class="keyword">protected</span>:
@@ -106,34 +106,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00026"></a>00026 
 <a name="l00027"></a>00027 <span class="keyword">public</span>:
 <a name="l00028"></a>00028     <span class="keyword">explicit</span> SearchPanel(QWidget *parent = 0);
-<a name="l00029"></a>00029     <span class="keyword">virtual</span> QWidget *<a class="code" href="class_ion_layout_1_1_panel_widget.html#af15a4b61035bb51fffbe9b8830fca694" title="Retrieve QWidget to be added.">getWidget</a>() {<span class="keywordflow">return</span> <span class="keyword">this</span>;}
-<a name="l00030"></a>00030     <span class="keyword">virtual</span> QString <a class="code" href="class_ion_layout_1_1_panel_widget.html#aae61f64d5c493f5b12e6316c4130dfaa" title="A UNIX-like path to the target zone.">getPanelZone</a>() {<span class="keywordflow">return</span> <span class="stringliteral">&quot;central/central_footer&quot;</span>;}
-<a name="l00031"></a>00031 
-<a name="l00032"></a>00032     <span class="keywordtype">void</span> paintEvent(QPaintEvent*) {
-<a name="l00033"></a>00033         QStyleOption styleOption;
-<a name="l00034"></a>00034         styleOption.init(<span class="keyword">this</span>);
-<a name="l00035"></a>00035         QPainter painter(<span class="keyword">this</span>);
-<a name="l00036"></a>00036         style()-&gt;drawPrimitive(QStyle::PE_Widget, &amp;styleOption, &amp;painter, <span class="keyword">this</span>);
-<a name="l00037"></a>00037     }
-<a name="l00038"></a>00038 
-<a name="l00039"></a>00039     <span class="keywordtype">void</span> setEditorPlugin(EditorPlugin * editorPlugin) {
-<a name="l00040"></a>00040         this-&gt;editorPlugin = editorPlugin;
-<a name="l00041"></a>00041     }
-<a name="l00042"></a>00042 
-<a name="l00043"></a>00043     <span class="keywordtype">void</span> focusSearchInput() {
-<a name="l00044"></a>00044         searchText-&gt;setFocus();
-<a name="l00045"></a>00045     }
-<a name="l00046"></a>00046 signals:
-<a name="l00047"></a>00047 
-<a name="l00048"></a>00048 <span class="keyword">public</span> slots:
-<a name="l00049"></a>00049     <span class="keywordtype">void</span> findNext();
-<a name="l00050"></a>00050     <span class="keywordtype">void</span> findPrevious();
-<a name="l00051"></a>00051 };
-<a name="l00052"></a>00052 
-<a name="l00053"></a>00053 }
-<a name="l00054"></a>00054 }
-<a name="l00055"></a>00055 
-<a name="l00056"></a>00056 <span class="preprocessor">#endif // SEARCHPANEL_H</span>
+<a name="l00029"></a>00029 
+<a name="l00030"></a>00030     <span class="keywordtype">void</span> paintEvent(QPaintEvent*) {
+<a name="l00031"></a>00031         QStyleOption styleOption;
+<a name="l00032"></a>00032         styleOption.init(<span class="keyword">this</span>);
+<a name="l00033"></a>00033         QPainter painter(<span class="keyword">this</span>);
+<a name="l00034"></a>00034         style()-&gt;drawPrimitive(QStyle::PE_Widget, &amp;styleOption, &amp;painter, <span class="keyword">this</span>);
+<a name="l00035"></a>00035     }
+<a name="l00036"></a>00036 
+<a name="l00037"></a>00037     <span class="keywordtype">void</span> setEditorPlugin(EditorPlugin * editorPlugin) {
+<a name="l00038"></a>00038         this-&gt;editorPlugin = editorPlugin;
+<a name="l00039"></a>00039     }
+<a name="l00040"></a>00040 
+<a name="l00041"></a>00041     <span class="keywordtype">void</span> focusSearchInput() {
+<a name="l00042"></a>00042         searchText-&gt;setFocus();
+<a name="l00043"></a>00043     }
+<a name="l00044"></a>00044 signals:
+<a name="l00045"></a>00045 
+<a name="l00046"></a>00046 <span class="keyword">public</span> slots:
+<a name="l00047"></a>00047     <span class="keywordtype">void</span> findNext();
+<a name="l00048"></a>00048     <span class="keywordtype">void</span> findPrevious();
+<a name="l00049"></a>00049 };
+<a name="l00050"></a>00050 
+<a name="l00051"></a>00051 }
+<a name="l00052"></a>00052 }
+<a name="l00053"></a>00053 
+<a name="l00054"></a>00054 <span class="preprocessor">#endif // SEARCHPANEL_H</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -141,7 +139,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

@@ -94,20 +94,33 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00014"></a>00014 
 <a name="l00015"></a>00015 <span class="preprocessor">#include &lt;stdexcept&gt;</span>
 <a name="l00016"></a>00016 <span class="preprocessor">#include &lt;QSharedPointer&gt;</span>
-<a name="l00017"></a>00017 
-<a name="l00026"></a>00026 <span class="preprocessor">#define CHECK_AND_ADD_PARENT(parent, className, codeToAdd) \</span>
-<a name="l00027"></a>00027 <span class="preprocessor">    {\</span>
-<a name="l00028"></a>00028 <span class="preprocessor">        if (className::name() == parent-&gt;getName() ) {\</span>
-<a name="l00029"></a>00029 <span class="preprocessor">            className *target = static_cast&lt;className *&gt;(parent);\</span>
-<a name="l00030"></a>00030 <span class="preprocessor">            Q_ASSERT(target);\</span>
-<a name="l00031"></a>00031 <span class="preprocessor">            codeToAdd;\</span>
-<a name="l00032"></a>00032 <span class="preprocessor">        }\</span>
-<a name="l00033"></a>00033 <span class="preprocessor">    }</span>
-<a name="l00034"></a>00034 <span class="preprocessor"></span>
-<a name="l00035"></a>00035 
-<a name="l00041"></a>00041 <span class="preprocessor">#define DEBUG_MSG(str) { qDebug() &lt;&lt; str; }</span>
-<a name="l00042"></a>00042 <span class="preprocessor"></span>
-<a name="l00043"></a>00043 <span class="preprocessor">#endif // IONSHARED_H</span>
+<a name="l00017"></a>00017 <span class="preprocessor">#include &lt;QScriptEngine&gt;</span>
+<a name="l00018"></a>00018 
+<a name="l00027"></a>00027 <span class="preprocessor">#define CHECK_AND_ADD_PARENT(parent, className, codeToAdd) \</span>
+<a name="l00028"></a>00028 <span class="preprocessor">    {\</span>
+<a name="l00029"></a>00029 <span class="preprocessor">        if (className::name() == parent-&gt;getName() ) {\</span>
+<a name="l00030"></a>00030 <span class="preprocessor">            className *target = static_cast&lt;className *&gt;(parent);\</span>
+<a name="l00031"></a>00031 <span class="preprocessor">            Q_ASSERT(target);\</span>
+<a name="l00032"></a>00032 <span class="preprocessor">            codeToAdd;\</span>
+<a name="l00033"></a>00033 <span class="preprocessor">        }\</span>
+<a name="l00034"></a>00034 <span class="preprocessor">    }</span>
+<a name="l00035"></a>00035 <span class="preprocessor"></span>
+<a name="l00036"></a>00036 
+<a name="l00042"></a>00042 <span class="preprocessor">#define DEBUG_MSG(str) { qDebug() &lt;&lt; str; }</span>
+<a name="l00043"></a>00043 <span class="preprocessor"></span>
+<a name="l00044"></a>00044 <span class="keyword">template</span> &lt;<span class="keyword">typename</span> type&gt;
+<a name="l00045"></a>00045 QScriptValue qObjectPtrToScriptValue(QScriptEngine *engine, type* <span class="keyword">const</span> &amp;in)
+<a name="l00046"></a>00046 {
+<a name="l00047"></a>00047     <span class="keywordflow">return</span> engine-&gt;newQObject(in, QScriptEngine::AutoOwnership);
+<a name="l00048"></a>00048 }
+<a name="l00049"></a>00049 
+<a name="l00050"></a>00050 <span class="keyword">template</span> &lt;<span class="keyword">typename</span> type&gt;
+<a name="l00051"></a>00051 <span class="keywordtype">void</span> qObjectPtrFromScriptValue(<span class="keyword">const</span> QScriptValue &amp;<span class="keywordtype">object</span>, type* &amp;out)
+<a name="l00052"></a>00052 {
+<a name="l00053"></a>00053     out = qobject_cast&lt;type*&gt;(<span class="keywordtype">object</span>.toQObject());
+<a name="l00054"></a>00054 }
+<a name="l00055"></a>00055 
+<a name="l00056"></a>00056 <span class="preprocessor">#endif // IONSHARED_H</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -115,7 +128,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

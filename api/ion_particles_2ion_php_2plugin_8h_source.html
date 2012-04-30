@@ -118,44 +118,49 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00038"></a>00038         QList&lt;QString&gt; ret;
 <a name="l00039"></a>00039         ret.append(<a class="code" href="class_ion_editor_1_1_editor_plugin.html#a47c971409dbc162346174d5a98532f14" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonEditor::EditorPlugin::name</a>());
 <a name="l00040"></a>00040         ret.append(<a class="code" href="class_ion_project_1_1_project_plugin.html#ac3282bd1a3809336a51aa6fc1961577e" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonProject::ProjectPlugin::name</a>());
-<a name="l00041"></a>00041         <span class="keywordflow">return</span> ret;
-<a name="l00042"></a>00042     }
-<a name="l00043"></a>00043     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(BasicPlugin *parent);
-<a name="l00044"></a>00044 <span class="keyword">protected</span>:
-<a name="l00045"></a>00045     <span class="keyword">struct </span>phpTreeModelSourceDecoratorFactory {
-<a name="l00046"></a>00046     <span class="keyword">private</span>:
-<a name="l00047"></a>00047         boost::function&lt;QSharedPointer&lt;IonProject::TreeModelSource&gt;(QString dirname)&gt; origFactory;
-<a name="l00048"></a>00048         StructureStorage &amp;structureStorage;
-<a name="l00049"></a>00049         QSharedPointer&lt;IonProject::TreeItemFactory&gt; treeItemFactory;
-<a name="l00050"></a>00050     <span class="keyword">public</span>:
-<a name="l00051"></a>00051         phpTreeModelSourceDecoratorFactory(
-<a name="l00052"></a>00052                     <span class="keyword">const</span> boost::function&lt;QSharedPointer&lt;IonProject::TreeModelSource&gt;(QString dirname)&gt; &amp;origFactory,
-<a name="l00053"></a>00053                     StructureStorage &amp;structureStorage,
-<a name="l00054"></a>00054                     QSharedPointer&lt;IonProject::TreeItemFactory&gt; treeItemFactory
-<a name="l00055"></a>00055                 )
-<a name="l00056"></a>00056             : origFactory(origFactory), structureStorage(structureStorage), treeItemFactory(treeItemFactory)
-<a name="l00057"></a>00057         {
-<a name="l00058"></a>00058         }
-<a name="l00059"></a>00059         QSharedPointer&lt;IonProject::TreeModelSource&gt; operator()(QString dirname);
-<a name="l00060"></a>00060     };
-<a name="l00061"></a>00061 
-<a name="l00062"></a>00062     QSharedPointer&lt;StructureStorage&gt; structureStorage;
-<a name="l00063"></a>00063     <span class="keywordtype">void</span> addEditorParent(<a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a> *editorPlugin);
-<a name="l00064"></a>00064     <span class="keywordtype">void</span> addProjectParent(<a class="code" href="class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin.">IonProject::ProjectPlugin</a> *projectPlugin);
-<a name="l00065"></a>00065 signals:
-<a name="l00066"></a>00066 
-<a name="l00067"></a>00067 <span class="keyword">public</span> slots:
-<a name="l00068"></a>00068 
-<a name="l00069"></a>00069 };
-<a name="l00070"></a>00070 
-<a name="l00071"></a>00071 }
-<a name="l00072"></a>00072 }
+<a name="l00041"></a>00041         ret.append(<a class="code" href="class_ion_db_xml_1_1_db_xml_plugin.html#ad454dab6c656f5ef1d9d5ff095655cf3" title="Plugin name to be used in IonCore::BasicPlugin::getDependencies() method of the subscribed plugins...">IonDbXml::DbXmlPlugin::name</a>());
+<a name="l00042"></a>00042         <span class="keywordflow">return</span> ret;
+<a name="l00043"></a>00043     }
+<a name="l00044"></a>00044     <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_ion_core_1_1_basic_plugin.html#a7b9ed3d7c8c5bc5d5e7f54abe78b93c9" title="Notifies the loaded parent plugin.">addParent</a>(BasicPlugin *parent);
+<a name="l00045"></a>00045 <span class="keyword">protected</span>:
+<a name="l00046"></a>00046     <span class="keyword">struct </span>phpTreeModelSourceDecoratorFactory {
+<a name="l00047"></a>00047     <span class="keyword">private</span>:
+<a name="l00048"></a>00048         boost::function&lt;QSharedPointer&lt;IonProject::TreeModelSource&gt;(QString dirname)&gt; origFactory;
+<a name="l00049"></a>00049         StructureStorage &amp;structureStorage;
+<a name="l00050"></a>00050         QSharedPointer&lt;IonProject::TreeItemFactory&gt; treeItemFactory;
+<a name="l00051"></a>00051     <span class="keyword">public</span>:
+<a name="l00052"></a>00052         phpTreeModelSourceDecoratorFactory(
+<a name="l00053"></a>00053                     <span class="keyword">const</span> boost::function&lt;QSharedPointer&lt;IonProject::TreeModelSource&gt;(QString dirname)&gt; &amp;origFactory,
+<a name="l00054"></a>00054                     StructureStorage &amp;structureStorage,
+<a name="l00055"></a>00055                     QSharedPointer&lt;IonProject::TreeItemFactory&gt; treeItemFactory
+<a name="l00056"></a>00056                 )
+<a name="l00057"></a>00057             : origFactory(origFactory), structureStorage(structureStorage), treeItemFactory(treeItemFactory)
+<a name="l00058"></a>00058         {
+<a name="l00059"></a>00059         }
+<a name="l00060"></a>00060         QSharedPointer&lt;IonProject::TreeModelSource&gt; operator()(QString dirname);
+<a name="l00061"></a>00061     };
+<a name="l00062"></a>00062 
+<a name="l00063"></a>00063 <span class="keyword">private</span>:
+<a name="l00064"></a>00064     <a class="code" href="class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin.">IonEditor::EditorPlugin</a> *editorPlugin;
+<a name="l00065"></a>00065     <a class="code" href="class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin.">IonProject::ProjectPlugin</a> *projectPlugin;
+<a name="l00066"></a>00066     <a class="code" href="class_ion_db_xml_1_1_db_xml_plugin.html" title="The interface of the IonDbXml plugin.">IonDbXml::DbXmlPlugin</a> *dbXmlPlugin;
+<a name="l00067"></a>00067 
+<a name="l00068"></a>00068     QSharedPointer&lt;StructureStorage&gt; structureStorage;
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070 signals:
+<a name="l00071"></a>00071 
+<a name="l00072"></a>00072 <span class="keyword">public</span> slots:
 <a name="l00073"></a>00073 
-<a name="l00074"></a>00074 <span class="preprocessor">#endif // IONEDITORPHP_H</span>
-<a name="l00075"></a>00075 <span class="preprocessor"></span>
-<a name="l00076"></a>00076 
-<a name="l00077"></a>00077 
+<a name="l00074"></a>00074 };
+<a name="l00075"></a>00075 
+<a name="l00076"></a>00076 }
+<a name="l00077"></a>00077 }
 <a name="l00078"></a>00078 
+<a name="l00079"></a>00079 <span class="preprocessor">#endif // IONEDITORPHP_H</span>
+<a name="l00080"></a>00080 <span class="preprocessor"></span>
+<a name="l00081"></a>00081 
+<a name="l00082"></a>00082 
+<a name="l00083"></a>00083 
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -163,7 +168,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerator</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Properties</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">

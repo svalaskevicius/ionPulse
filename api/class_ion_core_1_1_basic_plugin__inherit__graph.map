@@ -1,5 +1,6 @@
 <map id="G" name="G">
-<area shape="rect" id="node3" href="$class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin." alt="" coords="207,5,361,33"/>
-<area shape="rect" id="node7" href="$class_ion_layout_1_1_layout_plugin.html" title="The interface of the IonLayout plugin." alt="" coords="202,57,366,85"/>
-<area shape="rect" id="node13" href="$class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin." alt="" coords="200,161,368,189"/>
+<area shape="rect" id="node3" href="$class_ion_db_xml_1_1_db_xml_plugin.html" title="The interface of the IonDbXml plugin." alt="" coords="202,5,366,33"/>
+<area shape="rect" id="node7" href="$class_ion_editor_1_1_editor_plugin.html" title="The interface of the IonEditor plugin." alt="" coords="207,57,361,85"/>
+<area shape="rect" id="node11" href="$class_ion_layout_1_1_layout_plugin.html" title="The interface of the IonLayout plugin." alt="" coords="202,109,366,137"/>
+<area shape="rect" id="node17" href="$class_ion_project_1_1_project_plugin.html" title="The interface of the IonProject plugin." alt="" coords="200,213,368,241"/>
 </map>
