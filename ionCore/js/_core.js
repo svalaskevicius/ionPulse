@@ -60,7 +60,7 @@ to_string = function(input)
     if (null === input) {
         return "null";
     }
-    return input.toString();
+    return jsDump.parse(input);
 };
 
 escape = function(text)
