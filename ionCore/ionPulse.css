@@ -1162,3 +1162,11 @@ QToolBar:separator{
    height:1px;
    margin:5px;
 }
+
+
+
+
+QListView[type="editor-suggestions"]{
+    background-color: rgba(50, 65, 65, 75%);
+    border: 1px solid rgba(79, 79, 79, 80%);
+}

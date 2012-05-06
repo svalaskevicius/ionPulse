@@ -19,13 +19,53 @@ layoutManager.add("central/central_footer", console);
 console.log("ionPulse.js initialised");
 
 
+Suggestions = function(editor)
+{
+    QListView.call(this, editor);
+    this.setProperty('type', 'editor-suggestions');
+    this.shortcut = qs.system.installAppShortcut(Qt.Key_Space, Qt.MetaModifier, editor);
+    this.shortcut.callback.connect(
+        this,
+        function() {
+            try {
+                var origin = editor.cursorRect(editor.textCursor()).bottomLeft();
+                this.move(origin.x(), origin.y());
+                this.show();
+                this.shortcut_close = qs.system.installAppShortcut(Qt.Key_Escape, Qt.NoModifier, editor);
+                this.shortcut_close.callback.connect(this, this.onCloseRequested);
+             } catch(e) {
+                 console.error(e);
+             }
+        }
+    );
+
+}
+
+
+Suggestions.prototype = new QListView();
+
+Suggestions.prototype.onCloseRequested = function() {
+    try {
+        this.shortcut_close.callback.disconnect(this, this.onCloseRequested);
+        this.shortcut_close = null;
+        this.hide();
+     } catch(e) {
+         console.error(e);
+     }
+}
+
 
 //editorPlugin.focusedEditor.focusOnLine(7)
 editorPlugin.editorOpened.connect(
     this,
     function (editor) {
-        editor.tabStopWidth = 30;
-        editor.textOptionFlags |= 1; // | 2;// | 4;
+        try {
+            editor.tabStopWidth = 30;
+            editor.textOptionFlags |= 1; // | 2;// | 4;
+            var suggestions = new Suggestions(editor);
+        } catch(e) {
+            console.error(e);
+        }
     }
 );
 
