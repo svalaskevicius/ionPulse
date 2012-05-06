@@ -60,7 +60,12 @@ to_string = function(input)
     if (null === input) {
         return "null";
     }
-    return jsDump.parse(input);
+
+    var ret = jsDump.parse(input);
+    if ('{}' === ret) {
+        return input.toString();
+    }
+    return ret;
 };
 
 escape = function(text)
