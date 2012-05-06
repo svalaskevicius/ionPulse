@@ -81,7 +81,7 @@ phpHighlighter = (function () {
         this.parent.initialize.call(this);
     };
 
-    PhpHighlighter.prototype.addParensInfo = function(from, to) {
+    PhpHighlighter.prototype.addBraketsInfo = function(from, to) {
         var blockInfo = [];
         var re = /[\(\)\{\}\[\]]/g;
         re.lastIndex = from;
@@ -106,7 +106,7 @@ phpHighlighter = (function () {
     PhpHighlighter.prototype._hightlightState = function (state, from, to) {
         this.parent._hightlightState.call(this, state, from, to);
         if ("php" === state) {
-            this.addParensInfo(from, to);
+            this.addBraketsInfo(from, to);
         }
     };
 
@@ -119,7 +119,7 @@ phpHighlighter = (function () {
 
 
 
-var matchingParensHighlighter = (function(){
+var matchingBracketsHighlighter = (function(){
 
     var createSelectionForPos = function(editor, pos) {
         var selection = new QTextEdit_ExtraSelection();
@@ -135,59 +135,97 @@ var matchingParensHighlighter = (function(){
         cursor.movePosition(QTextCursor.NextCharacter, QTextCursor.KeepAnchor);
         qs.system.setTextEditExtraSelectionCursor(selection, cursor);
         return selection;
-    }
+    };
 
-     matchLeftParenthesis = function(currentBlock, i, numLeftParentheses)
+     var matchingRightBracket = function(character) {
+        switch(character) {
+            case '(': return ')';
+            case '{': return '}';
+            case '[': return ']';
+        }
+        return false;
+     };
+   var matchingLeftBracket = function(character) {
+      switch(character) {
+        case ')': return '(';
+          case '}': return '{';
+          case ']': return '[';
+      }
+      return false;
+   };
+
+     var matchLeftBracket = function(currentBlock, i, numLeftBrackets, bracketPair)
      {
          var infos = currentBlock.userData();
-
+                                           console.log(infos);
          docPos = currentBlock.position();
-         for (; i < infos.length; ++i) {
-
-             if (infos[i].char === '(') {
-                 ++numLeftParentheses;
-                 continue;
-             }
-
-             if (infos[i].char === ')' && numLeftParentheses === 0) {
-                 return docPos + infos[i].pos;
-             } else {
-                 --numLeftParentheses;
+         for (; infos && i < infos.length; ++i) {
+             if (infos[i].char === bracketPair.left) {
+                 ++numLeftBrackets;
+             } else if (infos[i].char === bracketPair.right) {
+                 if (numLeftBrackets === 0) {
+                     return docPos + infos[i].pos;
+                 } else {
+                     --numLeftBrackets;
+                 }
              }
          }
 
          currentBlock = currentBlock.next();
          if (currentBlock.isValid()) {
-             return matchLeftParenthesis(currentBlock, 0, numLeftParentheses);
+             return matchLeftBracket(currentBlock, 0, numLeftBrackets, bracketPair);
          }
 
          return false;
      }
 
-     matchRightParenthesis = function(currentBlock, i, numRightParentheses)
+     var matchRightBracket = function(currentBlock, i, numRightBrackets, bracketPair)
      {
          var infos = currentBlock.userData();
 
+                                           if (i === null && infos) {
+                                               i = infos.length -1;
+                                           }
          docPos = currentBlock.position();
-         for (; i > -1 && infos.length > 0; --i) {
-             if (infos[i].char === ')') {
-                 ++numRightParentheses;
-                 continue;
-             }
-             if (infos[i].char === '(' && numRightParentheses === 0) {
-                 return docPos + infos[i].pos;
-             } else {
-                 --numRightParentheses;
+         for (; infos && i > -1 && infos.length > 0; --i) {
+             if (infos[i].char === bracketPair.right) {
+                 ++numRightBrackets;
+             } else if (infos[i].char === bracketPair.left) {
+                 if (numRightBrackets === 0) {
+                     return docPos + infos[i].pos;
+                 }
+                 --numRightBrackets;
              }
          }
 
-         currentBlock = currentBlock.next();
+         currentBlock = currentBlock.previous();
          if (currentBlock.isValid()) {
-             return matchRightParenthesis(currentBlock, 0, numRightParentheses);
+             return matchRightBracket(currentBlock, null, numRightBrackets, bracketPair);
          }
 
          return false;
      }
+
+                                       var makeBracketPairFromLeft = function(leftChar) {
+                                           var rightChar = matchingRightBracket(leftChar);
+                                           if (rightChar) {
+                                               return {
+                                                   left: leftChar,
+                                                   right: rightChar
+                                               };
+                                           }
+                                           return null;
+                                       };
+                                       var makeBracketPairFromRight = function(rightChar) {
+                                           var leftChar = matchingLeftBracket(rightChar);
+                                           if (leftChar) {
+                                               return {
+                                                   left: leftChar,
+                                                   right: rightChar
+                                               };
+                                           }
+                                           return null;
+                                       };
 
     return function(editor) {
         try{
@@ -197,20 +235,23 @@ var matchingParensHighlighter = (function(){
             var curPos = textCursor.position() - textCursor.block().position();
             if (userData) {
                 for (var i = userData.length-1; i>=0; --i) {
-                    if ((userData[i].pos == (curPos - 1)) && (userData[i].char == '(')) {
-                        var matchedLeft = matchLeftParenthesis(textCursor.block(), i + 1, 0);
-                        if (matchedLeft !== false) {
-                            selections.push(createSelectionForPos(editor, matchedLeft));
-                            selections.push(createSelectionForPos(editor, textCursor.block().position() + userData[i].pos));
-                        }
-                    } else if (userData[i].pos == curPos - 1 && userData[i].char == ')') {
-                        var matchedRight = matchRightParenthesis(textCursor.block(), i - 1, 0);
-                        if (matchedRight !== false) {
-                            selections.push(createSelectionForPos(editor, matchedRight));
-                            selections.push(createSelectionForPos(editor, textCursor.block().position() + userData[i].pos));
+                    if (userData[i].pos == (curPos - 1)) {
+                        var bracketPair = makeBracketPairFromLeft(userData[i].char);
+                        if (bracketPair) {
+                            var matchedLeft = matchLeftBracket(textCursor.block(), i + 1, 0, bracketPair);
+                            console.log(matchedLeft);
+                            if (matchedLeft !== false) {
+                                selections.push(createSelectionForPos(editor, matchedLeft));
+                                selections.push(createSelectionForPos(editor, textCursor.block().position() + userData[i].pos));
+                            }
+                        } else if (bracketPair = makeBracketPairFromRight(userData[i].char)) {
+                            var matchedRight = matchRightBracket(textCursor.block(), i - 1, 0, bracketPair);
+                            if (matchedRight !== false) {
+                                selections.push(createSelectionForPos(editor, matchedRight));
+                                selections.push(createSelectionForPos(editor, textCursor.block().position() + userData[i].pos));
+                            }
                         }
                     }
-
                 }
             }
             editor.setExtraSelections(selections);
@@ -225,7 +266,7 @@ editorPlugin.editorOpened.connect(
     this,
     function (editor) {
         editor.cursorPositionChanged.connect(this, function(){
-            matchingParensHighlighter(editor);
+            matchingBracketsHighlighter(editor);
         });
     }
 );
