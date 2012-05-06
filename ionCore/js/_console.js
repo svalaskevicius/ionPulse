@@ -72,7 +72,7 @@ JsConsoleWidget = function(parent)
             }
         }
     );
-    this._lineInpShortcutUp = qs.system.installAppShortcut(Qt.Key_Up, this.lineInput);
+    this._lineInpShortcutUp = qs.system.installAppShortcut(Qt.Key_Up, Qt.NoModifier, this.lineInput);
     this._lineInpShortcutUp.callback.connect(
         this,
         function() {
@@ -84,7 +84,7 @@ JsConsoleWidget = function(parent)
             }
         }
     );
-    this._lineInpShortcutDown = qs.system.installAppShortcut(Qt.Key_Down, this.lineInput);
+    this._lineInpShortcutDown = qs.system.installAppShortcut(Qt.Key_Down, Qt.NoModifier, this.lineInput);
     this._lineInpShortcutDown.callback.connect(
         this,
         function() {

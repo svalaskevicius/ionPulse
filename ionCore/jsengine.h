@@ -27,9 +27,10 @@ class AppShortcut : public QObject
 
 private:
     Qt::Key key;
+    Qt::KeyboardModifier modifier;
     QObject *owner;
 public:
-    AppShortcut(Qt::Key key, QObject *owner);
+    AppShortcut(Qt::Key key, Qt::KeyboardModifier modifier, QObject *owner);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

@@ -95,7 +95,11 @@ QScriptValue importExtension(QScriptContext *context, QScriptEngine *engine)
 QScriptValue installAppShortcut(QScriptContext *context, QScriptEngine *engine)
 {
     return engine->newQObject(
-        new AppShortcut((Qt::Key)context->argument(0).toInt32(), (context->argumentCount()==2)?context->argument(1).toQObject():NULL),
+        new AppShortcut(
+                (Qt::Key)context->argument(0).toUInt32(),
+                (context->argumentCount()==2)?(Qt::KeyboardModifier)context->argument(1).toUInt32():Qt::NoModifier,
+                (context->argumentCount()==3)?context->argument(2).toQObject():NULL
+        ),
         QScriptEngine::ScriptOwnership
     );
 }
@@ -178,7 +182,7 @@ void JsEngine::initialiseJsFramework()
 }
 
 
-AppShortcut::AppShortcut(Qt::Key key, QObject *owner) : key(key), owner(owner)
+AppShortcut::AppShortcut(Qt::Key key, Qt::KeyboardModifier modifier, QObject *owner) : key(key), modifier(modifier), owner(owner)
 {
     qApp->installEventFilter(this);
 }
@@ -190,7 +194,7 @@ bool AppShortcut::eventFilter(QObject *obj, QEvent *event)
     }
     if (QEvent::KeyPress == event->type()) {
         QKeyEvent *kev = static_cast<QKeyEvent*>(event);
-        if (kev->key() == key) {
+        if ((kev->key() == key) && (!modifier || (kev->modifiers() & modifier))) {
             emit callback();
             return true;
         }
