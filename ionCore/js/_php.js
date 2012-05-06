@@ -157,7 +157,6 @@ var matchingBracketsHighlighter = (function () {
 
     var matchLeftBracket = function (currentBlock, i, numLeftBrackets, bracketPair) {
             var infos = currentBlock.userData();
-            console.log(infos);
             docPos = currentBlock.position();
             for (; infos && i < infos.length; ++i) {
                 if (infos[i].char === bracketPair.left) {
