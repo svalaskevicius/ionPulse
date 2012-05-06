@@ -79,10 +79,153 @@ phpHighlighter = (function () {
         };
 
         this.parent.initialize.call(this);
-    }
+    };
+
+    PhpHighlighter.prototype.addParensInfo = function(from, to) {
+        var blockInfo = [];
+        var re = /[\(\)\{\}\[\]]/g;
+        re.lastIndex = from;
+        var match;
+        do {
+            match = re.exec(this._text);
+            if (match) {
+                if (match.index < to) {
+                    blockInfo.push({
+                        pos : match.index,
+                        char : match[0],
+                    });
+                } else {
+                    match = false;
+                }
+            }
+        } while (match);
+
+        this._cppApi.setCurrentBlockUserData(blockInfo);
+    };
+
+    PhpHighlighter.prototype._hightlightState = function (state, from, to) {
+        this.parent._hightlightState.call(this, state, from, to);
+        if ("php" === state) {
+            this.addParensInfo(from, to);
+        }
+    };
+
     var php = new PhpHighlighter();
     php.initialize();
     return function (cppApi, text) {
         php.highlight(cppApi, text);
     }
 })();
+
+
+
+var matchingParensHighlighter = (function(){
+
+    var createSelectionForPos = function(editor, pos) {
+        var selection = new QTextEdit_ExtraSelection();
+        var format = selection.format();
+        var brush = new QBrush();
+        brush.setColor(Qt.black);
+        brush.setStyle(Qt.SolidPattern);
+        //format.setForeground(brush);
+        format.setBackground(brush);
+        selection.setFormat(format);
+        var cursor = editor.textCursor();
+        cursor.setPosition(pos);
+        cursor.movePosition(QTextCursor.NextCharacter, QTextCursor.KeepAnchor);
+        qs.system.setTextEditExtraSelectionCursor(selection, cursor);
+        return selection;
+    }
+
+     matchLeftParenthesis = function(currentBlock, i, numLeftParentheses)
+     {
+         var infos = currentBlock.userData();
+
+         docPos = currentBlock.position();
+         for (; i < infos.length; ++i) {
+
+             if (infos[i].char === '(') {
+                 ++numLeftParentheses;
+                 continue;
+             }
+
+             if (infos[i].char === ')' && numLeftParentheses === 0) {
+                 return docPos + infos[i].pos;
+             } else {
+                 --numLeftParentheses;
+             }
+         }
+
+         currentBlock = currentBlock.next();
+         if (currentBlock.isValid()) {
+             return matchLeftParenthesis(currentBlock, 0, numLeftParentheses);
+         }
+
+         return false;
+     }
+
+     matchRightParenthesis = function(currentBlock, i, numRightParentheses)
+     {
+         var infos = currentBlock.userData();
+
+         docPos = currentBlock.position();
+         for (; i > -1 && infos.length > 0; --i) {
+             if (infos[i].char === ')') {
+                 ++numRightParentheses;
+                 continue;
+             }
+             if (infos[i].char === '(' && numRightParentheses === 0) {
+                 return docPos + infos[i].pos;
+             } else {
+                 --numRightParentheses;
+             }
+         }
+
+         currentBlock = currentBlock.next();
+         if (currentBlock.isValid()) {
+             return matchRightParenthesis(currentBlock, 0, numRightParentheses);
+         }
+
+         return false;
+     }
+
+    return function(editor) {
+        try{
+            var selections = editor.extraSelections();
+            var textCursor = editor.textCursor();
+            var userData = textCursor.block().userData();
+            var curPos = textCursor.position() - textCursor.block().position();
+            if (userData) {
+                for (var i = userData.length-1; i>=0; --i) {
+                    if ((userData[i].pos == (curPos - 1)) && (userData[i].char == '(')) {
+                        var matchedLeft = matchLeftParenthesis(textCursor.block(), i + 1, 0);
+                        if (matchedLeft !== false) {
+                            selections.push(createSelectionForPos(editor, matchedLeft));
+                            selections.push(createSelectionForPos(editor, textCursor.block().position() + userData[i].pos));
+                        }
+                    } else if (userData[i].pos == curPos - 1 && userData[i].char == ')') {
+                        var matchedRight = matchRightParenthesis(textCursor.block(), i - 1, 0);
+                        if (matchedRight !== false) {
+                            selections.push(createSelectionForPos(editor, matchedRight));
+                            selections.push(createSelectionForPos(editor, textCursor.block().position() + userData[i].pos));
+                        }
+                    }
+
+                }
+            }
+            editor.setExtraSelections(selections);
+        } catch(e) {
+            console.error(e);
+        }
+    }
+})();
+
+
+editorPlugin.editorOpened.connect(
+    this,
+    function (editor) {
+        editor.cursorPositionChanged.connect(this, function(){
+            matchingParensHighlighter(editor);
+        });
+    }
+);

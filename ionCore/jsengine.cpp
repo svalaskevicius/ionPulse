@@ -10,6 +10,8 @@
 #include <QProcess>
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include <QTextEdit>
+
 
 namespace IonCore {
 
@@ -104,6 +106,27 @@ QScriptValue jsDebug(QScriptContext *context, QScriptEngine *engine)
     return engine->nullValue();
 }
 
+QScriptValue getTextEditExtraSelectionCursor(QScriptContext *context, QScriptEngine *engine)
+{
+   QTextEdit::ExtraSelection *selection = qscriptvalue_cast<QTextEdit::ExtraSelection*>(context->argument(0));
+   return qScriptValueFromValue(context->engine(), selection->cursor);
+}
+QScriptValue setTextEditExtraSelectionCursor(QScriptContext *context, QScriptEngine *engine)
+{
+   qscriptvalue_cast<QTextEdit::ExtraSelection*>(context->argument(0))->cursor = qscriptvalue_cast<QTextCursor>(context->argument(1));
+   return engine->nullValue();
+}
+
+QScriptValue getTextEditExtraSelectionFormat(QScriptContext *context, QScriptEngine *engine)
+{
+   QTextEdit::ExtraSelection *selection = qscriptvalue_cast<QTextEdit::ExtraSelection*>(context->argument(0));
+   return qScriptValueFromValue(context->engine(), selection->format);
+}
+QScriptValue setTextEditExtraSelectionFormat(QScriptContext *context, QScriptEngine *engine)
+{
+   qscriptvalue_cast<QTextEdit::ExtraSelection*>(context->argument(0))->format = qscriptvalue_cast<QTextCharFormat>(context->argument(1));
+   return engine->nullValue();
+}
 
 JsEngine::JsEngine()
 {
@@ -148,6 +171,10 @@ void JsEngine::initialiseJsFramework()
     script.setProperty("include", scriptEngine.newFunction(IonCore::Private::includeScript));
     // add the importExtension functionality to qt.script.importExtension
     script.setProperty("importExtension", scriptEngine.newFunction(IonCore::Private::importExtension));
+    system.setProperty("getTextEditExtraSelectionCursor", scriptEngine.newFunction(IonCore::Private::getTextEditExtraSelectionCursor));
+    system.setProperty("setTextEditExtraSelectionCursor", scriptEngine.newFunction(IonCore::Private::setTextEditExtraSelectionCursor));
+    system.setProperty("getTextEditExtraSelectionFormat", scriptEngine.newFunction(IonCore::Private::getTextEditExtraSelectionFormat));
+    system.setProperty("setTextEditExtraSelectionFormat", scriptEngine.newFunction(IonCore::Private::setTextEditExtraSelectionFormat));
 }
 
 
@@ -173,3 +200,8 @@ bool AppShortcut::eventFilter(QObject *obj, QEvent *event)
 
 }
 }
+
+
+Q_DECLARE_METATYPE(QTextCursor)
+Q_DECLARE_METATYPE(QTextCharFormat)
+Q_DECLARE_METATYPE(QTextEdit::ExtraSelection*)

@@ -27,6 +27,27 @@ namespace IonEditor {
 namespace Private {
 
 
+
+QScriptValue jsTextBlockUserDataToScriptValue(QScriptEngine *engine, QTextBlockUserData* const &in)
+{
+    if (!in) {
+        return engine->nullValue();
+    }
+    JsTextBlockUserData *conv = dynamic_cast<JsTextBlockUserData*>(in);
+    if (!conv) {
+        DEBUG_MSG("wrong user data is being converted to js:"<<in);
+        return engine->nullValue();
+    }
+    return conv->value;
+}
+
+void jsTextBlockUserDataFromScriptValue(const QScriptValue &object, QTextBlockUserData* &out)
+{
+    JsTextBlockUserData *conv = new JsTextBlockUserData();
+    conv->value = object;
+    out = conv;
+}
+
 struct JsHighlighterFactory : virtual public IonEditor::HighlighterFactory {
     QScriptEngine *engine;
     QScriptValue function;
@@ -271,6 +292,7 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
 {
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<Editor>, qObjectPtrFromScriptValue<Editor>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<JsSyntaxHighlighter>, qObjectPtrFromScriptValue<JsSyntaxHighlighter>);
+    qScriptRegisterMetaType(&jsEngine, jsTextBlockUserDataToScriptValue, jsTextBlockUserDataFromScriptValue);
 
     QScriptValue editorPlugin = jsEngine.newQObject(this);
     jsEngine.globalObject().setProperty("editorPlugin", editorPlugin);

@@ -86,3 +86,9 @@ for (var i = 0; i < importFailures.length; i++) {
 
 
 
+QTextEdit_ExtraSelection.prototype.format = function() {
+    return qs.system.getTextEditExtraSelectionFormat(this);
+}
+QTextEdit_ExtraSelection.prototype.setFormat = function(format) {
+    return qs.system.setTextEditExtraSelectionFormat(this, format);
+}

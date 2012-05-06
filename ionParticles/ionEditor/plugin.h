@@ -11,6 +11,7 @@
 
 #include <QObject>
 #include <QScopedPointer>
+#include <QTextBlockUserData>
 
 #include <ionParticles/ionLayout/layoutapi.h>
 
@@ -97,14 +98,26 @@ public:
     {
         QSyntaxHighlighter::setFormat(start, count, format);
     }
+
+    Q_INVOKABLE void setCurrentBlockUserData ( QTextBlockUserData * data )
+    {
+        QSyntaxHighlighter::setCurrentBlockUserData(data);
+    }
 };
 
+
+class JsTextBlockUserData : public QTextBlockUserData
+{
+public:
+    QScriptValue value;
+};
 
 }
 }
 
 Q_DECLARE_METATYPE(IonEditor::Editor*)
 Q_DECLARE_METATYPE(IonEditor::Private::JsSyntaxHighlighter*)
+Q_DECLARE_METATYPE(QTextBlockUserData*)
 
 #endif // IONEDITOR_H
 
