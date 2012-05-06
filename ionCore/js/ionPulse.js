@@ -21,18 +21,27 @@ console.log("ionPulse.js initialised");
 
 Suggestions = function(editor)
 {
-    QListView.call(this, editor);
+    QListWidget.call(this, editor);
     this.setProperty('type', 'editor-suggestions');
     this.shortcut = qs.system.installAppShortcut(Qt.Key_Space, Qt.MetaModifier, editor);
     this.shortcut.callback.connect(
         this,
         function() {
             try {
+                this.shortcut_close = qs.system.installAppShortcut(Qt.Key_Escape, Qt.NoModifier, editor);
+                this.shortcut_close.callback.connect(this, this.onCloseRequested);
+                this.shortcut_down = qs.system.installAppShortcut(Qt.Key_Down, Qt.NoModifier, editor);
+                this.shortcut_down.callback.connect(this, this.onKeyDown);
+                this.shortcut_up = qs.system.installAppShortcut(Qt.Key_Up, Qt.NoModifier, editor);
+                this.shortcut_up.callback.connect(this, this.onKeyUp);
+                this.shortcut_enter = qs.system.installAppShortcut(Qt.Key_Enter, Qt.NoModifier, editor);
+                this.shortcut_enter.callback.connect(this, this.onSubmit);
+                this.shortcut_return = qs.system.installAppShortcut(Qt.Key_Return, Qt.NoModifier, editor);
+                this.shortcut_return.callback.connect(this, this.onSubmit);
+
                 var origin = editor.cursorRect(editor.textCursor()).bottomLeft();
                 this.move(origin.x(), origin.y());
                 this.show();
-                this.shortcut_close = qs.system.installAppShortcut(Qt.Key_Escape, Qt.NoModifier, editor);
-                this.shortcut_close.callback.connect(this, this.onCloseRequested);
              } catch(e) {
                  console.error(e);
              }
@@ -41,17 +50,55 @@ Suggestions = function(editor)
 
 }
 
-
-Suggestions.prototype = new QListView();
+Suggestions.prototype = new QListWidget();
 
 Suggestions.prototype.onCloseRequested = function() {
     try {
-        this.shortcut_close.callback.disconnect(this, this.onCloseRequested);
-        this.shortcut_close = null;
-        this.hide();
+        this._hide();
      } catch(e) {
          console.error(e);
      }
+}
+Suggestions.prototype.onKeyDown = function() {
+    try {
+        if (this.currentRow < this.count-1) {
+            this.currentRow++;
+        }
+     } catch(e) {
+         console.error(e);
+     }
+}
+Suggestions.prototype.onKeyUp = function() {
+    try {
+        if (this.currentRow > 0) {
+            this.currentRow--;
+        }
+     } catch(e) {
+         console.error(e);
+     }
+}
+Suggestions.prototype.onSubmit = function() {
+    try {
+        if (this.currentRow >= 0) {
+            console.log(this.item(this.currentRow).text());
+        }
+        this._hide();
+     } catch(e) {
+         console.error(e);
+     }
+}
+Suggestions.prototype._hide = function() {
+    this.shortcut_close.disable();
+    this.shortcut_close = null;
+    this.shortcut_down.disable();
+    this.shortcut_down = null;
+    this.shortcut_up.disable();
+    this.shortcut_up = null;
+    this.shortcut_enter.disable();
+    this.shortcut_enter = null;
+    this.shortcut_return.disable();
+    this.shortcut_return = null;
+    this.hide();
 }
 
 
@@ -63,6 +110,9 @@ editorPlugin.editorOpened.connect(
             editor.tabStopWidth = 30;
             editor.textOptionFlags |= 1; // | 2;// | 4;
             var suggestions = new Suggestions(editor);
+            for (var i = 0; i < 100; i++) {
+                suggestions.addItem("test "+i);
+            }
         } catch(e) {
             console.error(e);
         }

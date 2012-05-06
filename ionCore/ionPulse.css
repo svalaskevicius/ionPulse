@@ -1166,7 +1166,7 @@ QToolBar:separator{
 
 
 
-QListView[type="editor-suggestions"]{
+QListWidget[type="editor-suggestions"]{
     background-color: rgba(50, 65, 65, 75%);
     border: 1px solid rgba(79, 79, 79, 80%);
 }

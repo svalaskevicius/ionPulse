@@ -36,6 +36,8 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 signals:
     void callback();
+public slots:
+    void disable();
 };
 
 }
