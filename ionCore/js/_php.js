@@ -81,8 +81,7 @@ phpHighlighter = (function () {
         this.parent.initialize.call(this);
     };
 
-    PhpHighlighter.prototype.addBraketsInfo = function (from, to) {
-        var blockInfo = [];
+    PhpHighlighter.prototype.addBracketsInfo = function (from, to) {
         var re = /[\(\)\{\}\[\]]/g;
         re.lastIndex = from;
         var match;
@@ -90,7 +89,7 @@ phpHighlighter = (function () {
             match = re.exec(this._text);
             if (match) {
                 if (match.index < to) {
-                    blockInfo.push({
+                    this.blockInfo.push({
                         pos: match.index,
                         char: match[0],
                     });
@@ -99,19 +98,28 @@ phpHighlighter = (function () {
                 }
             }
         } while (match);
-
-        this._cppApi.setCurrentBlockUserData(blockInfo);
     };
 
     PhpHighlighter.prototype._hightlightState = function (state, from, to) {
         this.parent._hightlightState.call(this, state, from, to);
         if ("php" === state) {
-            this.addBraketsInfo(from, to);
+            this.addBracketsInfo(from, to);
         }
     };
 
+
+    PhpHighlighter.prototype.highlight = function (cppApi, text) {
+        this.blockInfo = [];
+
+        this.parent.highlight.call(this, cppApi, text);
+
+        this._cppApi.setCurrentBlockUserData(this.blockInfo);
+    }
+
+
     var php = new PhpHighlighter();
     php.initialize();
+
     return function (cppApi, text) {
         php.highlight(cppApi, text);
     }
