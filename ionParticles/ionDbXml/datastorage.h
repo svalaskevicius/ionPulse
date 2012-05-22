@@ -58,12 +58,52 @@ public:
         data->setParent(this);
     }
 
-    bool next() {return results.next(data->value);}
-    bool previous() {return results.previous(data->value);}
-    bool peek() {return results.peek(data->value);}
+    bool next()
+    {
+        try {
+            return results.next(data->value);
+        } catch (std::exception &e) {
+            DEBUG_MSG(e.what());
+            return false;
+        }
+    }
+    bool previous()
+    {
+        try {
+            return results.previous(data->value);
+        } catch (std::exception &e) {
+            DEBUG_MSG(e.what());
+            return false;
+        }
+    }
+    bool peek()
+    {
+        try {
+            return results.peek(data->value);
+        } catch (std::exception &e) {
+            DEBUG_MSG(e.what());
+            return false;
+        }
+    }
+    bool hasNext()
+    {
+        try {
+            return results.hasNext();
+        } catch (std::exception &e) {
+            DEBUG_MSG(e.what());
+            return false;
+        }
+    }
 
-    bool hasNext() {return results.hasNext();}
-    bool hasPrevious() {return results.hasPrevious();}
+    bool hasPrevious()
+    {
+        try {
+            return results.hasPrevious();
+        } catch (std::exception &e) {
+            DEBUG_MSG(e.what());
+            return false;
+        }
+    }
     void reset() {return results.reset();}
 
     DataValue *value() {return data;}
