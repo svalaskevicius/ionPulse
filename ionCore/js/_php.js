@@ -11,6 +11,7 @@ phpHighlighter = (function () {
     PhpHighlighter.prototype.initialize = function () {
         this.charFormatting = {
             "html":                 this.createCharFormat(Qt.lightGray, QFont.Normal, false),
+            "html/whitespace":       this.createCharFormat(new QColor(128, 100, 96), QFont.Light, false),
             "php":                  this.createCharFormat(new QColor(220, 220, 180), QFont.Normal, false),
             "php/constructs":       this.createCharFormat(new QColor(255, 255, 127), QFont.Bold, true),
             "php/number":           this.createCharFormat(Qt.red, QFont.Normal, false),
@@ -75,7 +76,11 @@ phpHighlighter = (function () {
                 "variable":         /\$[a-z_][a-z0-9_]*/ig,
                 "property":         /->[a-z_][a-z0-9_]*/ig,
                 "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&/g,
+            },
+            "html": {
+                "whitespace":       /\s+/g,
             }
+
         };
 
         this.parent.initialize.call(this);
