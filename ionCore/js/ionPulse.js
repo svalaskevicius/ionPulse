@@ -150,6 +150,18 @@ editorPlugin.editorOpened.connect(
             editor.tabStopWidth = 30;
             editor.textOptionFlags |= 1; // | 2;// | 4;
             var suggestions = new Suggestions(editor);
+            var shortcut_fixText = qs.system.installAppShortcut(Qt.Key_F, Qt.ControlModifier | Qt.ShiftModifier, editor);
+            shortcut_fixText.setParent(editor);
+            shortcut_fixText.callback.connect(editor, function(){
+                this.selectAll();
+                this.insertPlainText(
+                    this.document().toPlainText()
+                         .replace(/^[ \t]+/gm, function($0){ return $0.replace(/\t/g,"    "); })
+                         .replace(/[ \t]+$/gm, "")
+                         .replace("\r\n", "\n")
+                );
+            });
+
         } catch(e) {
             console.error(e);
         }
