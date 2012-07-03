@@ -98,7 +98,7 @@ const
     else
         parentItem = getItem(parent);
 
-    TreeItem *childItem = parentItem->getChild(row);
+    TreeItem *childItem = parentItem->getVisibleChildByNr(row);
     if (childItem)
         return createIndex(row, column, childItem);
     else
@@ -130,7 +130,7 @@ int TreeModelAdapter::rowCount(const QModelIndex &index) const
     else
         item = getItem(index);
 
-    return item->childrenCount();
+    return item->visibleChildrenCount();
 }
 
 void TreeModelAdapter::filter(QString filter) {
@@ -142,8 +142,8 @@ TreeItem* TreeModelAdapter::getItem(const QModelIndex &index) const
 {
     TreeItem *item = getDirectItem(index);
 
-    while (1 == item->childrenCount()) {
-        item = item->getChild(0);
+    while (1 == item->visibleChildrenCount()) {
+        item = item->getVisibleChildByNr(0);
     }
     return item;
 }

@@ -50,7 +50,7 @@ void PhpTreeModelSourceDecorator::decorateNode(IonProject::TreeItem *node)
 void PhpTreeModelSourceDecorator::addPhpFileInfo(IonProject::TreeItem *node, QString path)
 {
     try {
-        if (node->childrenCount()) {
+        if (node->getChildren().count()) {
             node->clearChildren();
         }
 

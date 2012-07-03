@@ -59,7 +59,7 @@ void TreeItemImpl::appendChild(TreeItem *item)
     childItems.append(item);
 }
 
-TreeItem *TreeItemImpl::getChild(int row)
+TreeItem *TreeItemImpl::getVisibleChildByNr(int row)
 {
     int current = 0;
     foreach (TreeItem* child, childItems) {
@@ -73,7 +73,7 @@ TreeItem *TreeItemImpl::getChild(int row)
     throw std::out_of_range("children size reached");
 }
 
-int TreeItemImpl::childrenCount() const
+int TreeItemImpl::visibleChildrenCount() const
 {
     int current = 0;
     foreach (TreeItem* child, childItems) {

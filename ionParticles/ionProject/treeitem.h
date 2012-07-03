@@ -24,7 +24,7 @@ public:
     QVariant data(int column) const;
     int getRowNr();
     TreeItem *parent();
-    virtual int childrenCount() const;
+    virtual int visibleChildrenCount() const;
     virtual void filter(QString const filter);
     bool isVisible() const {return visible;}
     QString getPath() const {return path;}
@@ -32,10 +32,10 @@ public:
     virtual void setFullVisibility(bool visible);
 
     virtual void appendChild(TreeItem *item);
-    virtual TreeItem *getChild(int getRowNr);
+    virtual TreeItem *getVisibleChildByNr(int getRowNr);
     virtual QList<TreeItem*> &getChildren() {return childItems;}
     virtual void clearChildren();
-    virtual int getChildRowNr(TreeItem *getChild);
+    virtual int getChildRowNr(TreeItem *getVisibleChildByNr);
     virtual const QString &getItemClass() const {return itemClass;}
 private:
     QString itemClass;

@@ -49,7 +49,7 @@ public:
     /**
      * \brief Retrieve the count of children items,
      */
-    virtual int childrenCount() const = 0;
+    virtual int visibleChildrenCount() const = 0;
 
     /**
      * \brief Retrieve a list of children assigned to this TreeItem.
@@ -112,7 +112,7 @@ public:
     /**
      * \brief Retrieve the child from the specified position.
      */
-    virtual TreeItem *getChild(int rowNr) = 0;
+    virtual TreeItem *getVisibleChildByNr(int rowNr) = 0;
 
     /**
      * \brief Retrieve child position amongst its siblings given its address location.

@@ -44,7 +44,7 @@ public:
     MOCK_CONST_METHOD1(data, QVariant (int column));
     MOCK_METHOD0(getRowNr, int ());
     MOCK_METHOD0(parent, IonProject::TreeItem * ());
-    MOCK_CONST_METHOD0(childrenCount, int ());
+    MOCK_CONST_METHOD0(visibleChildrenCount, int ());
     MOCK_CONST_METHOD0(getChildren, const QList<IonProject::TreeItem*> &());
     MOCK_CONST_METHOD0(isVisible, bool ());
     MOCK_CONST_METHOD0(getPath, QString ());
@@ -52,7 +52,7 @@ public:
     MOCK_METHOD1(filter, void(QString));
 
     MOCK_METHOD1(appendChild, void(IonProject::TreeItem*));
-    MOCK_METHOD1(getChild, IonProject::TreeItem*(int));
+    MOCK_METHOD1(getVisibleChildByNr, IonProject::TreeItem*(int));
     MOCK_METHOD1(getChildRowNr, int(IonProject::TreeItem*));
 };
 
