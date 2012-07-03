@@ -103,7 +103,12 @@ int main(int argc, char *argv[])
         jsEngine.getScriptEngine().globalObject().setProperty("window", jsEngine.getScriptEngine().newQObject(&mainWindow));
         jsEngine.loadFile(baseDir+"/js/ionPulse.js");
 
-
+#if defined(Q_OS_MAC)
+        QWidgetList widgets = mainWindow.findChildren<QWidget*>();
+        foreach(QWidget* widget, widgets) {
+            widget->setAttribute(Qt::WA_MacShowFocusRect, false);
+        }
+#endif
         mainWindow.show();
         return app.exec();
     } catch (QString &msg) {
