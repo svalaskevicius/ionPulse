@@ -8,6 +8,7 @@
 
 #include "plugin.h"
 
+#include <QtCore>
 #include <QtPlugin>
 #include "editorwidget.h"
 #include "editorwidgetfactory.h"
@@ -267,6 +268,8 @@ void Plugin::openFile(QString path, int line)
 void Plugin::focusFileEditor(Editor *editor)
 {
     _focusedEditor = editor;
+    emit editorFocused(editor);
+
 }
 
 void Plugin::closeFileEditor(Editor *editor)
@@ -300,6 +303,10 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
     jsEngine.globalObject().setProperty("registerFileType", jsEngine.newFunction(IonEditor::Private::registerJsFileType));
 }
 
+QObject *Plugin::asQObject()
+{
+    return this;
+}
 
 }
 }

@@ -293,6 +293,8 @@ public:
      * \brief Retrieve currently active Editor instance, or NULL, if none is active.
      */
     virtual Editor *getCurrentEditor() = 0;
+
+    virtual QObject *asQObject() = 0;
 };
 
 

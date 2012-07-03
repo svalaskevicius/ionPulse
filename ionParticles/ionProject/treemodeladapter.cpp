@@ -12,6 +12,7 @@
 
 #include "treeitem.h"
 #include "treemodeladapter.h"
+#include <ionCore/shared.h>
 
 namespace IonProject {
 namespace Private {
@@ -42,13 +43,18 @@ void TreeModelAdapter::setDirectoryTreeSource(QSharedPointer<TreeModelSource> so
 
 void TreeModelAdapter::updateFromSource()
 {
+    beginResetModel();
     TreeItem *oldRoot = rootItem;
     rootItem = source->setupData();
     if (oldRoot && (rootItem != oldRoot)) {
         delete oldRoot;
     }
     modelTitle = source->getTitle();
-    reset();
+    endResetModel();
+
+    foreach (TreeItem *c, rootItem->getChildren()) {
+        DEBUG_MSG(c->getPath());
+    }
 }
 
 int TreeModelAdapter::columnCount(const QModelIndex &) const
@@ -134,8 +140,9 @@ int TreeModelAdapter::rowCount(const QModelIndex &index) const
 }
 
 void TreeModelAdapter::filter(QString filter) {
+    beginResetModel();
     rootItem->filter(filter);
-    reset();
+    endResetModel();
 }
 
 TreeItem* TreeModelAdapter::getItem(const QModelIndex &index) const

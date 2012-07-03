@@ -15,6 +15,8 @@
 #include "projectapi.h"
 #include "treemodeladapter.h"
 
+#include <ionParticles/ionEditor/editorapi.h>
+
 namespace IonProject {
 
 namespace Private {
@@ -36,10 +38,15 @@ signals:
     void fileActivated(QString filename, int line);
     void filterKeyPressed(int key);
 public slots:
+    void expandToPath(QString path);
+    void fileEditorFocused(IonEditor::Editor*);
 protected slots:
     void onItemActivated(const QModelIndex &index);
     void onFilterTextChanged(const QString & text);
     void updateScrollArea(const QModelIndex &index);
+protected:
+    void _expandToPath(QString path, const QModelIndex &parent);
+
 };
 
 

@@ -66,12 +66,44 @@ void TreeView::onFilterTextChanged ( const QString & text ) {
 void TreeView::updateScrollArea( const QModelIndex &index )
 {
     resizeColumnToContents( index.column() );
+    DEBUG_MSG("RES: "<< index.column()<<columnWidth(0) << width());
 }
 
 void TreeView::reset()
 {
-    resizeColumnToContents(0);
     QTreeView::reset();
+//    expandToPath("/Volumes/Disk Image/Disclosure_Varnish/src/app/code/community/Model/");
+    resizeColumnToContents(0);
+}
+
+
+void TreeView::fileEditorFocused(IonEditor::Editor* editor)
+{
+    DEBUG_MSG("expanding"<<editor->getFilePath());
+    expandToPath(editor->getFilePath());
+}
+
+void TreeView::expandToPath(QString path)
+{
+    QModelIndex parent;
+    _expandToPath(path, parent);
+}
+
+void TreeView::_expandToPath(QString path, const QModelIndex &parent)
+{
+    int rowCount = _fiModel->rowCount(parent);
+    for (int i = 0; i < rowCount; i++) {
+        QModelIndex child = _fiModel->index(i, 0, parent);
+        QString childPath = _fiModel->getItem(child)->getPath();
+        if (path.startsWith(childPath)) {
+            expand(child);
+            selectionModel()->clear();
+            selectionModel()->select(child, QItemSelectionModel::Select);
+            if (path != childPath) {
+                _expandToPath(path, child);
+            }
+        }
+    }
 }
 
 }

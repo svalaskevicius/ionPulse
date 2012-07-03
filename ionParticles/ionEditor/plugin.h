@@ -42,6 +42,8 @@ public:
     }
     virtual void addParent(BasicPlugin *parent);
     EditorWidgetBuilder *getEditorWidgetBuilder();
+    virtual QObject *asQObject();
+
 private:
     QScopedPointer<Private::EditorWidgetBuilderImpl> _editorWidgetFactory;
     IonLayout::LayoutManager *_layoutManager;
@@ -54,7 +56,8 @@ public:
     QMap<QString, Editor *> getOpenedFiles();
 
 signals:
-    void editorOpened(QPlainTextEdit *editor);
+    void editorOpened(IonEditor::Editor *editor);
+    void editorFocused(IonEditor::Editor *editor);
 public slots:
     void openFile(QString path, int line);
     void closeFileEditor(Editor *editor);
