@@ -34,7 +34,7 @@ DataStorageImpl::DataStorageImpl() {
         throw std::runtime_error(QString("Environment open failed: %1").arg(db_strerror(ret)).toStdString());
     }
 
-    bdb_env->set_cachesize(bdb_env, 0, 1024*1024*1024, 1);
+    bdb_env->set_cachesize(bdb_env, 0, 64*1024*1024, 1);
     bdb_env->set_errpfx(bdb_env, "BDB XML");
     bdb_env->set_errfile(bdb_env, stderr);
     bdb_env->mutex_set_increment(bdb_env, 5000);
