@@ -46,6 +46,7 @@ protected slots:
     void updateScrollArea(const QModelIndex &index);
 protected:
     void _expandToPath(QString path, const QModelIndex &parent);
+    bool _isModelIndexDescendant(const QModelIndex &parent, const QModelIndex &descendantInQuestion);
 
 };
 

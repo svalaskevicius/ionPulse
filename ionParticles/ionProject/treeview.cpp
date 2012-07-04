@@ -97,13 +97,28 @@ void TreeView::_expandToPath(QString path, const QModelIndex &parent)
         QString childPath = _fiModel->getItem(child)->getPath();
         if (path.startsWith(childPath)) {
             expand(child);
-            selectionModel()->clear();
-            selectionModel()->select(child, QItemSelectionModel::Select);
-            if (path != childPath) {
+            if (path == childPath) {
+                if (!_isModelIndexDescendant(child, selectionModel()->currentIndex())) {
+                    selectionModel()->clear();
+                    selectionModel()->setCurrentIndex(child, QItemSelectionModel::SelectCurrent);
+                }
+            } else {
                 _expandToPath(path, child);
             }
         }
     }
+}
+
+bool TreeView::_isModelIndexDescendant(const QModelIndex &parent, const QModelIndex &descendantInQuestion)
+{
+    QModelIndex current = descendantInQuestion;
+    while (current.isValid()) {
+        if (current == parent) {
+            return true;
+        }
+        current = current.parent();
+    }
+    return false;
 }
 
 }
