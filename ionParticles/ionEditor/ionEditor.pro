@@ -32,7 +32,7 @@ SOURCES += \
     filetreewidget.cpp \
     searchpanel.cpp
 
-target.path += "$${INSTALL_DIR}/plugins/"
+target.path += "$${PLUGIN_TARGET_DIR}"
 INSTALLS += target
 
 

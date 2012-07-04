@@ -13,7 +13,9 @@ VERSION = 0.1.0
 QT       += core script
 TARGET = ionDbXml
 INCLUDEPATH += ../.. /opt/berkeleyDbXml/include
-LIBS += -L/opt/berkeleyDbXml/lib -ldbxml-2.5 -ldb-4.8
+LIBS += -L/opt/berkeleyDbXml/lib -ldbxml -ldb-4.8 -lxqilla -lxerces-c
+# note: tuned for macos to link bdb xml statically
+mac:LIBS += -framework CoreFoundation -framework CoreServices
 
 HEADERS += \
     plugin.h \
@@ -26,7 +28,7 @@ SOURCES += \
     datastorage.cpp
 
 
-target.path += "$${INSTALL_DIR}/plugins/"
+target.path += "$${PLUGIN_TARGET_DIR}"
 INSTALLS += target
 
 

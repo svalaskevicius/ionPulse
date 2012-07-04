@@ -18,6 +18,11 @@ isEmpty(IDE_BUILD_TREE) {
     IDE_BUILD_TREE ~= s,$$re_escape($$sub_dir)$,,
 }
 INSTALL_DIR = $$IDE_BUILD_TREE/bin
+APPLICATION_NAME = ionPulse
+PLUGIN_TARGET_DIR = "$${INSTALL_DIR}/plugins/"
+mac:PLUGIN_TARGET_DIR = "$${INSTALL_DIR}/$${APPLICATION_NAME}.app/plugins/"
+APP_TARGET_DIR = "$${INSTALL_DIR}/"
+mac:APP_TARGET_DIR = "$${INSTALL_DIR}/$${APPLICATION_NAME}.app/"
 
 #CONFIG += exceptions
 #QMAKE_CXXFLAGS += -std=c++0x

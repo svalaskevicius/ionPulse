@@ -33,7 +33,7 @@ SOURCES += tst_iontest.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
-target.path += "$${INSTALL_DIR}/plugins/"
+target.path += "$${PLUGIN_TARGET_DIR}/"
 INSTALLS += target
 
 HEADERS += \

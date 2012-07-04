@@ -7,13 +7,13 @@ include (../ionPulse.pri)
 
 QT       += core gui widgets script scripttools
 
-TARGET = ionCore
+TARGET = $${APPLICATION_NAME}
 TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
         pluginloader.cpp \
-    jsengine.cpp
+        jsengine.cpp
 
 HEADERS  += mainwindow.h \
     shared.h \
@@ -32,11 +32,11 @@ OTHER_FILES += \
 target.path += "$${INSTALL_DIR}"
 INSTALLS += target
 
-distrib_css.path = "$${INSTALL_DIR}"
+distrib_css.path = "$${APP_TARGET_DIR}"
 distrib_css.files += ionPulse.css
-distrib_js.path = "$${INSTALL_DIR}"
+distrib_js.path = "$${APP_TARGET_DIR}"
 distrib_js.files += js
-js_plugins.path = "$${INSTALL_DIR}/plugins/"
+js_plugins.path = "$${PLUGIN_TARGET_DIR}/"
 js_plugins.files = ../lib/qtscriptgenerator/plugins/script/
 INSTALLS += distrib_css distrib_js js_plugins
 

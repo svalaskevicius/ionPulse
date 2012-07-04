@@ -66,7 +66,6 @@ QString getBaseDir()
         if (baseDir.dirName() == "MacOS") {
             baseDir.cdUp();
             baseDir.cdUp();
-            baseDir.cdUp();
         }
     #endif
 
