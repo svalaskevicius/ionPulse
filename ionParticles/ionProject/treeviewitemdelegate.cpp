@@ -53,7 +53,8 @@ QSize TreeViewItemDelegate::sizeHint ( const QStyleOptionViewItem & option, cons
     initStyleOption(&opt, index);
 
     QVector<TreeItem*> range = treeModel->getRangeItems(index);
-    ret.setWidth( (8+opt.fontMetrics.width(opt.text) ) * (range.size() - 1) );
+    const char s[] = {(const char)0xc2, (const char)0xbb, 0x00};// right double angle
+    ret.setWidth( (8+opt.fontMetrics.width(QString::fromUtf8(s)) ) * (range.size()) );
     ret.setHeight(opt.fontMetrics.height());
     foreach (TreeItem *current, range) {
         ret.setWidth(ret.width() + opt.fontMetrics.width(current->data(0).toString()));
