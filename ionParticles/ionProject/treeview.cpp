@@ -17,6 +17,8 @@ namespace Private {
 TreeView::TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent) :
     QTreeView(parent), _fiModel(dataModel)
 {
+    setHeaderHidden(true);
+
     setIndentation(15);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->setModel(_fiModel.data());
@@ -66,13 +68,11 @@ void TreeView::onFilterTextChanged ( const QString & text ) {
 void TreeView::updateScrollArea( const QModelIndex &index )
 {
     resizeColumnToContents( index.column() );
-    DEBUG_MSG("RES: "<< index.column()<<columnWidth(0) << width());
 }
 
 void TreeView::reset()
 {
     QTreeView::reset();
-//    expandToPath("/Volumes/Disk Image/Disclosure_Varnish/src/app/code/community/Model/");
     resizeColumnToContents(0);
 }
 

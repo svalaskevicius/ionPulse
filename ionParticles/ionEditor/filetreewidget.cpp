@@ -17,7 +17,7 @@ FileTreeWidget::FileTreeWidget(QWidget *parent) :
 {
     // todo: add filtering, and move qtreeview to subelement
     _fiModel = new QFileSystemModel(this);
-   // _fiModel->setNameFilters(QStringList() << "*.php");
+    // _fiModel->setNameFilters(QStringList() << "*.php");
     _fiModel->setNameFilterDisables(false);
     _fiModel->setRootPath(QDir::homePath());
     this->setModel(_fiModel);
@@ -26,6 +26,7 @@ FileTreeWidget::FileTreeWidget(QWidget *parent) :
         this->setColumnHidden(i, true);
     }
     connect(this, SIGNAL(activated( QModelIndex )), this, SLOT(onItemActivated( QModelIndex )));
+    setHeaderHidden(true);
     setWindowTitle("File Browser");
 }
 
