@@ -3,7 +3,7 @@ ionPulse IDE
 
 The goal of the project is to create a fast, fully functional IDE, extendable and customisable by developers using it.
 
-To achieve this goal, the Qt framework is chosen as it provides a native implementation across multiple platforms. Look & Feel of Qt projects is both suitable for the platform it is executed on and is also customisable using the widely known CSS standard. The flexibility is achieved by providing Javascript bindings to both the IDE plugins (C++) and the whole Qt framework.
+To achieve this goal, the Qt framework is chosen as it provides a native implementation across multiple platforms. The Look & Feel of Qt projects is both suitable for the platform it is executed on and is also customisable using the widely known CSS standard. The flexibility is achieved by providing Javascript bindings to both the IDE plugins (C++) and the whole Qt framework.
 
 Current state
 -------------
