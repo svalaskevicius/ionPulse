@@ -2,16 +2,17 @@ ionPulse IDE
 ============
 
 The goal of the project is to create a fast, fully functional IDE, extendable and customisable by developers using it.
-To achieve this goal, the Qt framework is chosen as it provides a native implementation across multiple platforms with look&feel both suitable for the platform it is executed on and also customisable using widely known CSS standard. The flexibility is achieved by providing Javascript bindings to the IDE plugins and whole Qt framework.
+
+To achieve this goal, the Qt framework is chosen as it provides a native implementation across multiple platforms. Look & Feel of Qt projects is both suitable for the platform it is executed on and is also customisable using the widely known CSS standard. The flexibility is achieved by providing Javascript bindings to both the IDE plugins (C++) and the whole Qt framework.
 
 Current state
 -------------
 
 ionPulse IDE currently supports:
 * parsing PHP code into AST database (Berkeley DB XML), which is accessible both from C++ and Javascript code;
-* providing a /filterable/ project tree, consisting of directories, files, php classes and methods, allowing direct jumps to a file location, defining those elements;
-* Editor functionality, which is mostly extended using Javascript. E.g. syntax highlighting for PHP is fully implemented in Javascript;
-* Javascript console (which itself is implemented using Javascript), allowing to quickly execute one-line javascript operations, not predefined anywhere in the IDE.
+* providing a /filterable/ project tree, consisting of directories, files, php classes and methods, allowing quick and easy code navigation;
+* file editor functionality, which is mostly extended using Javascript. E.g. syntax highlighting for PHP is fully implemented in Javascript;
+* Javascript console (which itself is implemented using Javascript), allowing to execute javascript operations on the fly, allowing to define and use macros, keybindings, with functional capabilities of the underlying framework.
 
 
 Todo
