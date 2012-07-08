@@ -6,26 +6,59 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
+var toColor = function(hex) {
+    return new QColor(parseInt(hex, 16));
+};
+var solarizedColor = function(code) {
+    var solarizedPallete = {
+        'base03' : {'sRGB': "002b36", 'genRGB': "042028", 'c256': "1c1c1c", 'c16': "brightblack"  , 'c8': 'black'},
+        'base02' : {'sRGB': "073642", 'genRGB': "0a2832", 'c256': "262626", 'c16': "black"        , 'c8': 'black'},
+        'base01' : {'sRGB': "586e75", 'genRGB': "465a61", 'c256': "585858", 'c16': "brightgreen"  , 'c8': 'green'},
+        'base00' : {'sRGB': "657b83", 'genRGB': "52676f", 'c256': "626262", 'c16': "brightyellow" , 'c8': 'yellow'},
+        'base0'  : {'sRGB': "839496", 'genRGB': "708183", 'c256': "808080", 'c16': "brightblue"   , 'c8': 'blue'},
+        'base1'  : {'sRGB': "93a1a1", 'genRGB': "81908f", 'c256': "8a8a8a", 'c16': "brightcyan"   , 'c8': 'cyan'},
+        'base2'  : {'sRGB': "eee8d5", 'genRGB': "e9e2cb", 'c256': "e4e4e4", 'c16': "white"        , 'c8': 'white'},
+        'base3'  : {'sRGB': "fdf6e3", 'genRGB': "fcf4dc", 'c256': "ffffd7", 'c16': "brightwhite"  , 'c8': 'white'},
+        'yellow' : {'sRGB': "b58900", 'genRGB': "a57705", 'c256': "af8700", 'c16': "yellow"       , 'c8': 'yellow'},
+        'orange' : {'sRGB': "cb4b16", 'genRGB': "bd3612", 'c256': "d75f00", 'c16': "brightred"    , 'c8': 'red'},
+        'red'    : {'sRGB': "dc322f", 'genRGB': "c60007", 'c256': "d70000", 'c16': "red"          , 'c8': 'red'},
+        'magenta': {'sRGB': "d33682", 'genRGB': "c61b6e", 'c256': "af005f", 'c16': "magenta"      , 'c8': 'magenta'},
+        'violet' : {'sRGB': "6c71c4", 'genRGB': "5859b7", 'c256': "5f5faf", 'c16': "brightmagenta", 'c8': 'magenta'},
+        'blue'   : {'sRGB': "268bd2", 'genRGB': "2075c7", 'c256': "0087ff", 'c16': "blue"         , 'c8': 'blue'},
+        'cyan'   : {'sRGB': "2aa198", 'genRGB': "259185", 'c256': "00afaf", 'c16': "cyan"         , 'c8': 'cyan'},
+        'green'  : {'sRGB': "859900", 'genRGB': "728a05", 'c256': "5f8700", 'c16': "green"        , 'c8': 'green'},
+    };
+    if (typeof solarizedPallete[code] === 'undefined') {
+        console.error("cannot find the requested solarized color: "+code);
+        throw "cannot find the requested solarized color: "+code;
+    }
+    return toColor(solarizedPallete[code]['sRGB']);
+};
+
+
 phpHighlighter = (function () {
     var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighterFactory);
     PhpHighlighter.prototype.initialize = function () {
+
         this.charFormatting = {
-            "html":                 this.createCharFormat(Qt.lightGray, QFont.Normal, false),
-            "html/whitespace":       this.createCharFormat(new QColor(128, 100, 96), QFont.Light, false),
-            "php":                  this.createCharFormat(new QColor(220, 220, 180), QFont.Normal, false),
-            "php/constructs":       this.createCharFormat(new QColor(255, 255, 127), QFont.Bold, true),
-            "php/number":           this.createCharFormat(Qt.red, QFont.Normal, false),
-            "php/whitespace":       this.createCharFormat(new QColor(128, 100, 96), QFont.Light, false),
-            "php/keyword":          this.createCharFormat(new QColor(191, 127, 255), QFont.Bold, false),
-            "php/compileConstants": this.createCharFormat(new QColor(255, 255, 127), QFont.Bold, true),
-            "php/variable":         this.createCharFormat(new QColor(194, 158, 64), QFont.Normal, false),
-            "php/property":         this.createCharFormat(new QColor(198, 120, 44), QFont.Normal, false),
-            "php/function":         this.createCharFormat(new QColor(164, 158, 96), QFont.Normal, false),
-            "php/separator":        this.createCharFormat(new QColor(191, 255, 127), QFont.Black, false),
-            "php/comment_sl":       this.createCharFormat(new QColor(100, 100, 100), QFont.Normal, true),
-            "php/comment_ml":       this.createCharFormat(new QColor(100, 100, 100), QFont.Normal, true),
-            "php/string_dq":        this.createCharFormat(new QColor(127, 225, 127), QFont.Normal, false),
-            "php/string_sq":        this.createCharFormat(new QColor(127, 191, 127), QFont.Normal, false),
+            "html":                         this.createCharFormat(solarizedColor("base0"), QFont.Normal, false),
+            "html/whitespace":              this.createCharFormat(solarizedColor("base02"), QFont.Light, false),
+            "php":                          this.createCharFormat(solarizedColor("base0"), QFont.Normal, false),
+            "php/constructs":               this.createCharFormat(solarizedColor("orange"), QFont.Bold, true),
+            "php/number":                   this.createCharFormat(solarizedColor("red"), QFont.Normal, false),
+            "php/whitespace":               this.createCharFormat(solarizedColor("base02"), QFont.Light, false),
+            "php/keyword":                  this.createCharFormat(solarizedColor("orange"), QFont.Bold, false),
+            "php/compileConstants":         this.createCharFormat(solarizedColor("yellow"), QFont.Bold, true),
+            "php/variable":                 this.createCharFormat(solarizedColor("blue"), QFont.Normal, false),
+            "php/property":                 this.createCharFormat(solarizedColor("base2"), QFont.Normal, false),
+            "php/function":                 this.createCharFormat(solarizedColor("base2"), QFont.Normal, false),
+            "php/separator":                this.createCharFormat(solarizedColor("violet"), QFont.Black, false),
+            "php/comment_sl":               this.createCharFormat(solarizedColor("base01"), QFont.Normal, true),
+            "php/comment_ml":               this.createCharFormat(solarizedColor("base01"), QFont.Normal, true),
+            "php/comment_ml/whitespace":    this.createCharFormat(solarizedColor("base02"), QFont.Normal, true),
+            "php/string_dq":                this.createCharFormat(solarizedColor("green"), QFont.Normal, false),
+            "php/string_dq/variable":       this.createCharFormat(solarizedColor("blue"), QFont.Normal, false),
+            "php/string_sq":                this.createCharFormat(solarizedColor("cyan"), QFont.Normal, false),
         };
         this.transitions = {
             "html": {
@@ -36,7 +69,7 @@ phpHighlighter = (function () {
                 "php/comment_ml":   this.regexTransition(/\/\*/g, true),
                 "php/string_dq":    this.regexTransition(/"/g, true),
                 "php/string_sq":    this.regexTransition(/'/g, true),
-                "php/comment_sl":   this.regexTransition(/\/\//g, true),
+                "php/comment_sl":   this.regexTransition(/(\/\/|#)/g, true),
             },
             "php/comment_ml": {
                 "php":              this.regexTransition(/\*\//g, false),
@@ -55,7 +88,6 @@ phpHighlighter = (function () {
         this.highlightRules = {
             "php": {
                 "number":           /\b([0-9]+)?\.?[0-9]+\b/g,
-                "whitespace":       /\s+/g,
                 "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
                 "constructs":       new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
                                                + "|\\b(die|echo|empty|exit|eval|include|include_once|isset|list|require|require_once"
@@ -76,6 +108,13 @@ phpHighlighter = (function () {
                 "variable":         /\$[a-z_][a-z0-9_]*/ig,
                 "property":         /->[a-z_][a-z0-9_]*/ig,
                 "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&/g,
+                "whitespace":       /\s+/g,
+            },
+            "php/comment_ml": {
+                "whitespace":       /\s+/g,
+            },
+            "php/string_dq": {
+                "variable":         /\$[a-z_][a-z0-9_]*|\{\$.*?\}/ig,
             },
             "html": {
                 "whitespace":       /\s+/g,
@@ -136,12 +175,19 @@ var matchingBracketsHighlighter = (function () {
 
     var createSelectionForPos = function (editor, pos) {
             var selection = new QTextEdit_ExtraSelection();
+
             var format = selection.format();
-            var brush = new QBrush();
-            brush.setColor(Qt.black);
-            brush.setStyle(Qt.SolidPattern);
-            //format.setForeground(brush);
-            format.setBackground(brush);
+
+            var fgbrush = new QBrush();
+            fgbrush.setColor(solarizedColor("red"));
+            fgbrush.setStyle(Qt.SolidPattern);
+            format.setForeground(fgbrush);
+
+            var bgbrush = new QBrush();
+            bgbrush.setColor(Qt.black);
+            bgbrush.setStyle(Qt.SolidPattern);
+            format.setBackground(bgbrush);
+
             selection.setFormat(format);
             var cursor = editor.textCursor();
             cursor.setPosition(pos);

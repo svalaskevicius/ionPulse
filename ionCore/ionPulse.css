@@ -1034,44 +1034,44 @@ QToolBar:separator{
 
 
 QTreeView {
-    background-color: #3c4043;
+    background-color: #2c3033;
+    color: rgb(220,220,220);
     border: 0;
+    selection-background-color: transparent;
 }
 
-QTreeView:active{
-    selection-background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(80, 80, 80), stop:1 rgb(60, 60, 60));
-}
-
-QTreeView:!active{
-    selection-background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(80, 80, 80), stop:1 rgb(70, 70, 70));
-}
 
 QTreeView::item{
-    color: rgb(220,220,220);
-    border: 0px solid green;
 }
 
 QTreeView::item:alternate{
 }
 
 QTreeView::item:selected:!active{
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(70, 70, 70), stop:1 rgb(50, 50, 50));
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #555, stop:1 #444);
 }
 
 QTreeView::item:selected:active{
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(80, 80, 80), stop:1 rgb(60, 60, 60));
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #aa6611, stop:1 #774411);
 }
 
 QTreeView::item:hover{
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(80, 80, 80), stop:1 rgb(60, 60, 60));
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #aa7711, stop:1 #775511);
 }
 
-QTreeView::branch:closed:has-children:!has-siblings, QTreeView::branch:closed:has-children:has-siblings{
+QTreeView::branch:closed:has-children:!has-siblings:selected, QTreeView::branch:closed:has-children:has-siblings:selected{
 }
 
 QTreeView::branch:open:has-children:!has-siblings, QTreeView::branch:open:has-children:has-siblings{
 }
-
+/*
+QTreeView::branch:selected {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #aa6611, stop:1 #774411);
+}
+QTreeView::branch:!selected:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #aa7711, stop:1 #775511);
+}
+*/
 QTreeView::indicator{
     border: 0px solid red;
     width: 14px;
@@ -1094,9 +1094,14 @@ QTreeView::indicator:checked:disabled{
 
 
 
-QListWidget[type="editor-suggestions"]{
+QListWidget[type="editor-suggestions"] {
     background-color: rgba(50, 65, 65, 75%);
     border: 1px solid rgba(79, 79, 79, 80%);
+}
+
+
+IonEditor--Private--EditorWidget, IonEditor--Private--LineNumberArea {
+    background-color: #002b36;
 }
 
 
