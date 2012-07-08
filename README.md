@@ -5,6 +5,7 @@ The goal of the project is to create a fast, fully functional IDE, extendable an
 
 To achieve this goal, the Qt framework is chosen as it provides a native implementation across multiple platforms. The Look & Feel of Qt projects is both suitable for the platform it is executed on and is also customisable using the widely known CSS standard. The flexibility is achieved by providing Javascript bindings to both the IDE plugins (C++) and the whole Qt framework.
 
+
 Current state
 -------------
 
@@ -13,6 +14,23 @@ ionPulse IDE currently supports:
 * providing a /filterable/ project tree, consisting of directories, files, php classes and methods, allowing quick and easy code navigation;
 * file editor functionality, which is mostly extended using Javascript. E.g. syntax highlighting for PHP is fully implemented in Javascript;
 * Javascript console (which itself is implemented using Javascript), allowing to execute javascript operations on the fly, allowing to define and use macros, keybindings, with functional capabilities of the underlying framework.
+
+
+Start Hacking!
+--------------
+
+Download:
+https://github.com/svalaskevicius/ionPulse/downloads (due to limited resources, only Mac OS version is available ATM).
+
+Build it for your platform:
+preparing your environment can be a somewhat involved task, so this option is currently suggested only to experienced users.
+http://svalaskevicius.github.com/ionPulse/api/index.html defines the requirements and instructions for building the project.
+
+Once you get it working, check the files in the main app directory:
+* ionPulse.css - this is where the css is defined (pulling from the user home directory is planned);
+* js/ionPulse.js - this is the main entry for loading the javascript files.
+
+Create! :)
 
 
 Todo
