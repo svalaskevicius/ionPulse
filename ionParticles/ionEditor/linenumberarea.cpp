@@ -32,11 +32,6 @@ LineNumberArea::LineNumberArea(Editor *parent) :
 void LineNumberArea::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     QColor bg = palette().color(QPalette::Background);
-    if(bg.lightness() >= 32) {
-        bg = bg.darker(120);
-    } else {
-        bg = bg.lighter(120);
-    }
     painter.fillRect(event->rect(), bg);
 
     QTextBlock block = ionText->getEditorInfo().firstVisibleBlock();
@@ -56,10 +51,10 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
 
         if (block.isVisible() && bottom >= event->rect().top()) {
             if (blockNumber == currentLine) {
-                painter.setPen(QColor(0x70, 0x70, 0x70));
+                painter.setPen(palette().color(QPalette::Foreground).lighter(120));
                 resetColor = true;
             } else if (resetColor) {
-                painter.setPen(QColor(0xb0, 0xb0, 0xb0));
+                painter.setPen(palette().color(QPalette::Foreground));
                 resetColor = false;
             }
 
