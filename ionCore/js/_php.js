@@ -57,7 +57,7 @@ var solarizedColorTheme = {
 };
 
 phpHighlighter = (function () {
-    var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighterFactory);
+    var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighter);
     PhpHighlighter.prototype.initialize = function () {
 
         this._colorTheme = solarizedColorTheme;

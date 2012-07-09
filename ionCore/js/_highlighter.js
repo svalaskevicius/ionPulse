@@ -6,8 +6,8 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-TextHighlighterFactory = function () {};
-TextHighlighterFactory.prototype = {
+TextHighlighter = function () {};
+TextHighlighter.prototype = {
     createCharFormat: function (color, weight, italic, size) {
         if (typeof size === 'undefined') {
             size = 14;
