@@ -33,13 +33,13 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
             const char s[] = {(const char)0xc2, (const char)0xbb, 0x00};// right double angle
             opt.text = QString::fromUtf8(s);
             opt.rect.setLeft(opt.rect.left() + 4);
-            QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+            opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
             opt.rect.setLeft(opt.rect.left() + opt.fontMetrics.width(opt.text) + 4);
         } else {
             first = false;
         }
         opt.text = current->data(0).toString();
-        QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+        opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
         opt.rect.setLeft(opt.rect.left() + opt.fontMetrics.width(opt.text));
     }
 }
