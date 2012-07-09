@@ -8,14 +8,14 @@ QHeaderView::section{
 
 QWidget
 {
-color: #dddddd;
-background-color: #555555;
+    color: #ddd;
+    background-color: #30363a;
 }
 
 QWidget:disabled
 {
 color: #777777;
-background-color: #444444;
+background-color: #20262a;
 }
 
 
@@ -25,6 +25,17 @@ QWidget:focus
     border-radius: 5;
 }
 
+
+QWidget:item:hover
+{
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4d4d4d, stop: 0.4 #5d5d5d, stop: 1 #4d4d4d);
+    color: #ffffff;
+}
+QWidget:item:selected
+{
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #333333, stop: 0.4 #444444, stop: 1 #333333);
+    color: #ffffff;
+}
 
 
 QHeaderView::section{
@@ -637,17 +648,6 @@ QLineEdit
 }
 
 
-QWidget:item:hover
-{
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4d4d4d, stop: 0.4 #5d5d5d, stop: 1 #4d4d4d);
-    color: #ffffff;
-}
-QWidget:item:selected
-{
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #333333, stop: 0.4 #444444, stop: 1 #333333);
-    color: #ffffff;
-}
-
 
 
 
@@ -1031,8 +1031,6 @@ QToolBar:separator{
    margin:5px;
 }
 
-
-
 QTreeView {
     background-color: #2c3033;
     color: rgb(220,220,220);
@@ -1072,7 +1070,7 @@ QTreeView::branch:!selected:hover {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #aa7711, stop:1 #775511);
 }
 */
-QTreeView::indicator{
+QTreeView::indicator {
     border: 0px solid red;
     width: 14px;
     height: 16px;
@@ -1089,7 +1087,6 @@ QTreeView::indicator:checked{
 
 QTreeView::indicator:checked:disabled{
 }
-
 
 
 
