@@ -35,31 +35,43 @@ var solarizedColor = function(code) {
     return toColor(solarizedPallete[code]['sRGB']);
 };
 
+var solarizedColorTheme = {
+    "html":                        [ solarizedColor("base0"),  QFont.Normal, false ],
+    "html/whitespace":             [ solarizedColor("base02"), QFont.Light,  false ],
+    "php":                         [ solarizedColor("base0"),  QFont.Normal, false ],
+    "php/constructs":              [ solarizedColor("orange"), QFont.Bold,   true  ],
+    "php/number":                  [ solarizedColor("red"),    QFont.Normal, false ],
+    "php/whitespace":              [ solarizedColor("base02"), QFont.Light,  false ],
+    "php/keyword":                 [ solarizedColor("orange"), QFont.Bold,   false ],
+    "php/compileConstants":        [ solarizedColor("yellow"), QFont.Bold,   true  ],
+    "php/variable":                [ solarizedColor("base3"),  QFont.Normal, false ],
+    "php/property":                [ solarizedColor("base2"),  QFont.Normal, false ],
+    "php/function":                [ solarizedColor("blue"),   QFont.Normal, false ],
+    "php/separator":               [ solarizedColor("violet"), QFont.Black,  false ],
+    "php/comment_sl":              [ solarizedColor("base01"), QFont.Normal, true  ],
+    "php/comment_ml":              [ solarizedColor("base01"), QFont.Normal, true  ],
+    "php/comment_ml/whitespace":   [ solarizedColor("base02"), QFont.Normal, true  ],
+    "php/string_dq":               [ solarizedColor("green"),  QFont.Normal, false ],
+    "php/string_dq/variable":      [ solarizedColor("base2"),  QFont.Normal, false ],
+    "php/string_sq":               [ solarizedColor("cyan"),   QFont.Normal, false ],
+};
 
 phpHighlighter = (function () {
     var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighterFactory);
     PhpHighlighter.prototype.initialize = function () {
 
-        this.charFormatting = {
-            "html":                         this.createCharFormat(solarizedColor("base0"), QFont.Normal, false),
-            "html/whitespace":              this.createCharFormat(solarizedColor("base02"), QFont.Light, false),
-            "php":                          this.createCharFormat(solarizedColor("base0"), QFont.Normal, false),
-            "php/constructs":               this.createCharFormat(solarizedColor("orange"), QFont.Bold, true),
-            "php/number":                   this.createCharFormat(solarizedColor("red"), QFont.Normal, false),
-            "php/whitespace":               this.createCharFormat(solarizedColor("base02"), QFont.Light, false),
-            "php/keyword":                  this.createCharFormat(solarizedColor("orange"), QFont.Bold, false),
-            "php/compileConstants":         this.createCharFormat(solarizedColor("yellow"), QFont.Bold, true),
-            "php/variable":                 this.createCharFormat(solarizedColor("base3"), QFont.Normal, false),
-            "php/property":                 this.createCharFormat(solarizedColor("base2"), QFont.Normal, false),
-            "php/function":                 this.createCharFormat(solarizedColor("blue"), QFont.Normal, false),
-            "php/separator":                this.createCharFormat(solarizedColor("violet"), QFont.Black, false),
-            "php/comment_sl":               this.createCharFormat(solarizedColor("base01"), QFont.Normal, true),
-            "php/comment_ml":               this.createCharFormat(solarizedColor("base01"), QFont.Normal, true),
-            "php/comment_ml/whitespace":    this.createCharFormat(solarizedColor("base02"), QFont.Normal, true),
-            "php/string_dq":                this.createCharFormat(solarizedColor("green"), QFont.Normal, false),
-            "php/string_dq/variable":       this.createCharFormat(solarizedColor("base2"), QFont.Normal, false),
-            "php/string_sq":                this.createCharFormat(solarizedColor("cyan"), QFont.Normal, false),
-        };
+        this._colorTheme = solarizedColorTheme;
+
+        this.charFormatting = {};
+        for (key in this._colorTheme) {
+            this.charFormatting[key] = this.createCharFormat(
+                 this._colorTheme[key][0],
+                 this._colorTheme[key][1],
+                 this._colorTheme[key][2]
+            );
+        }
+
+
         this.transitions = {
             "html": {
                 "php":              this.regexTransition(/<\?php\b/g, true)
