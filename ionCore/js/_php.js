@@ -147,7 +147,7 @@ phpHighlighter = (function () {
                 "property":         /->[a-z_][a-z0-9_]*/ig,
                 "method":           /->[a-z_][a-z0-9_]*\s*\(/ig,
                 "variable":         /\$[a-z_][a-z0-9_]*/ig,
-                "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&/g,
+                "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&|\{|\}|\[|\]/g,
                 "whitespace":       /\s+/g,
             },
             "php/comment_ml": {
