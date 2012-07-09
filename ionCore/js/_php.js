@@ -49,15 +49,15 @@ phpHighlighter = (function () {
             "php/whitespace":               this.createCharFormat(solarizedColor("base02"), QFont.Light, false),
             "php/keyword":                  this.createCharFormat(solarizedColor("orange"), QFont.Bold, false),
             "php/compileConstants":         this.createCharFormat(solarizedColor("yellow"), QFont.Bold, true),
-            "php/variable":                 this.createCharFormat(solarizedColor("blue"), QFont.Normal, false),
+            "php/variable":                 this.createCharFormat(solarizedColor("base3"), QFont.Normal, false),
             "php/property":                 this.createCharFormat(solarizedColor("base2"), QFont.Normal, false),
-            "php/function":                 this.createCharFormat(solarizedColor("base2"), QFont.Normal, false),
+            "php/function":                 this.createCharFormat(solarizedColor("blue"), QFont.Normal, false),
             "php/separator":                this.createCharFormat(solarizedColor("violet"), QFont.Black, false),
             "php/comment_sl":               this.createCharFormat(solarizedColor("base01"), QFont.Normal, true),
             "php/comment_ml":               this.createCharFormat(solarizedColor("base01"), QFont.Normal, true),
             "php/comment_ml/whitespace":    this.createCharFormat(solarizedColor("base02"), QFont.Normal, true),
             "php/string_dq":                this.createCharFormat(solarizedColor("green"), QFont.Normal, false),
-            "php/string_dq/variable":       this.createCharFormat(solarizedColor("blue"), QFont.Normal, false),
+            "php/string_dq/variable":       this.createCharFormat(solarizedColor("base2"), QFont.Normal, false),
             "php/string_sq":                this.createCharFormat(solarizedColor("cyan"), QFont.Normal, false),
         };
         this.transitions = {
@@ -88,7 +88,6 @@ phpHighlighter = (function () {
         this.highlightRules = {
             "php": {
                 "number":           /\b([0-9]+)?\.?[0-9]+\b/g,
-                "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
                 "constructs":       new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
                                                + "|\\b(die|echo|empty|exit|eval|include|include_once|isset|list|require|require_once"
                                                + "|return|print|unset)\\b",
@@ -105,8 +104,9 @@ phpHighlighter = (function () {
                                                "g"
                                     ),
                 "compileConstants": /__CLASS__|__DIR__|__FILE__|__LINE__|__FUNCTION__|__METHOD__|__NAMESPACE__/g,
-                "variable":         /\$[a-z_][a-z0-9_]*/ig,
                 "property":         /->[a-z_][a-z0-9_]*/ig,
+                "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
+                "variable":         /\$[a-z_][a-z0-9_]*/ig,
                 "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&/g,
                 "whitespace":       /\s+/g,
             },
