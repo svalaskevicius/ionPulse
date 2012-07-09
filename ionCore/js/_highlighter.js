@@ -8,20 +8,32 @@
 
 TextHighlighter = function () {};
 TextHighlighter.prototype = {
-    createCharFormat: function (color, weight, italic, size) {
-        if (typeof size === 'undefined') {
+    createCharFormat: function (color, weight, italic, size, backgroundColor) {
+        if ((typeof size === 'undefined') || (size === null)) {
             size = 14;
         }
         var format = new QTextCharFormat();
+
         var brush = new QBrush();
+        brush.setColor(color);
+        brush.setStyle(Qt.SolidPattern);
+        format.setForeground(brush);
+
+        if ((typeof backgroundColor !== 'undefined') && (backgroundColor !== null)) {
+            var bgBrush = new QBrush();
+            bgBrush.setColor(backgroundColor);
+            bgBrush.setStyle(Qt.SolidPattern);
+            format.setBackground(bgBrush);
+            console.log("setting bg brush");
+        }
+        console.log(backgroundColor);
+
         var font = new QFont("Monaco", size, weight, italic);
         if (!font.exactMatch()) {
             font = new QFont("Courier New", size, weight, italic);
         }
-        brush.setColor(color);
-        brush.setStyle(Qt.SolidPattern);
-        format.setForeground(brush);
         format.setFont(font);
+
         return format;
     },
 

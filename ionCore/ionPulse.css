@@ -1098,12 +1098,12 @@ QListWidget[type="editor-suggestions"] {
 
 
 IonEditor--Private--EditorWidget {
-    background-color: #002b36;
+    background-color: #2B2B2B;
 }
 
 IonEditor--Private--LineNumberArea {
-    background-color: #073642;
-    color: #586e75;
+    background-color: #1F1F1F;
+    color: #6c4823;
 }
 
 

@@ -36,38 +36,65 @@ var solarizedColor = function(code) {
 };
 
 var solarizedColorTheme = {
-    "html":                        [ solarizedColor("base0"),  QFont.Normal, false ],
-    "html/whitespace":             [ solarizedColor("base02"), QFont.Light,  false ],
-    "php":                         [ solarizedColor("base0"),  QFont.Normal, false ],
-    "php/constructs":              [ solarizedColor("orange"), QFont.Bold,   true  ],
-    "php/number":                  [ solarizedColor("red"),    QFont.Normal, false ],
-    "php/whitespace":              [ solarizedColor("base02"), QFont.Light,  false ],
-    "php/keyword":                 [ solarizedColor("orange"), QFont.Bold,   false ],
-    "php/compileConstants":        [ solarizedColor("yellow"), QFont.Bold,   true  ],
-    "php/variable":                [ solarizedColor("base3"),  QFont.Normal, false ],
-    "php/property":                [ solarizedColor("base2"),  QFont.Normal, false ],
-    "php/function":                [ solarizedColor("blue"),   QFont.Normal, false ],
-    "php/separator":               [ solarizedColor("violet"), QFont.Black,  false ],
-    "php/comment_sl":              [ solarizedColor("base01"), QFont.Normal, true  ],
-    "php/comment_ml":              [ solarizedColor("base01"), QFont.Normal, true  ],
-    "php/comment_ml/whitespace":   [ solarizedColor("base02"), QFont.Normal, true  ],
-    "php/string_dq":               [ solarizedColor("green"),  QFont.Normal, false ],
-    "php/string_dq/variable":      [ solarizedColor("base2"),  QFont.Normal, false ],
-    "php/string_sq":               [ solarizedColor("cyan"),   QFont.Normal, false ],
+    "html":                        [ solarizedColor("base0"),  QFont.Normal, false, null, solarizedColor("base03") ],
+    "html/whitespace":             [ solarizedColor("base02"), QFont.Light,  false, null, solarizedColor("base03") ],
+    "php":                         [ solarizedColor("base0"),  QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/constructs":              [ solarizedColor("orange"), QFont.Bold,   true , null, solarizedColor("base03") ],
+    "php/number":                  [ solarizedColor("red"),    QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/whitespace":              [ solarizedColor("base02"), QFont.Light,  false, null, solarizedColor("base03") ],
+    "php/keyword":                 [ solarizedColor("orange"), QFont.Bold,   false, null, solarizedColor("base03") ],
+    "php/compileConstants":        [ solarizedColor("yellow"), QFont.Bold,   true , null, solarizedColor("base03") ],
+    "php/variable":                [ solarizedColor("base3"),  QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/property":                [ solarizedColor("base2"),  QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/function":                [ solarizedColor("blue"),   QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/method":                  [ solarizedColor("blue"),   QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/separator":               [ solarizedColor("violet"), QFont.Black,  false, null, solarizedColor("base03") ],
+    "php/comment_sl":              [ solarizedColor("base01"), QFont.Normal, true , null, solarizedColor("base03") ],
+    "php/comment_ml":              [ solarizedColor("base01"), QFont.Normal, true , null, solarizedColor("base03") ],
+    "php/comment_ml/whitespace":   [ solarizedColor("base02"), QFont.Normal, true , null, solarizedColor("base03") ],
+    "php/string_dq":               [ solarizedColor("green"),  QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/string_dq/variable":      [ solarizedColor("base2"),  QFont.Normal, false, null, solarizedColor("base03") ],
+    "php/string_sq":               [ solarizedColor("cyan"),   QFont.Normal, false, null, solarizedColor("base03") ],
 };
+
+// from http://studiostyl.es/schemes/node-js-db-drivers
+var nodeJsDbTheme = {
+    "html":                        [ toColor("e6e1dc"), QFont.Normal, false, null, null ],
+    "html/whitespace":             [ toColor("4F4F4F"), QFont.Light,  false, null, null ],
+    "php":                         [ toColor("e6e1dc"), QFont.Normal, false, null, null ],
+    "php/constructs":              [ toColor("ffc66d"), QFont.Bold,   true , null, null ],
+    "php/number":                  [ toColor("7a9eb8"), QFont.Normal, false, null, null ],
+    "php/whitespace":              [ toColor("4F4F4F"), QFont.Light,  false, null, null ],
+    "php/keyword":                 [ toColor("bd4f3e"), QFont.Bold,   false, 14.5, null ],
+    "php/compileConstants":        [ toColor("ffc66d"), QFont.Bold,   true , null, null ],
+    "php/variable":                [ toColor("e6e1dc"), QFont.Normal, false, null, null ],
+    "php/property":                [ toColor("ffdba3"), QFont.Normal, false, null, null ],
+    "php/function":                [ toColor("cc7833"), QFont.Normal, false, null, null ],
+    "php/method":                  [ toColor("cc7833"), QFont.Normal, false, null, null ],
+    "php/separator":               [ toColor("ffc66d"), QFont.Black,  false, null, null ],
+    "php/comment_sl":              [ toColor("987c4e"), QFont.Normal, true , null, null ],
+    "php/comment_ml":              [ toColor("987c4e"), QFont.Normal, true , 13, null ],
+    "php/comment_ml/whitespace":   [ toColor("4F4F4F"), QFont.Normal, true , null, null ],
+    "php/string_dq":               [ toColor("a5c261"), QFont.Normal, false, null, null ],
+    "php/string_dq/variable":      [ toColor("7a9eb8"), QFont.Normal, false, null, null ],
+    "php/string_sq":               [ toColor("bdf43e"), QFont.Normal, false, null, null ],
+};
+
 
 phpHighlighter = (function () {
     var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighter);
     PhpHighlighter.prototype.initialize = function () {
 
-        this._colorTheme = solarizedColorTheme;
+        this._colorTheme = nodeJsDbTheme;
 
         this.charFormatting = {};
         for (key in this._colorTheme) {
             this.charFormatting[key] = this.createCharFormat(
                  this._colorTheme[key][0],
                  this._colorTheme[key][1],
-                 this._colorTheme[key][2]
+                 this._colorTheme[key][2],
+                 this._colorTheme[key][3],
+                 this._colorTheme[key][4]
             );
         }
 
@@ -105,6 +132,7 @@ phpHighlighter = (function () {
                                                + "|return|print|unset)\\b",
                                                "ig"
                                     ),
+                "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
                 "keyword":          new RegExp("<\\?php|\\?>|\\b(class|function|protected|private|public"
                                                + "|abstract|extends|interface|implements|abstract|and|array"
                                                + "|as|break|case|catch|clone|const|continue|declare"
@@ -112,12 +140,12 @@ phpHighlighter = (function () {
                                                + "|endforeach|endif|endswitch|endwhile|extends"
                                                + "|final|for|foreach|function|global|goto"
                                                + "|if|instanceof|namespace|new|or|static"
-                                               + "|switch|throw|try|use|var|while|xor)\\b",
+                                               + "|switch|throw|try|use|var|while|xor|true|false|null|self)\\b",
                                                "g"
                                     ),
                 "compileConstants": /__CLASS__|__DIR__|__FILE__|__LINE__|__FUNCTION__|__METHOD__|__NAMESPACE__/g,
                 "property":         /->[a-z_][a-z0-9_]*/ig,
-                "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
+                "method":           /->[a-z_][a-z0-9_]*\s*\(/ig,
                 "variable":         /\$[a-z_][a-z0-9_]*/ig,
                 "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&/g,
                 "whitespace":       /\s+/g,
