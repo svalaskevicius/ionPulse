@@ -89,7 +89,7 @@ WidgetsBoxed::WidgetsBoxed(QWidget *parent)
     widget = new QWidget(parent);
     layout = new QBoxLayout(QBoxLayout::LeftToRight);
     widget->setLayout(layout);
-    layout->setMargin(0);
+    layout->setMargin(2);
     layout->setSpacing(4);
 }
 

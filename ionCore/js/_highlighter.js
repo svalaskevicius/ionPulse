@@ -10,7 +10,7 @@ TextHighlighter = function () {};
 TextHighlighter.prototype = {
     createCharFormat: function (color, weight, italic, size, backgroundColor) {
         if ((typeof size === 'undefined') || (size === null)) {
-            size = 14;
+            size = 17;
         }
         var format = new QTextCharFormat();
 
@@ -24,11 +24,9 @@ TextHighlighter.prototype = {
             bgBrush.setColor(backgroundColor);
             bgBrush.setStyle(Qt.SolidPattern);
             format.setBackground(bgBrush);
-            console.log("setting bg brush");
         }
-        console.log(backgroundColor);
 
-        var font = new QFont("Monaco", size, weight, italic);
+        var font = new QFont("Inconsolata", size, weight, italic);
         if (!font.exactMatch()) {
             font = new QFont("Courier New", size, weight, italic);
         }

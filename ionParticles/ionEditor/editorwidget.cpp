@@ -29,7 +29,7 @@ EditorWidget::EditorWidget(QString filePath)
       componentInfo(this)
 {
     setWindowTitle(QFileInfo(filePath).fileName());
-    QFont font("Monaco");
+    QFont font("Inconsolata");
     font.setPointSize(14);
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);

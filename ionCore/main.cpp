@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <stdexcept>
 #include <QProcess>
+#include <QFontDatabase>
 
 #include "shared.h"
 #include "mainwindow.h"
@@ -87,6 +88,10 @@ int main(int argc, char *argv[])
     try {
         QString baseDir = IonCore::Private::getBaseDir();
 
+        QDir fontsDir(baseDir+"/assets/fonts/");
+        foreach (QString name, fontsDir.entryList( QStringList()<<"*.otf")) {
+            QFontDatabase::addApplicationFont(baseDir+"/assets/fonts/"+name);
+        }
 
         QFile styleSheetFile(baseDir+"/ionPulse.css");
         if (styleSheetFile.open(QFile::ReadOnly)) {

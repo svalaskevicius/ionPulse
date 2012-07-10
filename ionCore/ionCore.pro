@@ -36,9 +36,11 @@ distrib_css.path = "$${APP_TARGET_DIR}"
 distrib_css.files += ionPulse.css
 distrib_js.path = "$${APP_TARGET_DIR}"
 distrib_js.files += js
+distrib_assets.path = "$${APP_TARGET_DIR}"
+distrib_assets.files += assets
 js_plugins.path = "$${PLUGIN_TARGET_DIR}/"
 js_plugins.files = ../lib/qtscriptgenerator/plugins/script/
-INSTALLS += distrib_css distrib_js js_plugins
+INSTALLS += distrib_css distrib_js distrib_assets js_plugins
 
 
 

@@ -52,6 +52,7 @@ JsConsoleWidget = function(parent)
     );
 
     var layout = new QVBoxLayout();
+    layout.setContentsMargins(3, 2, 3, 5);
     layout.setSpacing(1);
     layout.addWidget(this.textEdit, 0, 0);
     layout.addWidget(this.lineInput, 0, 0);
