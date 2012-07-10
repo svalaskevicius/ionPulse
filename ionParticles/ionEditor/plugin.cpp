@@ -107,11 +107,23 @@ void Plugin::postLoad()
 
     IonLayout::ZoneDefinition def;
 
-    def.name = "central";
+    def.name = "central_container";
     def.orientation = Qt::Vertical;
     def.parentPath = "";
     def.after = "left";
     def.before = "right";
+    def.hideIfEmpty = true;
+    def.sizeWeight = 700;
+    def.childrenClosable = true;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Split;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
+    _layoutManager->addZone(def);
+
+    def.name = "central";
+    def.orientation = Qt::Vertical;
+    def.parentPath = "central_container";
+    def.after = "";
+    def.before = "";
     def.hideIfEmpty = false;
     def.sizeWeight = 700;
     def.childrenClosable = true;
@@ -119,9 +131,21 @@ void Plugin::postLoad()
     def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
     _layoutManager->addZone(def);
 
+    def.name = "footer";
+    def.orientation = Qt::Vertical;
+    def.parentPath = "central_container";
+    def.after = "central";
+    def.before = "";
+    def.hideIfEmpty = true;
+    def.sizeWeight = 1;
+    def.childrenClosable = false;
+    def.subZonesContainerType = IonLayout::ZoneDefinition::Boxed;
+    def.widgetsContainerType = IonLayout::ZoneDefinition::Tabbed;
+    _layoutManager->addZone(def);
+
     def.name = "central_footer";
     def.orientation = Qt::Vertical;
-    def.parentPath = "central";
+    def.parentPath = "central_container/central";
     def.after = "central";
     def.before = "";
     def.hideIfEmpty = true;
@@ -135,7 +159,7 @@ void Plugin::postLoad()
     def.orientation = Qt::Vertical;
     def.parentPath = "";
     def.after = "";
-    def.before = "central";
+    def.before = "central_container";
     def.hideIfEmpty = false;
     def.sizeWeight = 200;
     def.childrenClosable = false;
@@ -158,7 +182,7 @@ void Plugin::postLoad()
     def.name = "right";
     def.orientation = Qt::Vertical;
     def.parentPath = "";
-    def.after = "central";
+    def.after = "central_container";
     def.before = "";
     def.hideIfEmpty = true;
     def.sizeWeight = 150;
@@ -185,7 +209,7 @@ void Plugin::postLoad()
 
     _searchPanel = new SearchPanel();
     _searchPanel->setEditorPlugin(this);
-    _layoutManager->add("central/central_footer", _searchPanel);
+    _layoutManager->add("central_container/central/central_footer", _searchPanel);
 
 }
 
@@ -252,7 +276,7 @@ void Plugin::openFile(QString path, int line)
         _openedFiles[path] = widget;
         connect(widget, SIGNAL(editorClosing(Editor *)), this, SLOT(closeFileEditor(Editor *)));
         connect(widget, SIGNAL(editorFocusing(Editor *)), this, SLOT(focusFileEditor(Editor *)));
-        _layoutManager->add("central", widget);
+        _layoutManager->add("central_container/central", widget);
         emit editorOpened(widget);
     } else {
         widget = it.value();

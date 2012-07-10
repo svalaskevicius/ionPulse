@@ -12,7 +12,7 @@ qs.script.include("_console.js");
 
 console = new JsConsoleWidget(window);
 console.hide();
-layoutManager.add("central/central_footer", console);
+layoutManager.add("central_container/footer", console);
 
 qs.script.include("_suggestions.js");
 qs.script.include("_highlighter.js");

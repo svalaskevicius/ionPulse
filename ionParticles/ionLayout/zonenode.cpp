@@ -196,6 +196,9 @@ void ZoneNodeLeaf::show()
     ZoneNode::show();
 }
 ZoneNodeBranch *ZoneNodeLeaf::getZoneAsBranch() {
+    if (parent->getZoneName() == getZoneName()) {
+        return parent;
+    }
     ZoneNodeBranch *br = new ZoneNodeBranch(parent, zoneDef);
     parent->addSubZone(br, parent->indexOf(zoneWidget->getWidget()));
     br->addSubZone(this);
