@@ -30,7 +30,7 @@ EditorWidget::EditorWidget(QString filePath)
 {
     setWindowTitle(QFileInfo(filePath).fileName());
     QFont font("Inconsolata");
-    font.setPointSize(14);
+    font.setPointSize(17);
     font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
     document()->setDefaultFont(font);
     setFont(font);
