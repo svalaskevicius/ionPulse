@@ -1088,6 +1088,49 @@ QTreeView::indicator:checked{
 QTreeView::indicator:checked:disabled{
 }
 
+QTreeView::item:first {
+}
+
+QTreeView::item:last {
+}
+
+QTreeView::item:!first, QTreeView::item:!first:active {
+    border:0;
+    border-radius:0;
+    background-color: transparent;
+}
+
+QTreeView::item[itemclass="separator"] {
+    color: #aaaaaa;
+}
+QTreeView::item[itemclass="dir"] {
+    color: #dcd9d3;
+}
+QTreeView::item[itemclass="file"] {
+    color: #bcb9b3;
+}
+QTreeView::item[itemclass="phpclass"] {
+    color: #c6715c;
+}
+QTreeView::item[itemclass="phpmethod"] {
+    color: #a6a18c;
+}
+
+QTreeView::item[itemclass="separator"]:hover, QTreeView::item[itemclass="separator"]:selected {
+    color: #cccccc;
+}
+QTreeView::item[itemclass="dir"]:hover, QTreeView::item[itemclass="dir"]:selected {
+    color: #fcf9f3;
+}
+QTreeView::item[itemclass="file"]:hover, QTreeView::item[itemclass="file"]:selected {
+    color: #dcd9d3;
+}
+QTreeView::item[itemclass="phpclass"]:hover, QTreeView::item[itemclass="phpclass"]:selected {
+    color: #e6a15c;
+}
+QTreeView::item[itemclass="phpmethod"]:hover, QTreeView::item[itemclass="phpmethod"]:selected {
+    color: #c6c1ac;
+}
 
 
 
