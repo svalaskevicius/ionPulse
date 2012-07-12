@@ -59,7 +59,7 @@ var solarizedColorTheme = {
 
 // from http://studiostyl.es/schemes/node-js-db-drivers
 var nodeJsDbTheme = {
-    "html":                        [ toColor("e6e1dc"), QFont.Normal, false, null, null ],
+    "html":                        [ toColor("ccccb0"), QFont.Normal, false, null, null ],
     "html/whitespace":             [ toColor("4F4F4F"), QFont.Light,  false, null, null ],
     "php":                         [ toColor("e6e1dc"), QFont.Normal, false, null, null ],
     "php/constructs":              [ toColor("ffc66d"), QFont.Bold,   true , null, null ],
@@ -67,8 +67,8 @@ var nodeJsDbTheme = {
     "php/whitespace":              [ toColor("4F4F4F"), QFont.Light,  false, null, null ],
     "php/keyword":                 [ toColor("bd4f3e"), QFont.Bold,   false, null, null ],
     "php/compileConstants":        [ toColor("ffc66d"), QFont.Bold,   true , null, null ],
-    "php/variable":                [ toColor("e6e1dc"), QFont.Normal, false, null, null ],
-    "php/property":                [ toColor("ffdba3"), QFont.Normal, false, null, null ],
+    "php/variable":                [ toColor("f5f0b9"), QFont.Normal, false, null, null ],
+    "php/property":                [ toColor("efcb93"), QFont.Normal, false, null, null ],
     "php/function":                [ toColor("cc7833"), QFont.Normal, false, null, null ],
     "php/method":                  [ toColor("cc7833"), QFont.Normal, false, null, null ],
     "php/separator":               [ toColor("ffc66d"), QFont.Black,  false, null, null ],
