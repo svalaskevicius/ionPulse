@@ -51,7 +51,6 @@ Todo
 
 #### project tree
 * limit max length of each item (+joined ones) - use dots in the middle with full info as a tooltip
-* color coding
 
 #### bug: caret is gone on refocus editor until a char is typed
 
