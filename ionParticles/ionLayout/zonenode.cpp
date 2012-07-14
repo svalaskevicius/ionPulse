@@ -159,6 +159,11 @@ int ZoneNodeBranch::indexOf(QString childName)
     return -1;
 }
 
+ZoneNode::ZoneList ZoneNodeBranch::getSubZones()
+{
+    return subZones;
+}
+
 
 ///////////
 
@@ -221,6 +226,10 @@ void ZoneNodeLeaf::remove(QWidget *panel)
 void ZoneNodeLeaf::focus(QWidget *panel)
 {
     zoneWidget->focus(panel);
+}
+ZoneNode::ZoneList ZoneNodeLeaf::getSubZones()
+{
+    return ZoneNode::ZoneList();
 }
 
 

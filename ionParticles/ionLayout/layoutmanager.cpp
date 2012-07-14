@@ -24,8 +24,12 @@ QWidget *LayoutZonesManager::getMainWidget()
     return root->getWidget();
 }
 
+ZoneNode *LayoutZonesManager::getZone(QString path)
+{
+    return root->getZone(path);
+}
 
-ZoneNodeLeaf *LayoutZonesManager::getZone(QString path)
+ZoneNodeLeaf *LayoutZonesManager::getZoneLeaf(QString path)
 {
     return root->getZone(path)->getZoneLeaf();
 }
@@ -69,7 +73,7 @@ LayoutManagerImpl::LayoutManagerImpl(QMainWindow *mainWindow) : zonesManager()
 void LayoutManagerImpl::add(QString zonePath, QWidget *widget)
 {
     widgetZoneMap[widget] = zonePath;
-    ZoneNodeLeaf *leaf = zonesManager.getZone(zonePath);
+    ZoneNodeLeaf *leaf = zonesManager.getZoneLeaf(zonePath);
     Q_ASSERT(leaf);
     leaf->add(widget);
     leaf->show();
@@ -80,7 +84,7 @@ void LayoutManagerImpl::remove(QWidget *widget)
     if (!widgetZoneMap.contains(widget)) {
         throw new std::runtime_error("widget has to be added first");
     }
-    ZoneNodeLeaf *leaf = zonesManager.getZone(widgetZoneMap[widget]);
+    ZoneNodeLeaf *leaf = zonesManager.getZoneLeaf(widgetZoneMap[widget]);
     widgetZoneMap.remove(widget);
     Q_ASSERT(leaf);
     leaf->remove(widget);
@@ -91,7 +95,7 @@ void LayoutManagerImpl::focus(QWidget *widget)
     if (!widgetZoneMap.contains(widget)) {
         throw new std::runtime_error("widget has to be added first");
     }
-    ZoneNodeLeaf *leaf = zonesManager.getZone(widgetZoneMap[widget]);
+    ZoneNodeLeaf *leaf = zonesManager.getZoneLeaf(widgetZoneMap[widget]);
     Q_ASSERT(leaf);
     leaf->focus(widget);
     leaf->show();
@@ -101,6 +105,47 @@ void LayoutManagerImpl::addZone(ZoneDefinition &zone)
 {
     zonesManager.addZone(zone);
 }
+
+QStringList LayoutManagerImpl::getSubZoneNames(QString parentPath)
+{
+    try {
+        return zonesManager.getZone(parentPath)->getSubZones().keys();
+    } catch (std::runtime_error &e) {
+        DEBUG_MSG(e.what());
+        return QStringList();
+    }
+}
+
+QObjectList LayoutManagerImpl::getZoneWidgets(QString path, QVariantMap filter)
+{
+    QObjectList ret;
+    QMap<QWidget *, QString>::const_iterator widgetIt = widgetZoneMap.constBegin();
+    while (widgetIt != widgetZoneMap.constEnd()) {
+        if (widgetIt.value() == path) {
+            QWidget *test = widgetIt.key();
+            if (testFilter(test, filter)) {
+                ret.append(test);
+            }
+        }
+        ++widgetIt;
+    }
+    return ret;
+}
+
+bool LayoutManagerImpl::testFilter(QWidget *widget, QVariantMap filter)
+{
+    QVariantMap::const_iterator i = filter.constBegin();
+    while (i != filter.constEnd()) {
+        QString key = i.key();
+        QString value = i.value().toString();
+        if (widget->property(key.toAscii().constData()).toString() != value) {
+            return false;
+        }
+        ++i;
+    }
+    return true;
+}
+
 
 
 }

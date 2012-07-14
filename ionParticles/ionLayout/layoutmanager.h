@@ -30,7 +30,8 @@ protected:
     QSharedPointer<ZoneNodeBranch> root;
 public:
     LayoutZonesManager();
-    ZoneNodeLeaf *getZone(QString path);
+    ZoneNode *getZone(QString path);
+    ZoneNodeLeaf *getZoneLeaf(QString path);
     void addZone(ZoneDefinition &zone);
     QWidget *getMainWidget();
 };
@@ -42,6 +43,7 @@ class LayoutManagerImpl : public LayoutManager
 protected:
     LayoutZonesManager zonesManager;
     QMap<QWidget *, QString> widgetZoneMap;
+    bool testFilter(QWidget *widget, QVariantMap filter);
 public:
     LayoutManagerImpl(QMainWindow *mainWindow);
 public slots:
@@ -49,6 +51,8 @@ public slots:
     virtual void remove(QWidget *widget);
     virtual void focus(QWidget *widget);
     virtual void addZone(ZoneDefinition &zone);
+    virtual QStringList getSubZoneNames(QString parentPath);
+    virtual QObjectList getZoneWidgets(QString path, QVariantMap filter);
 };
 }
 }

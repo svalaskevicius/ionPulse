@@ -20,7 +20,14 @@ qs.script.include("_php.js");
 
 
 console.log("ionPulse.js initialised");
-
+console.log(layoutManager.getSubZoneNames("left"));
+layoutManager.getZoneWidgets(
+    "left",
+    {"name":"project_tree"}
+).each(function(widget) {
+    widget.filterInputField.show();
+    widget.filterInputField.text = "Test";
+});
 
 //editorPlugin.focusedEditor.focusOnLine(7)
 editorPlugin.editorOpened.connect(

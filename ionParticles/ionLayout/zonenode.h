@@ -30,6 +30,8 @@ protected:
 
     WidgetsAggregate *_createZoneWidget(ZoneDefinition::Type type, QWidget *parent, ZoneDefinition  zoneDef);
 public:
+    typedef QMap<QString, ZoneNode *> ZoneList;
+
     ZoneNode(ZoneNode *parent, ZoneDefinition  zoneDef);
     virtual ~ZoneNode(){}
     QString getZoneName();
@@ -40,6 +42,7 @@ public:
     virtual ZoneNodeBranch *getZoneAsBranch() = 0;
     virtual QWidget *getWidget() = 0;
     virtual void show();
+    virtual ZoneList getSubZones() = 0;
     const ZoneDefinition & getDefinition() const;
 };
 
@@ -48,7 +51,6 @@ class ZoneNodeBranch : public QObject, public ZoneNode
 {
    Q_OBJECT
 protected:
-    typedef QMap<QString, ZoneNode *> ZoneList;
     ZoneList subZones;
     WidgetsAggregate *zoneImpl;
 public:
@@ -63,6 +65,7 @@ public:
     void resizeChildren();
     int indexOf(QWidget *);
     int indexOf(QString);
+    virtual ZoneList getSubZones();
 };
 
 class ZoneNodeRoot : public ZoneNodeBranch {
@@ -103,6 +106,7 @@ public:
     void add(QWidget *panel);
     void remove(QWidget *panel);
     void focus(QWidget *panel);
+    virtual ZoneList getSubZones();
 };
 
 }

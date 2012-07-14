@@ -122,6 +122,16 @@ public slots:
      * \brief Add new zone to the tree.
      */
     virtual void addZone(ZoneDefinition &zone) = 0;
+
+    /**
+     * \brief Retrieve a list of sub-zones
+     */
+    virtual QStringList getSubZoneNames(QString parentPath) = 0;
+
+    /**
+     * \brief get zone widgets using property filters
+     */
+    virtual QObjectList getZoneWidgets(QString path, QVariantMap filter) = 0;
 };
 
 
