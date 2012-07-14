@@ -10,7 +10,8 @@
 
 #include <ionCore/shared.h>
 #include <QApplication>
-
+#include <QLabel>
+#include <QPainter>
 
 namespace IonProject {
 namespace Private {
@@ -27,39 +28,58 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     QStyleOptionViewItemV4 opt = option;
     initStyleOption(&opt, index);
 
+    opt.text = "";
+    opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
+
+    QLabel renderer;
+    if (QStyle::State_MouseOver == (QStyle::State_MouseOver & opt.state)) {
+        renderer.setProperty("hover", "1");
+    }
+    if (QStyle::State_Selected == (QStyle::State_Selected & opt.state)) {
+        renderer.setProperty("selected", "1");
+    }
+    opt.rect.setLeft(opt.rect.left() + 4);
+
+    renderer.setProperty("type", "tree-item-text");
+    renderer.setStyleSheet(widget->styleSheet());
+
     bool first = true;
     QVector<TreeItem *> items = treeModel->getRangeItems(index);
-    int cnt = items.count();
-    int i = 0;
     foreach (TreeItem *current, items) {
         if (!first) {
-            widget->setProperty("itemclass", "separator");
-            widget->style()->unpolish(widget);
-            widget->style()->polish(widget);
+            renderer.setProperty("itemclass", "separator");
+            widget->style()->unpolish(&renderer);
+            widget->style()->polish(&renderer);
+
             const char s[] = {(const char)0xc2, (const char)0xbb, 0x00};// right double angle
             opt.text = QString::fromUtf8(s);
             opt.rect.setLeft(opt.rect.left() + 4);
-            opt.viewItemPosition = QStyleOptionViewItemV4::Middle;
-            opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
+
+            renderer.setText(opt.text);
+            renderer.resize(opt.rect.size());
+            painter->save();
+            painter->translate(opt.rect.topLeft());
+            renderer.render(painter);
+            painter->restore();
 
             opt.rect.setLeft(opt.rect.left() + opt.fontMetrics.width(opt.text) + 4);
-
-            if (i+1 < cnt) {
-                opt.viewItemPosition = QStyleOptionViewItemV4::Middle;
-            } else {
-                opt.viewItemPosition = QStyleOptionViewItemV4::End;
-            }
         } else {
             first = false;
-            opt.viewItemPosition = QStyleOptionViewItemV4::Beginning;
         }
-        widget->setProperty("itemclass", current->getItemClass());
-        widget->style()->unpolish(widget);
-        widget->style()->polish(widget);
+
+        renderer.setProperty("itemclass", current->getItemClass());
+        widget->style()->unpolish(&renderer);
+        widget->style()->polish(&renderer);
+
         opt.text = current->data(0).toString();
-        opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
+        renderer.setText(opt.text);
+        renderer.resize(opt.rect.size());
+        painter->save();
+        painter->translate(opt.rect.topLeft());
+        renderer.render(painter);
+        painter->restore();
+
         opt.rect.setLeft(opt.rect.left() + opt.fontMetrics.width(opt.text));
-        i++;
     }
 }
 

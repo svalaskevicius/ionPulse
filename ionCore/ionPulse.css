@@ -1088,47 +1088,41 @@ QTreeView::indicator:checked{
 QTreeView::indicator:checked:disabled{
 }
 
-QTreeView::item:first {
-}
 
-QTreeView::item:last {
-}
-
-QTreeView::item:!first, QTreeView::item:!first:active {
+QLabel[type="tree-item-text"] {
     border:0;
     border-radius:0;
     background-color: transparent;
 }
-
-QTreeView::item[itemclass="separator"] {
+QLabel[itemclass="separator"] {
     color: #aaaaaa;
 }
-QTreeView::item[itemclass="dir"] {
+QLabel[itemclass="dir"] {
     color: #dcd9d3;
 }
-QTreeView::item[itemclass="file"] {
+QLabel[itemclass="file"] {
     color: #bcb9b3;
 }
-QTreeView::item[itemclass="phpclass"] {
+QLabel[itemclass="phpclass"] {
     color: #c6715c;
 }
-QTreeView::item[itemclass="phpmethod"] {
+QLabel[itemclass="phpmethod"] {
     color: #a6a18c;
 }
 
-QTreeView::item[itemclass="separator"]:hover, QTreeView::item[itemclass="separator"]:selected {
+QLabel[itemclass="separator"][hover="1"], QLabel[itemclass="separator"][selected="1"] {
     color: #cccccc;
 }
-QTreeView::item[itemclass="dir"]:hover, QTreeView::item[itemclass="dir"]:selected {
+QLabel[itemclass="dir"][hover="1"], QLabel[itemclass="dir"][selected="1"] {
     color: #fcf9f3;
 }
-QTreeView::item[itemclass="file"]:hover, QTreeView::item[itemclass="file"]:selected {
+QLabel[itemclass="file"][hover="1"], QLabel[itemclass="file"][selected="1"] {
     color: #dcd9d3;
 }
-QTreeView::item[itemclass="phpclass"]:hover, QTreeView::item[itemclass="phpclass"]:selected {
+QLabel[itemclass="phpclass"][hover="1"], QLabel[itemclass="phpclass"][selected="1"] {
     color: #e6a15c;
 }
-QTreeView::item[itemclass="phpmethod"]:hover, QTreeView::item[itemclass="phpmethod"]:selected {
+QLabel[itemclass="phpmethod"][hover="1"], QLabel[itemclass="phpmethod"][selected="1"] {
     color: #c6c1ac;
 }
 
