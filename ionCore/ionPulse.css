@@ -1115,22 +1115,37 @@ QLabel[itemclass="phpmethod"] {
 QLabel[itemclass="separator"][hover="line"], QLabel[itemclass="separator"][selected="line"] {
     color: #cccccc;
 }
-QLabel[itemclass="dir"][hover="exact"], QLabel[itemclass="dir"][hover="line"], QLabel[itemclass="dir"][selected="line"] {
+QLabel[itemclass="dir"][hover="line"], QLabel[itemclass="dir"][selected="line"] {
     color: #fcf9f3;
 }
-QLabel[itemclass="file"][hover="exact"], QLabel[itemclass="file"][hover="line"], QLabel[itemclass="file"][selected="line"] {
+QLabel[itemclass="file"][hover="line"], QLabel[itemclass="file"][selected="line"] {
     color: #dcd9d3;
 }
-QLabel[itemclass="phpclass"][hover="exact"], QLabel[itemclass="phpclass"][hover="line"], QLabel[itemclass="phpclass"][selected="line"] {
+QLabel[itemclass="phpclass"][hover="line"], QLabel[itemclass="phpclass"][selected="line"] {
     color: #e6a15c;
 }
-QLabel[itemclass="phpmethod"][hover="exact"], QLabel[itemclass="phpmethod"][hover="line"], QLabel[itemclass="phpmethod"][selected="line"] {
+QLabel[itemclass="phpmethod"][hover="line"], QLabel[itemclass="phpmethod"][selected="line"] {
     color: #c6c1ac;
 }
 
 QLabel[hover="exact"] {
     border: 1px solid rgba(255, 235, 200, 50%);
+    background-color: rgba(255, 235, 200, 15%);
 }
+QLabel[itemclass="dir"][hover="exact"] {
+    color: #fffac6;
+}
+QLabel[itemclass="file"][hover="exact"] {
+    color: #ece9c3;
+}
+QLabel[itemclass="phpclass"][hover="exact"] {
+    color: #883311;
+}
+QLabel[itemclass="phpmethod"][hover="exact"] {
+    color: #d6d19c;
+}
+
+
 
 QListWidget[type="editor-suggestions"] {
     background-color: rgba(50, 65, 65, 75%);
