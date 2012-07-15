@@ -1090,9 +1090,11 @@ QTreeView::indicator:checked:disabled{
 
 
 QLabel[type="tree-item-text"] {
-    border:0;
-    border-radius:0;
+    border:1px solid transparent;
+    border-radius:3px;
     background-color: transparent;
+    padding: 0;
+    margin: 0;
 }
 QLabel[itemclass="separator"] {
     color: #aaaaaa;
@@ -1110,23 +1112,25 @@ QLabel[itemclass="phpmethod"] {
     color: #a6a18c;
 }
 
-QLabel[itemclass="separator"][hover="1"], QLabel[itemclass="separator"][selected="1"] {
+QLabel[itemclass="separator"][hover="line"], QLabel[itemclass="separator"][selected="line"] {
     color: #cccccc;
 }
-QLabel[itemclass="dir"][hover="1"], QLabel[itemclass="dir"][selected="1"] {
+QLabel[itemclass="dir"][hover="exact"], QLabel[itemclass="dir"][hover="line"], QLabel[itemclass="dir"][selected="line"] {
     color: #fcf9f3;
 }
-QLabel[itemclass="file"][hover="1"], QLabel[itemclass="file"][selected="1"] {
+QLabel[itemclass="file"][hover="exact"], QLabel[itemclass="file"][hover="line"], QLabel[itemclass="file"][selected="line"] {
     color: #dcd9d3;
 }
-QLabel[itemclass="phpclass"][hover="1"], QLabel[itemclass="phpclass"][selected="1"] {
+QLabel[itemclass="phpclass"][hover="exact"], QLabel[itemclass="phpclass"][hover="line"], QLabel[itemclass="phpclass"][selected="line"] {
     color: #e6a15c;
 }
-QLabel[itemclass="phpmethod"][hover="1"], QLabel[itemclass="phpmethod"][selected="1"] {
+QLabel[itemclass="phpmethod"][hover="exact"], QLabel[itemclass="phpmethod"][hover="line"], QLabel[itemclass="phpmethod"][selected="line"] {
     color: #c6c1ac;
 }
 
-
+QLabel[hover="exact"] {
+    border: 1px solid rgba(255, 235, 200, 50%);
+}
 
 QListWidget[type="editor-suggestions"] {
     background-color: rgba(50, 65, 65, 75%);

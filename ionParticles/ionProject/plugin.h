@@ -15,6 +15,8 @@
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "projectapi.h"
 #include "treemodeladapter.h"
+#include "treeview.h"
+
 namespace IonProject {
 
 namespace Private {
@@ -43,6 +45,7 @@ public:
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory();
     virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory();
     virtual void setTreeModelSourceFactory(boost::function<QSharedPointer<TreeModelSource> (QString dirname)> factory);
+    virtual void registerJsApi(QScriptEngine &jsEngine);
 
 private:
     struct _defaultTreeModelSourceFactory {
@@ -67,6 +70,8 @@ protected slots:
 
 }
 }
+
+Q_DECLARE_METATYPE(IonProject::Private::TreeView*)
 
 #endif // IONEDITORPROJECT_H
 

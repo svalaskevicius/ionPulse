@@ -17,7 +17,7 @@ class TreeViewPanel : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(QLineEdit *filterInputField READ getFilterInputField)
-    Q_PROPERTY(TreeView *treeView READ getTreeView)
+    Q_PROPERTY(IonProject::Private::TreeView *treeView READ getTreeView)
 protected:
     QLineEdit *_filterInputField;
     TreeView *_treeView;
@@ -26,7 +26,7 @@ public:
     explicit TreeViewPanel(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
 
     QLineEdit *getFilterInputField() { return _filterInputField; }
-    TreeView *getTreeView() { return _treeView; }
+    IonProject::Private::TreeView *getTreeView() { return _treeView; }
 
 signals:
 

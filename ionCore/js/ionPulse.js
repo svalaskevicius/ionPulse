@@ -27,6 +27,22 @@ layoutManager.getZoneWidgets(
 ).each(function(widget) {
     widget.filterInputField.show();
     widget.filterInputField.text = "Test";
+    widget.treeView.contextMenuPolicy = Qt.CustomContextMenu;
+    widget.treeView.customContextMenuRequested.connect(function(point){
+        console.log(point);
+        try {
+            var actions = [];
+            actions.push(new QAction("", "test", 0));
+            actions.push(new QAction("", "test1", 0));
+            var index = widget.treeView.indexAt(point);
+            if (index.isValid()) {
+                actions.push(new QAction("", index.data().toString(), 0));
+            }
+            QMenu.exec(actions, widget.treeView.mapToGlobal(point));
+        }catch(e) {
+            console.error(e);
+        }
+    });
 });
 
 //editorPlugin.focusedEditor.focusOnLine(7)
