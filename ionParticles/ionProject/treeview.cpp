@@ -27,6 +27,9 @@ TreeView::TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent) 
     connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(updateScrollArea(QModelIndex)));
     connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(updateScrollArea(QModelIndex)));
     resizeColumnToContents(0);
+
+    setMouseTracking(true);
+    currentHoveredItem = NULL;
 }
 
 TreeView::~TreeView() {
@@ -119,6 +122,47 @@ bool TreeView::_isModelIndexDescendant(const QModelIndex &parent, const QModelIn
         current = current.parent();
     }
     return false;
+}
+
+TreeItem *TreeView::treeItemAt(const QPoint &pos) const
+{
+    QModelIndex idx = indexAt(pos);
+    if (!idx.isValid()) {
+        return NULL;
+    }
+    QVector<TreeItem *> items = _fiModel->getRangeItems(idx);
+    if (items.count() == 1) {
+        return items.first();
+    }
+    QRect rect = visualRect(idx);
+    int left = rect.left();
+    bool first = true;
+    foreach (TreeItem *current, items) {
+        if (!first) {
+            const char s[] = {(const char)0xc2, (const char)0xbb, 0x00};// right double angle
+            left += fontMetrics().width(QString::fromUtf8(s)) + 0 + 2 - fontMetrics().width("  ");
+        } else {
+            first = false;
+        }
+
+        int right = left + fontMetrics().width(current->data(0).toString()+"  ") + 0 + 2;
+        DEBUG_MSG("Test"<<pos.x()<<current->data(0).toString()<<left<<right);
+        if ((pos.x() > left) && (pos.x() < right)) {
+            DEBUG_MSG("match");
+            return current;
+        }
+        left = right;
+    }
+    return NULL;
+}
+
+void TreeView::mouseMoveEvent ( QMouseEvent * event )
+{
+    TreeItem *newHoveredItem = treeItemAt(event->pos());
+    if (newHoveredItem != currentHoveredItem) {
+        currentHoveredItem = newHoveredItem;
+        repaint();
+    }
 }
 
 }

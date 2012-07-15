@@ -16,7 +16,7 @@
 namespace IonProject {
 namespace Private {
 
-TreeViewItemDelegate::TreeViewItemDelegate(QSharedPointer<TreeModelAdapter> treeModel, QWidget *parent)
+TreeViewItemDelegate::TreeViewItemDelegate(QSharedPointer<TreeModelAdapter> treeModel, TreeView *parent)
     : QStyledItemDelegate(parent), treeModel(treeModel), widget(parent)
 {
 }
@@ -32,13 +32,9 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
     QLabel renderer;
-    if (QStyle::State_MouseOver == (QStyle::State_MouseOver & opt.state)) {
-        renderer.setProperty("hover", "1");
-    }
     if (QStyle::State_Selected == (QStyle::State_Selected & opt.state)) {
-        renderer.setProperty("selected", "1");
+        renderer.setProperty("selected", "line");
     }
-    opt.rect.setLeft(opt.rect.left() + 4);
 
     renderer.setProperty("type", "tree-item-text");
     renderer.setStyleSheet(widget->styleSheet());
@@ -46,6 +42,11 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     bool first = true;
     QVector<TreeItem *> items = treeModel->getRangeItems(index);
     foreach (TreeItem *current, items) {
+        if (QStyle::State_MouseOver == (QStyle::State_MouseOver & opt.state)) {
+            renderer.setProperty("hover", "line");
+        } else {
+            renderer.setProperty("hover", "");
+        }
         if (!first) {
             renderer.setProperty("itemclass", "separator");
             widget->style()->unpolish(&renderer);
@@ -53,7 +54,8 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 
             const char s[] = {(const char)0xc2, (const char)0xbb, 0x00};// right double angle
             opt.text = QString::fromUtf8(s);
-            opt.rect.setLeft(opt.rect.left() + 4);
+            opt.rect.setLeft(opt.rect.left() - opt.fontMetrics.width("  "));
+            opt.rect.setWidth(opt.fontMetrics.width(opt.text+" ") + 0 + 2); // + padding + border
 
             renderer.setText(opt.text);
             renderer.resize(opt.rect.size());
@@ -62,16 +64,20 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
             renderer.render(painter);
             painter->restore();
 
-            opt.rect.setLeft(opt.rect.left() + opt.fontMetrics.width(opt.text) + 4);
+            opt.rect.setLeft(opt.rect.left() + opt.rect.width() - opt.fontMetrics.width(" "));
         } else {
             first = false;
         }
 
         renderer.setProperty("itemclass", current->getItemClass());
+        if (widget->getCurrentHoveredItem() == current) {
+            renderer.setProperty("hover", "exact");
+        }
         widget->style()->unpolish(&renderer);
         widget->style()->polish(&renderer);
 
         opt.text = current->data(0).toString();
+        opt.rect.setWidth(opt.fontMetrics.width(opt.text+"  ") + 0 + 2); // + padding + border
         renderer.setText(opt.text);
         renderer.resize(opt.rect.size());
         painter->save();
@@ -79,7 +85,7 @@ void TreeViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
         renderer.render(painter);
         painter->restore();
 
-        opt.rect.setLeft(opt.rect.left() + opt.fontMetrics.width(opt.text));
+        opt.rect.setLeft(opt.rect.left() + opt.rect.width());
     }
 }
 

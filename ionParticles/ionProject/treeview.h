@@ -30,10 +30,14 @@ protected:
     QSharedPointer<TreeModelAdapter> _fiModel;
 
     virtual void keyPressEvent ( QKeyEvent * event );
+    virtual void mouseMoveEvent ( QMouseEvent * event );
+    TreeItem *currentHoveredItem;
 public:
     explicit TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
     virtual ~TreeView();
     void reset();
+    TreeItem *treeItemAt(const QPoint &pos) const;
+    TreeItem *getCurrentHoveredItem() const {return currentHoveredItem;}
 signals:
     void fileActivated(QString filename, int line);
     void filterKeyPressed(int key);

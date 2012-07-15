@@ -12,7 +12,7 @@
 
 #include "projectapi.h"
 #include "treemodeladapter.h"
-
+#include "treeview.h"
 #include <QStyledItemDelegate>
 
 namespace IonProject {
@@ -24,13 +24,13 @@ class TreeViewItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
 public:
-    TreeViewItemDelegate(QSharedPointer<TreeModelAdapter> treeModel, QWidget *parent = 0);
+    TreeViewItemDelegate(QSharedPointer<TreeModelAdapter> treeModel, TreeView *parent = 0);
     virtual ~TreeViewItemDelegate(){}
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 protected:
     QSharedPointer<TreeModelAdapter> treeModel;
-    QWidget *widget;
+    TreeView *widget;
 signals:
 public slots:
 
