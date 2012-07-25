@@ -124,36 +124,74 @@ bool TreeView::_isModelIndexDescendant(const QModelIndex &parent, const QModelIn
     return false;
 }
 
-TreeItem *TreeView::treeItemAt(const QPoint &pos) const
+template<typename T>
+struct FirstLargerKeyFinder {
+    typedef typename T::ConstIterator IteratorType;
+    typedef typename T::key_type key_type;
+    IteratorType operator()(const T & m, key_type key) const
+    {
+        for (IteratorType it = m.constBegin(); it != m.constEnd(); it++) {
+            if (it.key() > key) {
+                return it;
+            }
+        }
+        return m.constEnd();
+    }
+};
+
+TreeItem *TreeView::treeItemAt(const QPoint &pos)
 {
+    FirstLargerKeyFinder<ItemPositionCache> finderY;
+    ItemPositionCache::ConstIterator itY = finderY(_itemPositionCache, pos.y());
+    if (itY != _itemPositionCache.constEnd()) {
+        FirstLargerKeyFinder<ItemPositionCache::mapped_type> finderX;
+        ItemPositionCache::mapped_type::ConstIterator itX = finderX(itY.value(), pos.x());
+        if (itX != itY.value().constEnd()) {
+            if (itX.value().rect.contains(pos)) {
+                return itX.value().item;
+            }
+        }
+    }
+
+    PositionedItem posItem = _findPositionedItemAt(pos);
+    if (posItem.item) {
+        _itemPositionCache[posItem.rect.bottom()][posItem.rect.right()] = posItem;
+    }
+
+    return posItem.item;
+}
+
+TreeView::PositionedItem TreeView::_findPositionedItemAt(const QPoint &pos) const
+{
+    PositionedItem ret;
+    ret.item = NULL;
     QModelIndex idx = indexAt(pos);
     if (!idx.isValid()) {
-        return NULL;
+        return ret;
     }
     QVector<TreeItem *> items = _fiModel->getRangeItems(idx);
+    ret.rect = visualRect(idx);
     if (items.count() == 1) {
-        return items.first();
+        ret.item = items.first();
+        return ret;
     }
-    QRect rect = visualRect(idx);
-    int left = rect.left();
     bool first = true;
     foreach (TreeItem *current, items) {
         if (!first) {
             const char s[] = {(const char)0xc2, (const char)0xbb, 0x00};// right double angle
-            left += fontMetrics().width(QString::fromUtf8(s)) + 0 + 2 - fontMetrics().width("  ");
+            ret.rect.setLeft(ret.rect.left() + fontMetrics().width(QString::fromUtf8(s)) + 0 + 2 - fontMetrics().width("  "));
         } else {
             first = false;
         }
 
-        int right = left + fontMetrics().width(current->data(0).toString()+"  ") + 0 + 2;
-        DEBUG_MSG("Test"<<pos.x()<<current->data(0).toString()<<left<<right);
-        if ((pos.x() > left) && (pos.x() < right)) {
-            DEBUG_MSG("match");
-            return current;
+        ret.rect.setWidth(fontMetrics().width(current->data(0).toString()+"  ") + 0 + 2);
+        if (ret.rect.contains(pos)) {
+            ret.item = current;
+            return ret;
         }
-        left = right;
+        ret.rect.setLeft(ret.rect.right());
     }
-    return NULL;
+    return ret;
 }
 
 void TreeView::mouseMoveEvent ( QMouseEvent * event )
@@ -161,7 +199,8 @@ void TreeView::mouseMoveEvent ( QMouseEvent * event )
     TreeItem *newHoveredItem = treeItemAt(event->pos());
     if (newHoveredItem != currentHoveredItem) {
         currentHoveredItem = newHoveredItem;
-        repaint();
+        _itemPositionCache.clear();
+        update();
     }
 }
 

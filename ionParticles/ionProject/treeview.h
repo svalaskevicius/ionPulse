@@ -26,17 +26,26 @@ class TreeModelAdapter;
 class TreeView : public QTreeView
 {
     Q_OBJECT
+public:
+    typedef struct {
+        QRect rect;
+        TreeItem *item;
+    } PositionedItem;
 protected:
     QSharedPointer<TreeModelAdapter> _fiModel;
+    typedef QMap<int, QMap<int, PositionedItem> > ItemPositionCache;
+    ItemPositionCache _itemPositionCache;
 
     virtual void keyPressEvent ( QKeyEvent * event );
     virtual void mouseMoveEvent ( QMouseEvent * event );
     TreeItem *currentHoveredItem;
+
+    PositionedItem _findPositionedItemAt(const QPoint &pos) const;
 public:
     explicit TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
     virtual ~TreeView();
     void reset();
-    TreeItem *treeItemAt(const QPoint &pos) const;
+    TreeItem *treeItemAt(const QPoint &pos);
     TreeItem *getCurrentHoveredItem() const {return currentHoveredItem;}
 signals:
     void fileActivated(QString filename, int line);
