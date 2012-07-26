@@ -33,6 +33,7 @@ public:
     } PositionedItem;
 protected:
     QSharedPointer<TreeModelAdapter> _fiModel;
+    // keeps right and bottom positions as map keys for a faster lookup
     typedef QMap<int, QMap<int, PositionedItem> > ItemPositionCache;
     ItemPositionCache _itemPositionCache;
 
