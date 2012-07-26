@@ -21,6 +21,7 @@ class TreeItemImpl : virtual public TreeItem
 public:
     TreeItemImpl(QString itemClass, QString const name, QString const filterBy, QString const path, int line, TreeItem *parent);
     virtual ~TreeItemImpl();
+
     QVariant data(int column) const;
     int getRowNr();
     TreeItem *parent();

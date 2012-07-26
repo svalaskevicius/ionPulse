@@ -46,8 +46,8 @@ public:
     explicit TreeView(QSharedPointer<TreeModelAdapter> dataModel, QWidget *parent = 0);
     virtual ~TreeView();
     void reset();
-    TreeItem *treeItemAt(const QPoint &pos);
-    TreeItem *getCurrentHoveredItem() const {return currentHoveredItem;}
+    Q_INVOKABLE IonProject::TreeItem *treeItemAt(const QPoint &pos);
+    Q_INVOKABLE IonProject::TreeItem *getCurrentHoveredItem() const {return currentHoveredItem;}
 signals:
     void fileActivated(QString filename, int line);
     void filterKeyPressed(int key);

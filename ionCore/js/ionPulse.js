@@ -29,14 +29,15 @@ layoutManager.getZoneWidgets(
     widget.filterInputField.text = "Test";
     widget.treeView.contextMenuPolicy = Qt.CustomContextMenu;
     widget.treeView.customContextMenuRequested.connect(function(point){
-        console.log(point);
         try {
             var actions = [];
-            actions.push(new QAction("", "test", 0));
-            actions.push(new QAction("", "test1", 0));
-            var index = widget.treeView.indexAt(point);
-            if (index.isValid()) {
-                actions.push(new QAction("", index.data().toString(), 0));
+            var item = widget.treeView.treeItemAt(point);
+            if (item) {
+                var action = new QAction("", item.data(0).toString(), 0);
+                action.triggered.connect(function(){
+                    console.log(item.getPath());
+                });
+                actions.push(action);
             }
             QMenu.exec(actions, widget.treeView.mapToGlobal(point));
         }catch(e) {

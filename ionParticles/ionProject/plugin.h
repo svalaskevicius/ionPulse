@@ -16,6 +16,7 @@
 #include "projectapi.h"
 #include "treemodeladapter.h"
 #include "treeview.h"
+#include "treeitem.h"
 
 namespace IonProject {
 
@@ -71,6 +72,7 @@ protected slots:
 }
 }
 
+Q_DECLARE_METATYPE(IonProject::TreeItem*)
 Q_DECLARE_METATYPE(IonProject::Private::TreeView*)
 
 #endif // IONEDITORPROJECT_H

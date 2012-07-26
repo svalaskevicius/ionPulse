@@ -23,15 +23,16 @@ namespace IonProject {
  * The TreeItem class describes the atomic file tree element, which may be either at leaf
  * level or contain children (also TreeItem objects).
  */
-class TreeItem
+class TreeItem : public QObject
 {
+    Q_OBJECT
 public:
     virtual ~TreeItem() {}
 
     /**
      * \brief Retrieve data to be displayed.
      */
-    virtual QVariant data(int column) const = 0;
+    Q_INVOKABLE virtual QVariant data(int column) const = 0;
 
     /**
      * \brief The row number counting from the parent node.
@@ -39,27 +40,27 @@ public:
      * Retrieve the position at which this element should be displayed.
      * It is the position of this item amongst its siblings at the tree structure.
      */
-    virtual int getRowNr() = 0;
+    Q_INVOKABLE virtual int getRowNr() = 0;
 
     /**
      * \brief Get the parent item.
      */
-    virtual TreeItem *parent() = 0;
+    Q_INVOKABLE virtual TreeItem *parent() = 0;
 
     /**
      * \brief Retrieve the count of children items,
      */
-    virtual int visibleChildrenCount() const = 0;
+    Q_INVOKABLE virtual int visibleChildrenCount() const = 0;
 
     /**
      * \brief Retrieve a list of children assigned to this TreeItem.
      */
-    virtual QList<TreeItem*> &getChildren() = 0;
+    Q_INVOKABLE virtual QList<TreeItem*> &getChildren() = 0;
 
     /**
      * \brief Clear all the children freeing any memory they allocated.
      */
-    virtual void clearChildren() = 0;
+    Q_INVOKABLE virtual void clearChildren() = 0;
 
     /**
      * \brief Set this, and children TreeItem objects to be filtered by the given string.
@@ -70,7 +71,7 @@ public:
      *
      * \see isVisible()
      */
-    virtual void filter(QString const filter) = 0;
+    Q_INVOKABLE virtual void filter(QString const filter) = 0;
 
     /**
      * \brief Retrieve TreeItem visibility state.
@@ -82,12 +83,12 @@ public:
      * \see setFullVisibility()
      * \see filter()
      */
-    virtual bool isVisible() const = 0;
+    Q_INVOKABLE virtual bool isVisible() const = 0;
 
     /**
      * \brief Set given visibility flag to this TreeItem and to all of the children (recursively).
      */
-    virtual void setFullVisibility(bool visible) = 0;
+    Q_INVOKABLE virtual void setFullVisibility(bool visible) = 0;
 
     /**
      * \brief Get file path to be opened in the Editor on activating this TreeItem.
@@ -95,34 +96,34 @@ public:
      * If file path would be missing or file would be not existing, the Editor would
      * not be opened.
      */
-    virtual QString getPath() const = 0;
+    Q_INVOKABLE virtual QString getPath() const = 0;
 
     /**
      * \brief Get the line number to focus in the Editor on activating this TreeItem.
      *
      * If the line returned is -1, the Editor focus for the file will not change.
      */
-    virtual int getLine() const = 0;
+    Q_INVOKABLE virtual int getLine() const = 0;
 
     /**
      * \brief Add a child item to the TreeItem structure.
      */
-    virtual void appendChild(TreeItem *child) = 0;
+    Q_INVOKABLE virtual void appendChild(TreeItem *child) = 0;
 
     /**
      * \brief Retrieve the child from the specified position.
      */
-    virtual TreeItem *getVisibleChildByNr(int rowNr) = 0;
+    Q_INVOKABLE virtual TreeItem *getVisibleChildByNr(int rowNr) = 0;
 
     /**
      * \brief Retrieve child position amongst its siblings given its address location.
      */
-    virtual int getChildRowNr(TreeItem *child) = 0;
+    Q_INVOKABLE virtual int getChildRowNr(TreeItem *child) = 0;
 
     /**
      * \brief Retrieve TreeItem class (CSS notation).
      */
-    virtual const QString &getItemClass() const = 0;
+    Q_INVOKABLE virtual const QString &getItemClass() const = 0;
 };
 
 

@@ -109,6 +109,7 @@ QSharedPointer<TreeItemFactory> Plugin::createTreeItemFactory()
 
 void Plugin::registerJsApi(QScriptEngine & jsEngine)
 {
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<TreeItem>, qObjectPtrFromScriptValue<TreeItem>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<TreeView>, qObjectPtrFromScriptValue<TreeView>);
 }
 
