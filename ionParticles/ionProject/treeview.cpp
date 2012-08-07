@@ -200,7 +200,7 @@ void TreeView::mouseMoveEvent ( QMouseEvent * event )
     if (newHoveredItem != currentHoveredItem) {
         currentHoveredItem = newHoveredItem;
         _itemPositionCache.clear();
-        update();
+        update(indexAt(event->pos()));
     }
 }
 
