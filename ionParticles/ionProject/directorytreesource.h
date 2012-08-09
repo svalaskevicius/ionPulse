@@ -34,10 +34,11 @@ public:
     DirectoryTreeSource()
         : initialDir("") {
     }
-    virtual TreeItem * setupData();
+    virtual TreeItem * setupData(QString pathFilter = "");
     virtual QString getTitle() const {return "Project Browser";}
 protected:
-    void addDirectory(TreeItem *parent);
+    void addDirectory(TreeItem *parent, QString pathFilter);
+    void _updateDirectory(TreeItem* currentTreeItemsParent, QList<TreeItem*> &parents);
     TreeItem *findChildForPath(TreeItem *node, QString path);
     inline virtual QSharedPointer<DirectoryInfo> _getDir(const QString path);
 private:

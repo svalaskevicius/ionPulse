@@ -111,6 +111,7 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
 {
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<TreeItem>, qObjectPtrFromScriptValue<TreeItem>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<TreeView>, qObjectPtrFromScriptValue<TreeView>);
+    jsEngine.globalObject().setProperty("projectPlugin", jsEngine.newQObject(this));
 }
 
 

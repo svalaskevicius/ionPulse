@@ -56,20 +56,20 @@ private:
     }
 };
 
-TreeItem *DirectoryTreeSource::setupData()
+TreeItem *DirectoryTreeSource::setupData(QString pathFilter)
 {
     if (!root) {
         root = new TreeItemImpl(TREESOURCE_CLASS_DIR, "Name", "", initialDir, -1, NULL);
     }
 
     if (initialDir.length()) {
-        addDirectory(root);
+        addDirectory(root, pathFilter);
     }
 
     return root;
 }
 
-void DirectoryTreeSource::addDirectory(TreeItem *parent)
+void DirectoryTreeSource::addDirectory(TreeItem *parent, QString pathFilter)
 {
     QList<TreeItem*> parents;
     parents << parent;
@@ -78,28 +78,35 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent)
         TreeItem* currentTreeItemsParent = parents.last();
         parents.pop_back();
 
-        QSharedPointer<DirectoryTreeSource::DirectoryInfo> currentDir = _getDir(currentTreeItemsParent->getPath());
-        QStringList dirnames = currentDir->dirnames();
-        QStringList filenames = currentDir->filenames();
-
-        MissingFilesCleaner cleaner(dirnames, filenames);
-        cleaner.clean(currentDir->absolutePath()+"/", currentTreeItemsParent->getChildren());
-
-        foreach (QString subDirName, dirnames) {
-            QString fullPath = currentDir->absolutePath()+"/"+subDirName+"/";
-            TreeItem *treeItem = findChildForPath(currentTreeItemsParent, fullPath);
-            if (!treeItem) {
-                treeItem = new TreeItemImpl(TREESOURCE_CLASS_DIR, subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
-                currentTreeItemsParent->appendChild(treeItem);
-            }
-            parents << treeItem;
+        if ((pathFilter == "") || pathFilter.startsWith(currentTreeItemsParent->getPath())) {
+            _updateDirectory(currentTreeItemsParent, parents);
         }
+    }
+}
 
-        foreach (QString fileName, filenames) {
-            QString fullPath = currentDir->absolutePath()+"/"+fileName;
-            if (!findChildForPath(currentTreeItemsParent, fullPath)) {
-                currentTreeItemsParent->appendChild(new TreeItemImpl(TREESOURCE_CLASS_FILE, fileName, fileName, fullPath, -1, currentTreeItemsParent));
-            }
+void DirectoryTreeSource::_updateDirectory(TreeItem* currentTreeItemsParent, QList<TreeItem*> &parents)
+{
+    QSharedPointer<DirectoryTreeSource::DirectoryInfo> currentDir = _getDir(currentTreeItemsParent->getPath());
+    QStringList dirnames = currentDir->dirnames();
+    QStringList filenames = currentDir->filenames();
+
+    MissingFilesCleaner cleaner(dirnames, filenames);
+    cleaner.clean(currentDir->absolutePath()+"/", currentTreeItemsParent->getChildren());
+
+    foreach (QString subDirName, dirnames) {
+        QString fullPath = currentDir->absolutePath()+"/"+subDirName+"/";
+        TreeItem *treeItem = findChildForPath(currentTreeItemsParent, fullPath);
+        if (!treeItem) {
+            treeItem = new TreeItemImpl(TREESOURCE_CLASS_DIR, subDirName, subDirName, fullPath, -1, currentTreeItemsParent);
+            currentTreeItemsParent->appendChild(treeItem);
+        }
+        parents << treeItem;
+    }
+
+    foreach (QString fileName, filenames) {
+        QString fullPath = currentDir->absolutePath()+"/"+fileName;
+        if (!findChildForPath(currentTreeItemsParent, fullPath)) {
+            currentTreeItemsParent->appendChild(new TreeItemImpl(TREESOURCE_CLASS_FILE, fileName, fileName, fullPath, -1, currentTreeItemsParent));
         }
     }
 }

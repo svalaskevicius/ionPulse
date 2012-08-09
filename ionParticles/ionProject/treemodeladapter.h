@@ -43,6 +43,8 @@ public:
     TreeItem *getRoot() const {return rootItem;}
     void setDirectoryTreeSource(QSharedPointer<TreeModelSource> source);
     void updateFromSource();
+    void updateNodeFromSource(QModelIndex parent);
+    QList<QModelIndex> getModelIndexChildren(const QModelIndex &parent);
 private:
     TreeItem *rootItem;
     QString modelTitle;

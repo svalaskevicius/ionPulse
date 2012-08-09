@@ -19,9 +19,9 @@
 namespace IonPhp {
 namespace Private {
 
-IonProject::TreeItem *PhpTreeModelSourceDecorator::setupData()
+IonProject::TreeItem *PhpTreeModelSourceDecorator::setupData(QString pathFilter)
 {
-    IonProject::TreeItem* root = origTreeModelSource->setupData();
+    IonProject::TreeItem* root = origTreeModelSource->setupData(pathFilter);
 
     QVector<IonProject::TreeItem*> parents;
     parents.push_back(root);
@@ -30,10 +30,14 @@ IonProject::TreeItem *PhpTreeModelSourceDecorator::setupData()
         parents.pop_back();
         if (node->getItemClass() == TREESOURCE_CLASS_DIR) {
             foreach (IonProject::TreeItem *child, node->getChildren()) {
-                parents.push_back(child);
+                if ((pathFilter == "") || pathFilter.startsWith(child->getPath())) {
+                    parents.push_back(child);
+                }
             }
         } else if (node->getItemClass() == TREESOURCE_CLASS_FILE) {
-            decorateNode(node);
+            if ((pathFilter == "") || pathFilter.startsWith(node->getPath())) {
+                decorateNode(node);
+            }
         }
     }
     return root;

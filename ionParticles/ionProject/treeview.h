@@ -48,6 +48,9 @@ public:
     void reset();
     Q_INVOKABLE IonProject::TreeItem *treeItemAt(const QPoint &pos);
     Q_INVOKABLE IonProject::TreeItem *getCurrentHoveredItem() const {return currentHoveredItem;}
+    Q_INVOKABLE void saveExpandState();
+    Q_INVOKABLE void restoreExpandState();
+    Q_INVOKABLE void updateProjectNode(QModelIndex parent);
 signals:
     void fileActivated(QString filename, int line);
     void filterKeyPressed(int key);
@@ -61,7 +64,9 @@ protected slots:
 protected:
     void _expandToPath(QString path, const QModelIndex &parent);
     bool _isModelIndexDescendant(const QModelIndex &parent, const QModelIndex &descendantInQuestion);
-
+private:
+    QList<TreeItem *> _savedExpandState;
+    QList<TreeItem *> _savedCurrentItems;
 };
 
 

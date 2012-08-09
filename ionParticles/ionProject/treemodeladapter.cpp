@@ -51,10 +51,25 @@ void TreeModelAdapter::updateFromSource()
     }
     modelTitle = source->getTitle();
     endResetModel();
+}
 
-    foreach (TreeItem *c, rootItem->getChildren()) {
-        DEBUG_MSG(c->getPath());
+void TreeModelAdapter::updateNodeFromSource(QModelIndex parent)
+{
+    if (!parent.isValid()) {
+        DEBUG_MSG("model index given is invalid");
+        return;
     }
+
+    beginResetModel();
+
+    QString pathFilter = "";
+    TreeItem *itm = getItem(parent);
+    if (itm) {
+        pathFilter = getItem(parent)->getPath();
+    }
+    source->setupData(pathFilter);
+
+    endResetModel();
 }
 
 int TreeModelAdapter::columnCount(const QModelIndex &) const
@@ -183,6 +198,15 @@ QVector<TreeItem *> TreeModelAdapter::getRangeItems(const QModelIndex &index) co
     return itemPath;
 }
 
+QList<QModelIndex> TreeModelAdapter::getModelIndexChildren(const QModelIndex &parent)
+{
+    QList<QModelIndex> ret;
+    int max = rowCount(parent);
+    for (int i=0; i<max; i++) {
+        ret.append(index(i, 0, parent));
+    }
+    return ret;
+}
 
 
 

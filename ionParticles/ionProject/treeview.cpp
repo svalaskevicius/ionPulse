@@ -204,6 +204,54 @@ void TreeView::mouseMoveEvent ( QMouseEvent * event )
     }
 }
 
+void TreeView::saveExpandState()
+{
+    _savedExpandState.clear();
+    QList<QModelIndex> parents;
+    parents << QModelIndex();
+    while (!parents.empty()) {
+        QModelIndex p = parents.front();
+        parents.pop_front();
+        foreach (QModelIndex index, _fiModel->getModelIndexChildren(p)) {
+            if (isExpanded(index)) {
+                _savedExpandState.append(_fiModel->getRangeItems(index).toList());
+                parents.append(index);
+            }
+        }
+    }
+    _savedCurrentItems = _fiModel->getRangeItems(currentIndex()).toList();
+}
+void TreeView::restoreExpandState()
+{
+    setUpdatesEnabled(false);
+    QList<QModelIndex> parents;
+    parents << QModelIndex();
+    while (!parents.empty()) {
+        QModelIndex p = parents.front();
+        parents.pop_front();
+        foreach (QModelIndex index, _fiModel->getModelIndexChildren(p)) {
+            foreach (TreeItem *itm, _fiModel->getRangeItems(index)) {
+                if (_savedExpandState.contains(itm)) {
+                    setExpanded( index, true );
+                    parents.append(index);
+                }
+                if (_savedCurrentItems.contains(itm)) {
+                    setCurrentIndex(index);
+                }
+            }
+        }
+    }
+
+    setUpdatesEnabled(true);
+}
+
+void TreeView::updateProjectNode(QModelIndex parent)
+{
+    saveExpandState();
+    _fiModel->updateNodeFromSource(parent);
+    restoreExpandState();
+}
+
 }
 
 }

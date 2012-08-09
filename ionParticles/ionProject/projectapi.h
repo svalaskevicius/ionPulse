@@ -154,8 +154,10 @@ public:
 
     /**
      * \brief The main generator entry point, returning the root element of the created structure.
+     *
+     * \param pathFilter filter only files under the given path to setup
      */
-    virtual TreeItem * setupData() = 0;
+    virtual TreeItem * setupData(QString pathFilter = "") = 0;
 
     /**
      * \brief Return a title to be displayed for the generated tree widget.

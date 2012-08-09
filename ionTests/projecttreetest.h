@@ -59,7 +59,7 @@ public:
         root->appendChild(new TreeItemImpl("test", "fileName2", "fileName2", "fileName2", -1, root));
     }
     virtual QString getTitle() const {return "test";}
-    virtual TreeItem * setupData() {
+    virtual TreeItem * setupData(QString filter = "") {
         return root;
     }
 };

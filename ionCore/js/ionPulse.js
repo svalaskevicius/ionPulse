@@ -33,9 +33,10 @@ layoutManager.getZoneWidgets(
             var actions = [];
             var item = widget.treeView.treeItemAt(point);
             if (item) {
-                var action = new QAction("", item.data(0).toString(), 0);
-                action.triggered.connect(function(){
+                var action = new QAction("", "Refresh "+item.data(0).toString(), 0);
+                action.triggered.connect(function() {
                     console.log(item.getPath());
+                    widget.treeView.updateProjectNode(widget.treeView.indexAt(point));
                 });
                 actions.push(action);
             }
