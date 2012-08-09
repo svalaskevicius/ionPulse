@@ -26,7 +26,6 @@ layoutManager.getZoneWidgets(
     {"name":"project_tree"}
 ).each(function(widget) {
     widget.filterInputField.show();
-    widget.filterInputField.text = "Test";
     widget.treeView.contextMenuPolicy = Qt.CustomContextMenu;
     widget.treeView.customContextMenuRequested.connect(function(point){
         try {
