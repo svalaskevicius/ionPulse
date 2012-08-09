@@ -45,7 +45,10 @@ DataStorageImpl::DataStorageImpl() {
         throw std::runtime_error(QString("Attempt failed to set logging in memory: %1").arg(db_strerror(ret)).toStdString());
     }
 
-    bdb_env->open(bdb_env, NULL, flags, 0);
+    ret = bdb_env->open(bdb_env, NULL, flags, 0);
+    if (ret != 0) {
+        throw std::runtime_error(QString("Attempt failed open BDB env failed").toStdString());
+    }
 
     xmlManager = new DbXml::XmlManager(bdb_env, DbXml::DBXML_ADOPT_DBENV);
 
