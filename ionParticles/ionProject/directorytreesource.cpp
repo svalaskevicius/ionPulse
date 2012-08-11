@@ -78,7 +78,10 @@ void DirectoryTreeSource::addDirectory(TreeItem *parent, QString pathFilter)
         TreeItem* currentTreeItemsParent = parents.last();
         parents.pop_back();
 
-        if ((pathFilter == "") || pathFilter.startsWith(currentTreeItemsParent->getPath())) {
+        if ((pathFilter == "")
+                || currentTreeItemsParent->getPath().startsWith(pathFilter)
+                || pathFilter.startsWith(currentTreeItemsParent->getPath())
+            ) {
             _updateDirectory(currentTreeItemsParent, parents);
         }
     }

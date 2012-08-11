@@ -30,12 +30,15 @@ IonProject::TreeItem *PhpTreeModelSourceDecorator::setupData(QString pathFilter)
         parents.pop_back();
         if (node->getItemClass() == TREESOURCE_CLASS_DIR) {
             foreach (IonProject::TreeItem *child, node->getChildren()) {
-                if ((pathFilter == "") || pathFilter.startsWith(child->getPath())) {
+                if ((pathFilter == "")
+                        || child->getPath().startsWith(pathFilter)
+                        || pathFilter.startsWith(child->getPath())
+                    ) {
                     parents.push_back(child);
                 }
             }
         } else if (node->getItemClass() == TREESOURCE_CLASS_FILE) {
-            if ((pathFilter == "") || pathFilter.startsWith(node->getPath())) {
+            if ((pathFilter == "") || node->getPath().startsWith(pathFilter)) {
                 decorateNode(node);
             }
         }
