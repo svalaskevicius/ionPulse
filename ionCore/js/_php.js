@@ -74,7 +74,7 @@ var nodeJsDbTheme = {
     "php/separator":               [ toColor("ffc66d"), QFont.Black,  false, null, null ],
     "php/comment_sl":              [ toColor("987c4e"), QFont.Normal, true , null, null ],
     "php/comment_ml":              [ toColor("987c4e"), QFont.Normal, true , 15, null ],
-    "php/comment_ml/whitespace":   [ toColor("4F4F4F"), QFont.Normal, true , null, null ],
+    "php/comment_ml/whitespace":   [ toColor("4F4F4F"), QFont.Normal, true , 15, null ],
     "php/string_dq":               [ toColor("a5c261"), QFont.Normal, false, null, null ],
     "php/string_dq/variable":      [ toColor("7a9eb8"), QFont.Normal, false, null, null ],
     "php/string_sq":               [ toColor("bdf43e"), QFont.Normal, false, null, null ],
