@@ -110,7 +110,7 @@ QScriptValue jsDebug(QScriptContext *context, QScriptEngine *engine)
     return engine->nullValue();
 }
 
-QScriptValue getTextEditExtraSelectionCursor(QScriptContext *context, QScriptEngine *engine)
+QScriptValue getTextEditExtraSelectionCursor(QScriptContext *context, QScriptEngine *)
 {
    QTextEdit::ExtraSelection *selection = qscriptvalue_cast<QTextEdit::ExtraSelection*>(context->argument(0));
    return qScriptValueFromValue(context->engine(), selection->cursor);
@@ -121,7 +121,7 @@ QScriptValue setTextEditExtraSelectionCursor(QScriptContext *context, QScriptEng
    return engine->nullValue();
 }
 
-QScriptValue getTextEditExtraSelectionFormat(QScriptContext *context, QScriptEngine *engine)
+QScriptValue getTextEditExtraSelectionFormat(QScriptContext *context, QScriptEngine *)
 {
    QTextEdit::ExtraSelection *selection = qscriptvalue_cast<QTextEdit::ExtraSelection*>(context->argument(0));
    return qScriptValueFromValue(context->engine(), selection->format);

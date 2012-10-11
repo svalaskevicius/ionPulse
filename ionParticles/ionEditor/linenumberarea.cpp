@@ -30,7 +30,8 @@ LineNumberArea::LineNumberArea(Editor *parent) :
 
 
 void LineNumberArea::paintEvent(QPaintEvent *event) {
-    QPainter painter(this);
+    QPainter painter;
+    painter.begin(this);
     QColor bg = palette().color(QPalette::Background);
     painter.fillRect(event->rect(), bg);
 
@@ -75,6 +76,7 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
         bottom = top + blockHeight;
         ++blockNumber;
     }
+    painter.end();
 }
 
 

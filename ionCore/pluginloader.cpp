@@ -11,6 +11,7 @@
 #include "shared.h"
 #include <QPluginLoader>
 #include "plugin.h"
+#include <QtScript/QScriptExtensionPlugin>
 
 namespace IonCore {
 
@@ -35,6 +36,7 @@ void PluginLoader::loadPlugins(MainWindow &mainWindow, JsEngine &jsEngine, QStri
 
     PluginsList pluginsToLoad;
     pluginsToLoad.addStaticPlugins();
+    _loadJsScriptPluginsFromDir(pluginsDir+"/script", jsEngine);
     pluginsToLoad.addPluginsFromDir(pluginsDir);
 
     foreach (BasicPlugin *plugin, pluginsToLoad) {
@@ -120,6 +122,26 @@ void PluginLoader::PluginsList::addPluginsFromDir(QDir dir) {
         _checkAndAddOrDeletePlugin(plugin);
     }
 }
+
+
+void PluginLoader::_loadJsScriptPluginsFromDir(QDir dir, JsEngine &jsEngine) {
+    foreach (QString fileName, dir.entryList(QDir::Files)) {
+        DEBUG_MSG("try js load: "<<dir.absoluteFilePath(fileName));
+        QPluginLoader loader(dir.absoluteFilePath(fileName));
+        QObject *instance = loader.instance();
+        DEBUG_MSG(loader.errorString());
+        DEBUG_MSG(instance);
+        QScriptExtensionPlugin *plugin = qobject_cast<QScriptExtensionPlugin *>(instance);
+        if (plugin) {
+            DEBUG_MSG("loaded");
+            foreach (QString key, plugin->keys()) {
+                DEBUG_MSG("init "<< key);
+                plugin->initialize(key, &jsEngine.getScriptEngine());
+            }
+        }
+    }
+}
+
 
 }
 }

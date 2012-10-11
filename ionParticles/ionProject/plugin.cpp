@@ -117,6 +117,3 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
 
 }
 }
-
-
-Q_EXPORT_PLUGIN2 ( ionProject, IonProject::Private::Plugin )

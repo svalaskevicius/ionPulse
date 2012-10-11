@@ -335,4 +335,3 @@ QObject *Plugin::asQObject()
 }
 }
 
-Q_EXPORT_PLUGIN2 ( ionEditor, IonEditor::Private::Plugin )

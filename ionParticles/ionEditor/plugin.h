@@ -26,6 +26,7 @@ class EditorWidgetBuilderImpl;
 class Plugin : public QObject, public EditorPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.ionPulse.ionEditor")
     Q_INTERFACES(IonCore::BasicPlugin)
     Q_PROPERTY( IonEditor::Editor * focusedEditor READ getCurrentEditor )
 public:

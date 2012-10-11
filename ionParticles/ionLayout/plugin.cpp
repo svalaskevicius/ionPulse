@@ -42,5 +42,3 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
 
 }
 }
-
-Q_EXPORT_PLUGIN2 ( ionLayout, IonLayout::Private::Plugin )

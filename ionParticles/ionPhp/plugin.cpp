@@ -66,4 +66,3 @@ void Plugin::addParent(BasicPlugin *parent) {
 }
 }
 
-Q_EXPORT_PLUGIN2 ( ionPhp, IonPhp::Private::Plugin )

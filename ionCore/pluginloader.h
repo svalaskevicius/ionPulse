@@ -40,6 +40,7 @@ private:
     bool _arePluginsIncluded(QStringList pluginNames);
     void _includePlugin(BasicPlugin *plugin);
     void _loadPluginsList(PluginsList &plugins);
+    void _loadJsScriptPluginsFromDir(QDir dir, JsEngine &jsEngine);
 
 };
 }

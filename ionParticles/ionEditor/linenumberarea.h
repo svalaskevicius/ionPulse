@@ -24,9 +24,6 @@ public:
 
     explicit LineNumberArea(Editor *parent = 0);
     virtual ~LineNumberArea(){}
-    QSize sizeHint() {
-        return QSize(getWidth(), 0);
-    }
     int getWidth();
     bool editorEvent(QEvent * event);
 protected:

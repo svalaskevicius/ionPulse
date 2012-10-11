@@ -10,7 +10,7 @@
 #define INTERFACES_H
 
 #include <QList>
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QScriptEngine>
 
 /**

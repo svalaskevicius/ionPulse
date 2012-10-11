@@ -19,6 +19,7 @@ namespace Private {
 class Plugin : public QObject, public LayoutPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.ionPulse.ionLayout")
     Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);

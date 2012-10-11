@@ -46,5 +46,3 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
 }
 
 
-
-Q_EXPORT_PLUGIN2 ( ionDbXml, IonDbXml::Private::Plugin )

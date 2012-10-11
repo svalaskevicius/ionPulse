@@ -25,6 +25,7 @@ namespace Private {
 class Plugin : public QObject, public ProjectPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.ionPulse.ionProject")
     Q_INTERFACES(IonCore::BasicPlugin)
 public:
     explicit Plugin(QObject *parent = 0);
