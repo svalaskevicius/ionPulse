@@ -126,16 +126,11 @@ void PluginLoader::PluginsList::addPluginsFromDir(QDir dir) {
 
 void PluginLoader::_loadJsScriptPluginsFromDir(QDir dir, JsEngine &jsEngine) {
     foreach (QString fileName, dir.entryList(QDir::Files)) {
-        DEBUG_MSG("try js load: "<<dir.absoluteFilePath(fileName));
         QPluginLoader loader(dir.absoluteFilePath(fileName));
         QObject *instance = loader.instance();
-        DEBUG_MSG(loader.errorString());
-        DEBUG_MSG(instance);
         QScriptExtensionPlugin *plugin = qobject_cast<QScriptExtensionPlugin *>(instance);
         if (plugin) {
-            DEBUG_MSG("loaded");
             foreach (QString key, plugin->keys()) {
-                DEBUG_MSG("init "<< key);
                 plugin->initialize(key, &jsEngine.getScriptEngine());
             }
         }
