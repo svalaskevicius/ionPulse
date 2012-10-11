@@ -98,11 +98,12 @@ int main(int argc, char *argv[])
             app.setStyleSheet(styleSheetFile.readAll());
         }
 
-        plugins.loadPlugins(mainWindow, jsEngine, baseDir+"/plugins/");
-
         QStringList paths = app.libraryPaths();
         paths <<  baseDir+"/plugins/";
+        paths <<  baseDir+"/plugins/script/";
         app.setLibraryPaths(paths);
+
+        plugins.loadPlugins(mainWindow, jsEngine, baseDir+"/plugins/");
 
         jsEngine.getScriptEngine().globalObject().setProperty("window", jsEngine.getScriptEngine().newQObject(&mainWindow));
         jsEngine.loadFile(baseDir+"/js/ionPulse.js");
