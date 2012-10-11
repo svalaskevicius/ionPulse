@@ -53,9 +53,12 @@ DataStorageImpl::DataStorageImpl() {
     xmlManager = new DbXml::XmlManager(bdb_env, DbXml::DBXML_ADOPT_DBENV);
 
     DbXml::XmlUpdateContext up = xmlManager->createUpdateContext();
-    getXmlContainer("files")->setAutoIndexing(false, up);
-    getXmlContainer("filetimes")->setAutoIndexing(false, up);
-
+    try {
+        getXmlContainer("files")->setAutoIndexing(false, up);
+        getXmlContainer("filetimes")->setAutoIndexing(false, up);
+    } catch (std::exception &e) {
+        throw std::runtime_error(QString("Attempt failed open BDB XML containters failed:\n%1").arg(e.what()).toStdString());
+    }
 
     default_query_context = xmlManager->createQueryContext();
     default_query_context.setEvaluationType(DbXml::XmlQueryContext::Lazy);
@@ -167,7 +170,6 @@ DbXml::XmlContainer *DataStorageImpl::getXmlContainer(QString name) {
     QMap<QString, DbXml::XmlContainer>::iterator it = xmlContainers.find(name);
     if (xmlContainers.end() == it) {
         QString path = getDbDir() + name + ".dbxml";
-        DEBUG_MSG(path << xmlManager->existsContainer(path.toStdString()));
         if (0 != xmlManager->existsContainer(path.toStdString())) {
             DbXml::XmlContainer container = xmlManager->openContainer(path.toStdString());
             container.addAlias(name.toStdString());
