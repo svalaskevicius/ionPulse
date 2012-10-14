@@ -126,12 +126,14 @@ void PluginLoader::PluginsList::addPluginsFromDir(QDir dir) {
 
 void PluginLoader::_loadJsScriptPluginsFromDir(QDir dir, JsEngine &jsEngine) {
     foreach (QString fileName, dir.entryList(QDir::Files)) {
-        QPluginLoader loader(dir.absoluteFilePath(fileName));
-        QObject *instance = loader.instance();
-        QScriptExtensionPlugin *plugin = qobject_cast<QScriptExtensionPlugin *>(instance);
-        if (plugin) {
-            foreach (QString key, plugin->keys()) {
-                plugin->initialize(key, &jsEngine.getScriptEngine());
+        if (!fileName.contains('_debug.')) {
+            QPluginLoader loader(dir.absoluteFilePath(fileName));
+            QObject *instance = loader.instance();
+            QScriptExtensionPlugin *plugin = qobject_cast<QScriptExtensionPlugin *>(instance);
+            if (plugin) {
+                foreach (QString key, plugin->keys()) {
+                    plugin->initialize(key, &jsEngine.getScriptEngine());
+                }
             }
         }
     }
