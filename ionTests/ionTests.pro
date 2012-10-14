@@ -7,8 +7,6 @@ include (../ionPulse.pri)
 
 QT       += testlib widgets sql script
 
-#QT       -= gui
-
 TARGET = tst_iontest
 CONFIG   += console
 CONFIG   -= app_bundle
