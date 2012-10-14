@@ -75,12 +75,18 @@ DataStorageImpl::DataStorageImpl() {
 
 void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *node)
 {
-    QByteArray name = node->getName().toAscii();
+    QByteArray name = node->getName().toLatin1();
     XmlNode::AttributesMap &attributes = node->getAttributes();
     eventWriter.writeStartElement((const unsigned char*)name.constData(), NULL, NULL, attributes.count(), 0);
 
     for (XmlNode::AttributesMap::const_iterator it = attributes.begin(); it != attributes.end(); it++) {
-        eventWriter.writeAttribute((const unsigned char*)it.key().toAscii().constData(), NULL, NULL, (const unsigned char*)it.value().toAscii().constData(), true);
+        eventWriter.writeAttribute(
+            (const unsigned char*)it.key().toLatin1().constData(),
+            NULL,
+            NULL,
+            (const unsigned char*)it.value().toLatin1().constData(),
+            true
+        );
     }
 
     foreach (XmlNode *child, node->getChildren()) {
@@ -88,7 +94,7 @@ void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *
     }
 
     if (node->getText().length()) {
-        eventWriter.writeText(XmlEventReader::Characters, (const unsigned char*)node->getText().toAscii().constData(), node->getText().length());
+        eventWriter.writeText(XmlEventReader::Characters, (const unsigned char*)node->getText().toLatin1().constData(), node->getText().length());
     }
 
     eventWriter.writeEndElement((const unsigned char*)name.constData(), NULL, NULL);

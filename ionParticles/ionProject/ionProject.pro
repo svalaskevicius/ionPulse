@@ -33,6 +33,12 @@ SOURCES += \
     treeview.cpp \
     treeviewpanel.cpp
 
+LIBS += \
+    -L../ionEditor \
+    -lionEditor
+
+
+
 target.path += "$${PLUGIN_TARGET_DIR}"
 INSTALLS += target
 

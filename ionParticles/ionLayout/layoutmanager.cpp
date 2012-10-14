@@ -138,7 +138,7 @@ bool LayoutManagerImpl::testFilter(QWidget *widget, QVariantMap filter)
     while (i != filter.constEnd()) {
         QString key = i.key();
         QString value = i.value().toString();
-        if (widget->property(key.toAscii().constData()).toString() != value) {
+        if (widget->property(key.toLatin1().constData()).toString() != value) {
             return false;
         }
         ++i;

@@ -866,7 +866,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
         // rewind scanned data - it will be scanned properly in string scanner
         for (int i = result.length()-1; i>=0; i--) {
-            ionUnput(result[i].toAscii(), yyscanner);
+            ionUnput(result[i].toLatin1(), yyscanner);
         }
         BEGIN(ST_DOUBLE_QUOTES);
         return '"';
@@ -1188,7 +1188,7 @@ void putCharsBack(QString chars, yyscan_t yyscanner)
 {
     int i = chars.length();
     while (i--) {
-        ionUnput(chars[i].toAscii(), yyscanner);
+        ionUnput(chars[i].toLatin1(), yyscanner);
     }
 }
 QString lookupChars(int numberOfChars, yyscan_t yyscanner)
