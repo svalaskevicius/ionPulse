@@ -29,7 +29,8 @@ LineNumberArea::LineNumberArea(Editor *parent) :
 }
 
 
-void LineNumberArea::paintEvent(QPaintEvent *event) {
+void LineNumberArea::paintEvent(QPaintEvent *event)
+{
     QPainter painter;
     painter.begin(this);
     QColor bg = palette().color(QPalette::Background);
@@ -40,10 +41,7 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
     double top = (int) ionText->getEditorInfo().blockBoundingGeometry(block).translated(ionText->getEditorInfo().contentOffset()).top();
     double bottom = top + (int) ionText->getEditorInfo().blockBoundingRect(block).height();
 
-    QFont font("Monaco");
-    font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
-    font.setPointSize(12);
-    painter.setFont(font);
+    painter.setFont(ionText->document()->defaultFont());
     int fontHeight = painter.fontMetrics().height();
 
     bool resetColor = true;
@@ -62,7 +60,7 @@ void LineNumberArea::paintEvent(QPaintEvent *event) {
             painter.drawText(
                 QRectF(
                     3,
-                    top + (blockHeight / block.lineCount() - fontHeight) / 2.0f - 1,
+                    top + (blockHeight / block.lineCount() - fontHeight) / 2.0f,
                     this->width()-5,
                     blockHeight
                 ),
