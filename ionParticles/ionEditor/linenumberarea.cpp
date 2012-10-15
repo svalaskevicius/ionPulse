@@ -96,15 +96,9 @@ int LineNumberArea::getWidth()
 
 bool LineNumberArea::editorEvent(QEvent * event)
 {
-    switch(event->type()) {
-        case QEvent::Resize:
-        {
-            QRect cr = ionText->contentsRect();
-            setGeometry(QRect(cr.left(), cr.top(), getWidth(), cr.height()));
-        }
-        break;
-        default:
-            break;
+    if (QEvent::Resize == event->type()) {
+        QRect cr = ionText->contentsRect();
+        setGeometry(QRect(cr.left(), cr.top(), getWidth(), cr.height()));
     }
     return false;
 }
