@@ -43,13 +43,3 @@ js_plugins.files = ../lib/qtscriptgenerator/plugins/script/
 INSTALLS += distrib_css distrib_js distrib_assets js_plugins
 
 
-
-
-
-
-
-
-
-
-
-
