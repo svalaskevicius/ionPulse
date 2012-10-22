@@ -116,10 +116,8 @@ class DataStorageImpl : public DataStorage
 {
 public:
     DataStorageImpl();
+    ~DataStorageImpl();
 
-    ~DataStorageImpl() {
-        delete xmlManager;
-    }
     void addFile(QString path, int timestamp, XmlNode *root);
     uint getTimeStamp(QString path);
     void removeFile(QString path);
@@ -141,7 +139,7 @@ protected:
     };
     QVector<QSharedPointer<PreparedQuery> > preparedQueries;
     DbXml::XmlManager *xmlManager;
-    DbXml::XmlQueryContext default_query_context;
+    DbXml::XmlQueryContext *default_query_context;
     QString lastError;
     int timeStampQueryId;
 
@@ -149,6 +147,8 @@ protected:
     QString getCollectionPath(QString name);
     QString getDbDir();
 private:
+    DB_ENV *bdb_env;
+
     QMap<QString, DbXml::XmlContainer> xmlContainers;
     void _writeEventsForNode(DbXml::XmlEventWriter &eventWriter, XmlNode *node);
 };
