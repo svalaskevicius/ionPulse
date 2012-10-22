@@ -69,15 +69,16 @@ editorPlugin.editorOpened.connect(
 );
 
 
+var user_js_path = QDir.homePath() + "/.ionPulse/init.js";
+if (QFile.exists(user_js_path)) {
+    console.log("Using user init script at: " + user_js_path);
+    qs.script.include(user_js_path);
+} else {
+    console.log("User init script not found, looked at: " + user_js_path);
+}
+
 textHighlighter.initialize();
-var highlighter = function (cppApi, text) { textHighlighter.highlight(cppApi, text); }
-registerFileHighlighter("text", highlighter);
-registerFileHighlighter("text/php", highlighter);
+registerFileHighlighter("text", function (cppApi, text) {textHighlighter.highlight(cppApi, text);});
 
 
 
-
-
-//a = dbxml.getStorage().query('for $a in collection()/top_statement_list return dbxml:metadata("dbxml:name", $a)')
-//b = dbxml.getStorage().query('for $a in doc("dbxml:/files/%47Volumes%47Disk%20Image%47Disclosure_Varnish%47tests%47features%47bootstrap%47FeatureContext.php")/top_statement_list return dbxml:metadata("dbxml:name", $a)')
-//    dbxml.getStorage().getTimeStamp("/Volumes/Disk Image/Disclosure_Varnish/tests/features/bootstrap/FeatureContext.php")
