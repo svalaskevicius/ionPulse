@@ -17,7 +17,6 @@ qs.script.include("_php.js");
 
 
 console.log("ionPulse.js initialised");
-console.log(layoutManager.getSubZoneNames("left"));
 
 _.each(
     layoutManager.getZoneWidgets( "left", {"name":"project_tree"} ),
@@ -44,7 +43,6 @@ _.each(
     }
 );
 
-//editorPlugin.focusedEditor.focusOnLine(7)
 editorPlugin.editorOpened.connect(
     this,
     function (editor) {

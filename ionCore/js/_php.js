@@ -6,9 +6,6 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-var toColor = function(hex) {
-    return new QColor(parseInt(hex, 16));
-};
 var solarizedColor = function(code) {
     var solarizedPallete = {
         'base03' : {'sRGB': "002b36", 'genRGB': "042028", 'c256': "1c1c1c", 'c16': "brightblack"  , 'c8': 'black'},
@@ -175,7 +172,8 @@ textHighlighter.setBlockInfoHandler(
     }
 );
 
-
+textHighlighter.setDefaultState('text/php', 'html');
+textHighlighter.setDefaultState('text', 'html');
 
 var matchingBracketsHighlighter = (function () {
 

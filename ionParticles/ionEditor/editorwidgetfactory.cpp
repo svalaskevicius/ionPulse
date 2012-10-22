@@ -14,6 +14,14 @@ namespace IonEditor {
 
 namespace Private {
 
+QString reduceFileType(const QString &fileType) {
+    int idx = fileType.lastIndexOf("/");
+    if (idx > 0) {
+        return fileType.left(idx);
+    } else {
+        return "";
+    }
+}
 
 QMap<QString, QString> EditorWidgetBuilderImpl::fileExtToTypeMap; // file ending -> file type in factories
 
@@ -24,9 +32,12 @@ QSyntaxHighlighter *DefaultHighlighterFactory::operator ()(Editor *widget)
 
 QSyntaxHighlighter *EditorWidgetBuilderImpl::createHighlighter(Editor *widget, QString filetype)
 {
-    QMap<QString, QSharedPointer<HighlighterFactory> >::const_iterator it = typeToHighlighterFactoryMap.find(filetype);
-    if (it != typeToHighlighterFactoryMap.end()) {
-        return (*(*it))(widget);
+    while (filetype != "") {
+        QMap<QString, QSharedPointer<HighlighterFactory> >::const_iterator it = typeToHighlighterFactoryMap.find(filetype);
+        if (it != typeToHighlighterFactoryMap.end()) {
+            return (*(*it))(widget);
+        }
+        filetype = reduceFileType(filetype);
     }
     DefaultHighlighterFactory _default;
     return _default(widget);
@@ -44,12 +55,7 @@ QList<EditorComponent*> EditorWidgetBuilderImpl::createComponents(Editor *widget
                 addedComponents.insert(factory->getIdentifier());
             }
         }
-        int idx = fileType.lastIndexOf("/");
-        if (idx > 0) {
-            fileType = fileType.left(idx);
-        } else {
-            fileType = "";
-        }
+        fileType = reduceFileType(fileType);
     }
     return components;
 }
@@ -58,6 +64,7 @@ Editor *EditorWidgetBuilderImpl::createEditor(QString path)
 {
     EditorWidget *ret = new EditorWidget(path);
     QString type = getFileType(path);
+    ret->setProperty("fileType", type);
     ret->setComponents(createComponents(ret, type));
     ret->setHighlighter(createHighlighter(ret, type));
     return ret;

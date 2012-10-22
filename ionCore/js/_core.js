@@ -35,7 +35,9 @@ _.each(
     }
 );
 
-
+toColor = function(hex) {
+    return new QColor(parseInt(hex, 16));
+};
 
 is_string = function(input)
 {

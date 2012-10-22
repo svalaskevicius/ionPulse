@@ -62,8 +62,12 @@ TextHighlighter.prototype = {
         }
     },
 
-    setBlockInfoHandler : function(state, callback) {
+    setBlockInfoHandler: function(state, callback) {
         this._blockInfoCallbacks[state] = callback;
+    },
+
+    setDefaultState: function(fileType, state) {
+        this._defaultStates[fileType] = state;
     },
 
     /**
@@ -88,16 +92,12 @@ TextHighlighter.prototype = {
             'start': 0,
             'next': 0
         };
-        var stateId = cppApi.previousBlockState;
+        var state = this._getStateById(cppApi.previousBlockState);
 
-        if (stateId < 0) {
-            stateId = 0;
-        }
-        var state = this.states[stateId];
         while (this._stateMatcher) {
             state = this._processState(state);
         }
-        stateId = this.states.indexOf(state);
+        var stateId = this.states.indexOf(state);
         if (cppApi.currentBlockState !== stateId) {
             cppApi.currentBlockState = stateId;
         }
@@ -105,38 +105,6 @@ TextHighlighter.prototype = {
         cppApi.setCurrentBlockUserData(this._blockInfo);
     },
 
-
-    /**
-     * Create character format to be used for displaying the highlighted text
-     *
-     * @return QTextCharFormat
-     */
-    _createCharFormat: function (color, weight, italic, size, backgroundColor) {
-        if ((typeof size === 'undefined') || (size === null)) {
-            size = 17;
-        }
-        var format = new QTextCharFormat();
-
-        var brush = new QBrush();
-        brush.setColor(color);
-        brush.setStyle(Qt.SolidPattern);
-        format.setForeground(brush);
-
-        if ((typeof backgroundColor !== 'undefined') && (backgroundColor !== null)) {
-            var bgBrush = new QBrush();
-            bgBrush.setColor(backgroundColor);
-            bgBrush.setStyle(Qt.SolidPattern);
-            format.setBackground(bgBrush);
-        }
-
-        var font = new QFont("Inconsolata", size, weight, italic);
-        if (!font.exactMatch()) {
-            font = new QFont("Courier New", size, weight, italic);
-        }
-        format.setFont(font);
-
-        return format;
-    },
 
     /**
      * Create a state transition based on a regular expression matched agains the text
@@ -180,6 +148,52 @@ TextHighlighter.prototype = {
     _transitions: {},
     _highlightRules: {},
     _blockInfoCallbacks: {},
+    _defaultStates: {},
+
+    _getStateById : function(prevStateId) {
+        if (prevStateId < 0) {
+            var fileType = this._cppApi.editor.property('fileType');
+            if (this._defaultStates[fileType]) {
+                return this._defaultStates[fileType];
+            }
+            return this.states[0];
+        } else {
+            return this.states[prevStateId];
+        }
+    },
+
+
+    /**
+     * Create character format to be used for displaying the highlighted text
+     *
+     * @return QTextCharFormat
+     */
+    _createCharFormat: function (color, weight, italic, size, backgroundColor) {
+        if ((typeof size === 'undefined') || (size === null)) {
+            size = 17;
+        }
+        var format = new QTextCharFormat();
+
+        var brush = new QBrush();
+        brush.setColor(color);
+        brush.setStyle(Qt.SolidPattern);
+        format.setForeground(brush);
+
+        if ((typeof backgroundColor !== 'undefined') && (backgroundColor !== null)) {
+            var bgBrush = new QBrush();
+            bgBrush.setColor(backgroundColor);
+            bgBrush.setStyle(Qt.SolidPattern);
+            format.setBackground(bgBrush);
+        }
+
+        var font = new QFont("Inconsolata", size, weight, italic);
+        if (!font.exactMatch()) {
+            font = new QFont("Courier New", size, weight, italic);
+        }
+        format.setFont(font);
+
+        return format;
+    },
 
     _hightlightState: function (state, from, to) {
         if (this._blockInfoCallbacks[state]) {
