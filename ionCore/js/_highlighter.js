@@ -62,10 +62,16 @@ TextHighlighter.prototype = {
         }
     },
 
+    /**
+     * Invoke a callback for specified state for custom userdata generation
+     */
     setBlockInfoHandler: function(state, callback) {
         this._blockInfoCallbacks[state] = callback;
     },
 
+    /**
+     * Specify which highlighter state will start the file for a given fileType
+     */
     setDefaultState: function(fileType, state) {
         this._defaultStates[fileType] = state;
     },
