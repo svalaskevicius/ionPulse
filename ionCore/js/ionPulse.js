@@ -11,10 +11,6 @@ qs.script.include("lib/jsDump.js");
 qs.script.include("_core.js");
 qs.script.include("_console.js");
 
-console = new JsConsoleWidget(window);
-console.hide();
-layoutManager.add("central_container/footer", console);
-
 qs.script.include("_suggestions.js");
 qs.script.include("_highlighter.js");
 qs.script.include("_php.js");
@@ -22,30 +18,31 @@ qs.script.include("_php.js");
 
 console.log("ionPulse.js initialised");
 console.log(layoutManager.getSubZoneNames("left"));
-layoutManager.getZoneWidgets(
-    "left",
-    {"name":"project_tree"}
-).each(function(widget) {
-    widget.filterInputField.show();
-    widget.treeView.contextMenuPolicy = Qt.CustomContextMenu;
-    widget.treeView.customContextMenuRequested.connect(function(point){
-        try {
-            var actions = [];
-            var item = widget.treeView.treeItemAt(point);
-            if (item) {
-                var action = new QAction("", "Refresh "+item.data(0).toString(), 0);
-                action.triggered.connect(function() {
-                    console.log(item.getPath());
-                    widget.treeView.updateProjectNode(widget.treeView.indexAt(point));
-                });
-                actions.push(action);
+
+_.each(
+    layoutManager.getZoneWidgets( "left", {"name":"project_tree"} ),
+    function(widget) {
+        widget.filterInputField.show();
+        widget.treeView.contextMenuPolicy = Qt.CustomContextMenu;
+        widget.treeView.customContextMenuRequested.connect(function(point){
+            try {
+                var actions = [];
+                var item = widget.treeView.treeItemAt(point);
+                if (item) {
+                    var action = new QAction("", "Refresh "+item.data(0).toString(), 0);
+                    action.triggered.connect(function() {
+                        console.log(item.getPath());
+                        widget.treeView.updateProjectNode(widget.treeView.indexAt(point));
+                    });
+                    actions.push(action);
+                }
+                QMenu.exec(actions, widget.treeView.mapToGlobal(point));
+            }catch(e) {
+                console.error(e);
             }
-            QMenu.exec(actions, widget.treeView.mapToGlobal(point));
-        }catch(e) {
-            console.error(e);
-        }
-    });
-});
+        });
+    }
+);
 
 //editorPlugin.focusedEditor.focusOnLine(7)
 editorPlugin.editorOpened.connect(
