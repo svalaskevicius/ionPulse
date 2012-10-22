@@ -6,6 +6,7 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
+qs.script.include("lib/underscore.js");
 qs.script.include("lib/jsDump.js");
 qs.script.include("_core.js");
 qs.script.include("_console.js");

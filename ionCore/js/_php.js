@@ -85,21 +85,9 @@ phpHighlighter = (function () {
     var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighter);
     PhpHighlighter.prototype.initialize = function () {
 
-        this._colorTheme = nodeJsDbTheme;
+        this.addTextFormatting(nodeJsDbTheme);
 
-        this.charFormatting = {};
-        for (key in this._colorTheme) {
-            this.charFormatting[key] = this.createCharFormat(
-                 this._colorTheme[key][0],
-                 this._colorTheme[key][1],
-                 this._colorTheme[key][2],
-                 this._colorTheme[key][3],
-                 this._colorTheme[key][4]
-            );
-        }
-
-
-        this.transitions = {
+        this.addTransitions({
             "html": {
                 "php":              this.regexTransition(/<\?php\b/g, true)
             },
@@ -123,8 +111,8 @@ phpHighlighter = (function () {
             "php/string_sq": {
                 "php":              this.regexTransition(/([^\\']|\\.|^)'/g, false),
             }
-        };
-        this.highlightRules = {
+        });
+        this.addHighlightRules({
             "php": {
                 "number":           /\b([0-9]+)?\.?[0-9]+\b/g,
                 "constructs":       new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
@@ -160,7 +148,7 @@ phpHighlighter = (function () {
                 "whitespace":       /\s+/g,
             }
 
-        };
+        });
 
         this.parent.initialize.call(this);
     };
@@ -369,7 +357,7 @@ var matchingBracketsHighlighter = (function () {
 
 
 editorPlugin.editorOpened.connect(
-this, function (editor) {
+    this, function (editor) {
     editor.cursorPositionChanged.connect(this, function () {
         matchingBracketsHighlighter(editor);
     });

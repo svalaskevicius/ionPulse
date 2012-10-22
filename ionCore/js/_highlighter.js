@@ -8,7 +8,102 @@
 
 TextHighlighter = function () {};
 TextHighlighter.prototype = {
-    createCharFormat: function (color, weight, italic, size, backgroundColor) {
+    /**
+     * Add state transitions
+     * The highlighter is a state machine where transitions define possible links from one state
+     * to the others.
+     *
+     * Example:
+     * {
+     *     'path/to/state': {
+     *         'path/to/new/state': transition object,
+     *          ...
+     *     },
+     * }
+     */
+    addTransitions : function(transitions) {
+        _.extend(this._transitions, transitions);
+    },
+
+    /**
+     * Add highlighting rules in given states.
+     * A highlighting rule is a semi-state, as it is only used to find a matching
+     * character formatting in the current state.
+     *
+     * Example:
+     * {
+     *     'path/to/state': {
+     *         'formatting rule': /regular expression/,
+     *          ...
+     *     },
+     * }
+     */
+    addHighlightRules : function(rules) {
+        _.extend(this._highlightRules, rules);
+    },
+
+    /**
+     * Add text formatting rules for states and highlight rules in those states.
+     * Each formatting element is an array of: color, weight, italic, size, backgroundColor
+     *
+     * Example:
+     * {
+     *     'path/to/state':                  [toColor("ccccb0"), QFont.Normal, false, null, null],
+     *     'path/to/state/highlighter rule': [toColor("ccccb0"), QFont.Normal, true, null, null],
+     * }
+     */
+    addTextFormatting : function(textFormatting) {
+        var self = this;
+        var createFormatter = function(el) {
+            return self._createCharFormat(el[0], el[1], el[2], el[3], el[4]);
+        };
+        for (key in textFormatting) {
+            this._charFormatting[key] = createFormatter(textFormatting[key]);
+        }
+    },
+
+    /**
+     * Initialise internal highlighter structures
+     * No more state transitions can be added after the initialise
+     */
+    initialize: function () {
+        this.states = [];
+        for (var state in this._transitions) {
+            this.states.push(state);
+        }
+    },
+
+    /**
+     * Highlighter entry point, where C++ API invokes it to highlight a given text
+     */
+    highlight: function (cppApi, text) {
+        this._cppApi = cppApi;
+        this._text = text;
+        this._stateMatcher = {
+            'start': 0,
+            'next': 0
+        };
+        var stateId = cppApi.previousBlockState;
+        if (stateId < 0) {
+            stateId = 0;
+        }
+        var state = this.states[stateId];
+        while (this._stateMatcher) {
+            state = this._processState(state);
+        }
+        stateId = this.states.indexOf(state);
+        if (cppApi.currentBlockState != stateId) {
+            cppApi.currentBlockState = stateId;
+        }
+    },
+
+
+    /**
+     * Create character format to be used for displaying the highlighted text
+     *
+     * @return QTextCharFormat
+     */
+    _createCharFormat: function (color, weight, italic, size, backgroundColor) {
         if ((typeof size === 'undefined') || (size === null)) {
             size = 17;
         }
@@ -35,6 +130,9 @@ TextHighlighter.prototype = {
         return format;
     },
 
+    /**
+     * Create a state transition based on a regular expression matched agains the text
+     */
     regexTransition: function (re, atStart) {
         var self = this;
         if (/([^\[]|^)\^/.test(re.source)) {
@@ -70,21 +168,21 @@ TextHighlighter.prototype = {
         }
     },
 
-    charFormatting: {},
-    transitions: {},
-    highlightRules: {},
+    _charFormatting: {},
+    _transitions: {},
+    _highlightRules: {},
 
     _hightlightState: function (state, from, to) {
-        this._cppApi.setFormat(from, to - from, this.charFormatting[state]);
-        for (var rule in this.highlightRules[state]) {
-            var re = this.highlightRules[state][rule];
+        this._cppApi.setFormat(from, to - from, this._charFormatting[state]);
+        for (var rule in this._highlightRules[state]) {
+            var re = this._highlightRules[state][rule];
             re.lastIndex = from;
             var idx = -1;
             do {
                 var match = re.exec(this._text);
                 if (match && match.index < to) {
                     idx = match.index;
-                    this._cppApi.setFormat(idx, match[0].length, this.charFormatting[state + "/" + rule]);
+                    this._cppApi.setFormat(idx, match[0].length, this._charFormatting[state + "/" + rule]);
                 } else {
                     idx = -1;
                 }
@@ -95,8 +193,8 @@ TextHighlighter.prototype = {
     _processState: function (state) {
         var minPos = false;
         var minState = false;
-        for (var newState in this.transitions[state]) {
-            var statePos = this.transitions[state][newState]();
+        for (var newState in this._transitions[state]) {
+            var statePos = this._transitions[state][newState]();
             if (statePos) {
                 if (!minPos || (minPos.start > statePos.start)) {
                     minPos = statePos;
@@ -113,32 +211,6 @@ TextHighlighter.prototype = {
             this._stateMatcher = false;
             return state;
         }
-    },
-
-    initialize: function () {
-        this.states = [];
-        for (var state in this.transitions) {
-            this.states.push(state);
-        }
-    },
-    highlight: function (cppApi, text) {
-        this._cppApi = cppApi;
-        this._text = text;
-        this._stateMatcher = {
-            'start': 0,
-            'next': 0
-        };
-        var stateId = cppApi.previousBlockState;
-        if (stateId < 0) {
-            stateId = 0;
-        }
-        var state = this.states[stateId];
-        while (this._stateMatcher) {
-            state = this._processState(state);
-        }
-        stateId = this.states.indexOf(state);
-        if (cppApi.currentBlockState != stateId) {
-            cppApi.currentBlockState = stateId;
-        }
     }
+
 };
