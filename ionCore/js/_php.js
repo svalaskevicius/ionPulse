@@ -81,87 +81,88 @@ var nodeJsDbTheme = {
 };
 
 
-phpHighlighter = (function () {
-    var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighter);
-    PhpHighlighter.prototype.initialize = function () {
 
-        this.addTextFormatting(nodeJsDbTheme);
 
-        this.addTransitions({
-            "html": {
-                "php":              this.regexTransition(/<\?php\b/g, true)
-            },
-            "php": {
-                "html":             this.regexTransition(/\?>/g, false),
-                "php/comment_ml":   this.regexTransition(/\/\*/g, true),
-                "php/string_dq":    this.regexTransition(/"/g, true),
-                "php/string_sq":    this.regexTransition(/'/g, true),
-                "php/comment_sl":   this.regexTransition(/(\/\/|#)/g, true),
-            },
-            "php/comment_ml": {
-                "php":              this.regexTransition(/\*\//g, false),
-            },
-            "php/comment_sl": {
-                "html":             this.regexTransition(/\?>/g, false),
-                "php":              this.regexTransition(/$/g, false),
-            },
-            "php/string_dq": {
-                "php":              this.regexTransition(/([^\\"]|\\.|^)"/g, false),
-            },
-            "php/string_sq": {
-                "php":              this.regexTransition(/([^\\']|\\.|^)'/g, false),
-            }
-        });
-        this.addHighlightRules({
-            "php": {
-                "number":           /\b([0-9]+)?\.?[0-9]+\b/g,
-                "constructs":       new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
-                                               + "|\\b(die|echo|empty|exit|eval|include|include_once|isset|list|require|require_once"
-                                               + "|return|print|unset)\\b",
-                                               "ig"
-                                    ),
-                "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
-                "keyword":          new RegExp("<\\?php|\\?>|\\b(class|function|protected|private|public"
-                                               + "|abstract|extends|interface|implements|abstract|and|array"
-                                               + "|as|break|case|catch|clone|const|continue|declare"
-                                               + "|default|do|else|elseif|enddeclare|endfor"
-                                               + "|endforeach|endif|endswitch|endwhile|extends"
-                                               + "|final|for|foreach|function|global|goto"
-                                               + "|if|instanceof|namespace|new|or|static"
-                                               + "|switch|throw|try|use|var|while|xor|true|false|null|self)\\b",
-                                               "g"
-                                    ),
-                "compileConstants": /__CLASS__|__DIR__|__FILE__|__LINE__|__FUNCTION__|__METHOD__|__NAMESPACE__/g,
-                "property":         /->[a-z_][a-z0-9_]*/ig,
-                "method":           /->[a-z_][a-z0-9_]*\s*\(/ig,
-                "variable":         /\$[a-z_][a-z0-9_]*/ig,
-                "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&|\{|\}|\[|\]/g,
-                "whitespace":       /\s+/g,
-            },
-            "php/comment_ml": {
-                "whitespace":       /\s+/g,
-            },
-            "php/string_dq": {
-                "variable":         /\$[a-z_][a-z0-9_]*|\{\$.*?\}/ig,
-            },
-            "html": {
-                "whitespace":       /\s+/g,
-            }
+textHighlighter.addTextFormatting(nodeJsDbTheme);
 
-        });
+textHighlighter.addTransitions({
+    "html": {
+        "php":              textHighlighter.regexTransition(/<\?php\b/g, true)
+    },
+    "php": {
+        "html":             textHighlighter.regexTransition(/\?>/g, false),
+        "php/comment_ml":   textHighlighter.regexTransition(/\/\*/g, true),
+        "php/string_dq":    textHighlighter.regexTransition(/"/g, true),
+        "php/string_sq":    textHighlighter.regexTransition(/'/g, true),
+        "php/comment_sl":   textHighlighter.regexTransition(/(\/\/|#)/g, true),
+    },
+    "php/comment_ml": {
+        "php":              textHighlighter.regexTransition(/\*\//g, false),
+    },
+    "php/comment_sl": {
+        "html":             textHighlighter.regexTransition(/\?>/g, false),
+        "php":              textHighlighter.regexTransition(/$/g, false),
+    },
+    "php/string_dq": {
+        "php":              textHighlighter.regexTransition(/([^\\"]|\\.|^)"/g, false),
+    },
+    "php/string_sq": {
+        "php":              textHighlighter.regexTransition(/([^\\']|\\.|^)'/g, false),
+    }
+});
+textHighlighter.addHighlightRules({
+    "php": {
+        "number":           /\b([0-9]+)?\.?[0-9]+\b/g,
+        "constructs":       new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
+                                       + "|\\b(die|echo|empty|exit|eval|include|include_once|isset|list|require|require_once"
+                                       + "|return|print|unset)\\b",
+                                       "ig"
+                            ),
+        "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
+        "keyword":          new RegExp("<\\?php|\\?>|\\b(class|function|protected|private|public"
+                                       + "|abstract|extends|interface|implements|abstract|and|array"
+                                       + "|as|break|case|catch|clone|const|continue|declare"
+                                       + "|default|do|else|elseif|enddeclare|endfor"
+                                       + "|endforeach|endif|endswitch|endwhile|extends"
+                                       + "|final|for|foreach|function|global|goto"
+                                       + "|if|instanceof|namespace|new|or|static"
+                                       + "|switch|throw|try|use|var|while|xor|true|false|null|self)\\b",
+                                       "g"
+                            ),
+        "compileConstants": /__CLASS__|__DIR__|__FILE__|__LINE__|__FUNCTION__|__METHOD__|__NAMESPACE__/g,
+        "property":         /->[a-z_][a-z0-9_]*/ig,
+        "method":           /->[a-z_][a-z0-9_]*\s*\(/ig,
+        "variable":         /\$[a-z_][a-z0-9_]*/ig,
+        "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&|\{|\}|\[|\]/g,
+        "whitespace":       /\s+/g,
+    },
+    "php/comment_ml": {
+        "whitespace":       /\s+/g,
+    },
+    "php/string_dq": {
+        "variable":         /\$[a-z_][a-z0-9_]*|\{\$.*?\}/ig,
+    },
+    "html": {
+        "whitespace":       /\s+/g,
+    }
 
-        this.parent.initialize.call(this);
-    };
+});
 
-    PhpHighlighter.prototype.addBracketsInfo = function (from, to) {
+
+textHighlighter.setBlockInfoHandler(
+    'php',
+    function (blockInfo, from, to, text) {
+        if (blockInfo === undefined) {
+            blockInfo = [];
+        }
         var re = /[\(\)\{\}\[\]]/g;
         re.lastIndex = from;
         var match;
         do {
-            match = re.exec(this._text);
+            match = re.exec(text);
             if (match) {
                 if (match.index < to) {
-                    this.blockInfo.push({
+                    blockInfo.push({
                         pos: match.index,
                         char: match[0],
                     });
@@ -170,36 +171,21 @@ phpHighlighter = (function () {
                 }
             }
         } while (match);
-    };
-
-    PhpHighlighter.prototype._hightlightState = function (state, from, to) {
-        this.parent._hightlightState.call(this, state, from, to);
-        if ("php" === state) {
-            this.addBracketsInfo(from, to);
-        }
-    };
-
-
-    PhpHighlighter.prototype.highlight = function (cppApi, text) {
-        this.blockInfo = [];
-
-        this.parent.highlight.call(this, cppApi, text);
-
-        this._cppApi.setCurrentBlockUserData(this.blockInfo);
+        return blockInfo;
     }
-
-
-    var php = new PhpHighlighter();
-    php.initialize();
-
-    return function (cppApi, text) {
-        php.highlight(cppApi, text);
-    }
-})();
+);
 
 
 
 var matchingBracketsHighlighter = (function () {
+
+    var getPhpUserData = function (currentBlock) {
+            var userData = currentBlock.userData();
+            if (userData && userData['php'] !== undefined) {
+                return userData['php'];
+            }
+            return null;
+        };
 
     var createSelectionForPos = function (editor, pos) {
             var selection = new QTextEdit_ExtraSelection();
@@ -243,7 +229,7 @@ var matchingBracketsHighlighter = (function () {
         };
 
     var matchLeftBracket = function (currentBlock, i, numLeftBrackets, bracketPair) {
-            var infos = currentBlock.userData();
+            var infos = getPhpUserData(currentBlock);
             docPos = currentBlock.position();
             for (; infos && i < infos.length; ++i) {
                 if (infos[i].char === bracketPair.left) {
@@ -266,7 +252,7 @@ var matchingBracketsHighlighter = (function () {
         }
 
     var matchRightBracket = function (currentBlock, i, numRightBrackets, bracketPair) {
-            var infos = currentBlock.userData();
+            var infos = getPhpUserData(currentBlock)
 
             if (i === null && infos) {
                 i = infos.length - 1;
@@ -335,11 +321,11 @@ var matchingBracketsHighlighter = (function () {
         try {
             var selections = editor.extraSelections();
             var textCursor = editor.textCursor();
-            var userData = textCursor.block().userData();
+            var userData = getPhpUserData(textCursor.block());
             var curPos = textCursor.position() - textCursor.block().position();
             if (userData) {
                 for (var i = userData.length - 1; i >= 0; --i) {
-                    if (userData[i].pos == (curPos - 1)) {
+                    if (userData[i].pos === (curPos - 1)) {
                         var matchedPos = findMatchingBracket(userData[i].char, i, textCursor.block());
                         if (false !== matchedPos) {
                             selections.push(createSelectionForPos(editor, matchedPos));
@@ -357,8 +343,13 @@ var matchingBracketsHighlighter = (function () {
 
 
 editorPlugin.editorOpened.connect(
-    this, function (editor) {
-    editor.cursorPositionChanged.connect(this, function () {
-        matchingBracketsHighlighter(editor);
-    });
-});
+    this,
+    function (editor) {
+        editor.cursorPositionChanged.connect(
+            this,
+            function () {
+                matchingBracketsHighlighter(editor);
+            }
+        );
+    }
+);

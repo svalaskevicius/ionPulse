@@ -62,6 +62,10 @@ TextHighlighter.prototype = {
         }
     },
 
+    setBlockInfoHandler : function(state, callback) {
+        this._blockInfoCallbacks[state] = callback;
+    },
+
     /**
      * Initialise internal highlighter structures
      * No more state transitions can be added after the initialise
@@ -77,6 +81,7 @@ TextHighlighter.prototype = {
      * Highlighter entry point, where C++ API invokes it to highlight a given text
      */
     highlight: function (cppApi, text) {
+        this._blockInfo = {};
         this._cppApi = cppApi;
         this._text = text;
         this._stateMatcher = {
@@ -84,6 +89,7 @@ TextHighlighter.prototype = {
             'next': 0
         };
         var stateId = cppApi.previousBlockState;
+
         if (stateId < 0) {
             stateId = 0;
         }
@@ -92,9 +98,11 @@ TextHighlighter.prototype = {
             state = this._processState(state);
         }
         stateId = this.states.indexOf(state);
-        if (cppApi.currentBlockState != stateId) {
+        if (cppApi.currentBlockState !== stateId) {
             cppApi.currentBlockState = stateId;
         }
+
+        cppApi.setCurrentBlockUserData(this._blockInfo);
     },
 
 
@@ -171,8 +179,12 @@ TextHighlighter.prototype = {
     _charFormatting: {},
     _transitions: {},
     _highlightRules: {},
+    _blockInfoCallbacks: {},
 
     _hightlightState: function (state, from, to) {
+        if (this._blockInfoCallbacks[state]) {
+            this._blockInfo[state] = this._blockInfoCallbacks[state](this._blockInfo[state], from, to, this._text);
+        }
         this._cppApi.setFormat(from, to - from, this._charFormatting[state]);
         for (var rule in this._highlightRules[state]) {
             var re = this._highlightRules[state][rule];
@@ -212,5 +224,6 @@ TextHighlighter.prototype = {
             return state;
         }
     }
-
 };
+
+textHighlighter = new TextHighlighter();

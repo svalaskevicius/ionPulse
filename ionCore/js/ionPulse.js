@@ -71,8 +71,11 @@ editorPlugin.editorOpened.connect(
 );
 
 
-registerFileHighlighter("text", phpHighlighter);
-registerFileHighlighter("text/php", phpHighlighter);
+textHighlighter.initialize();
+var highlighter = function (cppApi, text) { textHighlighter.highlight(cppApi, text); }
+registerFileHighlighter("text", highlighter);
+registerFileHighlighter("text/php", highlighter);
+
 
 
 
