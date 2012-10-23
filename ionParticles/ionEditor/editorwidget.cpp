@@ -6,15 +6,20 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include "editorwidget.h"
+#include <QtCore/QFileInfo>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QApplication>
+#include <QtCore/qmath.h>
+
+#include <stdexcept>
+
 #include <ionCore/shared.h>
+
+#include "editorwidget.h"
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include "editorwidgetfactory.h"
-#include <QFileInfo>
-#include <QFile>
-#include <QTextStream>
-#include <stdexcept>
 
 namespace IonEditor {
 
@@ -29,11 +34,7 @@ EditorWidget::EditorWidget(QString filePath)
       componentInfo(this)
 {
     setWindowTitle(QFileInfo(filePath).fileName());
-    QFont font("Inconsolata");
-    font.setPointSize(17);
-    font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
-    document()->setDefaultFont(font);
-    setFont(font);
+    setZoomRatio(1.);
 
     QFile f(filePath);
     if (f.open(QFile::ReadOnly)) {
@@ -147,6 +148,38 @@ void EditorWidget::keyReleaseEvent(QKeyEvent * e)
             QPlainTextEdit::keyReleaseEvent(e);
     }
 }
+
+void EditorWidget::wheelEvent(QWheelEvent *e)
+{
+    if (e->modifiers() & Qt::ControlModifier) {
+        const float b = e->delta()/10.f;
+        const float r = getZoomRatio() + (qAtan(b)/M_PI/10.f);
+        if (r>0) {
+            setZoomRatio(r);
+        }
+        return;
+    }
+    QPlainTextEdit::wheelEvent(e);
+    updateMicroFocus();
+}
+
+float EditorWidget::getZoomRatio()
+{
+    return zoomRatio;
+}
+
+void EditorWidget::setZoomRatio(float ratio)
+{
+    zoomRatio = ratio;
+    const float newPointSize = QApplication::font().pointSizeF() * zoomRatio;
+    //document()->defaultFont().setPointSizeF(newPointSize);
+
+    QFont font = QApplication::font();
+    font.setPointSizeF(newPointSize);
+    document()->setDefaultFont(font);
+    setFont(font);
+}
+
 
 
 void EditorWidget::resetComponents() {
