@@ -106,14 +106,9 @@ int main(int argc, char *argv[])
 
         QStringList paths = app.libraryPaths();
         paths <<  baseDir+"/plugins/";
-        paths <<  baseDir+"/plugins/script/";
         app.setLibraryPaths(paths);
 
         plugins.loadPlugins(mainWindow, jsEngine, baseDir+"/plugins/");
-
-        jsEngine.getScriptEngine().globalObject().setProperty("window", jsEngine.getScriptEngine().newQObject(&mainWindow));
-        jsEngine.loadFile(baseDir+"/js/ionPulse.js");
-
 #if defined(Q_OS_MAC)
         QWidgetList widgets = mainWindow.findChildren<QWidget*>();
         foreach(QWidget* widget, widgets) {
