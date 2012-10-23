@@ -113,11 +113,11 @@ TextHighlighter.prototype = {
 
 
     /**
-     * Create a state transition based on a regular expression matched agains the text
+     * Create a state transition based on a regular expression matched against the text
      */
     regexTransition: function (re, atStart) {
         var self = this;
-        if (/([^\[]|^)\^/.test(re.source)) {
+        if (this._regexMatchingTheStartOfString(re)) {
             return function () {
                 var textToMatch;
                 if (0 === self._stateMatcher.next) {
@@ -148,6 +148,10 @@ TextHighlighter.prototype = {
                 return false;
             };
         }
+    },
+
+    _regexMatchingTheStartOfString : function(re) {
+        return /([^\[]|^)\^/.test(re.source);
     },
 
     _charFormatting: {},
@@ -207,19 +211,23 @@ TextHighlighter.prototype = {
         }
         this._cppApi.setFormat(from, to - from, this._charFormatting[state]);
         for (var rule in this._highlightRules[state]) {
-            var re = this._highlightRules[state][rule];
-            re.lastIndex = from;
-            var idx = -1;
-            do {
-                var match = re.exec(this._text);
-                if (match && match.index < to) {
-                    idx = match.index;
-                    this._cppApi.setFormat(idx, match[0].length, this._charFormatting[state + "/" + rule]);
-                } else {
-                    idx = -1;
-                }
-            } while (idx >= 0);
+            this._hightlightStateRule(state, rule, from, to);
         }
+    },
+
+    _hightlightStateRule : function(state, rule, from, to) {
+        var re = this._highlightRules[state][rule];
+        re.lastIndex = from;
+        var idx = -1;
+        do {
+            var match = re.exec(this._text);
+            if (match && match.index < to) {
+                idx = match.index;
+                this._cppApi.setFormat(idx, match[0].length, this._charFormatting[state + "/" + rule]);
+            } else {
+                idx = -1;
+            }
+        } while (idx >= 0);
     },
 
     _processState: function (state) {
