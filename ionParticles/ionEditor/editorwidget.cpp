@@ -111,7 +111,7 @@ void EditorWidget::keyPressEvent(QKeyEvent * e)
                 QTextCursor c(document());
                 while ((b.blockNumber() >= 0) && (range.second >= b.blockNumber())) {
                     c.setPosition(b.position());
-                    c.insertText("\t");
+                    c.insertText("    ");
                     b = b.next();
                 }
             }
