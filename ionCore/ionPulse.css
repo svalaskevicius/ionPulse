@@ -967,9 +967,12 @@ QTabBar{
 }
 
 QTabBar::tab{
-    background-color: rgb(40, 40, 40);
-    color: rgb(200, 200, 200);
     border-radius: 2px;
+    min-width: 3em;
+    padding: 7px 8px 5px 8px;
+    background-color: #444444;
+    color: #eeeeee;
+    border-bottom: 2px solid transparent;
 }
 
 QTabBar::tab:first{
@@ -978,18 +981,10 @@ QTabBar::tab:first{
 QTabBar::tab:last{
 }
 
-QTabBar[shape="0"]::tab{
-    min-width:3em;
-    padding: 2px 4px;
-    background-color: #444444;
-    color: #eeeeee;
-    border-bottom: 2px solid transparent;
-}
 
-
-QTabBar[shape="0"]::tab:selected{
-    background-color: #333333;
-    color: #f0f0f0;
+QTabBar::tab:selected{
+    background-color: #605550;
+    color: #ffffff;
     border-bottom: 2px solid #eee0cc;
 }
 
