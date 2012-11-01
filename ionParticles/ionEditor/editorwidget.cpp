@@ -151,16 +151,17 @@ void EditorWidget::keyReleaseEvent(QKeyEvent * e)
 
 void EditorWidget::wheelEvent(QWheelEvent *e)
 {
-    if (e->modifiers() & Qt::ControlModifier) {
-        const float b = e->delta()/10.f;
-        const float r = getZoomRatio() + (qAtan(b)/M_PI/10.f);
-        if (r>0) {
-            setZoomRatio(r);
-        }
-        return;
-    }
+// zoom disabled until QTBUG-27553 is fixed
+//    if (e->modifiers() & Qt::ControlModifier) {
+//        const float b = e->delta()/10.f;
+//        const float r = getZoomRatio() + (qAtan(b)/M_PI/10.f);
+//        if (r>0) {
+//            setZoomRatio(r);
+//        }
+//        return;
+//    }
     QPlainTextEdit::wheelEvent(e);
-    updateMicroFocus();
+//    updateMicroFocus();
 }
 
 float EditorWidget::getZoomRatio()
