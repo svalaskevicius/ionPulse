@@ -28,6 +28,7 @@ public:
     bool editorEvent(QEvent * event);
 protected:
     void paintEvent(QPaintEvent *event);
+    void resizeToFitEditor();
 
 signals:
 
@@ -36,6 +37,7 @@ public slots:
 private slots:
     void editorUpdateRequest(const QRect &, int);
     void editorBlockCountChanged(int /* newBlockCount */);
+    void editorZoomRatioChanged(float /* zoomRatio */);
     void editorCursorPositionChanged();
 private:
     Editor *ionText;

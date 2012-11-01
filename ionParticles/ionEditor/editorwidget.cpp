@@ -178,6 +178,8 @@ void EditorWidget::setZoomRatio(float ratio)
     font.setPointSizeF(newPointSize);
     document()->setDefaultFont(font);
     setFont(font);
+
+    emit zoomRatioChanged(zoomRatio);
 }
 
 

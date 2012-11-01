@@ -79,6 +79,7 @@ public:
 signals:
     void editorClosing( Editor *editor );
     void editorFocusing( Editor *editor );
+    void zoomRatioChanged( float zoomRatio );
 
 public slots:
     virtual void addEventListener(QEvent::Type type, EditorComponent *component) {
