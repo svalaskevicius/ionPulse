@@ -7,7 +7,6 @@
 #define YYDEBUG 1
 #define YYSTACKEXPANDABLE 1
 #define YYERROR_VERBOSE
-#define YYSTYPE pASTNode
 #define ion_php_scanner context->__scanner
 
 #define yyparse ion_php_parse
