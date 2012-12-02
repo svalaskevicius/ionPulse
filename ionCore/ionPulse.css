@@ -1,6 +1,11 @@
 
 /* based on JohnFredC Theme for MP : http://newsgroup.xnview.com/viewtopic.php?f=60&t=21219 */
 
+
+* {
+    font: 14pt Inconsolata,Monaco,Courier New,monospace;
+}
+
 QHeaderView::section{
    color: rgb(220,220,220);
 }

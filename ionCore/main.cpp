@@ -93,12 +93,6 @@ int main(int argc, char *argv[])
             QFontDatabase::addApplicationFont(baseDir+"/assets/fonts/"+name);
         }
 
-        QFont font("Inconsolata");
-        font.setPointSize(14);
-        font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
-        app.setFont(font);
-
-
         QFile styleSheetFile(baseDir+"/ionPulse.css");
         if (styleSheetFile.open(QFile::ReadOnly)) {
             app.setStyleSheet(styleSheetFile.readAll());
@@ -114,6 +108,7 @@ int main(int argc, char *argv[])
         jsEngine.getScriptEngine().globalObject().setProperty("window", jsEngine.getScriptEngine().newQObject(&mainWindow));
         jsEngine.loadFile(baseDir+"/js/ionPulse.js");
 
+
 #if defined(Q_OS_MAC)
         QWidgetList widgets = mainWindow.findChildren<QWidget*>();
         foreach(QWidget* widget, widgets) {
@@ -121,6 +116,9 @@ int main(int argc, char *argv[])
         }
 #endif
         mainWindow.show();
+
+        app.setFont(mainWindow.font());
+
         return app.exec();
     } catch (QString &msg) {
         QMessageBox::critical(
