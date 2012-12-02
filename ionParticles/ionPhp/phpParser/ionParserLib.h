@@ -20,6 +20,8 @@
 #include <ionCore/shared.h>
 #include <ionParticles/ionDbXml/dbxmlapi.h>
 
+#define YYSTYPE pASTNode
+
 namespace IonPhp {
 namespace Private {
 

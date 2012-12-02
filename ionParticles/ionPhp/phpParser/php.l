@@ -1147,6 +1147,9 @@ char ionInput(yyscan_t yyscanner)
             yyextra->__posColHistory.append(yyextra->__posCol);
             yyextra->__posCol = 0;
             break;
+        case EOF:
+            return 0;
+            break;
         default:
             yyextra->__posCol++;
     }
