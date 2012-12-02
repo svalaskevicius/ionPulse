@@ -400,6 +400,29 @@ private Q_SLOTS:
         QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName3"));
     }
 
+    void test_if_filterAcceptsFuzzyParam() {
+        QSharedPointer<TreeModelSource> source(new MockTreeSource());
+        TreeModelAdapter model(source);
+
+        model.filter("fne11");
+
+        QCOMPARE(model.rowCount(), 1);
+        QCOMPARE(model.rowCount(model.index(0, 0)), 0);
+
+        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName1_1"));
+    }
+
+        TreeModelAdapter model(source);
+
+        model.filter("finme3");
+
+        QCOMPARE(model.rowCount(), 1);
+        QCOMPARE(model.rowCount(model.index(0, 0)), 0);
+        QCOMPARE(model.columnCount(), 1);
+
+        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName3"));
+    }
+
     void test_getPath() {
         QSharedPointer<MockTreeSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
