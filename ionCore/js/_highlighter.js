@@ -6,15 +6,47 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-TextFormatterFactory = function () {};
-TextFormatterFactory.prototype = {
+
+TextFormatterManager = function () {
+};
+TextFormatterManager.prototype = {
+    _formats: {},
+    _formatters: {},
+
+    /**
+     * Register new formatter description
+     *
+     * @return null
+     */
+    register: function(key, format) {
+        this._formats[key] = format;
+        this._formatters[key] = this._create(format);
+    },
+
+    /**
+     * Retrieve cached formatter, modified according to the requested zoomRatio
+     *
+     * @return QTextCharFormat
+     */
+    retrieve: function(key, zoomRatio) {
+        var fontSize = this._formatters[key].font().pointSize();
+        var reqFontSize = this._defaultFontSize() * this._formats[key].size * zoomRatio;
+
+        if (Math.abs(reqFontSize-fontSize) > .0001) {
+            var font = this._formatters[key].font();
+            font.setPointSize(reqFontSize);
+            this._formatters[key].setFont(font);
+        }
+        return this._formatters[key];
+    },
+
 
     /**
      * Create character format to be used for displaying the highlighted text
      *
      * @return QTextCharFormat
      */
-    create: function (formatDesc) {
+    _create: function (formatDesc) {
         var format = new QTextCharFormat();
 
         var brush = new QBrush();
@@ -36,51 +68,11 @@ TextFormatterFactory.prototype = {
         format.setFont(font);
 
         return format;
-    }
-};
-
-TextFormatterManager = function (textFormatterFactory) {
-    this._textFormatterFactory = textFormatterFactory;
-};
-TextFormatterManager.prototype = {
-    _formats: {},
-    _formatters: {},
-
-    /**
-     * Register new formatter description
-     *
-     * @return null
-     */
-    register: function(key, format) {
-        if ((typeof format.size === 'undefined') || (format.size === null)) {
-            format.size = this._defaultFontSize();
-        }
-        this._formats[key] = format;
-        this._formatters[key] = this._textFormatterFactory.create(format);
     },
-
-    /**
-     * Retrieve cached formatter, modified according to the requested zoomRatio
-     *
-     * @return QTextCharFormat
-     */
-    retrieve: function(key, zoomRatio) {
-        var fontSize = this._formatters[key].font().pointSize();
-        var reqFontSize = this._formats[key].size * zoomRatio;
-
-        if (Math.abs(reqFontSize-fontSize) > .0001) {
-            var font = this._formatters[key].font();
-            font.setPointSize(reqFontSize);
-            this._formatters[key].setFont(font);
-        }
-        return this._formatters[key];
-    },
-
 
     _defaultFontSize: function() {
         return QApplication.font(0).pointSizeF();
     }
-
 };
 
 
@@ -322,19 +314,21 @@ TextHighlighter.prototype = {
      * @return object
      */
     _convertFormatDescription: function (arr) {
-        return {
+        var format = {
             color: arr[0],
             weight: arr[1],
             italic: arr[2],
             size: arr[3],
             backgroundColor: arr[4]
         };
+        if ((typeof format.size === 'undefined') || (format.size === null)) {
+            format.size = 1;
+        }
+        return format;
     }
 
 };
 
 textHighlighter = new TextHighlighter(
-    new TextFormatterManager(
-        new TextFormatterFactory()
-    )
+    new TextFormatterManager()
 );
