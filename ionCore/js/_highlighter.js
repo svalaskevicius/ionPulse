@@ -14,60 +14,49 @@ TextFormatterFactory.prototype = {
      *
      * @return QTextCharFormat
      */
-    create: function (color, weight, italic, size, backgroundColor) {
-        if ((typeof size === 'undefined') || (size === null)) {
-            size = this._defaultFontSize();
-        }
+    create: function (formatDesc) {
         var format = new QTextCharFormat();
 
         var brush = new QBrush();
-        brush.setColor(color);
+        brush.setColor(formatDesc.color);
         brush.setStyle(Qt.SolidPattern);
         format.setForeground(brush);
 
-        if ((typeof backgroundColor !== 'undefined') && (backgroundColor !== null)) {
+        if ((typeof formatDesc.backgroundColor !== 'undefined') && (formatDesc.backgroundColor !== null)) {
             var bgBrush = new QBrush();
-            bgBrush.setColor(backgroundColor);
+            bgBrush.setColor(formatDesc.backgroundColor);
             bgBrush.setStyle(Qt.SolidPattern);
             format.setBackground(bgBrush);
         }
 
-        var font = new QFont("Inconsolata", size, weight, italic);
+        var font = new QFont("Inconsolata", formatDesc.size, formatDesc.weight, formatDesc.italic);
         if (!font.exactMatch()) {
-            font = new QFont("Courier New", size, weight, italic);
+            font = new QFont("Courier New", formatDesc.size, formatDesc.weight, formatDesc.italic);
         }
         format.setFont(font);
 
         return format;
-    },
-
-    /**
-     * Create character format to be used for displaying the highlighted text
-     * Shorthand version of the create method
-     *
-     * @return QTextCharFormat
-     */
-    createFromArray: function (arr) {
-        return this.create(arr[0], arr[1], arr[2], arr[3], arr[4]);
-    },
-
-    _defaultFontSize: function() {
-        return QApplication.font(0).pointSizeF();
     }
 };
 
-TextFormatterManager = function () {};
+TextFormatterManager = function (textFormatterFactory) {
+    this._textFormatterFactory = textFormatterFactory;
+};
 TextFormatterManager.prototype = {
-    _vanillaFormatters: {},
-    _zoomedFormatters: {},
+    _formats: {},
+    _formatters: {},
 
     /**
-     * Register new formatter
+     * Register new formatter description
      *
      * @return null
      */
-    register: function(key, formatter) {
-        this._vanillaFormatters[key] = formatter;
+    register: function(key, format) {
+        if ((typeof format.size === 'undefined') || (format.size === null)) {
+            format.size = this._defaultFontSize();
+        }
+        this._formats[key] = format;
+        this._formatters[key] = this._textFormatterFactory.create(format);
     },
 
     /**
@@ -76,39 +65,30 @@ TextFormatterManager.prototype = {
      * @return QTextCharFormat
      */
     retrieve: function(key, zoomRatio) {
-        if (zoomRatio > .999 && zoomRatio < 1.001) {
-            return this._vanillaFormatters[key];
-        } else {
-            return this._zoomedFormatter(key, zoomRatio);
+        var fontSize = this._formatters[key].font().pointSize();
+        var reqFontSize = this._formats[key].size * zoomRatio;
+
+        if (Math.abs(reqFontSize-fontSize) > .0001) {
+            var font = this._formatters[key].font();
+            font.setPointSize(reqFontSize);
+            this._formatters[key].setFont(font);
         }
+        return this._formatters[key];
     },
 
-    _zoomedFormatter: function(key, zoomRatio) {
-        var cacheKey = Math.round(zoomRatio * 10);
-        if (!this._zoomedFormatters[cacheKey]) {
-            this._zoomedFormatters[cacheKey] = {};
-        }
-        if (!this._zoomedFormatters[cacheKey][key]) {
-            this._zoomedFormatters[cacheKey][key] = this._zoomFont(this._vanillaFormatters[key], zoomRatio);
-        }
-        return this._zoomedFormatters[cacheKey][key];
-    },
 
-    _zoomFont: function(formatter, zoomRatio) {
-        var font = formatter.font();
-        font.setPointSizeF(font.pointSizeF()*zoomRatio);
-        var zoomedFormatter = formatter;
-        zoomedFormatter.setFont(font);
-        return zoomedFormatter;
+    _defaultFontSize: function() {
+        return QApplication.font(0).pointSizeF();
     }
+
 };
 
 
-TextHighlighter = function (textFormatterFactory, textFormatterManager) {
-    this._textFormatterFactory = textFormatterFactory;
+TextHighlighter = function (textFormatterManager) {
     this._textFormatterManager = textFormatterManager;
 };
 TextHighlighter.prototype = {
+
     /**
      * Add state transitions
      * The highlighter is a state machine where transitions define possible links from one state
@@ -157,7 +137,7 @@ TextHighlighter.prototype = {
         for (key in textFormatting) {
             this._textFormatterManager.register(
                 key,
-                this._textFormatterFactory.createFromArray(textFormatting[key])
+                this._convertFormatDescription(textFormatting[key])
             );
         }
     },
@@ -254,7 +234,6 @@ TextHighlighter.prototype = {
         return /([^\[]|^)\^/.test(re.source);
     },
 
-    _textFormatterFactory: null,
     _textFormatterManager: null,
     _transitions: {},
     _highlightRules: {},
@@ -332,10 +311,30 @@ TextHighlighter.prototype = {
 
     _getFormatterZoomRatio: function() {
         return this._cppApi.editor.zoomRatio;
+    },
+
+
+    /**
+     * convert format description
+     * given format described as an array
+     * return it converted to TextFormatterFactory compatible object
+     *
+     * @return object
+     */
+    _convertFormatDescription: function (arr) {
+        return {
+            color: arr[0],
+            weight: arr[1],
+            italic: arr[2],
+            size: arr[3],
+            backgroundColor: arr[4]
+        };
     }
+
 };
 
 textHighlighter = new TextHighlighter(
-    new TextFormatterFactory(),
-    new TextFormatterManager()
+    new TextFormatterManager(
+        new TextFormatterFactory()
+    )
 );
