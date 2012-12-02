@@ -151,7 +151,7 @@ void EditorWidget::keyReleaseEvent(QKeyEvent * e)
 
 void EditorWidget::wheelEvent(QWheelEvent *e)
 {
-    if (e->modifiers() & Qt::ControlModifier) {
+    if (e->modifiers().testFlag(Qt::ControlModifier)) {
         const float sensitivity = 1/2.0f;
         const float delta = e->delta()/10.0f;
         const float ratio = getZoomRatio() + (qAtan(delta)/M_PI*sensitivity);
