@@ -246,7 +246,7 @@ void EditorWidget::saveFile() {
     if (!f.open(QIODevice::WriteOnly)) {
         throw std::runtime_error(("cannot write file "+filePath).toStdString());
     }
-    f.write(document()->toPlainText().toLatin1());
+    f.write(document()->toPlainText().toUtf8());
     document()->setModified(false);
 }
 

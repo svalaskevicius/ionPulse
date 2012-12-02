@@ -120,8 +120,6 @@ Todo
 
 #### new file
 
-#### UTF8 editor
-
 #### project tree
 * limit max length of each item (+joined ones) - use dots in the middle with full info as a tooltip
 
