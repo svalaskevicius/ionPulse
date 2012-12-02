@@ -175,13 +175,13 @@ void EditorWidget::setZoomRatio(float ratio)
 {
     zoomRatio = ratio;
     const float newPointSize = QApplication::font().pointSizeF() * zoomRatio;
-    //document()->defaultFont().setPointSizeF(newPointSize);
 
     QFont font = QApplication::font();
     font.setPointSizeF(newPointSize);
-    document()->setDefaultFont(font);
     setFont(font);
-
+    if (highlighter) {
+        highlighter->rehighlight();
+    }
     emit zoomRatioChanged(zoomRatio);
 }
 
