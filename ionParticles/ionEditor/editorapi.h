@@ -121,6 +121,8 @@ class Editor : public QPlainTextEdit {
     Q_OBJECT
     Q_PROPERTY(int textOptionFlags READ textOptionFlags WRITE setTextOptionFlags)
     Q_PROPERTY(QString path READ getFilePath)
+    Q_PROPERTY(float zoomRatio READ getZoomRatio WRITE setZoomRatio)
+
 public:
     Editor() : QPlainTextEdit(NULL) {}
     virtual ~Editor() {}
@@ -134,6 +136,9 @@ public:
     virtual void setTextOptionFlags(int) = 0;
 
     virtual QString getFilePath() = 0;
+
+    virtual float getZoomRatio() = 0;
+    virtual void setZoomRatio(float) = 0;
 
 public slots:
     /**

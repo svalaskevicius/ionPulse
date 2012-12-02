@@ -6,8 +6,81 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-TextHighlighter = function () {};
+
+TextFormatterManager = function () {
+};
+TextFormatterManager.prototype = {
+    _formats: {},
+    _formatters: {},
+
+    /**
+     * Register new formatter description
+     *
+     * @return null
+     */
+    register: function(key, format) {
+        this._formats[key] = format;
+        this._formatters[key] = this._create(format);
+    },
+
+    /**
+     * Retrieve cached formatter, modified according to the requested zoomRatio
+     *
+     * @return QTextCharFormat
+     */
+    retrieve: function(key, zoomRatio) {
+        var fontSize = this._formatters[key].font().pointSize();
+        var reqFontSize = this._defaultFontSize() * this._formats[key].size * zoomRatio;
+
+        if (Math.abs(reqFontSize-fontSize) > .0001) {
+            var font = this._formatters[key].font();
+            font.setPointSize(reqFontSize);
+            this._formatters[key].setFont(font);
+        }
+        return this._formatters[key];
+    },
+
+
+    /**
+     * Create character format to be used for displaying the highlighted text
+     *
+     * @return QTextCharFormat
+     */
+    _create: function (formatDesc) {
+        var format = new QTextCharFormat();
+
+        var brush = new QBrush();
+        brush.setColor(formatDesc.color);
+        brush.setStyle(Qt.SolidPattern);
+        format.setForeground(brush);
+
+        if ((typeof formatDesc.backgroundColor !== 'undefined') && (formatDesc.backgroundColor !== null)) {
+            var bgBrush = new QBrush();
+            bgBrush.setColor(formatDesc.backgroundColor);
+            bgBrush.setStyle(Qt.SolidPattern);
+            format.setBackground(bgBrush);
+        }
+
+        var font = new QFont("Inconsolata", formatDesc.size, formatDesc.weight, formatDesc.italic);
+        if (!font.exactMatch()) {
+            font = new QFont("Courier New", formatDesc.size, formatDesc.weight, formatDesc.italic);
+        }
+        format.setFont(font);
+
+        return format;
+    },
+
+    _defaultFontSize: function() {
+        return QApplication.font(0).pointSizeF();
+    }
+};
+
+
+TextHighlighter = function (textFormatterManager) {
+    this._textFormatterManager = textFormatterManager;
+};
 TextHighlighter.prototype = {
+
     /**
      * Add state transitions
      * The highlighter is a state machine where transitions define possible links from one state
@@ -53,12 +126,11 @@ TextHighlighter.prototype = {
      * }
      */
     addTextFormatting : function(textFormatting) {
-        var self = this;
-        var createFormatter = function(el) {
-            return self._createCharFormat(el[0], el[1], el[2], el[3], el[4]);
-        };
         for (key in textFormatting) {
-            this._charFormatting[key] = createFormatter(textFormatting[key]);
+            this._textFormatterManager.register(
+                key,
+                this._convertFormatDescription(textFormatting[key])
+            );
         }
     },
 
@@ -154,7 +226,7 @@ TextHighlighter.prototype = {
         return /([^\[]|^)\^/.test(re.source);
     },
 
-    _charFormatting: {},
+    _textFormatterManager: null,
     _transitions: {},
     _highlightRules: {},
     _blockInfoCallbacks: {},
@@ -173,43 +245,15 @@ TextHighlighter.prototype = {
     },
 
 
-    /**
-     * Create character format to be used for displaying the highlighted text
-     *
-     * @return QTextCharFormat
-     */
-    _createCharFormat: function (color, weight, italic, size, backgroundColor) {
-        if ((typeof size === 'undefined') || (size === null)) {
-            size = 17;
-        }
-        var format = new QTextCharFormat();
-
-        var brush = new QBrush();
-        brush.setColor(color);
-        brush.setStyle(Qt.SolidPattern);
-        format.setForeground(brush);
-
-        if ((typeof backgroundColor !== 'undefined') && (backgroundColor !== null)) {
-            var bgBrush = new QBrush();
-            bgBrush.setColor(backgroundColor);
-            bgBrush.setStyle(Qt.SolidPattern);
-            format.setBackground(bgBrush);
-        }
-
-        var font = new QFont("Inconsolata", size, weight, italic);
-        if (!font.exactMatch()) {
-            font = new QFont("Courier New", size, weight, italic);
-        }
-        format.setFont(font);
-
-        return format;
-    },
-
     _hightlightState: function (state, from, to) {
         if (this._blockInfoCallbacks[state]) {
             this._blockInfo[state] = this._blockInfoCallbacks[state](this._blockInfo[state], from, to, this._text);
         }
-        this._cppApi.setFormat(from, to - from, this._charFormatting[state]);
+        this._cppApi.setFormat(
+            from,
+            to - from,
+            this._textFormatterManager.retrieve(state, this._getFormatterZoomRatio())
+        );
         for (var rule in this._highlightRules[state]) {
             this._hightlightStateRule(state, rule, from, to);
         }
@@ -223,7 +267,11 @@ TextHighlighter.prototype = {
             var match = re.exec(this._text);
             if (match && match.index < to) {
                 idx = match.index;
-                this._cppApi.setFormat(idx, match[0].length, this._charFormatting[state + "/" + rule]);
+                this._cppApi.setFormat(
+                    idx,
+                    match[0].length,
+                    this._textFormatterManager.retrieve(state + "/" + rule, this._getFormatterZoomRatio())
+                );
             } else {
                 idx = -1;
             }
@@ -251,7 +299,36 @@ TextHighlighter.prototype = {
             this._stateMatcher = false;
             return state;
         }
+    },
+
+    _getFormatterZoomRatio: function() {
+        return this._cppApi.editor.zoomRatio;
+    },
+
+
+    /**
+     * convert format description
+     * given format described as an array
+     * return it converted to TextFormatterFactory compatible object
+     *
+     * @return object
+     */
+    _convertFormatDescription: function (arr) {
+        var format = {
+            color: arr[0],
+            weight: arr[1],
+            italic: arr[2],
+            size: arr[3],
+            backgroundColor: arr[4]
+        };
+        if ((typeof format.size === 'undefined') || (format.size === null)) {
+            format.size = 1;
+        }
+        return format;
     }
+
 };
 
-textHighlighter = new TextHighlighter();
+textHighlighter = new TextHighlighter(
+    new TextFormatterManager()
+);

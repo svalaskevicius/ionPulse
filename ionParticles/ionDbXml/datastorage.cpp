@@ -9,7 +9,7 @@
 #include "datastorage.h"
 
 #include <stdexcept>
-#include <QUrl>
+#include <QtCore/QUrl>
 #include <ionCore/shared.h>
 
 namespace IonDbXml {

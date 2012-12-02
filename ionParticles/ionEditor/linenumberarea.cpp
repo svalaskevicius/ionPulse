@@ -23,6 +23,7 @@ LineNumberArea::LineNumberArea(Editor *parent) :
     ionText->addEventListener(QEvent::Resize, this);
     connect(ionText, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(editorUpdateRequest(const QRect &, int)));
     connect(ionText, SIGNAL(blockCountChanged(int)), this, SLOT(editorBlockCountChanged(int)));
+    connect(ionText, SIGNAL(zoomRatioChanged(float)), this, SLOT(editorZoomRatioChanged(float)));
     connect(ionText, SIGNAL(cursorPositionChanged()), this, SLOT(editorCursorPositionChanged()));
 
     editorBlockCountChanged(0);
@@ -38,15 +39,15 @@ void LineNumberArea::paintEvent(QPaintEvent *event)
 
     QTextBlock block = ionText->getEditorInfo().firstVisibleBlock();
     int blockNumber = block.blockNumber();
-    double top = (int) ionText->getEditorInfo().blockBoundingGeometry(block).translated(ionText->getEditorInfo().contentOffset()).top();
-    double bottom = top + (int) ionText->getEditorInfo().blockBoundingRect(block).height();
+    double top = ionText->getEditorInfo().blockBoundingGeometry(block).translated(ionText->getEditorInfo().contentOffset()).top();
 
     painter.setFont(ionText->document()->defaultFont());
-    int fontHeight = painter.fontMetrics().height();
+    double fontHeight = painter.fontMetrics().height();
 
     bool resetColor = true;
     while (block.isValid() && top <= event->rect().bottom()) {
         double blockHeight = ionText->getEditorInfo().blockBoundingRect(block).height();
+        double bottom = top + blockHeight;
 
         if (block.isVisible() && bottom >= event->rect().top()) {
             if (blockNumber == currentLine) {
@@ -60,7 +61,7 @@ void LineNumberArea::paintEvent(QPaintEvent *event)
             painter.drawText(
                 QRectF(
                     3,
-                    top + (blockHeight / block.lineCount() - fontHeight) / 2.0f,
+                    top + (blockHeight / (double)block.lineCount() - fontHeight) / 2.0f,
                     this->width()-5,
                     blockHeight
                 ),
@@ -71,7 +72,6 @@ void LineNumberArea::paintEvent(QPaintEvent *event)
 
         block = block.next();
         top = bottom;
-        bottom = top + blockHeight;
         ++blockNumber;
     }
     painter.end();
@@ -87,9 +87,7 @@ int LineNumberArea::getWidth()
         ++digits;
     }
 
-    int space = 5 + fontMetrics().width(QLatin1Char('9')) * digits;
-
-    return space;
+    return 5 + ionText->fontMetrics().width(QLatin1Char('9')) * digits;
 }
 
 bool LineNumberArea::editorEvent(QEvent * event)
@@ -116,7 +114,16 @@ void LineNumberArea::editorUpdateRequest(const QRect &rect, int dy)
 
 void LineNumberArea::editorBlockCountChanged(int /* newBlockCount */)
 {
-    //DEBUG_MSG((QString(">> #")+QString("%1").arg(this->getWidth())).toStdString());
+    resizeToFitEditor();
+}
+
+void LineNumberArea::editorZoomRatioChanged(float /* zoomRatio */)
+{
+    resizeToFitEditor();
+}
+
+void LineNumberArea::resizeToFitEditor()
+{
     //TODO: performance: check if width changed, and only then set geom and update margins
     ionText->updateViewportMargins();
     QRect cr = ionText->contentsRect();

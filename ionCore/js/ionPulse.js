@@ -78,7 +78,16 @@ if (QFile.exists(user_js_path)) {
 }
 
 textHighlighter.initialize();
-registerFileHighlighter("text", function (cppApi, text) {textHighlighter.highlight(cppApi, text);});
+registerFileHighlighter(
+    "text",
+    function (cppApi, text) {
+        try {
+            textHighlighter.highlight(cppApi, text);
+        } catch (e) {
+            debug(e);
+        }
+    }
+);
 
 
 

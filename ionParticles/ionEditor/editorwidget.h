@@ -9,10 +9,11 @@
 #ifndef IONTEXTEDITORWIDGET_H
 #define IONTEXTEDITORWIDGET_H
 
-#include <QPlainTextEdit>
-#include <QEvent>
-#include <QMap>
-#include <QTextBlock>
+#include <QtCore/QEvent>
+#include <QtCore/QMap>
+#include <QtGui/QTextBlock>
+#include <QtWidgets/QPlainTextEdit>
+
 #include <ionParticles/ionLayout/layoutapi.h>
 #include "editorapi.h"
 
@@ -50,21 +51,15 @@ public:
             return widget->blockBoundingRect(block);
         }
     };
+
     explicit EditorWidget(QString filePath);
     virtual ~EditorWidget();
+
     void setHighlighter(QSyntaxHighlighter *highlighter) {
         resetHighlighter();
         this->highlighter = highlighter;
     }
-protected:
-    std::pair<int, int> getSelectedBlockRange();
-    bool event ( QEvent * event );
-    void resetComponents();
-    void resetHighlighter();
-    void keyPressEvent ( QKeyEvent * e );
-    void keyReleaseEvent ( QKeyEvent * e );
 
-public:
     virtual const EditorComponentInfo &getEditorInfo() const {
         return componentInfo;
     }
@@ -78,23 +73,14 @@ public:
 
     QString getFilePath() { return filePath;}
 
-protected slots:
-    void editorCursorPositionChanged();
-    void modificationChanged(bool changed);
-protected:
-    void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
-    void closeEvent ( QCloseEvent * event ) {emit(editorClosing(this)); QWidget::closeEvent( event );}
-    void focusInEvent ( QFocusEvent * event ) {emit(editorFocusing(this)); QWidget::focusInEvent( event );}
-    virtual void scrollContentsBy (int dx, int dy) {QPlainTextEdit::scrollContentsBy (  dx,  dy );viewport()->update();}
-private:
-    QList<EditorComponent* > components;
-    QSyntaxHighlighter *highlighter;
-    QMap<QEvent::Type, QList<EditorComponent *> > eventListeners;
-    QString filePath;
-    ComponentInfo componentInfo;
+    float getZoomRatio();
+    void setZoomRatio(float ratio);
+
 signals:
     void editorClosing( Editor *editor );
     void editorFocusing( Editor *editor );
+    void zoomRatioChanged( float zoomRatio );
+
 public slots:
     virtual void addEventListener(QEvent::Type type, EditorComponent *component) {
         eventListeners[type].append(component);
@@ -107,6 +93,32 @@ public slots:
     }
     void focusOnLine(int line);
     void saveFile();
+
+protected:
+    std::pair<int, int> getSelectedBlockRange();
+    void resetComponents();
+    void resetHighlighter();
+    void addCurrentLineExtraSelection(QList<QTextEdit::ExtraSelection> &extraSelections);
+
+    virtual bool event ( QEvent * event );
+    virtual void keyPressEvent ( QKeyEvent * e );
+    virtual void keyReleaseEvent ( QKeyEvent * e );
+    virtual void closeEvent ( QCloseEvent * event ) {emit(editorClosing(this)); QWidget::closeEvent( event );}
+    virtual void focusInEvent ( QFocusEvent * event ) {emit(editorFocusing(this)); QWidget::focusInEvent( event );}
+    virtual void wheelEvent(QWheelEvent *e);
+    virtual void scrollContentsBy (int dx, int dy) {QPlainTextEdit::scrollContentsBy (  dx,  dy );viewport()->update();}
+
+protected slots:
+    void editorCursorPositionChanged();
+    void modificationChanged(bool changed);
+
+private:
+    QList<EditorComponent* > components;
+    QSyntaxHighlighter *highlighter;
+    QMap<QEvent::Type, QList<EditorComponent *> > eventListeners;
+    QString filePath;
+    ComponentInfo componentInfo;
+    float zoomRatio;
 };
 
 }

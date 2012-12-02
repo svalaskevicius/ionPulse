@@ -93,6 +93,12 @@ int main(int argc, char *argv[])
             QFontDatabase::addApplicationFont(baseDir+"/assets/fonts/"+name);
         }
 
+        QFont font("Inconsolata");
+        font.setPointSize(14);
+        font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
+        app.setFont(font);
+
+
         QFile styleSheetFile(baseDir+"/ionPulse.css");
         if (styleSheetFile.open(QFile::ReadOnly)) {
             app.setStyleSheet(styleSheetFile.readAll());

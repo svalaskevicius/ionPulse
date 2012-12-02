@@ -6,15 +6,20 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-#include "editorwidget.h"
+#include <QtCore/QFileInfo>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QApplication>
+#include <QtCore/qmath.h>
+
+#include <stdexcept>
+
 #include <ionCore/shared.h>
+
+#include "editorwidget.h"
 #include "linenumberarea.h"
 #include "highlighter.h"
 #include "editorwidgetfactory.h"
-#include <QFileInfo>
-#include <QFile>
-#include <QTextStream>
-#include <stdexcept>
 
 namespace IonEditor {
 
@@ -29,11 +34,7 @@ EditorWidget::EditorWidget(QString filePath)
       componentInfo(this)
 {
     setWindowTitle(QFileInfo(filePath).fileName());
-    QFont font("Inconsolata");
-    font.setPointSize(17);
-    font.setStyleHint(QFont::Courier, QFont::PreferAntialias);
-    document()->setDefaultFont(font);
-    setFont(font);
+    setZoomRatio(1.);
 
     QFile f(filePath);
     if (f.open(QFile::ReadOnly)) {
@@ -110,7 +111,7 @@ void EditorWidget::keyPressEvent(QKeyEvent * e)
                 QTextCursor c(document());
                 while ((b.blockNumber() >= 0) && (range.second >= b.blockNumber())) {
                     c.setPosition(b.position());
-                    c.insertText("\t");
+                    c.insertText("    ");
                     b = b.next();
                 }
             }
@@ -147,6 +148,43 @@ void EditorWidget::keyReleaseEvent(QKeyEvent * e)
             QPlainTextEdit::keyReleaseEvent(e);
     }
 }
+
+void EditorWidget::wheelEvent(QWheelEvent *e)
+{
+    if (e->modifiers().testFlag(Qt::ControlModifier)) {
+        const float sensitivity = 1/2.0f;
+        const float delta = e->delta()/10.0f;
+        const float ratio = getZoomRatio() + (qAtan(delta)/M_PI*sensitivity);
+        if (ratio<0.3) {
+            setZoomRatio(0.3);
+        } else {
+            setZoomRatio(ratio);
+        }
+        return;
+    }
+    QPlainTextEdit::wheelEvent(e);
+    updateMicroFocus();
+}
+
+float EditorWidget::getZoomRatio()
+{
+    return zoomRatio;
+}
+
+void EditorWidget::setZoomRatio(float ratio)
+{
+    zoomRatio = ratio;
+    const float newPointSize = QApplication::font().pointSizeF() * zoomRatio;
+
+    QFont font = QApplication::font();
+    font.setPointSizeF(newPointSize);
+    setFont(font);
+    if (highlighter) {
+        highlighter->rehighlight();
+    }
+    emit zoomRatioChanged(zoomRatio);
+}
+
 
 
 void EditorWidget::resetComponents() {

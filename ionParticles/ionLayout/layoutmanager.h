@@ -10,10 +10,9 @@
 #define LAYOUTMANAGER_H
 
 #include "layoutapi.h"
-//#include <QString>
-#include <QMap>
+#include <QtCore/QMap>
+#include <QtWidgets/QMainWindow>
 #include <stdexcept>
-#include <QMainWindow>
 
 #include <ionCore/shared.h>
 
