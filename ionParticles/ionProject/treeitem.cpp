@@ -123,8 +123,10 @@ QRegExp TreeItemImpl::createFilterRegexp(QString const filter)
 {
     QString pattern = "";
     foreach (const QChar &c, filter) {
-        pattern += c;
-        pattern += ".*";
+        if (c != ' ') {
+            pattern += c;
+            pattern += ".*";
+        }
     }
     return QRegExp(pattern, Qt::CaseInsensitive);
 }

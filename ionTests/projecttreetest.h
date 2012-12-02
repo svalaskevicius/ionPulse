@@ -412,15 +412,16 @@ private Q_SLOTS:
         QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName1_1"));
     }
 
+    void test_if_filterIgnoresSpaces() {
+        QSharedPointer<TreeModelSource> source(new MockTreeSource());
         TreeModelAdapter model(source);
 
-        model.filter("finme3");
+        model.filter("file Name 11");
 
         QCOMPARE(model.rowCount(), 1);
         QCOMPARE(model.rowCount(model.index(0, 0)), 0);
-        QCOMPARE(model.columnCount(), 1);
 
-        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName3"));
+        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toString(), QString("fileName1_1"));
     }
 
     void test_getPath() {
