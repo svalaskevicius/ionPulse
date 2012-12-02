@@ -125,6 +125,7 @@ QRegExp TreeItemImpl::createFilterRegexp(QString const filter)
     foreach (const QChar &c, filter) {
         if (c != ' ') {
             pattern += c;
+        } else {
             pattern += ".*";
         }
     }
