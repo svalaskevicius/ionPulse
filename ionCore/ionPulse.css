@@ -1148,8 +1148,8 @@ QLabel[itemclass="phpmethod"][hover="exact"] {
 
 
 QListWidget[type="editor-suggestions"] {
-    background-color: rgba(50, 65, 65, 75%);
-    border: 1px solid rgba(79, 79, 79, 80%);
+    background-color: rgba(70, 65, 60, 90%);
+    border: 3px solid rgba(220, 210, 200, 33%);
 }
 
 
