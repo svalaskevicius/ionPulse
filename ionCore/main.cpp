@@ -108,6 +108,7 @@ int main(int argc, char *argv[])
         jsEngine.getScriptEngine().globalObject().setProperty("window", jsEngine.getScriptEngine().newQObject(&mainWindow));
         jsEngine.loadFile(baseDir+"/js/ionPulse.js");
 
+
 #if defined(Q_OS_MAC)
         QWidgetList widgets = mainWindow.findChildren<QWidget*>();
         foreach(QWidget* widget, widgets) {
@@ -115,6 +116,9 @@ int main(int argc, char *argv[])
         }
 #endif
         mainWindow.show();
+
+        app.setFont(mainWindow.font());
+
         return app.exec();
     } catch (QString &msg) {
         QMessageBox::critical(

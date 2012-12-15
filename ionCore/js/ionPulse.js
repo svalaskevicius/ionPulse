@@ -6,13 +6,10 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
+qs.script.include("lib/underscore.js");
 qs.script.include("lib/jsDump.js");
 qs.script.include("_core.js");
 qs.script.include("_console.js");
-
-console = new JsConsoleWidget(window);
-console.hide();
-layoutManager.add("central_container/footer", console);
 
 qs.script.include("_suggestions.js");
 qs.script.include("_highlighter.js");
@@ -20,33 +17,32 @@ qs.script.include("_php.js");
 
 
 console.log("ionPulse.js initialised");
-console.log(layoutManager.getSubZoneNames("left"));
-layoutManager.getZoneWidgets(
-    "left",
-    {"name":"project_tree"}
-).each(function(widget) {
-    widget.filterInputField.show();
-    widget.treeView.contextMenuPolicy = Qt.CustomContextMenu;
-    widget.treeView.customContextMenuRequested.connect(function(point){
-        try {
-            var actions = [];
-            var item = widget.treeView.treeItemAt(point);
-            if (item) {
-                var action = new QAction("", "Refresh "+item.data(0).toString(), 0);
-                action.triggered.connect(function() {
-                    console.log(item.getPath());
-                    widget.treeView.updateProjectNode(widget.treeView.indexAt(point));
-                });
-                actions.push(action);
-            }
-            QMenu.exec(actions, widget.treeView.mapToGlobal(point));
-        }catch(e) {
-            console.error(e);
-        }
-    });
-});
 
-//editorPlugin.focusedEditor.focusOnLine(7)
+_.each(
+    layoutManager.getZoneWidgets( "left", {"name":"project_tree"} ),
+    function(widget) {
+        widget.filterInputField.show();
+        widget.treeView.contextMenuPolicy = Qt.CustomContextMenu;
+        widget.treeView.customContextMenuRequested.connect(function(point){
+            try {
+                var actions = [];
+                var item = widget.treeView.treeItemAt(point);
+                if (item) {
+                    var action = new QAction("", "Refresh "+item.data(0).toString(), 0);
+                    action.triggered.connect(function() {
+                        console.log(item.getPath());
+                        widget.treeView.updateProjectNode(widget.treeView.indexAt(point));
+                    });
+                    actions.push(action);
+                }
+                QMenu.exec(actions, widget.treeView.mapToGlobal(point));
+            }catch(e) {
+                console.error(e);
+            }
+        });
+    }
+);
+
 editorPlugin.editorOpened.connect(
     this,
     function (editor) {
@@ -73,12 +69,25 @@ editorPlugin.editorOpened.connect(
 );
 
 
-registerFileHighlighter("text", phpHighlighter);
-registerFileHighlighter("text/php", phpHighlighter);
+var user_js_path = QDir.homePath() + "/.ionPulse/init.js";
+if (QFile.exists(user_js_path)) {
+    console.log("Using user init script at: " + user_js_path);
+    qs.script.include(user_js_path);
+} else {
+    console.log("User init script not found, looked at: " + user_js_path);
+}
+
+textHighlighter.initialize();
+registerFileHighlighter(
+    "text",
+    function (cppApi, text) {
+        try {
+            textHighlighter.highlight(cppApi, text);
+        } catch (e) {
+            debug(e);
+        }
+    }
+);
 
 
 
-
-//a = dbxml.getStorage().query('for $a in collection()/top_statement_list return dbxml:metadata("dbxml:name", $a)')
-//b = dbxml.getStorage().query('for $a in doc("dbxml:/files/%47Volumes%47Disk%20Image%47Disclosure_Varnish%47tests%47features%47bootstrap%47FeatureContext.php")/top_statement_list return dbxml:metadata("dbxml:name", $a)')
-//    dbxml.getStorage().getTimeStamp("/Volumes/Disk Image/Disclosure_Varnish/tests/features/bootstrap/FeatureContext.php")

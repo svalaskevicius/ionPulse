@@ -1,7 +1,7 @@
 #ifndef JSENGINE_H
 #define JSENGINE_H
 
-#include <QScriptEngine>
+#include <QtScript/QScriptEngine>
 
 namespace IonCore {
 

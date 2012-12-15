@@ -6,12 +6,6 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-Array.prototype.each = function(callback) {
-    for (var i=0; i<this.length;i++) {
-        callback(this[i]);
-    }
-};
-
 Function.prototype.inheritsFrom = function(parentClassOrObject) {
     if ( parentClassOrObject.constructor == Function ) {
         //Normal Inheritance
@@ -28,10 +22,10 @@ Function.prototype.inheritsFrom = function(parentClassOrObject) {
 };
 
 var importFailures = new Array();
-["qt.core", "qt.gui", "qt.xml", "qt.network",
- "qt.sql", "qt.opengl"
-//, "qt.webkit", "qt.xmlpatterns", "qt.svg","qt.uitools"
-].each(
+_.each(
+    ["qt.core", "qt.gui", "qt.xml", "qt.network", "qt.sql", "qt.opengl"
+    //, "qt.webkit", "qt.xmlpatterns", "qt.svg","qt.uitools"
+    ],
     function(ext) {
         try {
             qs.script.importExtension(ext);
@@ -41,7 +35,9 @@ var importFailures = new Array();
     }
 );
 
-
+toColor = function(hex) {
+    return new QColor(parseInt(hex, 16));
+};
 
 is_string = function(input)
 {

@@ -27,6 +27,7 @@ public:
     TreeItem *parent();
     virtual int visibleChildrenCount() const;
     virtual void filter(QString const filter);
+    virtual void filterByRegexp(QRegExp const filter);
     bool isVisible() const {return visible;}
     QString getPath() const {return path;}
     int getLine() const {return line;}
@@ -46,6 +47,7 @@ private:
     TreeItem *parentItem;
 protected:
     bool visible;
+    QRegExp createFilterRegexp(QString const filter);
 };
 
 class TreeItemFactoryImpl : public TreeItemFactory {

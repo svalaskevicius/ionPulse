@@ -25,14 +25,18 @@ Suggestions = function(editor)
         function() {
             try {
                 var uri = dbxml.getStorage().pathToDocumentUri(editor.path);
-                var currentWord = getWordBeforeCursor(editor.textCursor());
-                var results = dbxml.getStorage().query('distinct-values(doc("dbxml:/files/'+uri+'")//variable[starts-with(.,"'+currentWord+'")]/text())');
+                this.textCursor = editor.textCursor();
+                this.currentWord = getWordBeforeCursor(editor.textCursor());
+                var results = dbxml.getStorage().query('distinct-values(doc("dbxml:/files/'+uri+'")//variable[starts-with(.,"'+this.currentWord+'")]/text())');
                 if (!results.hasNext()) {
                     return;
                 }
                 this.clear();
                 while (results.next()) {
                     this.addItem(results.value().toString());
+                }
+                if (this.count) {
+                    this.currentRow = 0;
                 }
 
                 if (!this.shortcut_close) {
@@ -98,7 +102,9 @@ Suggestions.prototype.onKeyUp = function() {
 Suggestions.prototype.onSubmit = function() {
     try {
         if (this.currentRow >= 0) {
-            console.log(this.item(this.currentRow).text());
+            this.textCursor.movePosition(QTextCursor.PreviousCharacter, QTextCursor.KeepAnchor, this.currentWord.length);
+            this.textCursor.removeSelectedText();
+            this.textCursor.insertText(this.item(this.currentRow).text())
         }
         this._hide();
      } catch(e) {

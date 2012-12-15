@@ -9,9 +9,9 @@
 #ifndef INTERFACES_H
 #define INTERFACES_H
 
-#include <QList>
+#include <QtCore/QList>
 #include <QtWidgets/QMainWindow>
-#include <QScriptEngine>
+#include <QtScript/QScriptEngine>
 
 /**
  * \brief Holds the bare window creation and plugin management functionality.

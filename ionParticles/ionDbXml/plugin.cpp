@@ -19,10 +19,14 @@ namespace Private {
 Plugin::Plugin(QObject *parent) :
     QObject(parent)
 {
+    structureStorage = NULL;
 }
 
 Plugin::~Plugin()
 {
+    if (structureStorage) {
+        delete structureStorage;
+    }
 }
 
 void Plugin::preLoad()

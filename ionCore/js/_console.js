@@ -118,3 +118,7 @@ JsConsoleWidget.prototype.updateHtml = function()
     var scrollBar = this.textEdit.verticalScrollBar();
     scrollBar.value = scrollBar.maximum;
 }
+
+console = new JsConsoleWidget(window);
+layoutManager.add("central_container/footer", console);
+

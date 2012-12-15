@@ -14,6 +14,7 @@ ionPulse IDE currently supports:
 * providing a /filterable/ project tree, consisting of directories, files, php classes and methods, allowing quick and easy code navigation;
 * file editor functionality, which is mostly extended using Javascript. E.g. syntax highlighting for PHP is fully implemented in Javascript;
 * Javascript console (which itself is implemented using Javascript), allowing to execute javascript operations on the fly, allowing to define and use macros, keybindings, with functional capabilities of the underlying framework.
+* Custom user init.js to add the missing bits.
 
 
 Start Hacking!
@@ -32,6 +33,78 @@ Once you get it working, check the files in the main app directory:
 
 Create! :)
 
+Example
+-------
+
+Lets create a custom syntax highlighter. We'll start this by defining a new file type. The following command will register
+a file type "text/slides" for all the files which end as ".slides":
+
+    registerFileType("slides", "text/slides");
+
+
+The syntax highligter implemented in ionPulse is a state machine, so our next step is to define some highlighting states
+and transitions from one state to another:
+
+    textHighlighter.addTransitions({
+        "slides/body": {
+            "slides/header": textHighlighter.regexTransition(/^\./g, true),
+            "slides/space": textHighlighter.regexTransition(/^___$/g, true),
+        },
+        "slides/header": {
+            "slides/body": textHighlighter.regexTransition(/$/g, false),
+        },
+        "slides/space": {
+            "slides/body": textHighlighter.regexTransition(/$/g, false),
+        }
+    });
+
+
+Each of the states should already have a default formatting, but in addition
+to that, we would like to add some semi-states, where the highlighting execution
+stays in the same state, however the text is formatted differently.
+
+    textHighlighter.addHighlightRules({
+        "slides/body" : {
+            "black": /\*[^*]+\*/g,     // some *important* text
+            "emphasis": /\/[^\/]+\//g, // some /emphasised/ text
+        }
+    });
+
+The important bit in syntax highlighting is the text formatting. Lets define it
+for our states and highlighting rules:
+
+    textHighlighter.addTextFormatting({
+        //                       color,             weight,       italic, size, backgroundColor
+        "slides/body":          [toColor('706050'), QFont.Normal, false,  64,   null],
+        "slides/header":        [toColor('805040'), QFont.Normal, false,  96,   null],
+        "slides/body/black":    [toColor('000000'), QFont.Black,  false,  64,   null],
+        "slides/body/emphasis": [toColor('706050'), QFont.Normal, true,   64,   null],
+        "slides/space":         [toColor('e0a0a0'), QFont.Normal, false,  500,  null]
+    });
+
+
+The last bit is to set the starting state when highlighting "text/slides" files:
+
+    textHighlighter.setDefaultState('text/slides', 'slides/body');
+
+
+While the syntax highlighter above works ok, we might also want to change the background colour
+of the file editor. Changing it using backgroundColor parameter in the text formatting description
+might not be what we want - as it would only change the background colour of the edited text, 
+leaving the editor window colour as it is set by the default stylesheet. The snippet below will
+change the style of any editor, opened to edit the "text/slides" files:
+
+    editorPlugin.editorOpened.connect(
+        this,
+        function (editor) {
+            if (editor.property("fileType") === 'text/slides') {
+                editor.setStyleSheet("background-color: #fab976");
+            }
+        }
+    );
+
+That's it! Put all the given code into your ~/.ionPulse/init.js file and you'll have a custom syntax highlighter :)
+
 
 Todo
 ----
@@ -46,8 +119,6 @@ Todo
 * tabulator should not indent if not on the start of the line
 
 #### new file
-
-#### UTF8 editor
 
 #### project tree
 * limit max length of each item (+joined ones) - use dots in the middle with full info as a tooltip

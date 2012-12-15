@@ -24,6 +24,8 @@ mac:PLUGIN_TARGET_DIR = "$${INSTALL_DIR}/$${APPLICATION_NAME}.app/plugins/"
 APP_TARGET_DIR = "$${INSTALL_DIR}/"
 mac:APP_TARGET_DIR = "$${INSTALL_DIR}/$${APPLICATION_NAME}.app/"
 
+INCLUDEPATH+="/usr/local/Qt-5.0.0/include/"
+
 #CONFIG += exceptions
 #QMAKE_CXXFLAGS += -std=c++0x
 # -fexceptions -shared-libgcc
