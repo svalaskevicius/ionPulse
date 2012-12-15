@@ -80,13 +80,15 @@ class JsSyntaxHighlighter : public QSyntaxHighlighter
     Q_PROPERTY(int previousBlockState READ previousBlockState)
     Q_PROPERTY(int currentBlockState READ currentBlockState WRITE setCurrentBlockState)
     Q_PROPERTY(QTextBlock currentBlock READ currentBlock)
+    Q_PROPERTY(IonEditor::Editor *editor READ getEditor)
 private:
     QScriptEngine *engine;
     QScriptValue function;
+    IonEditor::Editor *editor;
 
 public:
     JsSyntaxHighlighter(IonEditor::Editor *editor, QScriptEngine *engine, QScriptValue function)
-        : QSyntaxHighlighter(editor->document()), engine(engine), function(function)
+        : QSyntaxHighlighter(editor->document()), engine(engine), function(function), editor(editor)
     {
     }
 
@@ -106,6 +108,11 @@ public:
     Q_INVOKABLE void setCurrentBlockUserData ( QTextBlockUserData * data )
     {
         QSyntaxHighlighter::setCurrentBlockUserData(data);
+    }
+
+    IonEditor::Editor *getEditor()
+    {
+        return editor;
     }
 };
 

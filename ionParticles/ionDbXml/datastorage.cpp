@@ -9,7 +9,7 @@
 #include "datastorage.h"
 
 #include <stdexcept>
-#include <QUrl>
+#include <QtCore/QUrl>
 #include <ionCore/shared.h>
 
 namespace IonDbXml {
@@ -27,7 +27,6 @@ DataQueryResults * DataValueImpl::getAttributes()
 
 DataStorageImpl::DataStorageImpl() {
     u_int32_t flags = (DB_CREATE|DB_INIT_LOCK|DB_INIT_LOG|DB_INIT_MPOOL|DB_PRIVATE);
-    DB_ENV *bdb_env;
 
     int ret = db_env_create(&bdb_env, flags);
     if (ret) {
@@ -60,9 +59,10 @@ DataStorageImpl::DataStorageImpl() {
         throw std::runtime_error(QString("Attempt failed open BDB XML containters failed:\n%1").arg(e.what()).toStdString());
     }
 
-    default_query_context = xmlManager->createQueryContext();
-    default_query_context.setEvaluationType(DbXml::XmlQueryContext::Lazy);
-    default_query_context.setDefaultCollection("files");
+    default_query_context = new DbXml::XmlQueryContext();
+    *default_query_context = xmlManager->createQueryContext();
+    default_query_context->setEvaluationType(DbXml::XmlQueryContext::Lazy);
+    default_query_context->setDefaultCollection("files");
 
     QMap<QString, QString> p;
     p["document"] = "";
@@ -72,15 +72,29 @@ DataStorageImpl::DataStorageImpl() {
 
 }
 
+DataStorageImpl::~DataStorageImpl() {
+    preparedQueries.clear();
+    xmlContainers.clear();
+    delete default_query_context;
+    delete xmlManager;
+}
+
+
 
 void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *node)
 {
-    QByteArray name = node->getName().toAscii();
+    QByteArray name = node->getName().toLatin1();
     XmlNode::AttributesMap &attributes = node->getAttributes();
     eventWriter.writeStartElement((const unsigned char*)name.constData(), NULL, NULL, attributes.count(), 0);
 
     for (XmlNode::AttributesMap::const_iterator it = attributes.begin(); it != attributes.end(); it++) {
-        eventWriter.writeAttribute((const unsigned char*)it.key().toAscii().constData(), NULL, NULL, (const unsigned char*)it.value().toAscii().constData(), true);
+        eventWriter.writeAttribute(
+            (const unsigned char*)it.key().toLatin1().constData(),
+            NULL,
+            NULL,
+            (const unsigned char*)it.value().toLatin1().constData(),
+            true
+        );
     }
 
     foreach (XmlNode *child, node->getChildren()) {
@@ -88,7 +102,7 @@ void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *
     }
 
     if (node->getText().length()) {
-        eventWriter.writeText(XmlEventReader::Characters, (const unsigned char*)node->getText().toAscii().constData(), node->getText().length());
+        eventWriter.writeText(XmlEventReader::Characters, (const unsigned char*)node->getText().toLatin1().constData(), node->getText().length());
     }
 
     eventWriter.writeEndElement((const unsigned char*)name.constData(), NULL, NULL);
@@ -154,7 +168,7 @@ void DataStorageImpl::removeFile(QString path)
 IonDbXml::DataQueryResults *DataStorageImpl::query(QString xquery)
 {
     try {
-        DbXml::XmlResults res = xmlManager->query(xquery.toStdString(), default_query_context);
+        DbXml::XmlResults res = xmlManager->query(xquery.toStdString(), *default_query_context);
         return (IonDbXml::DataQueryResults *) new DataQueryResultsImpl(res);
     } catch (std::exception &e) {
         lastError = e.what();
@@ -202,7 +216,7 @@ int DataStorageImpl::prepareQuery(QString xquery, QMap<QString,QString> params)
 {
     try {
         PreparedQuery *queryInfo = new PreparedQuery();
-        queryInfo->ctx = default_query_context;
+        queryInfo->ctx = *default_query_context;
         for (QMap<QString,QString>::const_iterator it = params.begin(); it != params.end(); it++) {
             queryInfo->ctx.setVariableValue(it.key().toStdString(), it.value().toStdString());
         }

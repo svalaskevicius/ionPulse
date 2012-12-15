@@ -74,6 +74,17 @@ public:
     Q_INVOKABLE virtual void filter(QString const filter) = 0;
 
     /**
+     * \brief Set this, and children TreeItem objects to be filtered by the given regular expression.
+     *
+     * The filter modifies visibility flag, and recurses to children TreeItems. If
+     * this TreeItem does not satisfy the filter query, but one or more children do, this
+     * item would also be set as visible.
+     *
+     * \see isVisible()
+     */
+    Q_INVOKABLE virtual void filterByRegexp(QRegExp const filter) = 0;
+
+    /**
      * \brief Retrieve TreeItem visibility state.
      *
      * The visibility state defines if the item should be shown in the project

@@ -32,7 +32,7 @@ class GoogleTestEventListener : public ::testing::EmptyTestEventListener {
                     .arg(QString(test_part_result.summary()))
                     .arg(test_part_result.file_name())
                     .arg(test_part_result.line_number())
-                    .toAscii().constData()
+                    .toLatin1().constData()
             );
         }
    }

@@ -100,19 +100,38 @@ int TreeItemImpl::getChildRowNr(TreeItem *child)
 
 void TreeItemImpl::filter(QString const filter)
 {
+    filterByRegexp(createFilterRegexp(filter));
+}
+
+void TreeItemImpl::filterByRegexp(QRegExp const filter)
+{
     visible = false;
     if (filterBy.length()) {
-        visible = filterBy.toLower().contains(filter.toLower());
+        visible = filter.indexIn(filterBy) >= 0;
     }
     if (visible) {
         setFullVisibility(true);
     } else {
         foreach (TreeItem* child, childItems) {
-            child->filter(filter);
+            child->filterByRegexp(filter);
             visible |= child->isVisible();
         }
     }
 }
+
+QRegExp TreeItemImpl::createFilterRegexp(QString const filter)
+{
+    QString pattern = "";
+    foreach (const QChar &c, filter) {
+        if (c != ' ') {
+            pattern += c;
+        } else {
+            pattern += ".*";
+        }
+    }
+    return QRegExp(pattern, Qt::CaseInsensitive);
+}
+
 
 void TreeItemImpl::setFullVisibility(bool visible)
 {

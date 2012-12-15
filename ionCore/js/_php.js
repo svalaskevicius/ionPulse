@@ -6,9 +6,6 @@
   available at http://www.gnu.org/licenses/lgpl-3.0.txt
 */
 
-var toColor = function(hex) {
-    return new QColor(parseInt(hex, 16));
-};
 var solarizedColor = function(code) {
     var solarizedPallete = {
         'base03' : {'sRGB': "002b36", 'genRGB': "042028", 'c256': "1c1c1c", 'c16': "brightblack"  , 'c8': 'black'},
@@ -59,121 +56,110 @@ var solarizedColorTheme = {
 
 // from http://studiostyl.es/schemes/node-js-db-drivers
 var nodeJsDbTheme = {
-    "html":                        [ toColor("ccccb0"), QFont.Normal, false, null, null ],
-    "html/whitespace":             [ toColor("4F4F4F"), QFont.Light,  false, null, null ],
-    "php":                         [ toColor("e6e1dc"), QFont.Normal, false, null, null ],
-    "php/constructs":              [ toColor("ffc66d"), QFont.Bold,   true , null, null ],
-    "php/number":                  [ toColor("7a9eb8"), QFont.Normal, false, null, null ],
-    "php/whitespace":              [ toColor("4F4F4F"), QFont.Light,  false, null, null ],
-    "php/keyword":                 [ toColor("bd4f3e"), QFont.Bold,   false, null, null ],
-    "php/compileConstants":        [ toColor("ffc66d"), QFont.Bold,   true , null, null ],
-    "php/variable":                [ toColor("f5f0b9"), QFont.Normal, false, null, null ],
-    "php/property":                [ toColor("efcb93"), QFont.Normal, false, null, null ],
-    "php/function":                [ toColor("cc7833"), QFont.Normal, false, null, null ],
-    "php/method":                  [ toColor("cc7833"), QFont.Normal, false, null, null ],
-    "php/separator":               [ toColor("ffc66d"), QFont.Black,  false, null, null ],
-    "php/comment_sl":              [ toColor("987c4e"), QFont.Normal, true , null, null ],
-    "php/comment_ml":              [ toColor("987c4e"), QFont.Normal, true , 15, null ],
-    "php/comment_ml/whitespace":   [ toColor("4F4F4F"), QFont.Normal, true , 15, null ],
-    "php/string_dq":               [ toColor("a5c261"), QFont.Normal, false, null, null ],
-    "php/string_dq/variable":      [ toColor("7a9eb8"), QFont.Normal, false, null, null ],
-    "php/string_sq":               [ toColor("bdf43e"), QFont.Normal, false, null, null ],
+    "html":                        [ toColor("ccccb0"), QFont.Normal, false, 1, null ],
+    "html/whitespace":             [ toColor("4F4F4F"), QFont.Light,  false, 1, null ],
+    "php":                         [ toColor("e6e1dc"), QFont.Normal, false, 1, null ],
+    "php/constructs":              [ toColor("ffc66d"), QFont.Bold,   true , 1, null ],
+    "php/number":                  [ toColor("7a9eb8"), QFont.Normal, false, 1, null ],
+    "php/whitespace":              [ toColor("4F4F4F"), QFont.Light,  false, 1, null ],
+    "php/keyword":                 [ toColor("bd4f3e"), QFont.Bold,   false, 1, null ],
+    "php/compileConstants":        [ toColor("ffc66d"), QFont.Bold,   true , 1, null ],
+    "php/variable":                [ toColor("f5f0b9"), QFont.Normal, false, 1, null ],
+    "php/property":                [ toColor("efcb93"), QFont.Normal, false, 1, null ],
+    "php/function":                [ toColor("cc7833"), QFont.Normal, false, 1, null ],
+    "php/method":                  [ toColor("cc7833"), QFont.Normal, false, 1, null ],
+    "php/separator":               [ toColor("ffc66d"), QFont.Black,  false, 1, null ],
+    "php/comment_sl":              [ toColor("987c4e"), QFont.Normal, true , 1, null ],
+    "php/comment_ml":              [ toColor("987c4e"), QFont.Normal, true , .9, null ],
+    "php/comment_ml/whitespace":   [ toColor("4F4F4F"), QFont.Normal, true , .9, null ],
+    "php/string_dq":               [ toColor("a5c261"), QFont.Normal, false, 1, null ],
+    "php/string_dq/variable":      [ toColor("7a9eb8"), QFont.Normal, false, 1, null ],
+    "php/string_sq":               [ toColor("bdf43e"), QFont.Normal, false, 1, null ],
 };
 
 
-phpHighlighter = (function () {
-    var PhpHighlighter = (function () {}).inheritsFrom(TextHighlighter);
-    PhpHighlighter.prototype.initialize = function () {
 
-        this._colorTheme = nodeJsDbTheme;
 
-        this.charFormatting = {};
-        for (key in this._colorTheme) {
-            this.charFormatting[key] = this.createCharFormat(
-                 this._colorTheme[key][0],
-                 this._colorTheme[key][1],
-                 this._colorTheme[key][2],
-                 this._colorTheme[key][3],
-                 this._colorTheme[key][4]
-            );
+textHighlighter.addTextFormatting(nodeJsDbTheme);
+
+textHighlighter.addTransitions({
+    "html": {
+        "php":              textHighlighter.regexTransition(/<\?php\b/g, true)
+    },
+    "php": {
+        "html":             textHighlighter.regexTransition(/\?>/g, false),
+        "php/comment_ml":   textHighlighter.regexTransition(/\/\*/g, true),
+        "php/string_dq":    textHighlighter.regexTransition(/"/g, true),
+        "php/string_sq":    textHighlighter.regexTransition(/'/g, true),
+        "php/comment_sl":   textHighlighter.regexTransition(/(\/\/|#)/g, true),
+    },
+    "php/comment_ml": {
+        "php":              textHighlighter.regexTransition(/\*\//g, false),
+    },
+    "php/comment_sl": {
+        "html":             textHighlighter.regexTransition(/\?>/g, false),
+        "php":              textHighlighter.regexTransition(/$/g, false),
+    },
+    "php/string_dq": {
+        "php":              textHighlighter.regexTransition(/([^\\"]|\\.|^)"/g, false),
+    },
+    "php/string_sq": {
+        "php":              textHighlighter.regexTransition(/([^\\']|\\.|^)'/g, false),
+    }
+});
+textHighlighter.addHighlightRules({
+    "php": {
+        "number":           /\b([0-9]+)?\.?[0-9]+\b/g,
+        "constructs":       new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
+                                       + "|\\b(die|echo|empty|exit|eval|include|include_once|isset|list|require|require_once"
+                                       + "|return|print|unset)\\b",
+                                       "ig"
+                            ),
+        "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
+        "keyword":          new RegExp("<\\?php|\\?>|\\b(class|function|protected|private|public"
+                                       + "|abstract|extends|interface|implements|abstract|and|array"
+                                       + "|as|break|case|catch|clone|const|continue|declare"
+                                       + "|default|do|else|elseif|enddeclare|endfor"
+                                       + "|endforeach|endif|endswitch|endwhile|extends"
+                                       + "|final|for|foreach|function|global|goto"
+                                       + "|if|instanceof|namespace|new|or|static"
+                                       + "|switch|throw|try|use|var|while|xor|true|false|null|self)\\b",
+                                       "g"
+                            ),
+        "compileConstants": /__CLASS__|__DIR__|__FILE__|__LINE__|__FUNCTION__|__METHOD__|__NAMESPACE__/g,
+        "property":         /->[a-z_][a-z0-9_]*/ig,
+        "method":           /->[a-z_][a-z0-9_]*\s*\(/ig,
+        "variable":         /\$[a-z_][a-z0-9_]*/ig,
+        "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&|\{|\}|\[|\]/g,
+        "whitespace":       /\s+/g,
+    },
+    "php/comment_ml": {
+        "whitespace":       /\s+/g,
+    },
+    "php/string_dq": {
+        "variable":         /\$[a-z_][a-z0-9_]*|\{\$.*?\}/ig,
+    },
+    "html": {
+        "whitespace":       /\s+/g,
+    }
+
+});
+
+
+textHighlighter.setBlockInfoHandler(
+    'php',
+    function (blockInfo, from, to, text) {
+        if (blockInfo === undefined) {
+            blockInfo = [];
         }
-
-
-        this.transitions = {
-            "html": {
-                "php":              this.regexTransition(/<\?php\b/g, true)
-            },
-            "php": {
-                "html":             this.regexTransition(/\?>/g, false),
-                "php/comment_ml":   this.regexTransition(/\/\*/g, true),
-                "php/string_dq":    this.regexTransition(/"/g, true),
-                "php/string_sq":    this.regexTransition(/'/g, true),
-                "php/comment_sl":   this.regexTransition(/(\/\/|#)/g, true),
-            },
-            "php/comment_ml": {
-                "php":              this.regexTransition(/\*\//g, false),
-            },
-            "php/comment_sl": {
-                "html":             this.regexTransition(/\?>/g, false),
-                "php":              this.regexTransition(/$/g, false),
-            },
-            "php/string_dq": {
-                "php":              this.regexTransition(/([^\\"]|\\.|^)"/g, false),
-            },
-            "php/string_sq": {
-                "php":              this.regexTransition(/([^\\']|\\.|^)'/g, false),
-            }
-        };
-        this.highlightRules = {
-            "php": {
-                "number":           /\b([0-9]+)?\.?[0-9]+\b/g,
-                "constructs":       new RegExp("class\\s+[a-z0-9_]+((\\s+extends\\s+[a-z0-9_]+)?(\\s+implements+[a-z0-9_]+)?)*"
-                                               + "|\\b(die|echo|empty|exit|eval|include|include_once|isset|list|require|require_once"
-                                               + "|return|print|unset)\\b",
-                                               "ig"
-                                    ),
-                "function":         /[a-z_][a-z0-9_]*\s*\(/ig,
-                "keyword":          new RegExp("<\\?php|\\?>|\\b(class|function|protected|private|public"
-                                               + "|abstract|extends|interface|implements|abstract|and|array"
-                                               + "|as|break|case|catch|clone|const|continue|declare"
-                                               + "|default|do|else|elseif|enddeclare|endfor"
-                                               + "|endforeach|endif|endswitch|endwhile|extends"
-                                               + "|final|for|foreach|function|global|goto"
-                                               + "|if|instanceof|namespace|new|or|static"
-                                               + "|switch|throw|try|use|var|while|xor|true|false|null|self)\\b",
-                                               "g"
-                                    ),
-                "compileConstants": /__CLASS__|__DIR__|__FILE__|__LINE__|__FUNCTION__|__METHOD__|__NAMESPACE__/g,
-                "property":         /->[a-z_][a-z0-9_]*/ig,
-                "method":           /->[a-z_][a-z0-9_]*\s*\(/ig,
-                "variable":         /\$[a-z_][a-z0-9_]*/ig,
-                "separator":        /->|;|\+|-|\*|\/|=|\(|\)|\||&|\{|\}|\[|\]/g,
-                "whitespace":       /\s+/g,
-            },
-            "php/comment_ml": {
-                "whitespace":       /\s+/g,
-            },
-            "php/string_dq": {
-                "variable":         /\$[a-z_][a-z0-9_]*|\{\$.*?\}/ig,
-            },
-            "html": {
-                "whitespace":       /\s+/g,
-            }
-
-        };
-
-        this.parent.initialize.call(this);
-    };
-
-    PhpHighlighter.prototype.addBracketsInfo = function (from, to) {
         var re = /[\(\)\{\}\[\]]/g;
         re.lastIndex = from;
         var match;
         do {
-            match = re.exec(this._text);
+            match = re.exec(text);
             if (match) {
                 if (match.index < to) {
-                    this.blockInfo.push({
+                    blockInfo.push({
                         pos: match.index,
                         char: match[0],
                     });
@@ -182,36 +168,22 @@ phpHighlighter = (function () {
                 }
             }
         } while (match);
-    };
-
-    PhpHighlighter.prototype._hightlightState = function (state, from, to) {
-        this.parent._hightlightState.call(this, state, from, to);
-        if ("php" === state) {
-            this.addBracketsInfo(from, to);
-        }
-    };
-
-
-    PhpHighlighter.prototype.highlight = function (cppApi, text) {
-        this.blockInfo = [];
-
-        this.parent.highlight.call(this, cppApi, text);
-
-        this._cppApi.setCurrentBlockUserData(this.blockInfo);
+        return blockInfo;
     }
+);
 
-
-    var php = new PhpHighlighter();
-    php.initialize();
-
-    return function (cppApi, text) {
-        php.highlight(cppApi, text);
-    }
-})();
-
-
+textHighlighter.setDefaultState('text/php', 'html');
+textHighlighter.setDefaultState('text', 'html');
 
 var matchingBracketsHighlighter = (function () {
+
+    var getPhpUserData = function (currentBlock) {
+            var userData = currentBlock.userData();
+            if (userData && userData['php'] !== undefined) {
+                return userData['php'];
+            }
+            return null;
+        };
 
     var createSelectionForPos = function (editor, pos) {
             var selection = new QTextEdit_ExtraSelection();
@@ -255,7 +227,7 @@ var matchingBracketsHighlighter = (function () {
         };
 
     var matchLeftBracket = function (currentBlock, i, numLeftBrackets, bracketPair) {
-            var infos = currentBlock.userData();
+            var infos = getPhpUserData(currentBlock);
             docPos = currentBlock.position();
             for (; infos && i < infos.length; ++i) {
                 if (infos[i].char === bracketPair.left) {
@@ -278,7 +250,7 @@ var matchingBracketsHighlighter = (function () {
         }
 
     var matchRightBracket = function (currentBlock, i, numRightBrackets, bracketPair) {
-            var infos = currentBlock.userData();
+            var infos = getPhpUserData(currentBlock)
 
             if (i === null && infos) {
                 i = infos.length - 1;
@@ -347,11 +319,11 @@ var matchingBracketsHighlighter = (function () {
         try {
             var selections = editor.extraSelections();
             var textCursor = editor.textCursor();
-            var userData = textCursor.block().userData();
+            var userData = getPhpUserData(textCursor.block());
             var curPos = textCursor.position() - textCursor.block().position();
             if (userData) {
                 for (var i = userData.length - 1; i >= 0; --i) {
-                    if (userData[i].pos == (curPos - 1)) {
+                    if (userData[i].pos === (curPos - 1)) {
                         var matchedPos = findMatchingBracket(userData[i].char, i, textCursor.block());
                         if (false !== matchedPos) {
                             selections.push(createSelectionForPos(editor, matchedPos));
@@ -369,8 +341,13 @@ var matchingBracketsHighlighter = (function () {
 
 
 editorPlugin.editorOpened.connect(
-this, function (editor) {
-    editor.cursorPositionChanged.connect(this, function () {
-        matchingBracketsHighlighter(editor);
-    });
-});
+    this,
+    function (editor) {
+        editor.cursorPositionChanged.connect(
+            this,
+            function () {
+                matchingBracketsHighlighter(editor);
+            }
+        );
+    }
+);

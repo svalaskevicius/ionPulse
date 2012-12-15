@@ -37,7 +37,7 @@ phpParser::~phpParser()
 
 QSharedPointer<ASTRoot> phpParser::parseString(QString doc)
 {
-    void * buf = setBuf(doc.toAscii().constData());
+    void * buf = setBuf(doc.toLatin1().constData());
     __result = NULL;
     int ret = 1;
     QString errorText = "unknown error";

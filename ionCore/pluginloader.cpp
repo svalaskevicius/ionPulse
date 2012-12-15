@@ -36,7 +36,6 @@ void PluginLoader::loadPlugins(MainWindow &mainWindow, JsEngine &jsEngine, QStri
 
     PluginsList pluginsToLoad;
     pluginsToLoad.addStaticPlugins();
-    _loadJsScriptPluginsFromDir(pluginsDir+"/script", jsEngine);
     pluginsToLoad.addPluginsFromDir(pluginsDir);
 
     foreach (BasicPlugin *plugin, pluginsToLoad) {
@@ -120,22 +119,6 @@ void PluginLoader::PluginsList::addPluginsFromDir(QDir dir) {
         QPluginLoader loader(dir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
         _checkAndAddOrDeletePlugin(plugin);
-    }
-}
-
-
-void PluginLoader::_loadJsScriptPluginsFromDir(QDir dir, JsEngine &jsEngine) {
-    foreach (QString fileName, dir.entryList(QDir::Files)) {
-        if (!fileName.contains('_debug.')) {
-            QPluginLoader loader(dir.absoluteFilePath(fileName));
-            QObject *instance = loader.instance();
-            QScriptExtensionPlugin *plugin = qobject_cast<QScriptExtensionPlugin *>(instance);
-            if (plugin) {
-                foreach (QString key, plugin->keys()) {
-                    plugin->initialize(key, &jsEngine.getScriptEngine());
-                }
-            }
-        }
     }
 }
 
