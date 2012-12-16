@@ -12,10 +12,8 @@ VERSION = 0.1.0
 
 QT       += core script
 TARGET = ionDbXml
-INCLUDEPATH += ../.. /opt/berkeleyDbXml/include
-LIBS += -L/opt/berkeleyDbXml/lib -ldbxml -ldb-4.8 -lxqilla -lxerces-c
-# note: tuned for macos to link bdb xml statically
-mac:LIBS += -framework CoreFoundation -framework CoreServices
+INCLUDEPATH += ../.. /Users/Shared/dev/dbxml/patched/dbxml-2.5.16/install/include
+LIBS += -L/Users/Shared/dev/dbxml/patched/dbxml-2.5.16/install/lib -ldbxml -ldb-4.8 -lxqilla -lxerces-c
 
 HEADERS += \
     plugin.h \

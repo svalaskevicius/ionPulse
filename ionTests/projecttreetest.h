@@ -21,6 +21,7 @@
 #include <boost/fusion/algorithm/iteration/accumulate.hpp>
 #include <boost/fusion/include/accumulate.hpp>
 
+#define GTEST_USE_OWN_TR1_TUPLE 1
 #include "gmock/gmock.h"
 
 using namespace IonProject;

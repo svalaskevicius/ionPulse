@@ -106,6 +106,36 @@ change the style of any editor, opened to edit the "text/slides" files:
 That's it! Put all the given code into your ~/.ionPulse/init.js file and you'll have a custom syntax highlighter :)
 
 
+Building Dependencies
+---------------------
+The following commands are helpful for MacOS users and are clang specific (with c++11).
+
+* BDB XML
+```
+cd ~
+wget https://gist.github.com/raw/4312897/bdbxml-clang.patch
+
+cd <your dbxml-2.5.16 dir>
+
+patch -p2 < ~/bdbxml-clang.patch
+
+./buildall.sh -m 'make -j6' \
+--with-configure-env="CC=clang CXX=clang++ CXXFLAGS='-std=c++11 -stdlib=libc++ -lc++ -mmacosx-version-min=10.7 -Wno-c++11-narrowing' LDFLAGS='-stdlib=libc++ -lc++ -mmacosx-version-min=10.7'" \
+--with-xerces-conf="--disable-network --without-curl" \
+--with-xqilla-conf="--without-tidy"
+```
+
+* googlemock
+```
+cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7 -DGTEST_USE_OWN_TR1_TUPLE=1" ..
+make
+cp libgmock.a /usr/local/lib/
+cp gtest/libgtest.a /usr/local/lib/
+rm -Rf /usr/local/include/gmock/
+cp -R ../include/gmock /usr/local/include/gmock
+```
+
+
 Todo
 ----
 

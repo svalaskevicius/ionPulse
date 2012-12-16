@@ -25,14 +25,22 @@ APP_TARGET_DIR = "$${INSTALL_DIR}/"
 mac:APP_TARGET_DIR = "$${INSTALL_DIR}/$${APPLICATION_NAME}.app/"
 
 INCLUDEPATH+="/usr/local/Qt-5.0.0/include/"
+CONFIG += c++11
+
+QMAKE_CFLAGS += -mmacosx-version-min=10.7 -stdlib=libc++
+QMAKE_LFLAGS += -mmacosx-version-min=10.7  -stdlib=libc++
+QMAKE_CXXFLAGS += -mmacosx-version-min=10.7  -stdlib=libc++
+QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.7
 
 #CONFIG += exceptions
-#QMAKE_CXXFLAGS += -std=c++0x
+#QMAKE_MACOSX_DEPLOYMENT_TARGET=10.8
+#QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7
 # -fexceptions -shared-libgcc
 #QMAKE_LFLAGS +=  -shared-libgcc -Wl,-map -Wl,a
 #QMAKE_CXXFLAGS += -std=c++0x -fexceptions -shared-libgcc
 #QMAKE_CXXFLAGS += -fexceptions -shared-libgcc
 #QMAKE_LFLAGS += -fexceptions -shared-libgcc
+#QMAKE_LFLAGS +=  -mmacosx-version-min=10.7
 
 #QMAKE_CFLAGS_DEBUG += -fprofile-arcs -ftest-coverage -Wall
 #QMAKE_CXXFLAGS_DEBUG += -fprofile-arcs -ftest-coverage -Wall
