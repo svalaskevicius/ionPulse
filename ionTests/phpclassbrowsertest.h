@@ -31,8 +31,7 @@ namespace IonTests {
 
 class MockedTreeItemFactory : public IonProject::TreeItemFactory {
 public:
-    MOCK_METHOD5(createTreeItem, IonProject::TreeItem * (QString, QString, QString, int const line, IonProject::TreeItem*));
-    MOCK_METHOD4(createTreeItem, IonProject::TreeItem * (QString, QString, int const line, IonProject::TreeItem*));
+    MOCK_METHOD6(createTreeItem, IonProject::TreeItem * (QString, QString const, QString, QString const, int const line, IonProject::TreeItem*));
 };
 
 }
@@ -45,7 +44,7 @@ public:
     MOCK_METHOD0(getRowNr, int ());
     MOCK_METHOD0(parent, IonProject::TreeItem * ());
     MOCK_CONST_METHOD0(visibleChildrenCount, int ());
-    MOCK_CONST_METHOD0(getChildren, const QList<IonProject::TreeItem*> &());
+    MOCK_METHOD0(getChildren, QList<IonProject::TreeItem*> &());
     MOCK_CONST_METHOD0(isVisible, bool ());
     MOCK_CONST_METHOD0(getPath, QString ());
     MOCK_CONST_METHOD0(getLine, int ());
