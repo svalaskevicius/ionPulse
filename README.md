@@ -110,7 +110,8 @@ Building Dependencies
 ---------------------
 The following commands are helpful for MacOS users and are clang specific (with c++11).
 
-* BDB XML
+- BDB XML
+
 ```
 cd ~
 wget https://gist.github.com/raw/4312897/bdbxml-clang.patch
@@ -125,7 +126,8 @@ patch -p2 < ~/bdbxml-clang.patch
 --with-xqilla-conf="--without-tidy"
 ```
 
-* googlemock
+- googlemock
+
 ```
 cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7 -DGTEST_USE_OWN_TR1_TUPLE=1" ..
 make
