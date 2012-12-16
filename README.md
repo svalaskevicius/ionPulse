@@ -147,11 +147,7 @@ Todo
 * make php project override it and add decorators for tree model getData to provide icons, font sizes etc
 
 #### config
-* colors
-* fonts
 * indentation
-
-#### preference dialog to manage config
 
 #### syntax formatter
 
