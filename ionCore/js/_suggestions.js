@@ -30,10 +30,33 @@ Suggestions = function(editor)
 
 Suggestions.prototype = new QListWidget();
 
-Suggestions.prototype.retrieveSuggestions = function(limit) {
-    var uri = dbxml.getStorage().pathToDocumentUri(this.editor.path);
+Suggestions.prototype.retrieveCurrentContext = function() {
+    return {
+        class: null,
+        func: null,
+    };
+}
 
-    var results = dbxml.getStorage().query('distinct-values(doc("dbxml:/files/'+uri+'")//variable[starts-with(.,"'+this.currentWord+'")]/text())');
+Suggestions.prototype.retrieveClassName = function(variable, context) {
+    if ('$this' === variable) {
+        return context.class;
+    }
+    // else consult parsed data index
+}
+
+Suggestions.prototype.retrieveVariables = function(limit, context) {
+    var uri = dbxml.getStorage().pathToDocumentUri(this.editor.path);
+    var filter = '';
+    if (context.class) {
+        // add to filter
+    }
+    if (context.func) {
+        // add to filter
+    }
+    var results = dbxml.getStorage().query(
+        'distinct-values(doc("dbxml:/files/'+uri+'")'
+         +'//'+filter+'variable[starts-with(.,"'+this.currentWord+'")]/text())'
+    );
 
     var ret = [];
     if (!results.hasNext()) {
@@ -43,6 +66,22 @@ Suggestions.prototype.retrieveSuggestions = function(limit) {
         ret = ret.concat(results.value().toString());
     }
     return ret;
+}
+
+Suggestions.prototype.retrieveSuggestions = function(limit) {
+
+    if (/^\$/.test(this.currentWord)) {
+        return this.retrieveVariables(limit, this.retrieveCurrentContext());
+    } else {
+        /*
+        if (!(preceded by ->)) {
+            this might be a class name
+        } else {
+            // property or method, check this.retrieveClassName(pre -> variable's name) contents
+        }
+        */
+    }
+
 }
 
 Suggestions.prototype.showSuggestions = function() {
