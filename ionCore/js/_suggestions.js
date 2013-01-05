@@ -30,16 +30,16 @@ Suggestions = function(editor)
 
 Suggestions.prototype = new QListWidget();
 
-Suggestions.prototype.retrieveCurrentContext = function() {
+Suggestions.prototype.getCurrentContext = function() {
     return {
-        class: null,
-        func: null,
+        className: null,
+        funcName: null
     };
 }
 
 Suggestions.prototype.retrieveClassName = function(variable, context) {
     if ('$this' === variable) {
-        return context.class;
+        return context.className;
     }
     // else consult parsed data index
 }
@@ -47,19 +47,19 @@ Suggestions.prototype.retrieveClassName = function(variable, context) {
 Suggestions.prototype.retrieveVariables = function(limit, context) {
     var uri = dbxml.getStorage().pathToDocumentUri(this.editor.path);
     var filter = '';
-    if (context.class) {
-        // add to filter
+    if (context.className) {
+        filter += 'class_declaration[string/text()="'+context.className+'"]/class_statement_list//';
     }
-    if (context.func) {
-        // add to filter
+    if (context.funcName) {
+        filter += 'METHOD[string/text()="'+context.funcName+'"]/METHOD_BODY//';
     }
+    console.log('distinct-values(doc("dbxml:/files/'+uri+'")//'+filter+'variable[starts-with(.,"'+this.currentWord+'")]/text())');
     var results = dbxml.getStorage().query(
-        'distinct-values(doc("dbxml:/files/'+uri+'")'
-         +'//'+filter+'variable[starts-with(.,"'+this.currentWord+'")]/text())'
+        'distinct-values(doc("dbxml:/files/'+uri+'")//'+filter+'variable[starts-with(.,"'+this.currentWord+'")]/text())'
     );
 
     var ret = [];
-    if (!results.hasNext()) {
+    if (!results || !results.hasNext()) {
         return ret;
     }
     while (results.next() && (limit-- > 0)) {
@@ -71,13 +71,13 @@ Suggestions.prototype.retrieveVariables = function(limit, context) {
 Suggestions.prototype.retrieveSuggestions = function(limit) {
 
     if (/^\$/.test(this.currentWord)) {
-        return this.retrieveVariables(limit, this.retrieveCurrentContext());
+        return this.retrieveVariables(limit, this.getCurrentContext());
     } else {
         /*
         if (!(preceded by ->)) {
             this might be a class name
         } else {
-            // property or method, check this.retrieveClassName(pre -> variable's name) contents
+            property or method, check this.classHierarchy(this.retrieveClassName(pre -> variable's name)) contents
         }
         */
     }
