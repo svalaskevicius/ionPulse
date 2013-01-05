@@ -16,7 +16,6 @@
 #include <QSharedPointer>
 #include <ionCore/plugin.h>
 
-
 /**
  * \brief Provides XML DB storage integration.
  *
@@ -34,16 +33,44 @@ class DataQueryResults;
 class XmlNodeIteratorJsAdapter : public QObject {
     Q_OBJECT
 private:
-    QList<IonDbXml::XmlNode*> list;
+    QList<IonDbXml::XmlNode*> &list;
     QList<IonDbXml::XmlNode*>::iterator iterator;
 public:
-    XmlNodeIteratorJsAdapter(QList<IonDbXml::XmlNode*> list) : QObject(), list(list), iterator(list.begin()) {}
+    XmlNodeIteratorJsAdapter(QList<IonDbXml::XmlNode*> &list) : QObject(), list(list), iterator(list.begin()) {}
 
+    /**
+     * \brief Check if there is a next value available
+     */
     Q_INVOKABLE bool hasNext() {return iterator < list.end();}
+
+    /**
+     * \brief Check if there is a previous value available
+     */
     Q_INVOKABLE bool hasPrevious() {return iterator > list.begin();}
 
-    Q_INVOKABLE IonDbXml::XmlNode* next() {return *(++iterator);}
-    Q_INVOKABLE IonDbXml::XmlNode* previous() {return *(--iterator);}
+    /**
+     * \brief Move to the next result and return true
+     *
+     * If there is no next result, returns false
+     */
+    Q_INVOKABLE bool next() { if(hasNext()) {iterator++; return true;} else return false; }
+
+    /**
+     * \brief Move to the previous result and return true
+     *
+     * If there is no previous result, returns false
+     */
+    Q_INVOKABLE bool previous() { if(hasPrevious()) {iterator--; return true;} else return false; }
+
+    /**
+     * \brief Check if there is a value available
+     */
+    Q_INVOKABLE bool isValid() {return (iterator >= list.begin()) && (iterator < list.end()) ;}
+
+    /**
+     * \brief Retrieve the current value data
+     */
+    Q_INVOKABLE IonDbXml::XmlNode* value() {return *iterator;}
 };
 
 /**
@@ -81,7 +108,7 @@ public:
      */
     virtual QList<XmlNode*> &getChildren() = 0;
 
-    virtual QString toString() = 0;
+    Q_INVOKABLE virtual QString toString() = 0;
 
     virtual IonDbXml::XmlNode* addChild(IonDbXml::XmlNode* child) = 0;
     virtual IonDbXml::XmlNode* setData(QString name, QString data) = 0;
@@ -358,6 +385,8 @@ public:
      */
     Q_INVOKABLE virtual IonDbXml::DataStorage *getStorage() = 0;
 };
+
+
 
 }
 

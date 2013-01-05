@@ -49,7 +49,7 @@ Q_DECLARE_METATYPE(IonDbXml::DataValue*)
 Q_DECLARE_METATYPE(IonDbXml::DataStorage*)
 Q_DECLARE_METATYPE(IonDbXml::DataQueryResults*)
 Q_DECLARE_METATYPE(IonDbXml::XmlNode*)
-
+Q_DECLARE_METATYPE(IonDbXml::XmlNodeIteratorJsAdapter*)
 
 #endif // IONDBXML_H
 

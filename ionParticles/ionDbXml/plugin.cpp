@@ -42,12 +42,14 @@ void Plugin::registerJsApi(QScriptEngine & jsEngine)
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonDbXml::DataQueryResults>, qObjectPtrFromScriptValue<IonDbXml::DataQueryResults>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonDbXml::DataStorage>, qObjectPtrFromScriptValue<IonDbXml::DataStorage>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonDbXml::XmlNode>, qObjectPtrFromScriptValue<IonDbXml::XmlNode>);
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonDbXml::XmlNodeIteratorJsAdapter>, qObjectPtrFromScriptValue<IonDbXml::XmlNodeIteratorJsAdapter>);
 
     QScriptValue thisPlugin = jsEngine.newQObject(this);
     jsEngine.globalObject().setProperty("dbxml", thisPlugin);
 }
 
 }
+
 }
 
 

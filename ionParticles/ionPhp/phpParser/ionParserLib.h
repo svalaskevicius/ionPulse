@@ -28,9 +28,8 @@ namespace Private {
 class ASTNode;
 
 class ASTNode : public IonDbXml::XmlNode {
-    Q_OBJECT
 private:
-    QList<XmlNode*> children;
+    QList<IonDbXml::XmlNode*> children;
     AttributesMap attributes;
     QString text;
     QString name;
