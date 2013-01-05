@@ -33,7 +33,7 @@ protected:
    void delBuf(void *);
 public:
     void* __scanner;
-    IonDbXml::XmlNode* __result;
+    ParserResult *__result;
     int __line, __col, __posLine, __posCol;
     QList<int> __posColHistory;
     void __error(PhpParser *myself, const char *error);

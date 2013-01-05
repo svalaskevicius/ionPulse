@@ -38,29 +38,14 @@ PhpParser::~PhpParser()
 IonPhp::Private::ParserResult *PhpParser::parseString(QString doc)
 {
     void * buf = setBuf(doc.toLatin1().constData());
-    __result = NULL;
-    ParserResult *result = new ParserResult();
-    result->success = true;
-    int ret;
-    try {
-        ret = ion_php_parse(this);
-    } catch (std::exception& e) {
-        result->error.lineFrom = __line;
-        result->error.colFrom = __col;
-        result->error.lineTo = __posLine;
-        result->error.colTo = __posCol;
-        result->error.message = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
-                        .arg(e.what())
-                        .arg(__line).arg(__col)
-                        .arg(__posLine).arg(__posCol)
-                    ;
-        result->success = false;
-    }
+    __result = new ParserResult();
+    __result->success = true;
+
+    ion_php_parse(this);
+
     delBuf(buf);
 
-    result->setRoot(__result);
-
-    return result;
+    return __result;
 }
 
 IonPhp::Private::ParserResult *PhpParser::parseFile(QString path)
@@ -71,13 +56,27 @@ IonPhp::Private::ParserResult *PhpParser::parseFile(QString path)
     }
     ParserResult *result = new ParserResult();
     result->success = false;
-    result->error.message = "parsing of the file failed: file not found: "+path;
+    ParserError error;
+    error.message = "parsing of the file failed: file not found: "+path;
+    result->errors.append(error);
     return result;
 }
 
-void PhpParser::__error(PhpParser *myself, const char *error) {
+void PhpParser::__error(PhpParser *myself, const char *errorMessage) {
     Q_ASSERT(this == myself);
-    throw std::logic_error(error);
+    __result->success = false;
+
+    ParserError error;
+    error.lineFrom = __line;
+    error.colFrom = __col;
+    error.lineTo = __posLine;
+    error.colTo = __posCol;
+    error.message = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
+        .arg(errorMessage)
+        .arg(__line).arg(__col)
+        .arg(__posLine).arg(__posCol)
+    ;
+    __result->errors.append(error);
 }
 
 int PhpParser::__lex(IonDbXml::XmlNode **astNode, yyscan_t yyscanner)

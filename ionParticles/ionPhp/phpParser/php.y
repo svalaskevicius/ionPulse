@@ -16,6 +16,8 @@
 #define yydebug ion_php_debug
 #define yynerrs ion_php_nerrs
 
+#define CREATE_AST_NODE(node) ASTNode::create(node)->setPosition(context->__line, context->__col)
+
 using namespace IonPhp::Private;
 
 %}
@@ -128,11 +130,12 @@ using namespace IonPhp::Private;
 
 %start start;
 
-start: top_statement_list {context->__result = $1;};
+start: top_statement_list {context->__result->setRoot($1);};
 
 top_statement_list:
-        /* empty */ {$$ = ASTNode::create("top_statement_list");}
-        | top_statement_list top_statement {$1->addChild($2);}
+        /* empty */ { $$ = ASTNode::create("top_statement_list");}
+        | top_statement_list top_statement { $1->addChild($2); }
+        | top_statement_list error { $1->addChild(CREATE_AST_NODE("$PARSE_ERROR$")); yyerrok; }
 ;
 
 namespace_name:
@@ -172,20 +175,21 @@ constant_declaration:
 ;
 
 inner_statement_list:
-                inner_statement_list  inner_statement  { $1->addChild($2); $$=$1; }
-        |    /* empty */ { $$ = ASTNode::create("inner_statement_list"); }
+            /* empty */ { $$ = ASTNode::create("inner_statement_list"); }
+        |   inner_statement_list  inner_statement  { $1->addChild($2); $$=$1; }
+        |   inner_statement_list  error  { $1->addChild(CREATE_AST_NODE("$PARSE_ERROR$")); $$=$1;yyerrok; }
 ;
 
 
 inner_statement:
-                statement { $$ = $1; }
-        |    function_declaration_statement { $$ = $1; }
-        |    class_declaration_statement { $$ = $1; }
+             statement
+        |    function_declaration_statement
+        |    class_declaration_statement
 ;
 
 
 statement:
-                unticked_statement { $$ = $1; }
+             unticked_statement { $$ = $1; }
         |    T_STRING ':' { $$ = $1; }
 ;
 

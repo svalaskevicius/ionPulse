@@ -34,7 +34,7 @@ do {\
             IonPhp::Private::PhpParser().parseString(CODE) \
         ); \
     if (!ret->success) { \
-        QFAIL(ret->error.message.toLatin1()); \
+        QFAIL(ret->errors.front().message.toLatin1()); \
     } \
     QCOMPARE_3( \
         ret->getRoot()->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
@@ -2031,6 +2031,73 @@ private Q_SLOTS:
                     "  </if>"
                     "</top_statement_list>"
     );}
+
+    void test_ifPartialAstIsReturned_onErrorAtTopLevel() {
+        QSharedPointer<IonPhp::Private::ParserResult> ret =
+            QSharedPointer<IonPhp::Private::ParserResult>(
+                IonPhp::Private::PhpParser().parseString("<?php $a=1; foreach($ar as $a=>$v) x';}")
+            );
+        if (ret->success) {
+            QFAIL("there should have been an error parsing the input");
+        }
+        if (!ret->getRoot()) {
+            QFAIL("root object is missing");
+        }
+        QString expectedAst(
+            "<top_statement_list>"
+            "  <assignment>"
+            "    <variable columnNr=\"6\" lineNr=\"0\">$a</variable>"
+            "    <lnumber columnNr=\"9\" lineNr=\"0\">1</lnumber>"
+            "  </assignment>"
+            "  <$PARSE_ERROR$ columnNr=\"36\" lineNr=\"0\"/>"
+            "  <$PARSE_ERROR$ columnNr=\"36\" lineNr=\"0\"/>"
+            "</top_statement_list>"
+        );
+        QCOMPARE_3(
+            ret->getRoot()->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""),
+            expectedAst.replace(" ", "").replace("\n", "").replace("\r", ""),
+            PRINT(ret->getRoot()->toString())
+        );
+    }
+
+    void test_ifPartialAstIsReturnedForFunction_onError() {
+        QSharedPointer<IonPhp::Private::ParserResult> ret =
+            QSharedPointer<IonPhp::Private::ParserResult>(
+                IonPhp::Private::PhpParser().parseString("<?php function a(){ $aa = 1; 3aa ; }")
+            );
+        if (ret->success) {
+            DEBUG_MSG(ret->getRoot()->toString());
+            QFAIL("there should have been an error parsing the input");
+        }
+        DEBUG_MSG(ret->errors.front().getMessage());
+        if (!ret->getRoot()) {
+            QFAIL("root object is missing");
+        }
+        QString expectedAst(
+            "<top_statement_list>"
+            "    <function_declaration>"
+            "      <is_reference is_reference=\"0\"/>"
+            "      <string columnNr=\"15\" lineNr=\"0\">a</string>"
+            "      <parameter_list/>"
+            "      <inner_statement_list>"
+            "        <assignment>"
+            "          <variable columnNr=\"20\" lineNr=\"0\">$aa</variable>"
+            "          <lnumber columnNr=\"26\" lineNr=\"0\">1</lnumber>"
+            "        </assignment>"
+            "        <$PARSE_ERROR$ columnNr=\"30\" lineNr=\"0\"/>"
+            "        <namespace_name>"
+            "          <string columnNr=\"30\" lineNr=\"0\">aa</string>"
+            "        </namespace_name>"
+            "      </inner_statement_list>"
+            "    </function_declaration>"
+            "</top_statement_list>"
+        );
+        QCOMPARE_3(
+            ret->getRoot()->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""),
+            expectedAst.replace(" ", "").replace("\n", "").replace("\r", ""),
+            PRINT(ret->getRoot()->toString())
+        );
+    }
 };
 
 }

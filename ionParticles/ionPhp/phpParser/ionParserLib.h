@@ -63,6 +63,13 @@ public:
     QString message;
     int lineFrom, colFrom, lineTo, colTo;
 
+    ParserError() {}
+    ParserError(const ParserError& src)
+        : message(src.message),
+          lineFrom(src.lineFrom), colFrom(src.colFrom),
+          lineTo(src.lineTo), colTo(src.colTo)
+    {}
+
     Q_INVOKABLE QString getMessage() {
         return message;
     }
@@ -86,20 +93,19 @@ private:
     IonDbXml::XmlNode* root;
 public:
     bool success;
-    ParserError error;
+    QList<ParserError> errors;
 
     Q_INVOKABLE void setRoot(IonDbXml::XmlNode* newRoot) {
         root = newRoot;
-        root->setParent(this);
+        if (root) {
+            root->setParent(this);
+        }
     }
     Q_INVOKABLE IonDbXml::XmlNode* getRoot() {
         return root;
     }
     Q_INVOKABLE bool getSuccess() {
         return success;
-    }
-    Q_INVOKABLE IonPhp::Private::ParserError* getError() {
-        return &error;
     }
 };
 
