@@ -29,16 +29,15 @@ do {\
 
 #define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
 #define TEST_PHP_PARSER(CODE, ASTSTR) { \
-    try { \
-        QSharedPointer<IonPhp::Private::ASTRoot> ret = IonPhp::Private::phpParser().parseString(CODE); \
-        QCOMPARE_3( \
-            ast2xml()(ret->getRootNode()).replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
-            QString(ASTSTR).replace(" ", "").replace("\n", "").replace("\r", ""), \
-            PRINT(ast2xml()(ret->getRootNode())) \
-        ); \
-    } catch (std::runtime_error &err) { \
-        QFAIL(err.what()); \
+    IonPhp::Private::ParserResult ret = IonPhp::Private::phpParser().parseString(CODE); \
+    if (!ret.success) { \
+        QFAIL(ret.error.message.toLatin1()); \
     } \
+    QCOMPARE_3( \
+        ast2xml()(ret.root->getRootNode()).replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
+        QString(ASTSTR).replace(" ", "").replace("\n", "").replace("\r", ""), \
+        PRINT(ast2xml()(ret.root->getRootNode())) \
+    ); \
 }
 
 
@@ -84,12 +83,8 @@ class PhpParserTest : public QObject
 
 private Q_SLOTS:
     void test_failsOnPhpError() {
-        try {
-            IonPhp::Private::phpParser().parseString("<?php asd");
-        } catch (std::exception &e) {
-            return;
-        }
-        QFAIL("Exception is not thrown");
+        IonPhp::Private::ParserResult ret = IonPhp::Private::phpParser().parseString("<?php asd");
+        QCOMPARE(ret.success, false);
     }
     void test_openCloseNoEnd() { TEST_PHP_PARSER(
         "<?php ?><?php ?><?php ",

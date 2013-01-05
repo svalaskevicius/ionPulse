@@ -35,49 +35,44 @@ phpParser::~phpParser()
     destroy_scanner();
 }
 
-QSharedPointer<ASTRoot> phpParser::parseString(QString doc)
+ParserResult phpParser::parseString(QString doc)
 {
     void * buf = setBuf(doc.toLatin1().constData());
     __result = NULL;
-    int ret = 1;
-    QString errorText = "unknown error";
+    ParserResult result;
+    result.success = true;
+    int ret;
     try {
         ret = ion_php_parse(this);
     } catch (std::exception& e) {
-        errorText = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
+        result.error.lineFrom = __line;
+        result.error.colFrom = __col;
+        result.error.lineTo = __posLine;
+        result.error.colTo = __posCol;
+        result.error.message = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
                         .arg(e.what())
                         .arg(__line).arg(__col)
                         .arg(__posLine).arg(__posCol)
                     ;
+        result.success = false;
     }
     delBuf(buf);
 
-    if (ret || !__result) {
-        if (__result) {
-            delete __result;
-            __result = NULL;
-        }
-        throw std::runtime_error(errorText.toStdString());
-    }
+    result.root = QSharedPointer<ASTRoot>(new ASTRoot(__result));
 
-    return QSharedPointer<ASTRoot>(new ASTRoot(__result));
+    return result;
 }
 
-QSharedPointer<ASTRoot> phpParser::parseFile(QString path)
+ParserResult phpParser::parseFile(QString path)
 {
     QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        try {
-            QSharedPointer<ASTRoot> ast = parseString(file.readAll());
-//            QFileInfo fileInfo(path);
-//            ast->setFilename(path);
-//            ast->setTimestamp(fileInfo.lastModified().toTime_t());
-            return ast;
-        } catch (std::runtime_error &err) {
-            throw std::runtime_error("parsing of the file failed: "+path.toStdString()+"\n"+err.what());
-        }
+        return parseString(file.readAll());
     }
-    throw std::runtime_error("parsing of the file failed: file not found: "+path.toStdString());
+    ParserResult ret;
+    ret.success = false;
+    ret.error.message = "parsing of the file failed: file not found: "+path;
+    return ret;
 }
 
 void phpParser::__error(phpParser *myself, const char *error) {

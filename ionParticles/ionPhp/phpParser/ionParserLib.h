@@ -66,6 +66,16 @@ public:
     }
 };
 
+struct ParserResult {
+    struct Error {
+        QString message;
+        int lineFrom, colFrom, lineTo, colTo;
+    };
+    bool success;
+    QSharedPointer<ASTRoot> root;
+    Error error;
+};
+
 }
 }
 

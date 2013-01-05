@@ -23,8 +23,8 @@ class phpParser
 public:
     phpParser();
     ~phpParser();
-    QSharedPointer<ASTRoot> parseString(QString doc);
-    QSharedPointer<ASTRoot> parseFile(QString path);
+    ParserResult parseString(QString doc);
+    ParserResult parseFile(QString path);
 protected:
    void init_scanner();
    void destroy_scanner();
