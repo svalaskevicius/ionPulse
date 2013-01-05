@@ -20,60 +20,43 @@
 #include <ionCore/shared.h>
 #include <ionParticles/ionDbXml/dbxmlapi.h>
 
-#define YYSTYPE pASTNode
+#define YYSTYPE IonDbXml::XmlNode*
 
 namespace IonPhp {
 namespace Private {
 
 class ASTNode;
-typedef ASTNode *pASTNode;
 
 class ASTNode : public IonDbXml::XmlNode {
     Q_OBJECT
 private:
-    QVector<XmlNode*> children;
+    QList<XmlNode*> children;
     AttributesMap attributes;
     QString text;
     QString name;
     int lineNr, columnNr;
 public:
     ASTNode(QString name);
-    Q_INVOKABLE IonPhp::Private::ASTNode* setPosition(int lineNr, int columnNr);
-    Q_INVOKABLE int getLine() const;
-    Q_INVOKABLE int getColumn() const;
-    Q_INVOKABLE IonPhp::Private::ASTNode* addChild(pASTNode child);
-    Q_INVOKABLE IonPhp::Private::ASTNode* setData(QString name, QString data);
-    Q_INVOKABLE IonPhp::Private::ASTNode* setText(QString data);
-    Q_INVOKABLE QString getData(QString name);
+    IonDbXml::XmlNode* setPosition(int lineNr, int columnNr);
+    int getLine() const;
+    int getColumn() const;
+    IonDbXml::XmlNode* addChild(IonDbXml::XmlNode* child);
+    IonDbXml::XmlNode* setData(QString name, QString data);
+    IonDbXml::XmlNode* setText(QString data);
+    QString getData(QString name);
 
-    Q_INVOKABLE QString getName();
-    Q_INVOKABLE QString getText();
+    QString getName();
+    QString getText();
 
     AttributesMap &getAttributes() { return attributes;}
-    QVector<IonDbXml::XmlNode*> &getChildren() {return children;}
+    QList<IonDbXml::XmlNode*> &getChildren() {return children;}
 
-    Q_INVOKABLE QString toString();
+    QString toString();
 
-    static pASTNode create(QString name);
-    static void destroy(pASTNode node);
+    static IonDbXml::XmlNode* create(QString name);
+    static void destroy(IonDbXml::XmlNode* node);
 };
 
-class ASTRoot : public QObject {
-    Q_OBJECT
-protected:
-    pASTNode rootNode;
-public:
-    ASTRoot(pASTNode rootNode);
-    ~ASTRoot();
-
-    Q_INVOKABLE IonPhp::Private::ASTNode *getRootNode() {
-        return rootNode;
-    }
-
-    Q_INVOKABLE QString toString() {
-        return getRootNode()->toString();
-    }
-};
 
 class ParserError : public QObject {
     Q_OBJECT
@@ -100,13 +83,18 @@ public:
 
 class ParserResult : public QObject {
     Q_OBJECT
+private:
+    IonDbXml::XmlNode* root;
 public:
     bool success;
-    QSharedPointer<ASTRoot> root;
     ParserError error;
 
-    Q_INVOKABLE IonPhp::Private::ASTRoot* getRoot() {
-        return root.data();
+    Q_INVOKABLE void setRoot(IonDbXml::XmlNode* newRoot) {
+        root = newRoot;
+        root->setParent(this);
+    }
+    Q_INVOKABLE IonDbXml::XmlNode* getRoot() {
+        return root;
     }
     Q_INVOKABLE bool getSuccess() {
         return success;

@@ -33,11 +33,11 @@ protected:
    void delBuf(void *);
 public:
     void* __scanner;
-    pASTNode __result;
+    IonDbXml::XmlNode* __result;
     int __line, __col, __posLine, __posCol;
     QList<int> __posColHistory;
     void __error(PhpParser *myself, const char *error);
-    int  __lex(pASTNode *astNode, yyscan_t yyscanner);
+    int  __lex(IonDbXml::XmlNode **astNode, yyscan_t yyscanner);
     void __echo(const char *text, int size);
     QString currentHeredocLabel;
 };

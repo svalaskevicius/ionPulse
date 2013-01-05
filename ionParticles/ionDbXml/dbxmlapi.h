@@ -11,6 +11,7 @@
 
 #include <QString>
 #include <QMap>
+#include <QList>
 #include <QDir>
 #include <QSharedPointer>
 #include <ionCore/plugin.h>
@@ -26,8 +27,24 @@
  */
 namespace IonDbXml {
 
+class XmlNode;
 class DataQueryResults;
 
+
+class XmlNodeIteratorJsAdapter : public QObject {
+    Q_OBJECT
+private:
+    QList<IonDbXml::XmlNode*> list;
+    QList<IonDbXml::XmlNode*>::iterator iterator;
+public:
+    XmlNodeIteratorJsAdapter(QList<IonDbXml::XmlNode*> list) : QObject(), list(list), iterator(list.begin()) {}
+
+    Q_INVOKABLE bool hasNext() {return iterator < list.end();}
+    Q_INVOKABLE bool hasPrevious() {return iterator > list.begin();}
+
+    Q_INVOKABLE IonDbXml::XmlNode* next() {return *(++iterator);}
+    Q_INVOKABLE IonDbXml::XmlNode* previous() {return *(--iterator);}
+};
 
 /**
  * \brief The interface of a node used to insert new data.
@@ -62,7 +79,19 @@ public:
     /**
      * \brief Node children
      */
-    virtual QVector<XmlNode*> &getChildren() = 0;
+    virtual QList<XmlNode*> &getChildren() = 0;
+
+    virtual QString toString() = 0;
+
+    virtual IonDbXml::XmlNode* addChild(IonDbXml::XmlNode* child) = 0;
+    virtual IonDbXml::XmlNode* setData(QString name, QString data) = 0;
+    virtual IonDbXml::XmlNode* setText(QString data) = 0;
+    virtual QString getData(QString name) = 0;
+    virtual IonDbXml::XmlNode* setPosition(int lineNr, int columnNr) = 0;
+
+    Q_INVOKABLE virtual IonDbXml::XmlNodeIteratorJsAdapter* getChildrenIterator() {
+        return new XmlNodeIteratorJsAdapter(getChildren());
+    }
 };
 
 /**

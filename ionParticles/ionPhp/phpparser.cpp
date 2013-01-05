@@ -16,7 +16,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 
-extern int _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
+extern int _impl_ionPhp_lex(IonDbXml::XmlNode **astNode, yyscan_t yyscanner);
 
 extern int ion_php_parse(IonPhp::Private::PhpParser* context);
 
@@ -58,7 +58,7 @@ IonPhp::Private::ParserResult *PhpParser::parseString(QString doc)
     }
     delBuf(buf);
 
-    result->root = QSharedPointer<ASTRoot>(new ASTRoot(__result));
+    result->setRoot(__result);
 
     return result;
 }
@@ -80,9 +80,9 @@ void PhpParser::__error(PhpParser *myself, const char *error) {
     throw std::logic_error(error);
 }
 
-int PhpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
+int PhpParser::__lex(IonDbXml::XmlNode **astNode, yyscan_t yyscanner)
 {
-    pASTNode lastNode = *astNode;
+    IonDbXml::XmlNode *lastNode = *astNode;
     while(1) {
         *astNode = NULL;
         int ret = _impl_ionPhp_lex(astNode, yyscanner);

@@ -57,7 +57,7 @@ QString ASTNode::toString() {
     return ast2xml()(this, 2);
 }
 
-pASTNode ASTNode::setPosition(int lineNr, int columnNr)
+IonDbXml::XmlNode* ASTNode::setPosition(int lineNr, int columnNr)
 {
     this->lineNr = lineNr;
     this->columnNr = columnNr;
@@ -76,7 +76,7 @@ int ASTNode::getColumn() const
     return columnNr;
 }
 
-pASTNode ASTNode::addChild(pASTNode child)
+IonDbXml::XmlNode* ASTNode::addChild(IonDbXml::XmlNode* child)
 {
     if (!child) {
         throw std::invalid_argument( "child must be set" );
@@ -86,13 +86,13 @@ pASTNode ASTNode::addChild(pASTNode child)
     return this;
 }
 
-pASTNode ASTNode::setData(QString name, QString data)
+IonDbXml::XmlNode* ASTNode::setData(QString name, QString data)
 {
     attributes[name] = data;
     return this;
 }
 
-pASTNode ASTNode::setText(QString data)
+IonDbXml::XmlNode* ASTNode::setText(QString data)
 {
     text = data;
     return this;
@@ -113,26 +113,16 @@ QString ASTNode::getText()
     return text;
 }
 
-pASTNode ASTNode::create(QString name)
+IonDbXml::XmlNode* ASTNode::create(QString name)
 {
     return new ASTNode(name);
 }
-void ASTNode::destroy(pASTNode node)
+void ASTNode::destroy(IonDbXml::XmlNode* node)
 {
     delete node;
 }
 
 
-
-ASTRoot::ASTRoot(pASTNode rootNode)
-    : rootNode(rootNode)
-{
-}
-
-ASTRoot::~ASTRoot()
-{
-    delete rootNode;
-}
 
 }
 }

@@ -37,9 +37,9 @@ do {\
         QFAIL(ret->error.message.toLatin1()); \
     } \
     QCOMPARE_3( \
-        ret->root->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
+        ret->getRoot()->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
         QString(ASTSTR).replace(" ", "").replace("\n", "").replace("\r", ""), \
-        PRINT(ret->root->toString()) \
+        PRINT(ret->getRoot()->toString()) \
     ); \
 }
 

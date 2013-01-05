@@ -36,9 +36,9 @@ StructureStorage::StructureStorage(IonDbXml::DataStorage * dataStorage) : dataSt
 }
 
 
-void StructureStorage::addFile(QString path, int timestamp, ASTRoot &astRoot)
+void StructureStorage::addFile(QString path, int timestamp, IonDbXml::XmlNode* astRoot)
 {
-    dataStorage->addFile(path, timestamp, astRoot.getRootNode());
+    dataStorage->addFile(path, timestamp, astRoot);
 }
 
 void StructureStorage::removeFile(QString path)

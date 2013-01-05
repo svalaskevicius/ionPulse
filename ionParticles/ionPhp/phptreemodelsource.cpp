@@ -95,7 +95,7 @@ void PhpTreeModelSourceDecorator::updateFile(QString path)
         if (!parseInfo->success) {
             throw std::runtime_error(parseInfo->error.message.toStdString());
         }
-        storage.addFile(path, fileInfo.lastModified().toTime_t(), *parseInfo->root);
+        storage.addFile(path, fileInfo.lastModified().toTime_t(), parseInfo->getRoot());
     }
 }
 

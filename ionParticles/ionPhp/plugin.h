@@ -84,8 +84,6 @@ public slots:
 }
 }
 
-Q_DECLARE_METATYPE(IonPhp::Private::ASTNode*)
-Q_DECLARE_METATYPE(IonPhp::Private::ASTRoot*)
 Q_DECLARE_METATYPE(IonPhp::Private::PhpParser*)
 
 #endif // IONEDITORPHP_H

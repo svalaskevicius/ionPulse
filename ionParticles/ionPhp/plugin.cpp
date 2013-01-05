@@ -67,8 +67,6 @@ void Plugin::addParent(BasicPlugin *parent) {
 
 void Plugin::registerJsApi(QScriptEngine & jsEngine)
 {
-    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ASTNode>, qObjectPtrFromScriptValue<IonPhp::Private::ASTNode>);
-    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ASTRoot>, qObjectPtrFromScriptValue<IonPhp::Private::ASTRoot>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::PhpParser>, qObjectPtrFromScriptValue<IonPhp::Private::PhpParser>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserResult>, qObjectPtrFromScriptValue<IonPhp::Private::ParserResult>);
     qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserError>, qObjectPtrFromScriptValue<IonPhp::Private::ParserError>);
