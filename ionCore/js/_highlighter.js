@@ -20,7 +20,6 @@ TextFormatterManager.prototype = {
      */
     register: function(key, format) {
         this._formats[key] = format;
-        this._formatters[key] = this._create(format);
     },
 
     /**
@@ -29,24 +28,33 @@ TextFormatterManager.prototype = {
      * @return QTextCharFormat
      */
     retrieve: function(key, zoomRatio) {
-        var fontSize = this._formatters[key].font().pointSize();
-        var reqFontSize = this._defaultFontSize() * this._formats[key].size * zoomRatio;
-
-        if (Math.abs(reqFontSize-fontSize) > .0001) {
-            var font = this._formatters[key].font();
-            font.setPointSize(reqFontSize);
-            this._formatters[key].setFont(font);
+        var reqFontSize = this._getRequestedFontPointSize(key, zoomRatio);
+        if (!this._formatters[key]) {
+            this._formatters[key] = this._create(this._formats[key], reqFontSize);
+        } else {
+            if (Math.abs(reqFontSize - this._formatters[key].font().pointSize()) > .0001) {
+                var font = this._formatters[key].font();
+                font.setPointSize(reqFontSize);
+                this._formatters[key].setFont(font);
+            }
         }
         return this._formatters[key];
     },
 
+    _getRequestedFontPointSize: function(formatKey, zoomRatio) {
+        if (!this._formats[formatKey].size) {
+            return this._defaultFontSize() * zoomRatio;
+        } else {
+            return this._defaultFontSize() * zoomRatio * this._formats[formatKey].size;
+        }
+    },
 
     /**
      * Create character format to be used for displaying the highlighted text
      *
      * @return QTextCharFormat
      */
-    _create: function (formatDesc) {
+    _create: function (formatDesc, reqFontSize) {
         var format = new QTextCharFormat();
 
         var brush = new QBrush();
@@ -61,12 +69,20 @@ TextFormatterManager.prototype = {
             format.setBackground(bgBrush);
         }
 
-        var font = new QFont("Inconsolata", formatDesc.size, formatDesc.weight, formatDesc.italic);
-        if (!font.exactMatch()) {
-            font = new QFont("Courier New", formatDesc.size, formatDesc.weight, formatDesc.italic);
+        if (typeof formatDesc.weight === 'undefined') {
+            formatDesc.weight = QFont.Normal;
         }
-        format.setFont(font);
+        if (typeof formatDesc.italic === 'undefined') {
+            formatDesc.italic = false;
+        }
 
+        for (var i in TextFormatterManager.editorFontFamilies) {
+            var font = new QFont(TextFormatterManager.editorFontFamilies[i], reqFontSize, formatDesc.weight, formatDesc.italic);
+            if (font.exactMatch()) {
+                format.setFont(font);
+                return format;
+            }
+        }
         return format;
     },
 
@@ -74,7 +90,7 @@ TextFormatterManager.prototype = {
         return QApplication.font(0).pointSizeF();
     }
 };
-
+TextFormatterManager.editorFontFamilies = ["Source Code Pro", "Monaco", "Courier New"];
 
 TextHighlighter = function (textFormatterManager) {
     this._textFormatterManager = textFormatterManager;
@@ -117,19 +133,19 @@ TextHighlighter.prototype = {
 
     /**
      * Add text formatting rules for states and highlight rules in those states.
-     * Each formatting element is an array of: color, weight, italic, size, backgroundColor
+     * Each formatting element is an object having keys: color, weight, italic, size, backgroundColor
      *
      * Example:
      * {
-     *     'path/to/state':                  [toColor("ccccb0"), QFont.Normal, false, null, null],
-     *     'path/to/state/highlighter rule': [toColor("ccccb0"), QFont.Normal, true, null, null],
+     *     'path/to/state':                  {color:toColor("ccccb0"), .... },
+     *     'path/to/state/highlighter rule': {...},
      * }
      */
     addTextFormatting : function(textFormatting) {
         for (key in textFormatting) {
             this._textFormatterManager.register(
                 key,
-                this._convertFormatDescription(textFormatting[key])
+                textFormatting[key]
             );
         }
     },
@@ -303,28 +319,6 @@ TextHighlighter.prototype = {
 
     _getFormatterZoomRatio: function() {
         return this._cppApi.editor.zoomRatio;
-    },
-
-
-    /**
-     * convert format description
-     * given format described as an array
-     * return it converted to TextFormatterFactory compatible object
-     *
-     * @return object
-     */
-    _convertFormatDescription: function (arr) {
-        var format = {
-            color: arr[0],
-            weight: arr[1],
-            italic: arr[2],
-            size: arr[3],
-            backgroundColor: arr[4]
-        };
-        if ((typeof format.size === 'undefined') || (format.size === null)) {
-            format.size = 1;
-        }
-        return format;
     }
 
 };
