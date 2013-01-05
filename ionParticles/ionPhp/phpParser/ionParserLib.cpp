@@ -53,14 +53,6 @@ ASTNode::ASTNode(QString name)
 {
 }
 
-ASTNode::~ASTNode()
-{
-    foreach (XmlNode* n, children) {
-        delete n;
-    }
-    children.clear();
-}
-
 QString ASTNode::toString() {
     return ast2xml()(this, 2);
 }
@@ -89,6 +81,7 @@ pASTNode ASTNode::addChild(pASTNode child)
     if (!child) {
         throw std::invalid_argument( "child must be set" );
     }
+    child->setParent(this);
     children.append(child);
     return this;
 }

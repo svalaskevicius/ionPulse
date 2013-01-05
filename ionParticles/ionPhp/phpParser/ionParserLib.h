@@ -38,19 +38,19 @@ private:
     int lineNr, columnNr;
 public:
     ASTNode(QString name);
-    ~ASTNode();
-    Q_INVOKABLE pASTNode setPosition(int lineNr, int columnNr);
+    Q_INVOKABLE IonPhp::Private::ASTNode* setPosition(int lineNr, int columnNr);
     Q_INVOKABLE int getLine() const;
     Q_INVOKABLE int getColumn() const;
-    Q_INVOKABLE pASTNode addChild(pASTNode child);
-    Q_INVOKABLE pASTNode setData(QString name, QString data);
-    Q_INVOKABLE pASTNode setText(QString data);
+    Q_INVOKABLE IonPhp::Private::ASTNode* addChild(pASTNode child);
+    Q_INVOKABLE IonPhp::Private::ASTNode* setData(QString name, QString data);
+    Q_INVOKABLE IonPhp::Private::ASTNode* setText(QString data);
     Q_INVOKABLE QString getData(QString name);
 
     Q_INVOKABLE QString getName();
     Q_INVOKABLE QString getText();
-    Q_INVOKABLE AttributesMap &getAttributes() { return attributes;}
-    Q_INVOKABLE QVector<IonDbXml::XmlNode*> &getChildren() {return children;}
+
+    AttributesMap &getAttributes() { return attributes;}
+    QVector<IonDbXml::XmlNode*> &getChildren() {return children;}
 
     Q_INVOKABLE QString toString();
 

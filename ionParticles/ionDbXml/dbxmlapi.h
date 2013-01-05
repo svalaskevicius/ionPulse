@@ -57,12 +57,12 @@ public:
     /**
      * \brief Node attributes
      */
-    Q_INVOKABLE virtual AttributesMap &getAttributes() = 0;
+    virtual AttributesMap &getAttributes() = 0;
 
     /**
      * \brief Node children
      */
-    Q_INVOKABLE virtual QVector<XmlNode*> &getChildren() = 0;
+    virtual QVector<XmlNode*> &getChildren() = 0;
 };
 
 /**
