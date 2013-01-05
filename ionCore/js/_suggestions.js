@@ -18,61 +18,77 @@ function getWordBeforeCursor(cursor) {
 Suggestions = function(editor)
 {
     QListWidget.call(this, editor);
+    this.editor = editor;
     this.setProperty('type', 'editor-suggestions');
     this.shortcut = qs.system.installAppShortcut(Qt.Key_Space, Qt.MetaModifier, editor);
     this.shortcut.callback.connect(
         this,
-        function() {
-            try {
-                var uri = dbxml.getStorage().pathToDocumentUri(editor.path);
-                this.textCursor = editor.textCursor();
-                this.currentWord = getWordBeforeCursor(editor.textCursor());
-                var results = dbxml.getStorage().query('distinct-values(doc("dbxml:/files/'+uri+'")//variable[starts-with(.,"'+this.currentWord+'")]/text())');
-                if (!results.hasNext()) {
-                    return;
-                }
-                this.clear();
-                while (results.next()) {
-                    this.addItem(results.value().toString());
-                }
-                if (this.count) {
-                    this.currentRow = 0;
-                }
-
-                if (!this.shortcut_close) {
-                    this.shortcut_close = qs.system.installAppShortcut(Qt.Key_Escape, Qt.NoModifier, editor);
-                    this.shortcut_close.callback.connect(this, this.onCloseRequested);
-                }
-                if (!this.shortcut_down) {
-                    this.shortcut_down = qs.system.installAppShortcut(Qt.Key_Down, Qt.NoModifier, editor);
-                    this.shortcut_down.callback.connect(this, this.onKeyDown);
-                }
-                if (!this.shortcut_up) {
-                    this.shortcut_up = qs.system.installAppShortcut(Qt.Key_Up, Qt.NoModifier, editor);
-                    this.shortcut_up.callback.connect(this, this.onKeyUp);
-                }
-                if (!this.shortcut_enter) {
-                    this.shortcut_enter = qs.system.installAppShortcut(Qt.Key_Enter, Qt.NoModifier, editor);
-                    this.shortcut_enter.callback.connect(this, this.onSubmit);
-                }
-                if (!this.shortcut_return) {
-                    this.shortcut_return = qs.system.installAppShortcut(Qt.Key_Return, Qt.NoModifier, editor);
-                    this.shortcut_return.callback.connect(this, this.onSubmit);
-                }
-
-                var origin = editor.cursorRect(editor.textCursor()).bottomLeft();
-                this.move(origin.x(), origin.y());
-
-                this.show();
-             } catch(e) {
-                 console.error(e);
-             }
-        }
+        this.showSuggestions
     );
 
 }
 
 Suggestions.prototype = new QListWidget();
+
+Suggestions.prototype.retrieveSuggestions = function(limit) {
+    var uri = dbxml.getStorage().pathToDocumentUri(this.editor.path);
+
+    var results = dbxml.getStorage().query('distinct-values(doc("dbxml:/files/'+uri+'")//variable[starts-with(.,"'+this.currentWord+'")]/text())');
+
+    var ret = [];
+    if (!results.hasNext()) {
+        return ret;
+    }
+    while (results.next() && (limit-- > 0)) {
+        ret = ret.concat(results.value().toString());
+    }
+    return ret;
+}
+
+Suggestions.prototype.showSuggestions = function() {
+    try {
+        this.currentWord = getWordBeforeCursor(this.editor.textCursor());
+
+        var results = this.retrieveSuggestions(15);
+        if (!results || !results.length) {
+            return;
+        }
+
+        this.clear();
+        this.addItems(results);
+        if (this.count) {
+            this.currentRow = 0;
+        }
+
+        if (!this.shortcut_close) {
+            this.shortcut_close = qs.system.installAppShortcut(Qt.Key_Escape, Qt.NoModifier, this.editor);
+            this.shortcut_close.callback.connect(this, this.onCloseRequested);
+        }
+        if (!this.shortcut_down) {
+            this.shortcut_down = qs.system.installAppShortcut(Qt.Key_Down, Qt.NoModifier, this.editor);
+            this.shortcut_down.callback.connect(this, this.onKeyDown);
+        }
+        if (!this.shortcut_up) {
+            this.shortcut_up = qs.system.installAppShortcut(Qt.Key_Up, Qt.NoModifier, this.editor);
+            this.shortcut_up.callback.connect(this, this.onKeyUp);
+        }
+        if (!this.shortcut_enter) {
+            this.shortcut_enter = qs.system.installAppShortcut(Qt.Key_Enter, Qt.NoModifier, this.editor);
+            this.shortcut_enter.callback.connect(this, this.onSubmit);
+        }
+        if (!this.shortcut_return) {
+            this.shortcut_return = qs.system.installAppShortcut(Qt.Key_Return, Qt.NoModifier, this.editor);
+            this.shortcut_return.callback.connect(this, this.onSubmit);
+        }
+
+        var origin = this.editor.cursorRect(this.editor.textCursor()).bottomLeft();
+        this.move(origin.x(), origin.y());
+
+        this.show();
+     } catch(e) {
+         console.error(e);
+     }
+}
 
 Suggestions.prototype.onCloseRequested = function() {
     try {
@@ -102,9 +118,9 @@ Suggestions.prototype.onKeyUp = function() {
 Suggestions.prototype.onSubmit = function() {
     try {
         if (this.currentRow >= 0) {
-            this.textCursor.movePosition(QTextCursor.PreviousCharacter, QTextCursor.KeepAnchor, this.currentWord.length);
-            this.textCursor.removeSelectedText();
-            this.textCursor.insertText(this.item(this.currentRow).text())
+            this.editor.textCursor().movePosition(QTextCursor.PreviousCharacter, QTextCursor.KeepAnchor, this.currentWord.length);
+            this.editor.textCursor().removeSelectedText();
+            this.editor.textCursor().insertText(this.item(this.currentRow).text())
         }
         this._hide();
      } catch(e) {
