@@ -23,7 +23,7 @@ using namespace IonPhp::Private;
 %pure_parser
 %glr-parser
 %expect 4
-%parse-param { IonPhp::Private::phpParser* context }
+%parse-param { IonPhp::Private::PhpParser* context }
 %lex-param   { void* ion_php_scanner  }
 
 %left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE

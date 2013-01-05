@@ -13,7 +13,9 @@ VERSION = 0.1.0
 QT       += core widgets script
 TARGET = ionPhp
 INCLUDEPATH += ../..
-LIBS += -L/opt/local/lib -lz -lpthread -liconv -lm
+LIBS += -L../ionDbXml \
+        -lionDbXml \
+        -L/opt/local/lib -lz -lpthread -liconv -lm
 
 HEADERS += \
     plugin.h \
@@ -69,31 +71,4 @@ QMAKE_EXTRA_TARGETS += gen_php_scanner_dep
 OTHER_FILES += \
     phpParser/php.y \
     phpParser/php.l
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -34,7 +34,8 @@ class DataQueryResults;
  *
  * \see DataStorage::addFile()
  */
-class XmlNode {
+class XmlNode : public QObject {
+    Q_OBJECT
 public:
     virtual ~XmlNode() {}
 
@@ -46,22 +47,22 @@ public:
     /**
      * \brief Node name
      */
-    virtual QString getName() = 0;
+    Q_INVOKABLE virtual QString getName() = 0;
 
     /**
      * \brief Node content text
      */
-    virtual QString getText() = 0;
+    Q_INVOKABLE virtual QString getText() = 0;
 
     /**
      * \brief Node attributes
      */
-    virtual AttributesMap &getAttributes() = 0;
+    Q_INVOKABLE virtual AttributesMap &getAttributes() = 0;
 
     /**
      * \brief Node children
      */
-    virtual QVector<XmlNode*> &getChildren() = 0;
+    Q_INVOKABLE virtual QVector<XmlNode*> &getChildren() = 0;
 };
 
 /**

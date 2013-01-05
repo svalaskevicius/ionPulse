@@ -18,69 +18,69 @@
 
 extern int _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
 
-extern int ion_php_parse(IonPhp::Private::phpParser* context);
+extern int ion_php_parse(IonPhp::Private::PhpParser* context);
 
 
 namespace IonPhp {
 namespace Private {
 
 
-phpParser::phpParser()
+PhpParser::PhpParser()
 {
     init_scanner();
 }
 
-phpParser::~phpParser()
+PhpParser::~PhpParser()
 {
     destroy_scanner();
 }
 
-ParserResult phpParser::parseString(QString doc)
+IonPhp::Private::ParserResult *PhpParser::parseString(QString doc)
 {
     void * buf = setBuf(doc.toLatin1().constData());
     __result = NULL;
-    ParserResult result;
-    result.success = true;
+    ParserResult *result = new ParserResult();
+    result->success = true;
     int ret;
     try {
         ret = ion_php_parse(this);
     } catch (std::exception& e) {
-        result.error.lineFrom = __line;
-        result.error.colFrom = __col;
-        result.error.lineTo = __posLine;
-        result.error.colTo = __posCol;
-        result.error.message = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
+        result->error.lineFrom = __line;
+        result->error.colFrom = __col;
+        result->error.lineTo = __posLine;
+        result->error.colTo = __posCol;
+        result->error.message = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
                         .arg(e.what())
                         .arg(__line).arg(__col)
                         .arg(__posLine).arg(__posCol)
                     ;
-        result.success = false;
+        result->success = false;
     }
     delBuf(buf);
 
-    result.root = QSharedPointer<ASTRoot>(new ASTRoot(__result));
+    result->root = QSharedPointer<ASTRoot>(new ASTRoot(__result));
 
     return result;
 }
 
-ParserResult phpParser::parseFile(QString path)
+IonPhp::Private::ParserResult *PhpParser::parseFile(QString path)
 {
     QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return parseString(file.readAll());
     }
-    ParserResult ret;
-    ret.success = false;
-    ret.error.message = "parsing of the file failed: file not found: "+path;
-    return ret;
+    ParserResult *result = new ParserResult();
+    result->success = false;
+    result->error.message = "parsing of the file failed: file not found: "+path;
+    return result;
 }
 
-void phpParser::__error(phpParser *myself, const char *error) {
+void PhpParser::__error(PhpParser *myself, const char *error) {
     Q_ASSERT(this == myself);
     throw std::logic_error(error);
 }
 
-int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
+int PhpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
 {
     pASTNode lastNode = *astNode;
     while(1) {
@@ -115,7 +115,7 @@ int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
 /**
  * invoked by scanner on failure to match tokens
  */
-void phpParser::__echo(const char *text, int size)
+void PhpParser::__echo(const char *text, int size)
 {
     QString txt;
     for (int i=0;i<size;i++) {

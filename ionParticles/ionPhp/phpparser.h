@@ -18,13 +18,14 @@ typedef void * yyscan_t;
 namespace IonPhp {
 namespace Private {
 
-class phpParser
+class PhpParser : public QObject
 {
+    Q_OBJECT
 public:
-    phpParser();
-    ~phpParser();
-    ParserResult parseString(QString doc);
-    ParserResult parseFile(QString path);
+    PhpParser();
+    ~PhpParser();
+    Q_INVOKABLE IonPhp::Private::ParserResult *parseString(QString doc);
+    Q_INVOKABLE IonPhp::Private::ParserResult *parseFile(QString path);
 protected:
    void init_scanner();
    void destroy_scanner();
@@ -35,7 +36,7 @@ public:
     pASTNode __result;
     int __line, __col, __posLine, __posCol;
     QList<int> __posColHistory;
-    void __error(phpParser *myself, const char *error);
+    void __error(PhpParser *myself, const char *error);
     int  __lex(pASTNode *astNode, yyscan_t yyscanner);
     void __echo(const char *text, int size);
     QString currentHeredocLabel;

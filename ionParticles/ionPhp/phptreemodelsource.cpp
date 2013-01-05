@@ -91,11 +91,11 @@ void PhpTreeModelSourceDecorator::updateFile(QString path)
         if (mtimeStored) {
             storage.removeFile(path);
         }
-        ParserResult parseInfo = phpParser().parseFile(path);
-        if (!parseInfo.success) {
-            throw std::runtime_error(parseInfo.error.message.toStdString());
+        QSharedPointer<ParserResult> parseInfo = QSharedPointer<ParserResult>(PhpParser().parseFile(path));
+        if (!parseInfo->success) {
+            throw std::runtime_error(parseInfo->error.message.toStdString());
         }
-        storage.addFile(path, fileInfo.lastModified().toTime_t(), *parseInfo.root);
+        storage.addFile(path, fileInfo.lastModified().toTime_t(), *parseInfo->root);
     }
 }
 

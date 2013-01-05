@@ -29,14 +29,17 @@ do {\
 
 #define PRINT(QSTR) std::cout << QSTR.toStdString() << std::endl;
 #define TEST_PHP_PARSER(CODE, ASTSTR) { \
-    IonPhp::Private::ParserResult ret = IonPhp::Private::phpParser().parseString(CODE); \
-    if (!ret.success) { \
-        QFAIL(ret.error.message.toLatin1()); \
+    QSharedPointer<IonPhp::Private::ParserResult> ret = \
+        QSharedPointer<IonPhp::Private::ParserResult>( \
+            IonPhp::Private::PhpParser().parseString(CODE) \
+        ); \
+    if (!ret->success) { \
+        QFAIL(ret->error.message.toLatin1()); \
     } \
     QCOMPARE_3( \
-        ret.root->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
+        ret->root->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""), \
         QString(ASTSTR).replace(" ", "").replace("\n", "").replace("\r", ""), \
-        PRINT(ret.root->toString()) \
+        PRINT(ret->root->toString()) \
     ); \
 }
 
@@ -47,8 +50,11 @@ class PhpParserTest : public QObject
 
 private Q_SLOTS:
     void test_failsOnPhpError() {
-        IonPhp::Private::ParserResult ret = IonPhp::Private::phpParser().parseString("<?php asd");
-        QCOMPARE(ret.success, false);
+        QSharedPointer<IonPhp::Private::ParserResult> ret =
+                QSharedPointer<IonPhp::Private::ParserResult>(
+                    IonPhp::Private::PhpParser().parseString("<?php asd")
+                );
+        QCOMPARE(ret->success, false);
     }
     void test_openCloseNoEnd() { TEST_PHP_PARSER(
         "<?php ?><?php ?><?php ",

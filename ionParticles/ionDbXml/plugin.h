@@ -48,6 +48,7 @@ public slots:
 Q_DECLARE_METATYPE(IonDbXml::DataValue*)
 Q_DECLARE_METATYPE(IonDbXml::DataStorage*)
 Q_DECLARE_METATYPE(IonDbXml::DataQueryResults*)
+Q_DECLARE_METATYPE(IonDbXml::XmlNode*)
 
 
 #endif // IONDBXML_H

@@ -29,6 +29,7 @@ class ASTNode;
 typedef ASTNode *pASTNode;
 
 class ASTNode : public IonDbXml::XmlNode {
+    Q_OBJECT
 private:
     QVector<XmlNode*> children;
     AttributesMap attributes;
@@ -38,83 +39,81 @@ private:
 public:
     ASTNode(QString name);
     ~ASTNode();
-    pASTNode setPosition(int lineNr, int columnNr);
-    int getLine() const;
-    int getColumn() const;
-    pASTNode addChild(pASTNode child);
-    pASTNode setData(QString name, QString data);
-    pASTNode setText(QString data);
-    QString getData(QString name);
+    Q_INVOKABLE pASTNode setPosition(int lineNr, int columnNr);
+    Q_INVOKABLE int getLine() const;
+    Q_INVOKABLE int getColumn() const;
+    Q_INVOKABLE pASTNode addChild(pASTNode child);
+    Q_INVOKABLE pASTNode setData(QString name, QString data);
+    Q_INVOKABLE pASTNode setText(QString data);
+    Q_INVOKABLE QString getData(QString name);
 
-    QString getName();
-    QString getText();
-    AttributesMap &getAttributes() { return attributes;}
-    QVector<XmlNode*> &getChildren() {return children;}
+    Q_INVOKABLE QString getName();
+    Q_INVOKABLE QString getText();
+    Q_INVOKABLE AttributesMap &getAttributes() { return attributes;}
+    Q_INVOKABLE QVector<IonDbXml::XmlNode*> &getChildren() {return children;}
+
+    Q_INVOKABLE QString toString();
 
     static pASTNode create(QString name);
     static void destroy(pASTNode node);
 };
 
-class ASTRoot {
+class ASTRoot : public QObject {
+    Q_OBJECT
 protected:
     pASTNode rootNode;
 public:
-
-    struct ast2xml {
-        QString operator()(IonDbXml::XmlNode * node, int indent = 0)
-        {
-            QString ws = "  ";
-            QString ret = ws.repeated(indent) + "<" + node->getName();
-            for (IonPhp::Private::ASTNode::AttributesMap::const_iterator it = node->getAttributes().begin(); it != node->getAttributes().end(); it++) {
-                ret += QString(" %1=\"%2\"").arg(it.key()).arg(it.value());
-            }
-
-            bool content = false;
-            if (node->getText().length()) {
-                ret += ">";
-                QString t = node->getText();
-                ret += t.replace("\r", "&#xD;").replace("<", "&lt;").replace(">", "&gt;");
-                content = true;
-            }
-            if (node->getChildren().count()) {
-                if (!content) {
-                    ret += ">\n";
-                }
-                foreach (IonDbXml::XmlNode * child, node->getChildren()) {
-                    ret += this->operator ()(child, indent + 1);
-                }
-                ret += ws.repeated(indent);
-                content = true;
-            }
-            if (!content) {
-                ret += "/>\n";
-            } else {
-                ret += "</" + node->getName() + ">\n";
-            }
-
-            return ret;
-        }
-    };
-
     ASTRoot(pASTNode rootNode);
     ~ASTRoot();
-    pASTNode getRootNode() {
+
+    Q_INVOKABLE IonPhp::Private::ASTNode *getRootNode() {
         return rootNode;
     }
 
-    QString toString() {
-        return ast2xml()(getRootNode(), 2);
+    Q_INVOKABLE QString toString() {
+        return getRootNode()->toString();
     }
 };
 
-struct ParserResult {
-    struct Error {
-        QString message;
-        int lineFrom, colFrom, lineTo, colTo;
-    };
+class ParserError : public QObject {
+    Q_OBJECT
+public:
+    QString message;
+    int lineFrom, colFrom, lineTo, colTo;
+
+    Q_INVOKABLE QString getMessage() {
+        return message;
+    }
+    Q_INVOKABLE int getLineFrom() {
+        return lineFrom;
+    }
+    Q_INVOKABLE int getColFrom() {
+        return colFrom;
+    }
+    Q_INVOKABLE int getLineTo() {
+        return lineTo;
+    }
+    Q_INVOKABLE int getColTo() {
+        return colTo;
+    }
+};
+
+class ParserResult : public QObject {
+    Q_OBJECT
+public:
     bool success;
     QSharedPointer<ASTRoot> root;
-    Error error;
+    ParserError error;
+
+    Q_INVOKABLE IonPhp::Private::ASTRoot* getRoot() {
+        return root.data();
+    }
+    Q_INVOKABLE bool getSuccess() {
+        return success;
+    }
+    Q_INVOKABLE IonPhp::Private::ParserError* getError() {
+        return &error;
+    }
 };
 
 }

@@ -35,7 +35,7 @@ using namespace IonPhp::Private;
         }
 #define yylval_param astNode
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
-#define YY_EXTRA_TYPE IonPhp::Private::phpParser*
+#define YY_EXTRA_TYPE IonPhp::Private::PhpParser*
 #define YY_FATAL_ERROR(msg) throw std::logic_error(msg)
 #define ECHO yyextra->__echo(yytext, yyleng)
 
@@ -1237,25 +1237,25 @@ bool scanForHereDocEnd(yyscan_t yyscanner)
 }
 
 namespace IonPhp {
-        void phpParser::init_scanner()
+        void PhpParser::init_scanner()
         {
            yylex_init(&__scanner);
            yyset_extra(this, __scanner);
         }
 
-        void phpParser::destroy_scanner()
+        void PhpParser::destroy_scanner()
         {
            yylex_destroy(__scanner);
         }
 
-        void *phpParser::setBuf(const char* data)
+        void *PhpParser::setBuf(const char* data)
         {
             YY_BUFFER_STATE b = _impl_ionPhp__scan_string(data, __scanner);
             b->yy_fill_buffer = 0;
             this->__col = this->__line = this->__posCol = this->__posLine = 0;
             return b;
         }
-        void phpParser::delBuf(void *buf)
+        void PhpParser::delBuf(void *buf)
         {
             _impl_ionPhp__delete_buffer((yy_buffer_state *)buf, __scanner);
         }
