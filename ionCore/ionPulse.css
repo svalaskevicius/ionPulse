@@ -3,7 +3,7 @@
 
 
 * {
-    font: 14pt Inconsolata,Monaco,Courier New,monospace;
+    font: 14pt Source Sans Pro,Ubuntu,sans-serif;
 }
 
 QHeaderView::section{
@@ -661,7 +661,7 @@ border-color: #1e1e1e;
 border-style: solid;
 border-radius: 6;
 padding: 3px;
-font-size: 12px;
+font-size: 12pt;
 padding-left: 5px;
 padding-right: 5px;
 }

@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
         QString baseDir = IonCore::Private::getBaseDir();
 
         QDir fontsDir(baseDir+"/assets/fonts/");
-        foreach (QString name, fontsDir.entryList( QStringList()<<"*.otf")) {
+        foreach (QString name, fontsDir.entryList( QStringList()<<"*.ttf" )) {
             QFontDatabase::addApplicationFont(baseDir+"/assets/fonts/"+name);
         }
 
