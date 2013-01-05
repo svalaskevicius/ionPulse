@@ -135,7 +135,7 @@ start: top_statement_list {context->__result->setRoot($1);};
 top_statement_list:
         /* empty */ { $$ = ASTNode::create("top_statement_list");}
         | top_statement_list top_statement { $1->addChild($2); }
-        | top_statement_list error { $1->addChild(CREATE_AST_NODE("$PARSE_ERROR$")); yyerrok; }
+        | top_statement_list error { DEBUG_MSG("top error"); $1->addChild(CREATE_AST_NODE("__PARSE_ERROR")); yyclearin; yyerrok; }
 ;
 
 namespace_name:
@@ -177,7 +177,7 @@ constant_declaration:
 inner_statement_list:
             /* empty */ { $$ = ASTNode::create("inner_statement_list"); }
         |   inner_statement_list  inner_statement  { $1->addChild($2); $$=$1; }
-        |   inner_statement_list  error  { $1->addChild(CREATE_AST_NODE("$PARSE_ERROR$")); $$=$1;yyerrok; }
+        |   inner_statement_list  error { DEBUG_MSG("inner error"); $1->addChild(CREATE_AST_NODE("__PARSE_ERROR")); yyclearin; yyerrok; }
 ;
 
 

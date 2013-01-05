@@ -2049,8 +2049,7 @@ private Q_SLOTS:
             "    <variable columnNr=\"6\" lineNr=\"0\">$a</variable>"
             "    <lnumber columnNr=\"9\" lineNr=\"0\">1</lnumber>"
             "  </assignment>"
-            "  <$PARSE_ERROR$ columnNr=\"36\" lineNr=\"0\"/>"
-            "  <$PARSE_ERROR$ columnNr=\"36\" lineNr=\"0\"/>"
+            "  <__PARSE_ERROR columnNr=\"36\" lineNr=\"0\"/>"
             "</top_statement_list>"
         );
         QCOMPARE_3(
@@ -2084,10 +2083,8 @@ private Q_SLOTS:
             "          <variable columnNr=\"20\" lineNr=\"0\">$aa</variable>"
             "          <lnumber columnNr=\"26\" lineNr=\"0\">1</lnumber>"
             "        </assignment>"
-            "        <$PARSE_ERROR$ columnNr=\"30\" lineNr=\"0\"/>"
-            "        <namespace_name>"
-            "          <string columnNr=\"30\" lineNr=\"0\">aa</string>"
-            "        </namespace_name>"
+            "        <__PARSE_ERROR columnNr=\"30\" lineNr=\"0\"/>"
+            "        <empty statement/>"
             "      </inner_statement_list>"
             "    </function_declaration>"
             "</top_statement_list>"
