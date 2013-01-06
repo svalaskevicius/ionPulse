@@ -18,14 +18,14 @@ struct ast2xml {
         QString ws = "  ";
         QString ret = ws.repeated(indent) + "<" + node->getName();
         for (IonPhp::Private::ASTNode::AttributesMap::const_iterator it = node->getAttributes().begin(); it != node->getAttributes().end(); it++) {
-            ret += QString(" %1=\"%2\"").arg(it.key()).arg(it.value());
+            ret += QString(" %1=\"%2\"").arg(it.key()).arg(it.value().toString());
         }
 
         bool content = false;
         if (node->getText().length()) {
             ret += ">";
             QString t = node->getText();
-            ret += t.replace("\r", "&#xD;").replace("<", "&lt;").replace(">", "&gt;");
+            ret += t.replace("\n", "&#xA;").replace("\r", "&#xD;").replace("<", "&lt;").replace(">", "&gt;");
             content = true;
         }
         if (node->getChildren().count()) {
@@ -49,7 +49,7 @@ struct ast2xml {
 };
 
 ASTNode::ASTNode(QString name)
-    :  name(name), lineNr(-1), columnNr(-1)
+    :  name(name)
 {
 }
 
@@ -57,24 +57,33 @@ QString ASTNode::toString() {
     return ast2xml()(this, 2);
 }
 
-IonDbXml::XmlNode* ASTNode::setPosition(int lineNr, int columnNr)
+IonDbXml::XmlNode* ASTNode::setStartPosition(int lineNr, int columnNr)
 {
-    this->lineNr = lineNr;
-    this->columnNr = columnNr;
-    attributes["lineNr"] = QString("%1").arg(lineNr);
-    attributes["columnNr"] = QString("%1").arg(columnNr);
+    attributes["lineNr"] = lineNr;
+    attributes["columnNr"] = columnNr;
     return this;
 }
 
-int ASTNode::getLine() const
+IonDbXml::XmlNode* ASTNode::setEndPosition(int lineNr, int columnNr)
 {
-    return lineNr;
+    attributes["endLineNr"] = lineNr;
+    attributes["endColumnNr"] = columnNr;
+    return this;
 }
 
-int ASTNode::getColumn() const
-{
-    return columnNr;
+int ASTNode::getStartLine() {
+    return attributes["lineNr"].toInt();
 }
+int ASTNode::getEndLine() {
+    return attributes["endLineNr"].toInt();
+}
+int ASTNode::getStartCol() {
+    return attributes["columnNr"].toInt();
+}
+int ASTNode::getEndCol() {
+    return attributes["endColumnNr"].toInt();
+}
+
 
 IonDbXml::XmlNode* ASTNode::addChild(IonDbXml::XmlNode* child)
 {
@@ -86,7 +95,7 @@ IonDbXml::XmlNode* ASTNode::addChild(IonDbXml::XmlNode* child)
     return this;
 }
 
-IonDbXml::XmlNode* ASTNode::setData(QString name, QString data)
+IonDbXml::XmlNode* ASTNode::setData(QString name, QVariant data)
 {
     attributes[name] = data;
     return this;
@@ -103,7 +112,7 @@ QString ASTNode::getName()
     return name;
 }
 
-QString ASTNode::getData(QString name)
+QVariant ASTNode::getData(QString name)
 {
     return attributes[name];
 }

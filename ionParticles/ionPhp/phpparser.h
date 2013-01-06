@@ -13,6 +13,8 @@
 #include <QList>
 #include "phpParser/ionParserLib.h"
 
+#include "phpParser/gen_php_parser.hpp"
+
 typedef void * yyscan_t;
 
 namespace IonPhp {
@@ -36,8 +38,8 @@ public:
     ParserResult *__result;
     int __line, __col, __posLine, __posCol;
     QList<int> __posColHistory;
-    void __error(PhpParser *myself, const char *error);
-    int  __lex(IonDbXml::XmlNode **astNode, yyscan_t yyscanner);
+    void __error(YYLTYPE const * const yylocationp, PhpParser *myself, const char *error);
+    int  __lex(IonDbXml::XmlNode **astNode, YYLTYPE * yylocationp, yyscan_t yyscanner);
     void __echo(const char *text, int size);
     QString currentHeredocLabel;
 };

@@ -86,7 +86,7 @@ public:
     /**
      * \brief Node attributes type definition
      */
-    typedef QMap<QString, QString> AttributesMap;
+    typedef QMap<QString, QVariant> AttributesMap;
 
     /**
      * \brief Node name
@@ -111,10 +111,15 @@ public:
     Q_INVOKABLE virtual QString toString() = 0;
 
     virtual IonDbXml::XmlNode* addChild(IonDbXml::XmlNode* child) = 0;
-    virtual IonDbXml::XmlNode* setData(QString name, QString data) = 0;
+    virtual IonDbXml::XmlNode* setData(QString name, QVariant data) = 0;
     virtual IonDbXml::XmlNode* setText(QString data) = 0;
-    virtual QString getData(QString name) = 0;
-    virtual IonDbXml::XmlNode* setPosition(int lineNr, int columnNr) = 0;
+    virtual QVariant getData(QString name) = 0;
+    virtual IonDbXml::XmlNode* setStartPosition(int lineNr, int columnNr) = 0;
+    virtual IonDbXml::XmlNode* setEndPosition(int lineNr, int columnNr) = 0;
+    virtual int getStartLine() = 0;
+    virtual int getEndLine() = 0;
+    virtual int getStartCol() = 0;
+    virtual int getEndCol() = 0;
 
     Q_INVOKABLE virtual IonDbXml::XmlNodeIteratorJsAdapter* getChildrenIterator() {
         return new XmlNodeIteratorJsAdapter(getChildren());

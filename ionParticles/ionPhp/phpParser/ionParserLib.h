@@ -33,16 +33,19 @@ private:
     AttributesMap attributes;
     QString text;
     QString name;
-    int lineNr, columnNr;
 public:
     ASTNode(QString name);
-    IonDbXml::XmlNode* setPosition(int lineNr, int columnNr);
-    int getLine() const;
-    int getColumn() const;
+    IonDbXml::XmlNode* setStartPosition(int lineNr, int columnNr);
+    IonDbXml::XmlNode* setEndPosition(int lineNr, int columnNr);
+    int getStartLine();
+    int getEndLine();
+    int getStartCol();
+    int getEndCol();
+
     IonDbXml::XmlNode* addChild(IonDbXml::XmlNode* child);
-    IonDbXml::XmlNode* setData(QString name, QString data);
+    IonDbXml::XmlNode* setData(QString name, QVariant data);
     IonDbXml::XmlNode* setText(QString data);
-    QString getData(QString name);
+    QVariant getData(QString name);
 
     QString getName();
     QString getText();
