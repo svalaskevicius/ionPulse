@@ -52,6 +52,21 @@ function getAstPathForLocation(node, line, col) {
     } while (node);
     return path;
 }
+function recursiveAstChildrenFilter(node, filter) {
+    var ret = [];
+    var parents = [node];
+    while (parents.length > 0) {
+        var nodeIterator = parents.pop().getChildrenIterator();
+        while (nodeIterator.isValid()) {
+            if (filter(nodeIterator.value())) {
+                ret.push(nodeIterator.value());
+            }
+            parents.push(nodeIterator.value());
+            nodeIterator.next();
+        }
+    }
+    return ret;
+}
 
 Suggestions = function(editor)
 {
@@ -68,24 +83,16 @@ Suggestions = function(editor)
 
 Suggestions.prototype = new QListWidget();
 
-Suggestions.prototype.getCurrentContext = function() {
-    var parsedInfo = phpPlugin.createParser().parseString(this.editor.plainText);
-
+Suggestions.prototype.getCurrentContext = function(ast) {
     var lineNr = this.editor.textCursor().blockNumber() + 1;
     var colNr = this.editor.textCursor().positionInBlock();
-    var path = getAstPathForLocation(parsedInfo.getRoot(), lineNr, colNr);
-    console.log(
-        path.map(function(el){
-            return el.getName();
-        })
-    );
 
-    // a. by position and parsed data
-    // b. just from the text buffer
-    return {
-        className: null,
-        funcName: null
-    };
+    return _.find(
+        getAstPathForLocation(ast.getRoot(), lineNr, colNr).reverse(),
+        function(el){
+            return _.contains(['METHOD', 'function_declaration'], el.getName());
+        }
+    );
 }
 
 Suggestions.prototype.retrieveClassName = function(variable, context) {
@@ -95,33 +102,32 @@ Suggestions.prototype.retrieveClassName = function(variable, context) {
     // else consult parsed data index
 }
 
-Suggestions.prototype.retrieveVariables = function(limit, context) {
-    var uri = dbxml.getStorage().pathToDocumentUri(this.editor.path);
-    var filter = '';
-    if (context.className) {
-        filter += 'class_declaration[string/text()="'+context.className+'"]/class_statement_list//';
-    }
-    if (context.funcName) {
-        filter += 'METHOD[string/text()="'+context.funcName+'"]/METHOD_BODY//';
-    }
-    var results = dbxml.getStorage().query(
-        'distinct-values(doc("dbxml:/files/'+uri+'")//'+filter+'variable[starts-with(.,"'+this.currentWord+'")]/text())'
-    );
+Suggestions.prototype.retrieveVariables = function(context) {
+    var currentWord = this.currentWord;
 
-    var ret = [];
-    if (!results || !results.hasNext()) {
-        return ret;
+    var ret = recursiveAstChildrenFilter(
+        context,
+        function(node){
+            return (node.getName() === 'variable') && (node.getText().indexOf(currentWord) === 0);
+        }
+    ).map(
+        function(node){
+            return node.getText();
+        }
+    );
+    if (('METHOD' === context.getName()) && ("$this".indexOf(currentWord) === 0)) {
+        ret.push("$this");
     }
-    while (results.next() && (limit-- > 0)) {
-        ret = ret.concat(results.value().toString());
-    }
-    return ret;
+
+    ret.sort();
+
+    return _.uniq(ret, true);
 }
 
-Suggestions.prototype.retrieveSuggestions = function(limit) {
-
+Suggestions.prototype.retrieveSuggestions = function() {
     if (/^\$/.test(this.currentWord)) {
-        return this.retrieveVariables(limit, this.getCurrentContext());
+        var ast = phpPlugin.createParser().parseString(this.editor.plainText);
+        return this.retrieveVariables(this.getCurrentContext(ast));
     } else {
         /*
         if (!(preceded by ->)) {
@@ -138,7 +144,7 @@ Suggestions.prototype.showSuggestions = function() {
     try {
         this.currentWord = getWordBeforeCursor(this.editor.textCursor());
 
-        var results = this.retrieveSuggestions(15);
+        var results = this.retrieveSuggestions();
         if (!results || !results.length) {
             return;
         }
