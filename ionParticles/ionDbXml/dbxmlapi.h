@@ -125,6 +125,10 @@ public:
     Q_INVOKABLE virtual IonDbXml::XmlNodeIteratorJsAdapter* getChildrenIterator() {
         return new XmlNodeIteratorJsAdapter(getChildren());
     }
+
+    Q_INVOKABLE virtual IonDbXml::XmlNode* getParent() {
+        return qobject_cast<IonDbXml::XmlNode*>(parent());
+    }
 };
 
 /**

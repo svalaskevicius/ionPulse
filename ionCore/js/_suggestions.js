@@ -75,15 +75,21 @@ function isAstNodeWrappingPosition(node, line, col) {
 
     return true;
 }
-function findAstChildWrappingPosition(parent, line, col) {
+function findAstChild(parent, criteria) {
     var nodeIterator = parent.getChildrenIterator();
     while (nodeIterator.isValid()) {
-        if (isAstNodeWrappingPosition(nodeIterator.value(), line, col)) {
+        if (criteria(nodeIterator.value())) {
             return nodeIterator.value();
         }
         nodeIterator.next();
     }
     return null;
+}
+function findAstChildWrappingPosition(parent, line, col) {
+   return findAstChild(parent, function(node){return isAstNodeWrappingPosition(node, line, col);});
+}
+function findAstChildByName(parent, name) {
+    return findAstChild(parent, function(node){return node.getName() === name;});
 }
 function getAstPathForLocation(node, line, col) {
     var path = [];
@@ -107,6 +113,15 @@ function recursiveAstChildrenFilter(node, filter) {
         }
     }
     return ret;
+}
+function findAstParent(node, filter) {
+    do {
+        if (filter(node)) {
+            return node;
+        }
+        node = node.getParent();
+    } while (node);
+    return null;
 }
 
 Suggestions = function(editor)
@@ -137,13 +152,29 @@ Suggestions.prototype.getCurrentContext = function(ast) {
 }
 
 Suggestions.prototype.retrieveClassName = function(variable, context) {
-    if ('$this' === variable) {
-        return context.className;
+    if (!context) {
+        return null;
+    }
+    if (('$this' === variable) || ('self' === variable)) {
+        //return context.className;
+        var classNode = findAstParent(context, function(node){
+            return node.getName() === 'class_declaration';
+        });
+        if (classNode) {
+            var classNameNode = findAstChildByName(classNode, 'string');
+            if (classNameNode) {
+                return classNameNode.getText();
+            }
+        }
+        return null;
     }
     // else consult parsed data index
 }
 
 Suggestions.prototype.retrieveVariables = function(context) {
+    if (!context) {
+        return [];
+    }
     var currentWord = this.currentWord;
 
     var ret = recursiveAstChildrenFilter(
@@ -167,9 +198,10 @@ Suggestions.prototype.retrieveVariables = function(context) {
 
 Suggestions.prototype.retrieveSuggestions = function() {
     var precedingContext = getPrecedingContextForTheCurrentWord(this.editor.textCursor(), this.currentWord);
+    var ast = null;
     if (/^\$/.test(this.currentWord)) {
         if (!precedingContext) {
-            var ast = phpPlugin.createParser().parseString(this.editor.plainText);
+            ast = phpPlugin.createParser().parseString(this.editor.plainText);
             return this.retrieveVariables(this.getCurrentContext(ast));
         } else if (precedingContext.separator === "::") {
             //static property or method, check this.classHierarchy(this.retrieveClassName(precedingContext.context)) contents
@@ -180,6 +212,9 @@ Suggestions.prototype.retrieveSuggestions = function() {
             //this might be a class name
             console.log("not implemented yet: class names for autocomplete");
         } else if (precedingContext.separator === "->") {
+            ast = phpPlugin.createParser().parseString(this.editor.plainText);
+            var className = this.retrieveClassName(precedingContext.context, this.getCurrentContext(ast));
+            console.log(className);
             //property or method, check this.classHierarchy(this.retrieveClassName(precedingContext.context)) contents
             console.log("not implemented yet: object properties for autocomplete");
         }
