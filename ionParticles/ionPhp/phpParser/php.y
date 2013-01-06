@@ -179,8 +179,8 @@ constant_declaration:
 
 inner_statement_list:
             /* empty */ { $$ = CREATE_AST_NODE("inner_statement_list"); }
-        |   inner_statement_list  inner_statement  { $1->addChild($2); $$=$1; }
-        |   inner_statement_list  error { DEBUG_MSG("inner error"); $1->addChild(CREATE_AST_NODE("__PARSE_ERROR")); yyclearin; yyerrok; }
+        |   inner_statement_list  inner_statement  { $1->addChild($2); }
+        |   inner_statement_list  error { DEBUG_MSG("inner error"); $1->addChild(CREATE_AST_NODE("__PARSE_ERROR")); yyerrok; }
 ;
 
 
@@ -640,8 +640,8 @@ class_constant_declaration:
 ;
 
 echo_expr_list:
-                echo_expr_list ',' expr {$1->addChild($2);}
-        |    expr {$$ = CREATE_AST_NODE("echo_expr_list")->addChild($1);}
+           echo_expr_list ',' expr {$1->addChild($2);}
+        |  expr {$$ = CREATE_AST_NODE("echo_expr_list")->addChild($1);}
 ;
 
 
@@ -895,8 +895,8 @@ possible_comma:
 ;
 
 expr:
-                r_variable { $$ = $1; }
-        |    expr_without_variable { $$ = $1; }
+          r_variable
+        | expr_without_variable
 ;
 
 
@@ -914,10 +914,9 @@ rw_variable:
 ;
 
 variable:
-                base_variable_with_function_calls T_OBJECT_OPERATOR
-                        object_property  method_or_not variable_properties
+        base_variable_with_function_calls T_OBJECT_OPERATOR object_property  method_or_not variable_properties
                 { $$ = CREATE_AST_NODE("object_operator")->addChild($1)->addChild($3)->addChild($4)->addChild($5); }
-        |    base_variable_with_function_calls { $$ = $1; }
+        | base_variable_with_function_calls
 ;
 
 variable_properties:

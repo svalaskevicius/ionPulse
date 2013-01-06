@@ -2091,9 +2091,57 @@ private Q_SLOTS:
             "        <lnumber columnNr=\"26\" endColumnNr=\"27\" endLineNr=\"1\" lineNr=\"1\">1</lnumber>"
             "      </assignment>"
             "      <__PARSE_ERROR columnNr=\"30\" endColumnNr=\"32\" endLineNr=\"1\" lineNr=\"1\"/>"
-            "      <empty statement columnNr=\"33\" endColumnNr=\"34\" endLineNr=\"1\" lineNr=\"1\"/>"
+            "      <namespace_name columnNr=\"30\" endColumnNr=\"34\" endLineNr=\"1\" lineNr=\"1\">"
+            "        <string columnNr=\"30\" endColumnNr=\"32\" endLineNr=\"1\" lineNr=\"1\">aa</string>"
+            "      </namespace_name>"
             "    </inner_statement_list>"
             "  </function_declaration>"
+            "</top_statement_list>"
+        );
+        QCOMPARE_3(
+            ret->getRoot()->toString().replace(" ", "").replace("\n", "").replace("\r", "").replace("<?xmlversion=\"1.0\"?>", ""),
+            expectedAst.replace(" ", "").replace("\n", "").replace("\r", ""),
+            PRINT_FOR_CODE(ret->getRoot()->toString())
+        );
+    }
+    void test_ifPartialAstIsReturnedForProperty_onError() {
+        QSharedPointer<IonPhp::Private::ParserResult> ret =
+            QSharedPointer<IonPhp::Private::ParserResult>(
+                IonPhp::Private::PhpParser().parseString(
+                    "<?php\nclass a {\nfunction a(){\n$this->asd\n}\n}"
+                )
+            );
+        if (ret->success) {
+            DEBUG_MSG(ret->getRoot()->toString());
+            QFAIL("there should have been an error parsing the input");
+        }
+        foreach(ParserError pe, ret->errors) {
+            DEBUG_MSG(pe.getMessage());
+        }
+        if (!ret->getRoot()) {
+            QFAIL("root object is missing");
+        }
+        QString expectedAst(
+            "<top_statement_list columnNr=\"0\" endColumnNr=\"1\" endLineNr=\"6\" lineNr=\"1\">"
+            "  <class_declaration columnNr=\"0\" endColumnNr=\"1\" endLineNr=\"6\" lineNr=\"2\">"
+            "    <class columnNr=\"0\" endColumnNr=\"0\" endLineNr=\"2\" lineNr=\"2\"/>"
+            "    <string columnNr=\"6\" endColumnNr=\"7\" endLineNr=\"2\" lineNr=\"2\">a</string>"
+            "    <extends columnNr=\"8\" endColumnNr=\"9\" endLineNr=\"2\" lineNr=\"2\"/>"
+            "    <implements columnNr=\"8\" endColumnNr=\"9\" endLineNr=\"2\" lineNr=\"2\"/>"
+            "    <class_statement_list columnNr=\"8\" endColumnNr=\"1\" endLineNr=\"5\" lineNr=\"2\">"
+            "      <METHOD columnNr=\"0\" endColumnNr=\"1\" endLineNr=\"5\" lineNr=\"3\">"
+            "        <MODIFIERS columnNr=\"0\" endColumnNr=\"8\" endLineNr=\"3\" lineNr=\"3\"/>"
+            "        <is_reference columnNr=\"9\" endColumnNr=\"10\" endLineNr=\"3\" is_reference=\"0\" lineNr=\"3\"/>"
+            "        <string columnNr=\"9\" endColumnNr=\"10\" endLineNr=\"3\" lineNr=\"3\">a</string>"
+            "        <parameter_list columnNr=\"11\" endColumnNr=\"12\" endLineNr=\"3\" lineNr=\"3\"/>"
+            "        <METHOD_BODY columnNr=\"12\" endColumnNr=\"1\" endLineNr=\"5\" lineNr=\"3\">"
+            "          <inner_statement_list columnNr=\"12\" endColumnNr=\"1\" endLineNr=\"5\" lineNr=\"3\">"
+            "            <__PARSE_ERROR columnNr=\"0\" endColumnNr=\"1\" endLineNr=\"5\" lineNr=\"5\"/>"
+            "          </inner_statement_list>"
+            "        </METHOD_BODY>"
+            "      </METHOD>"
+            "    </class_statement_list>"
+            "  </class_declaration>"
             "</top_statement_list>"
         );
         QCOMPARE_3(
