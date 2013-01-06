@@ -14,6 +14,47 @@ function getWordBeforeCursor(cursor) {
             .match(/[a-z\$_][a-z0-9_]*$/i);
     return (m && (0 in m)) ? m[0] : null;
 }
+function getPrecedingContextForTheCurrentWord(cursor, currentWord) {
+    var positionInBlock = cursor.positionInBlock() - currentWord.length - 1;
+    var block = cursor.block();
+    var text = block.text();
+    var goBackOneChar = function() {
+        positionInBlock--;
+        while (positionInBlock < 0) {
+            block = block.previous();
+            if (!block.isValid()) {
+                return false;
+            }
+            text = block.text();
+            positionInBlock = text.length - 1;
+        }
+        return true;
+    }
+    var skimThroughWhiteSpace = function() {
+        while (_.contains([' ', "\t"], text[positionInBlock]) || positionInBlock < 0) {
+            if (!goBackOneChar()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    if (!skimThroughWhiteSpace()) {
+        return false;
+    }
+    var separator = text.substring(positionInBlock-1, positionInBlock+1);
+    if (!_.contains(["->", "::"], separator)) {
+        return false;
+    }
+    if (!goBackOneChar() || !goBackOneChar() || !skimThroughWhiteSpace()) {
+        return false;
+    }
+    var m = text
+        .substring(0, positionInBlock+1)
+        .match(/[a-z\$_][a-z0-9_]*$/i);
+
+    return (m && (0 in m)) ? {separator : separator, context : m[0]} : false;
+}
 
 function isAstNodeWrappingPosition(node, line, col) {
     var startLine = node.getStartLine();
@@ -125,19 +166,24 @@ Suggestions.prototype.retrieveVariables = function(context) {
 }
 
 Suggestions.prototype.retrieveSuggestions = function() {
+    var precedingContext = getPrecedingContextForTheCurrentWord(this.editor.textCursor(), this.currentWord);
     if (/^\$/.test(this.currentWord)) {
-        var ast = phpPlugin.createParser().parseString(this.editor.plainText);
-        return this.retrieveVariables(this.getCurrentContext(ast));
-    } else {
-        /*
-        if (!(preceded by ->)) {
-            this might be a class name
-        } else {
-            property or method, check this.classHierarchy(this.retrieveClassName(pre -> variable's name)) contents
+        if (!precedingContext) {
+            var ast = phpPlugin.createParser().parseString(this.editor.plainText);
+            return this.retrieveVariables(this.getCurrentContext(ast));
+        } else if (precedingContext.separator === "::") {
+            //static property or method, check this.classHierarchy(this.retrieveClassName(precedingContext.context)) contents
+            console.log("not implemented yet: static properties for autocomplete");
         }
-        */
+    } else {
+        if (!precedingContext) {
+            //this might be a class name
+            console.log("not implemented yet: class names for autocomplete");
+        } else if (precedingContext.separator === "->") {
+            //property or method, check this.classHierarchy(this.retrieveClassName(precedingContext.context)) contents
+            console.log("not implemented yet: object properties for autocomplete");
+        }
     }
-
 }
 
 Suggestions.prototype.showSuggestions = function() {
