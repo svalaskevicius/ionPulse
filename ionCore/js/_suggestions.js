@@ -15,6 +15,44 @@ function getWordBeforeCursor(cursor) {
     return (m && (0 in m)) ? m[0] : null;
 }
 
+function isAstNodeWrappingPosition(node, line, col) {
+    var startLine = node.getStartLine();
+    if (startLine > line) {
+        return false;
+    }
+    if ((startLine === line) && (node.getStartCol() > col)) {
+        return false;
+    }
+
+    var endLine = node.getEndLine();
+    if (endLine < line) {
+        return false;
+    }
+    if ((endLine === line) && (node.getEndCol() < col)) {
+        return false;
+    }
+
+    return true;
+}
+function findAstChildWrappingPosition(parent, line, col) {
+    var nodeIterator = parent.getChildrenIterator();
+    while (nodeIterator.isValid()) {
+        if (isAstNodeWrappingPosition(nodeIterator.value(), line, col)) {
+            return nodeIterator.value();
+        }
+        nodeIterator.next();
+    }
+    return null;
+}
+function getAstPathForLocation(node, line, col) {
+    var path = [];
+    do {
+        path = path.concat(node);
+        node = findAstChildWrappingPosition(node, line, col);
+    } while (node);
+    return path;
+}
+
 Suggestions = function(editor)
 {
     QListWidget.call(this, editor);
@@ -31,6 +69,19 @@ Suggestions = function(editor)
 Suggestions.prototype = new QListWidget();
 
 Suggestions.prototype.getCurrentContext = function() {
+    var parsedInfo = phpPlugin.createParser().parseString(this.editor.plainText);
+
+    var lineNr = this.editor.textCursor().blockNumber() + 1;
+    var colNr = this.editor.textCursor().positionInBlock();
+    var path = getAstPathForLocation(parsedInfo.getRoot(), lineNr, colNr);
+    console.log(
+        path.map(function(el){
+            return el.getName();
+        })
+    );
+
+    // a. by position and parsed data
+    // b. just from the text buffer
     return {
         className: null,
         funcName: null
@@ -53,7 +104,6 @@ Suggestions.prototype.retrieveVariables = function(limit, context) {
     if (context.funcName) {
         filter += 'METHOD[string/text()="'+context.funcName+'"]/METHOD_BODY//';
     }
-    console.log('distinct-values(doc("dbxml:/files/'+uri+'")//'+filter+'variable[starts-with(.,"'+this.currentWord+'")]/text())');
     var results = dbxml.getStorage().query(
         'distinct-values(doc("dbxml:/files/'+uri+'")//'+filter+'variable[starts-with(.,"'+this.currentWord+'")]/text())'
     );

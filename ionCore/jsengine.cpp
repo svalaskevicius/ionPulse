@@ -200,6 +200,8 @@ bool AppShortcut::eventFilter(QObject *obj, QEvent *event)
     if (QEvent::KeyPress == event->type()) {
         QKeyEvent *kev = static_cast<QKeyEvent*>(event);
         if ((kev->key() == key) && (!modifier || ((kev->modifiers() & modifier) == modifier))) {
+            // TODO: change callback to a callable js function and pass event to it, returning its return value
+            // add functionality for key = 0 to capture all keys
             emit callback();
             return true;
         }

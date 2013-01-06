@@ -116,10 +116,11 @@ public:
     virtual QVariant getData(QString name) = 0;
     virtual IonDbXml::XmlNode* setStartPosition(int lineNr, int columnNr) = 0;
     virtual IonDbXml::XmlNode* setEndPosition(int lineNr, int columnNr) = 0;
-    virtual int getStartLine() = 0;
-    virtual int getEndLine() = 0;
-    virtual int getStartCol() = 0;
-    virtual int getEndCol() = 0;
+
+    Q_INVOKABLE virtual int getStartLine() = 0;
+    Q_INVOKABLE virtual int getEndLine() = 0;
+    Q_INVOKABLE virtual int getStartCol() = 0;
+    Q_INVOKABLE virtual int getEndCol() = 0;
 
     Q_INVOKABLE virtual IonDbXml::XmlNodeIteratorJsAdapter* getChildrenIterator() {
         return new XmlNodeIteratorJsAdapter(getChildren());
