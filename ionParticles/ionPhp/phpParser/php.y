@@ -56,7 +56,7 @@ using namespace IonPhp::Private;
 %nonassoc T_NEW T_CLONE
 %token T_EXIT
 %nonassoc T_IF
-%left T_ELSEIF
+%right T_ELSEIF
 %left T_ELSE
 %nonassoc T_ENDIF
 %token T_LNUMBER
@@ -204,7 +204,7 @@ elseif_list_non_empty:
 
 
 classical_if:
-      T_IF '(' expr ')'  statement  elseif_list_non_empty T_ELSE statement { $$ = CREATE_AST_NODE("if")->addChild($3)->addChild($5)->addChild($6)->addChild(CREATE_AST_NODE("else")->addChild($8)); }
+      T_IF '(' expr ')'  statement  elseif_list_non_empty T_ELSE statement %prec T_ELSEIF { $$ = CREATE_AST_NODE("if")->addChild($3)->addChild($5)->addChild($6)->addChild(CREATE_AST_NODE("else")->addChild($8)); }
     | T_IF '(' expr ')'  statement  elseif_list_non_empty %prec T_ELSEIF { $$ = CREATE_AST_NODE("if")->addChild($3)->addChild($5)->addChild($6)->addChild(CREATE_AST_NODE("else")); }
     | T_IF '(' expr ')'  statement  T_ELSE statement { $$ = CREATE_AST_NODE("if")->addChild($3)->addChild($5)->addChild(CREATE_AST_NODE("elseif_list"))->addChild(CREATE_AST_NODE("else")->addChild($7)); }
     | T_IF '(' expr ')'  statement  %prec T_IF { $$ = CREATE_AST_NODE("if")->addChild($3)->addChild($5)->addChild(CREATE_AST_NODE("elseif_list"))->addChild(CREATE_AST_NODE("else")); }

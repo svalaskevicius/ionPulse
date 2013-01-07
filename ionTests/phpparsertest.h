@@ -2029,7 +2029,32 @@ private Q_SLOTS:
         "  </if>"
         "</top_statement_list>"
     );}
-
+    void test_multipleElseIf() { TEST_PHP_PARSER(
+        "<?php if (2) {$y;} elseif (3) {$z;} elseif(1) {} else {}",
+        "<top_statement_list columnNr=\"0\" endColumnNr=\"56\" endLineNr=\"1\" lineNr=\"1\">"
+        "  <if columnNr=\"10\" endColumnNr=\"56\" endLineNr=\"1\" lineNr=\"1\">"
+        "    <lnumber columnNr=\"10\" endColumnNr=\"11\" endLineNr=\"1\" lineNr=\"1\">2</lnumber>"
+        "    <inner_statement_list columnNr=\"13\" endColumnNr=\"16\" endLineNr=\"1\" lineNr=\"1\">"
+        "      <variable columnNr=\"14\" endColumnNr=\"16\" endLineNr=\"1\" lineNr=\"1\">$y</variable>"
+        "    </inner_statement_list>"
+        "    <elseif_list columnNr=\"27\" endColumnNr=\"48\" endLineNr=\"1\" lineNr=\"1\">"
+        "      <elseif columnNr=\"27\" endColumnNr=\"35\" endLineNr=\"1\" lineNr=\"1\">"
+        "        <lnumber columnNr=\"27\" endColumnNr=\"28\" endLineNr=\"1\" lineNr=\"1\">3</lnumber>"
+        "        <inner_statement_list columnNr=\"30\" endColumnNr=\"33\" endLineNr=\"1\" lineNr=\"1\">"
+        "          <variable columnNr=\"31\" endColumnNr=\"33\" endLineNr=\"1\" lineNr=\"1\">$z</variable>"
+        "        </inner_statement_list>"
+        "      </elseif>"
+        "      <elseif columnNr=\"43\" endColumnNr=\"48\" endLineNr=\"1\" lineNr=\"1\">"
+        "        <lnumber columnNr=\"43\" endColumnNr=\"44\" endLineNr=\"1\" lineNr=\"1\">1</lnumber>"
+        "        <inner_statement_list columnNr=\"46\" endColumnNr=\"47\" endLineNr=\"1\" lineNr=\"1\"/>"
+        "      </elseif>"
+        "    </elseif_list>"
+        "    <else columnNr=\"54\" endColumnNr=\"56\" endLineNr=\"1\" lineNr=\"1\">"
+        "      <inner_statement_list columnNr=\"54\" endColumnNr=\"55\" endLineNr=\"1\" lineNr=\"1\"/>"
+        "    </else>"
+        "  </if>"
+        "</top_statement_list>"
+    );}
 
 
 
