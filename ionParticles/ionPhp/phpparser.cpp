@@ -109,7 +109,14 @@ void PhpParser::__error(YYLTYPE const * const yylocationp, PhpParser *myself, co
         .arg(__line).arg(__col)
         .arg(__posLine).arg(__posCol)
     ;
-    __result->errors.append(error);
+
+    DEBUG_MSG(error.message);
+
+    if (!__result->errors.empty() && (error == __result->errors.last())) {
+        __result->errors.last().repeatedTimes++;
+    } else {
+        __result->errors.append(error);
+    }
 }
 
 int PhpParser::__lex(IonDbXml::XmlNode **astNode, YYLTYPE * yylocationp, yyscan_t yyscanner)

@@ -65,12 +65,13 @@ class ParserError : public QObject {
 public:
     QString message;
     int lineFrom, colFrom, lineTo, colTo;
+    int repeatedTimes;
 
-    ParserError() {}
+    ParserError() {repeatedTimes = 0;}
     ParserError(const ParserError& src)
         : message(src.message),
           lineFrom(src.lineFrom), colFrom(src.colFrom),
-          lineTo(src.lineTo), colTo(src.colTo)
+          lineTo(src.lineTo), colTo(src.colTo), repeatedTimes(src.repeatedTimes)
     {}
 
     Q_INVOKABLE QString getMessage() {
@@ -87,6 +88,14 @@ public:
     }
     Q_INVOKABLE int getColTo() {
         return colTo;
+    }
+    bool operator==(const ParserError &other) {
+        return (lineFrom == other.lineFrom)
+            && (colFrom == other.colFrom)
+            && (lineTo == other.lineTo)
+            && (colTo == other.colTo)
+            && (message == other.message)
+        ;
     }
 };
 

@@ -180,7 +180,16 @@ constant_declaration:
 inner_statement_list:
             /* empty */ { $$ = CREATE_AST_NODE("inner_statement_list"); }
         |   inner_statement_list  inner_statement  { $1->addChild($2); }
-        |   inner_statement_list  error { DEBUG_MSG("inner error"); $1->addChild(CREATE_AST_NODE("__PARSE_ERROR")); yyerrok; }
+        |   inner_statement_list  error
+            {
+                DEBUG_MSG("inner error");
+                if (context->__result->errors.back().repeatedTimes > 0) {
+                    yyclearin;
+                } else {
+                    $1->addChild(CREATE_AST_NODE("__PARSE_ERROR"));
+                }
+                yyerrok;
+            }
 ;
 
 

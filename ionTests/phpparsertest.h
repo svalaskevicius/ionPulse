@@ -2094,7 +2094,7 @@ private Q_SLOTS:
     void test_ifPartialAstIsReturnedForFunction_onError() {
         QSharedPointer<IonPhp::Private::ParserResult> ret =
             QSharedPointer<IonPhp::Private::ParserResult>(
-                IonPhp::Private::PhpParser().parseString("<?php function a(){ $aa = 1; 3aa ; }")
+                IonPhp::Private::PhpParser().parseString("<?php function a(){$this->asd if($a){} ; else $aa = 1; 3aa ; }")
             );
         if (ret->success) {
             DEBUG_MSG(ret->getRoot()->toString());
@@ -2105,19 +2105,28 @@ private Q_SLOTS:
             QFAIL("root object is missing");
         }
         QString expectedAst(
-            "<top_statement_list columnNr=\"0\" endColumnNr=\"36\" endLineNr=\"1\" lineNr=\"1\">"
-            "  <function_declaration columnNr=\"15\" endColumnNr=\"36\" endLineNr=\"1\" lineNr=\"1\">"
+            "<top_statement_list columnNr=\"0\" endColumnNr=\"62\" endLineNr=\"1\" lineNr=\"1\">"
+            "  <function_declaration columnNr=\"15\" endColumnNr=\"62\" endLineNr=\"1\" lineNr=\"1\">"
             "    <is_reference columnNr=\"15\" endColumnNr=\"16\" endLineNr=\"1\" is_reference=\"0\" lineNr=\"1\"/>"
             "    <string columnNr=\"15\" endColumnNr=\"16\" endLineNr=\"1\" lineNr=\"1\">a</string>"
             "    <parameter_list columnNr=\"17\" endColumnNr=\"18\" endLineNr=\"1\" lineNr=\"1\"/>"
-            "    <inner_statement_list columnNr=\"18\" endColumnNr=\"34\" endLineNr=\"1\" lineNr=\"1\">"
-            "      <assignment columnNr=\"20\" endColumnNr=\"28\" endLineNr=\"1\" lineNr=\"1\">"
-            "        <variable columnNr=\"20\" endColumnNr=\"23\" endLineNr=\"1\" lineNr=\"1\">$aa</variable>"
-            "        <lnumber columnNr=\"26\" endColumnNr=\"27\" endLineNr=\"1\" lineNr=\"1\">1</lnumber>"
-            "      </assignment>"
+            "    <inner_statement_list columnNr=\"18\" endColumnNr=\"60\" endLineNr=\"1\" lineNr=\"1\">"
             "      <__PARSE_ERROR columnNr=\"30\" endColumnNr=\"32\" endLineNr=\"1\" lineNr=\"1\"/>"
-            "      <namespace_name columnNr=\"30\" endColumnNr=\"34\" endLineNr=\"1\" lineNr=\"1\">"
-            "        <string columnNr=\"30\" endColumnNr=\"32\" endLineNr=\"1\" lineNr=\"1\">aa</string>"
+            "      <if columnNr=\"33\" endColumnNr=\"40\" endLineNr=\"1\" lineNr=\"1\">"
+            "        <variable columnNr=\"33\" endColumnNr=\"35\" endLineNr=\"1\" lineNr=\"1\">$a</variable>"
+            "        <inner_statement_list columnNr=\"36\" endColumnNr=\"37\" endLineNr=\"1\" lineNr=\"1\"/>"
+            "        <elseif_list columnNr=\"39\" endColumnNr=\"40\" endLineNr=\"1\" lineNr=\"1\"/>"
+            "        <else columnNr=\"39\" endColumnNr=\"40\" endLineNr=\"1\" lineNr=\"1\"/>"
+            "      </if>"
+            "      <empty statement columnNr=\"39\" endColumnNr=\"40\" endLineNr=\"1\" lineNr=\"1\"/>"
+            "      <__PARSE_ERROR columnNr=\"41\" endColumnNr=\"45\" endLineNr=\"1\" lineNr=\"1\"/>"
+            "      <assignment columnNr=\"46\" endColumnNr=\"54\" endLineNr=\"1\" lineNr=\"1\">"
+            "        <variable columnNr=\"46\" endColumnNr=\"49\" endLineNr=\"1\" lineNr=\"1\">$aa</variable>"
+            "        <lnumber columnNr=\"52\" endColumnNr=\"53\" endLineNr=\"1\" lineNr=\"1\">1</lnumber>"
+            "      </assignment>"
+            "      <__PARSE_ERROR columnNr=\"56\" endColumnNr=\"58\" endLineNr=\"1\" lineNr=\"1\"/>"
+            "      <namespace_name columnNr=\"56\" endColumnNr=\"60\" endLineNr=\"1\" lineNr=\"1\">"
+            "        <string columnNr=\"56\" endColumnNr=\"58\" endLineNr=\"1\" lineNr=\"1\">aa</string>"
             "      </namespace_name>"
             "    </inner_statement_list>"
             "  </function_declaration>"
