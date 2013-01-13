@@ -130,7 +130,22 @@ function iterateDbResults(query, callback)
         callback(results.value());
     }
 }
-
+function retrieveClassInheritanceList(className) {
+    var parentClassRetriever = function(className) {
+        var result = dbxml.getStorage().query(
+            'collection("dbxml:/files")//class_declaration[string/text()="'+className+'"]/extends/namespace_name/string/text()'
+        );
+        if (result.next()) {
+            return result.value().toString();
+        }
+    }
+    var ret = [];
+    do {
+        ret.push(className);
+        className = parentClassRetriever(className);
+    } while (className);
+    return ret;
+}
 Suggestions = function(editor)
 {
     QListWidget.call(this, editor);
@@ -206,25 +221,32 @@ Suggestions.prototype.retrieveVariables = function(context) {
 Suggestions.prototype.retrievePropertiesAndMethodsForClass = function(className) {
     var currentWord = this.currentWord;
     var ret = [];
-    console.log("not implemented yet: class hierarchy for autocomplete");
 
-    iterateDbResults(
-        'collection("dbxml:/files")//class_declaration[string/text()="'+className+'"]/class_statement_list/PROPERTY/class_properties/variable/text()',
-        function(node) {
-            var candidate = node.toString().substring(1);
-            if (candidate.indexOf(currentWord) === 0) {
-                ret.push(candidate);
+    var classInfoRetriever = function(className) {
+        console.log("adding info for: "+className);
+        iterateDbResults(
+            'collection("dbxml:/files")//class_declaration[string/text()="'+className+'"]/class_statement_list/PROPERTY/class_properties/variable/text()',
+            function(node) {
+                var candidate = node.toString().substring(1);
+                if (candidate.indexOf(currentWord) === 0) {
+                    ret.push(candidate);
+                }
             }
-        }
-    );
-    iterateDbResults(
-        'collection("dbxml:/files")//class_declaration[string/text()="'+className+'"]/class_statement_list/METHOD/string/text()',
-        function(node) {
-            var candidate = node.toString();
-            if (candidate.indexOf(currentWord) === 0) {
-                ret.push(candidate);
+        );
+        iterateDbResults(
+            'collection("dbxml:/files")//class_declaration[string/text()="'+className+'"]/class_statement_list/METHOD/string/text()',
+            function(node) {
+                var candidate = node.toString();
+                if (candidate.indexOf(currentWord) === 0) {
+                    ret.push(candidate);
+                }
             }
-        }
+        );
+    }
+
+    _.each(
+        retrieveClassInheritanceList(className),
+        classInfoRetriever
     );
 
     ret.sort();
