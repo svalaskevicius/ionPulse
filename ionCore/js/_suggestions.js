@@ -94,7 +94,7 @@ function findAstChildByName(parent, name) {
 function getAstPathForLocation(node, line, col) {
     var path = [];
     do {
-        path = path.concat(node);
+        path.push(node);
         node = findAstChildWrappingPosition(node, line, col);
     } while (node);
     return path;
@@ -122,6 +122,13 @@ function findAstParent(node, filter) {
         node = node.getParent();
     } while (node);
     return null;
+}
+function iterateDbResults(query, callback)
+{
+    var results = dbxml.getStorage().query(query);
+    while (results.next()) {
+        callback(results.value());
+    }
 }
 
 Suggestions = function(editor)
@@ -156,7 +163,6 @@ Suggestions.prototype.retrieveClassName = function(variable, context) {
         return null;
     }
     if (('$this' === variable) || ('self' === variable)) {
-        //return context.className;
         var classNode = findAstParent(context, function(node){
             return node.getName() === 'class_declaration';
         });
@@ -169,6 +175,7 @@ Suggestions.prototype.retrieveClassName = function(variable, context) {
         return null;
     }
     // else consult parsed data index
+    console.log("not implemented yet: retrieveClassName for autocomplete");
 }
 
 Suggestions.prototype.retrieveVariables = function(context) {
@@ -196,6 +203,35 @@ Suggestions.prototype.retrieveVariables = function(context) {
     return _.uniq(ret, true);
 }
 
+Suggestions.prototype.retrievePropertiesAndMethodsForClass = function(className) {
+    var currentWord = this.currentWord;
+    var ret = [];
+    console.log("not implemented yet: class hierarchy for autocomplete");
+
+    iterateDbResults(
+        'collection("dbxml:/files")//class_declaration[string/text()="'+className+'"]/class_statement_list/PROPERTY/class_properties/variable/text()',
+        function(node) {
+            var candidate = node.toString().substring(1);
+            if (candidate.indexOf(currentWord) === 0) {
+                ret.push(candidate);
+            }
+        }
+    );
+    iterateDbResults(
+        'collection("dbxml:/files")//class_declaration[string/text()="'+className+'"]/class_statement_list/METHOD/string/text()',
+        function(node) {
+            var candidate = node.toString();
+            if (candidate.indexOf(currentWord) === 0) {
+                ret.push(candidate);
+            }
+        }
+    );
+
+    ret.sort();
+
+    return _.uniq(ret, true);
+}
+
 Suggestions.prototype.retrieveSuggestions = function() {
     var precedingContext = getPrecedingContextForTheCurrentWord(this.editor.textCursor(), this.currentWord);
     var ast = null;
@@ -215,6 +251,9 @@ Suggestions.prototype.retrieveSuggestions = function() {
             ast = phpPlugin.createParser().parseString(this.editor.plainText);
             var className = this.retrieveClassName(precedingContext.context, this.getCurrentContext(ast));
             console.log(className);
+            if (className) {
+                return this.retrievePropertiesAndMethodsForClass(className);
+            }
             //property or method, check this.classHierarchy(this.retrieveClassName(precedingContext.context)) contents
             console.log("not implemented yet: object properties for autocomplete");
         }
