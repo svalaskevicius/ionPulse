@@ -12,7 +12,7 @@ function getWordBeforeCursor(cursor) {
             .text()
             .substring(0, cursor.positionInBlock())
             .match(/[a-z\$_][a-z0-9_]*$/i);
-    return (m && (0 in m)) ? m[0] : null;
+    return (m && (0 in m)) ? m[0] : '';
 }
 function getPrecedingContextForTheCurrentWord(cursor, currentWord) {
     var positionInBlock = cursor.positionInBlock() - currentWord.length - 1;
