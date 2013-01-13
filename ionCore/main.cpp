@@ -29,7 +29,7 @@
  *
  * To build and develop IonPulse IDE one should install:
  * -  Gcc
- * -  Qt 4.8 or higher;
+ * -  Qt 5.0 or higher;
  * -  Boost;
  * -  Bison and Flex;
  * -  Berkeley DB XML;
@@ -42,15 +42,15 @@
  * Note, if your QT installation is not on the system path, you should set QTDIR environment
  * variable e.g.
  * @code
- *   QTDIR=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/
+ *   QTDIR=~/bin/Qt5.0.0/5.0.0/clang_64/
  * @endcode
  * and use specific paths to qmake, e.g.
  * @code
- *   ~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/bin/qmake
+ *   ~/bin/Qt5.0.0/5.0.0/clang_64/bin/qmake
  * @endcode
  * also, provide your local QT includes directory when using generator, e.g.
  * @code
- *   ./generator --include-paths=~/local/QtSDK113/Desktop/Qt/4.8.0/gcc/include/
+ *   ./generator --include-paths=~/bin/Qt5.0.0/5.0.0/clang_64/include/
  * @endcode
  */
 

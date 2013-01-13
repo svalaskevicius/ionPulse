@@ -13,18 +13,21 @@
 #include <QList>
 #include "phpParser/ionParserLib.h"
 
+#include "phpParser/gen_php_parser.hpp"
+
 typedef void * yyscan_t;
 
 namespace IonPhp {
 namespace Private {
 
-class phpParser
+class PhpParser : public QObject
 {
+    Q_OBJECT
 public:
-    phpParser();
-    ~phpParser();
-    QSharedPointer<ASTRoot> parseString(QString doc);
-    QSharedPointer<ASTRoot> parseFile(QString path);
+    PhpParser();
+    ~PhpParser();
+    Q_INVOKABLE IonPhp::Private::ParserResult *parseString(QString doc);
+    Q_INVOKABLE IonPhp::Private::ParserResult *parseFile(QString path);
 protected:
    void init_scanner();
    void destroy_scanner();
@@ -32,11 +35,11 @@ protected:
    void delBuf(void *);
 public:
     void* __scanner;
-    pASTNode __result;
+    ParserResult *__result;
     int __line, __col, __posLine, __posCol;
     QList<int> __posColHistory;
-    void __error(phpParser *myself, const char *error);
-    int  __lex(pASTNode *astNode, yyscan_t yyscanner);
+    void __error(YYLTYPE const * const yylocationp, PhpParser *myself, const char *error);
+    int  __lex(IonDbXml::XmlNode **astNode, YYLTYPE * yylocationp, yyscan_t yyscanner);
     void __echo(const char *text, int size);
     QString currentHeredocLabel;
 };

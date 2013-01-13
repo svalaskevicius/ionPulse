@@ -11,10 +11,10 @@
 
 #include <QString>
 #include <QMap>
+#include <QList>
 #include <QDir>
 #include <QSharedPointer>
 #include <ionCore/plugin.h>
-
 
 /**
  * \brief Provides XML DB storage integration.
@@ -26,32 +26,77 @@
  */
 namespace IonDbXml {
 
+class XmlNode;
 class DataQueryResults;
 
+
+class XmlNodeIteratorJsAdapter : public QObject {
+    Q_OBJECT
+private:
+    QList<IonDbXml::XmlNode*> &list;
+    QList<IonDbXml::XmlNode*>::iterator iterator;
+public:
+    XmlNodeIteratorJsAdapter(QList<IonDbXml::XmlNode*> &list) : QObject(), list(list), iterator(list.begin()) {}
+
+    /**
+     * \brief Check if there is a next value available
+     */
+    Q_INVOKABLE bool hasNext() {return iterator < list.end();}
+
+    /**
+     * \brief Check if there is a previous value available
+     */
+    Q_INVOKABLE bool hasPrevious() {return iterator > list.begin();}
+
+    /**
+     * \brief Move to the next result and return true
+     *
+     * If there is no next result, returns false
+     */
+    Q_INVOKABLE bool next() { if(hasNext()) {iterator++; return true;} else return false; }
+
+    /**
+     * \brief Move to the previous result and return true
+     *
+     * If there is no previous result, returns false
+     */
+    Q_INVOKABLE bool previous() { if(hasPrevious()) {iterator--; return true;} else return false; }
+
+    /**
+     * \brief Check if there is a value available
+     */
+    Q_INVOKABLE bool isValid() {return (iterator >= list.begin()) && (iterator < list.end()) ;}
+
+    /**
+     * \brief Retrieve the current value data
+     */
+    Q_INVOKABLE IonDbXml::XmlNode* value() {return *iterator;}
+};
 
 /**
  * \brief The interface of a node used to insert new data.
  *
  * \see DataStorage::addFile()
  */
-class XmlNode {
+class XmlNode : public QObject {
+    Q_OBJECT
 public:
     virtual ~XmlNode() {}
 
     /**
      * \brief Node attributes type definition
      */
-    typedef QMap<QString, QString> AttributesMap;
+    typedef QMap<QString, QVariant> AttributesMap;
 
     /**
      * \brief Node name
      */
-    virtual QString getName() = 0;
+    Q_INVOKABLE virtual QString getName() = 0;
 
     /**
      * \brief Node content text
      */
-    virtual QString getText() = 0;
+    Q_INVOKABLE virtual QString getText() = 0;
 
     /**
      * \brief Node attributes
@@ -61,7 +106,29 @@ public:
     /**
      * \brief Node children
      */
-    virtual QVector<XmlNode*> &getChildren() = 0;
+    virtual QList<XmlNode*> &getChildren() = 0;
+
+    Q_INVOKABLE virtual QString toString() = 0;
+
+    virtual IonDbXml::XmlNode* addChild(IonDbXml::XmlNode* child) = 0;
+    virtual IonDbXml::XmlNode* setData(QString name, QVariant data) = 0;
+    virtual IonDbXml::XmlNode* setText(QString data) = 0;
+    virtual QVariant getData(QString name) = 0;
+    virtual IonDbXml::XmlNode* setStartPosition(int lineNr, int columnNr) = 0;
+    virtual IonDbXml::XmlNode* setEndPosition(int lineNr, int columnNr) = 0;
+
+    Q_INVOKABLE virtual int getStartLine() = 0;
+    Q_INVOKABLE virtual int getEndLine() = 0;
+    Q_INVOKABLE virtual int getStartCol() = 0;
+    Q_INVOKABLE virtual int getEndCol() = 0;
+
+    Q_INVOKABLE virtual IonDbXml::XmlNodeIteratorJsAdapter* getChildrenIterator() {
+        return new XmlNodeIteratorJsAdapter(getChildren());
+    }
+
+    Q_INVOKABLE virtual IonDbXml::XmlNode* getParent() {
+        return qobject_cast<IonDbXml::XmlNode*>(parent());
+    }
 };
 
 /**
@@ -328,6 +395,8 @@ public:
      */
     Q_INVOKABLE virtual IonDbXml::DataStorage *getStorage() = 0;
 };
+
+
 
 }
 

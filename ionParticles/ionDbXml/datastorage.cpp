@@ -92,7 +92,7 @@ void DataStorageImpl::_writeEventsForNode(XmlEventWriter &eventWriter, XmlNode *
             (const unsigned char*)it.key().toLatin1().constData(),
             NULL,
             NULL,
-            (const unsigned char*)it.value().toLatin1().constData(),
+            (const unsigned char*)it.value().toString().toLatin1().constData(),
             true
         );
     }

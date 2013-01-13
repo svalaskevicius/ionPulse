@@ -91,8 +91,8 @@ void PhpTreeModelSourceDecorator::updateFile(QString path)
         if (mtimeStored) {
             storage.removeFile(path);
         }
-        QSharedPointer<ASTRoot> fileAst = phpParser().parseFile(path);
-        storage.addFile(path, fileInfo.lastModified().toTime_t(), *fileAst);
+        QSharedPointer<ParserResult> parseInfo = QSharedPointer<ParserResult>(PhpParser().parseFile(path));
+        storage.addFile(path, fileInfo.lastModified().toTime_t(), parseInfo->getRoot());
     }
 }
 
