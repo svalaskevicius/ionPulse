@@ -92,13 +92,6 @@ void PhpTreeModelSourceDecorator::updateFile(QString path)
             storage.removeFile(path);
         }
         QSharedPointer<ParserResult> parseInfo = QSharedPointer<ParserResult>(PhpParser().parseFile(path));
-        if (!parseInfo->success) {
-            std::string errorText = "failed to parse the input file";
-            if (parseInfo->errors.length()) {
-                errorText = parseInfo->errors.front().message.toStdString();
-            }
-            throw std::runtime_error(errorText);
-        }
         storage.addFile(path, fileInfo.lastModified().toTime_t(), parseInfo->getRoot());
     }
 }
