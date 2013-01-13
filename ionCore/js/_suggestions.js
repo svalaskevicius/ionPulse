@@ -254,8 +254,6 @@ Suggestions.prototype.retrieveSuggestions = function() {
             if (className) {
                 return this.retrievePropertiesAndMethodsForClass(className);
             }
-            //property or method, check this.classHierarchy(this.retrieveClassName(precedingContext.context)) contents
-            console.log("not implemented yet: object properties for autocomplete");
         }
     }
 }
