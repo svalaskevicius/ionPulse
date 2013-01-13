@@ -20,16 +20,17 @@ ionPulse IDE currently supports:
 Start Hacking!
 --------------
 
-Download:
-https://github.com/svalaskevicius/ionPulse/downloads (due to limited resources, only Mac OS version is available ATM).
+Download from [SourceForge](http://sourceforge.net/projects/ionpulse/files/?) (due to limited resources, only Mac OS version is available ATM).
 
-Build it for your platform:
+Or build it for your platform:
 preparing your environment can be a somewhat involved task, so this option is currently suggested only to experienced users.
-http://svalaskevicius.github.com/ionPulse/api/index.html defines the requirements and instructions for building the project.
+[Project documentation](http://svalaskevicius.github.com/ionPulse/api/index.html) defines the requirements and instructions for building the project.
 
 Once you get it working, check the files in the main app directory:
-* ionPulse.css - this is where the css is defined (pulling from the user home directory is planned);
-* js/ionPulse.js - this is the main entry for loading the javascript files.
+
+*  ionPulse.css - this is where the css is defined (pulling from the user home directory is planned);
+*  js/ionPulse.js - this is the main entry for loading the javascript files;
+*  ~/.ionPulse/init.js - the user file for customisations.
 
 Create! :)
 
