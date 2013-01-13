@@ -17,6 +17,8 @@
 
 #include "structurestorage.h"
 
+#include "phpparser.h"
+
 #define PHP_PLUGIN_NAME "ionPhp"
 
 namespace IonPhp {
@@ -43,6 +45,7 @@ public:
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
+    virtual void registerJsApi(QScriptEngine & jsEngine);
 protected:
     struct phpTreeModelSourceDecoratorFactory {
     private:
@@ -61,6 +64,10 @@ protected:
         QSharedPointer<IonProject::TreeModelSource> operator()(QString dirname);
     };
 
+    Q_INVOKABLE IonPhp::Private::PhpParser* createParser() {
+        return new IonPhp::Private::PhpParser();
+    }
+
 private:
     IonEditor::EditorPlugin *editorPlugin;
     IonProject::ProjectPlugin *projectPlugin;
@@ -76,6 +83,8 @@ public slots:
 
 }
 }
+
+Q_DECLARE_METATYPE(IonPhp::Private::PhpParser*)
 
 #endif // IONEDITORPHP_H
 

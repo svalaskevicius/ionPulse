@@ -16,81 +16,121 @@
 #include <QFileInfo>
 #include <QDateTime>
 
-extern int _impl_ionPhp_lex(IonPhp::Private::pASTNode *astNode, yyscan_t yyscanner);
+extern int _impl_ionPhp_lex(IonDbXml::XmlNode **astNode, yyscan_t yyscanner);
 
-extern int ion_php_parse(IonPhp::Private::phpParser* context);
+extern int ion_php_parse(IonPhp::Private::PhpParser* context);
 
 
 namespace IonPhp {
 namespace Private {
 
+struct AstEndPositionsAdjuster {
+    void extendStartPos(IonDbXml::XmlNode * node, int line, int col) {
+        int minLine = node->getStartLine();
+        int minCol  = node->getStartCol();
+        if (minLine > line) {
+            node->setStartPosition(line, col);
+        } else if ((minLine == line) && (minCol > col)) {
+            node->setStartPosition(minLine, col);
+        }
+    }
+    void extendEndPos(IonDbXml::XmlNode * node, int line, int col) {
+        int maxLine = node->getEndLine();
+        int maxCol  = node->getEndCol();
+        if (maxLine < line) {
+            node->setEndPosition(line, col);
+        } else if ((maxLine == line) && (maxCol < col)) {
+            node->setEndPosition(maxLine, col);
+        }
+    }
+    void operator()(IonDbXml::XmlNode * node)
+    {
+        foreach (IonDbXml::XmlNode * subnode, node->getChildren()) {
+            this->operator ()(subnode);
+            this->extendEndPos(node, subnode->getEndLine(), subnode->getEndCol());
+            this->extendStartPos(node, subnode->getStartLine(), subnode->getStartCol());
+        }
+    }
+};
 
-phpParser::phpParser()
+
+PhpParser::PhpParser()
 {
     init_scanner();
 }
 
-phpParser::~phpParser()
+PhpParser::~PhpParser()
 {
     destroy_scanner();
 }
 
-QSharedPointer<ASTRoot> phpParser::parseString(QString doc)
+IonPhp::Private::ParserResult *PhpParser::parseString(QString doc)
 {
     void * buf = setBuf(doc.toLatin1().constData());
-    __result = NULL;
-    int ret = 1;
-    QString errorText = "unknown error";
-    try {
-        ret = ion_php_parse(this);
-    } catch (std::exception& e) {
-        errorText = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
-                        .arg(e.what())
-                        .arg(__line).arg(__col)
-                        .arg(__posLine).arg(__posCol)
-                    ;
-    }
+    __result = new ParserResult();
+    __result->success = true;
+
+    ion_php_parse(this);
+
     delBuf(buf);
 
-    if (ret || !__result) {
-        if (__result) {
-            delete __result;
-            __result = NULL;
-        }
-        throw std::runtime_error(errorText.toStdString());
+    if (__result->getRoot()) {
+        (AstEndPositionsAdjuster()(__result->getRoot()));
     }
 
-    return QSharedPointer<ASTRoot>(new ASTRoot(__result));
+    return __result;
 }
 
-QSharedPointer<ASTRoot> phpParser::parseFile(QString path)
+IonPhp::Private::ParserResult *PhpParser::parseFile(QString path)
 {
     QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        try {
-            QSharedPointer<ASTRoot> ast = parseString(file.readAll());
-//            QFileInfo fileInfo(path);
-//            ast->setFilename(path);
-//            ast->setTimestamp(fileInfo.lastModified().toTime_t());
-            return ast;
-        } catch (std::runtime_error &err) {
-            throw std::runtime_error("parsing of the file failed: "+path.toStdString()+"\n"+err.what());
-        }
+        return parseString(file.readAll());
     }
-    throw std::runtime_error("parsing of the file failed: file not found: "+path.toStdString());
+    ParserResult *result = new ParserResult();
+    result->success = false;
+    ParserError error;
+    error.message = "parsing of the file failed: file not found: "+path;
+    result->errors.append(error);
+    return result;
 }
 
-void phpParser::__error(phpParser *myself, const char *error) {
+void PhpParser::__error(YYLTYPE const * const yylocationp, PhpParser *myself, const char *errorMessage) {
     Q_ASSERT(this == myself);
-    throw std::logic_error(error);
+    __result->success = false;
+
+    ParserError error;
+    error.lineFrom = __line;
+    error.colFrom = __col;
+    error.lineTo = __posLine;
+    error.colTo = __posCol;
+    error.message = QString("exception while parsing: %1 at: %2,%3 : %4,%5")
+        .arg(errorMessage)
+        .arg(__line).arg(__col)
+        .arg(__posLine).arg(__posCol)
+    ;
+
+    DEBUG_MSG(error.message);
+
+    if (!__result->errors.empty() && (error == __result->errors.last())) {
+        __result->errors.last().repeatedTimes++;
+    } else {
+        __result->errors.append(error);
+    }
 }
 
-int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
+int PhpParser::__lex(IonDbXml::XmlNode **astNode, YYLTYPE * yylocationp, yyscan_t yyscanner)
 {
-    pASTNode lastNode = *astNode;
+    IonDbXml::XmlNode *lastNode = *astNode;
     while(1) {
         *astNode = NULL;
         int ret = _impl_ionPhp_lex(astNode, yyscanner);
+
+        yylocationp->first_line = __line;
+        yylocationp->last_line = __posLine;
+        yylocationp->first_column = __col;
+        yylocationp->last_column = __posCol;
+
         switch (ret) {
             case T_COMMENT:
             case T_DOC_COMMENT:
@@ -120,7 +160,7 @@ int phpParser::__lex(pASTNode *astNode, yyscan_t yyscanner)
 /**
  * invoked by scanner on failure to match tokens
  */
-void phpParser::__echo(const char *text, int size)
+void PhpParser::__echo(const char *text, int size)
 {
     QString txt;
     for (int i=0;i<size;i++) {

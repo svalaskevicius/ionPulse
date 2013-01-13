@@ -63,6 +63,18 @@ void Plugin::addParent(BasicPlugin *parent) {
     CHECK_AND_ADD_PARENT(parent, IonDbXml::DbXmlPlugin, dbXmlPlugin = target);
 }
 
+
+
+void Plugin::registerJsApi(QScriptEngine & jsEngine)
+{
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::PhpParser>, qObjectPtrFromScriptValue<IonPhp::Private::PhpParser>);
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserResult>, qObjectPtrFromScriptValue<IonPhp::Private::ParserResult>);
+    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserError>, qObjectPtrFromScriptValue<IonPhp::Private::ParserError>);
+
+    QScriptValue phpPlugin = jsEngine.newQObject(this);
+    jsEngine.globalObject().setProperty("phpPlugin", phpPlugin);
+}
+
 }
 }
 

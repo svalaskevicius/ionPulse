@@ -32,14 +32,38 @@ using namespace IonPhp::Private;
                         yyextra->__posCol++;\
                 }\
             }\
+            yyextra->__posColHistory.clear(); \
         }
+
 #define yylval_param astNode
 //#define YY_DECL int ion_php_lex(pASTNode *astNode, yyscan_t yyscanner)
-#define YY_EXTRA_TYPE IonPhp::Private::phpParser*
+#define YY_EXTRA_TYPE IonPhp::Private::PhpParser*
 #define YY_FATAL_ERROR(msg) throw std::logic_error(msg)
 #define ECHO yyextra->__echo(yytext, yyleng)
 
-#define CREATE_AST_NODE(node) ASTNode::create(node)->setPosition(yyextra->__line, yyextra->__col)
+
+int countLastColumn(QString str) {
+    int idx = str.lastIndexOf("\n");
+    if (str[idx+1] == '\r') {
+        idx++;
+    }
+    return str.length()-idx;
+}
+
+#define LEX_CREATE_AST_NODE(node) \
+    ASTNode::create(node) \
+        ->setStartPosition(yyextra->__line, yyextra->__col) \
+        ->setEndPosition(yyextra->__line, yyextra->__col)
+
+inline IonDbXml::XmlNode *createAstWithTextPosition(QString node, QString text, int line, int col) {
+    int lineSpan = text.count("\n");
+    return ASTNode::create(node)
+        ->setText(text)
+        ->setStartPosition(line, col)
+        ->setEndPosition(line + lineSpan, lineSpan ? countLastColumn(text) : col + text.length());
+}
+
+#define LEX_CREATE_AST_NODE_WITH_TEXT(node, text) createAstWithTextPosition(node, text, yyextra->__line, yyextra->__col)
 
 char ionInput(yyscan_t yyscanner);
 void ionUnput(char c, yyscan_t yyscanner);
@@ -203,12 +227,12 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING>"class" {
-        *astNode = CREATE_AST_NODE("class");
+        *astNode = LEX_CREATE_AST_NODE("class");
         return T_CLASS;
 }
 
 <ST_IN_SCRIPTING>"interface" {
-        *astNode = CREATE_AST_NODE("interface");
+        *astNode = LEX_CREATE_AST_NODE("interface");
         return T_INTERFACE;
 }
 
@@ -235,7 +259,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 <ST_LOOKING_FOR_PROPERTY>{LABEL} {
         yy_pop_state(yyscanner);
-        *astNode = CREATE_AST_NODE("string")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("string", yytext);
         return T_STRING;
 }
 <ST_LOOKING_FOR_PROPERTY>.|[\n\r] {
@@ -503,7 +527,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_LOOKING_FOR_VARNAME>{LABEL} {
-        *astNode = CREATE_AST_NODE("string_varname")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("string_varname", yytext);
         yy_pop_state(yyscanner);
         yy_push_state(ST_IN_SCRIPTING, yyscanner);
         return T_STRING_VARNAME;
@@ -518,57 +542,57 @@ NEWLINE ("\r"|"\n"|"\r\n")
 
 
 <ST_IN_SCRIPTING>{LNUM}|{HNUM} {
-        *astNode = CREATE_AST_NODE("lnumber")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("lnumber", yytext);
         return T_LNUMBER;
 }
 
 <ST_VAR_OFFSET>[0]|([1-9][0-9]*) { /* Offset could be treated as a long */
-        *astNode = CREATE_AST_NODE("num_string")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("num_string", yytext);
         return T_NUM_STRING;
 }
 
 <ST_VAR_OFFSET>{LNUM}|{HNUM} { /* Offset must be treated as a string */
-        *astNode = CREATE_AST_NODE("num_string")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("num_string", yytext);
         return T_NUM_STRING;
 }
 
 <ST_IN_SCRIPTING>{DNUM}|{EXPONENT_DNUM} {
-        *astNode = CREATE_AST_NODE("dnumber")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("dnumber", yytext);
         return T_DNUMBER;
 }
 
 <ST_IN_SCRIPTING>"__CLASS__" {
-        *astNode = CREATE_AST_NODE("__CLASS__");
+        *astNode = LEX_CREATE_AST_NODE("__CLASS__");
         return T_CLASS_C;
 }
 
 <ST_IN_SCRIPTING>"__FUNCTION__" {
-        *astNode = CREATE_AST_NODE("__FUNCTION__");
+        *astNode = LEX_CREATE_AST_NODE("__FUNCTION__");
         return T_FUNC_C;
 }
 
 <ST_IN_SCRIPTING>"__METHOD__" {
-        *astNode = CREATE_AST_NODE("__METHOD__");
+        *astNode = LEX_CREATE_AST_NODE("__METHOD__");
         return T_METHOD_C;
 }
 
 <ST_IN_SCRIPTING>"__LINE__" {
-        *astNode = CREATE_AST_NODE("__LINE__");
+        *astNode = LEX_CREATE_AST_NODE("__LINE__");
         return T_LINE;
 }
 
 <ST_IN_SCRIPTING>"__FILE__" {
-        *astNode = CREATE_AST_NODE("__FILE__");
+        *astNode = LEX_CREATE_AST_NODE("__FILE__");
         return T_FILE;
 }
 
 <ST_IN_SCRIPTING>"__DIR__" {
-        *astNode = CREATE_AST_NODE("__DIR__");
+        *astNode = LEX_CREATE_AST_NODE("__DIR__");
         return T_DIR;
 }
 
 <ST_IN_SCRIPTING>"__NAMESPACE__" {
-        *astNode = CREATE_AST_NODE("__NAMESPACE__");
+        *astNode = LEX_CREATE_AST_NODE("__NAMESPACE__");
         return T_NS_C;
 }
 
@@ -671,7 +695,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
             }
         }
         if (result.length()) {
-            *astNode = CREATE_AST_NODE("inline_html")->setText(result);
+            *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("inline_html", result);
         }
         return T_INLINE_HTML;
 }
@@ -682,7 +706,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
              */
         yyless(yyleng - 3);
         yy_push_state(ST_LOOKING_FOR_PROPERTY, yyscanner);
-        *astNode = CREATE_AST_NODE("variable")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("variable", yytext);
         return T_VARIABLE;
 }
 
@@ -691,12 +715,12 @@ NEWLINE ("\r"|"\n"|"\r\n")
          */
         yyless(yyleng - 1);
         yy_push_state(ST_VAR_OFFSET, yyscanner);
-        *astNode = CREATE_AST_NODE("variable")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("variable", yytext);
         return T_VARIABLE;
 }
 
 <ST_IN_SCRIPTING,ST_DOUBLE_QUOTES,ST_HEREDOC,ST_BACKQUOTE,ST_VAR_OFFSET>"$"{LABEL} {
-        *astNode = CREATE_AST_NODE("variable")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("variable", yytext);
         return T_VARIABLE;
 }
 
@@ -718,7 +742,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
 }
 
 <ST_IN_SCRIPTING,ST_VAR_OFFSET>{LABEL} {
-        *astNode = CREATE_AST_NODE("string")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("string", yytext);
         return T_STRING;
 }
 
@@ -757,7 +781,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
         }
     }
 
-    *astNode = CREATE_AST_NODE("comment")->setText(yytext);
+    *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("comment", yytext);
     return T_COMMENT;
 }
 
@@ -784,11 +808,11 @@ NEWLINE ("\r"|"\n"|"\r\n")
         }
 
         if (doc_com) {
-            *astNode = CREATE_AST_NODE("doc_comment")->setText(yytext);
+            *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("doc_comment", yytext);
             return T_DOC_COMMENT;
         }
 
-        *astNode = CREATE_AST_NODE("comment")->setText(yytext);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("comment", yytext);
         return T_COMMENT;
 }
 
@@ -822,7 +846,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
                 }
             }
         }
-        *astNode = CREATE_AST_NODE("constant_encapsed_string")->setText(result);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("constant_encapsed_string", result);
         return T_CONSTANT_ENCAPSED_STRING;
 }
 
@@ -833,7 +857,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
         while ( (c = ionInput(yyscanner)) )  {
             switch (c) {
                 case '"':
-                    *astNode = CREATE_AST_NODE("constant_encapsed_string")->setText(result);
+                    *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("constant_encapsed_string", result);
                     return T_CONSTANT_ENCAPSED_STRING;
                 case '\\':
                     result += c;
@@ -978,7 +1002,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
             break;
         }
 
-        *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setText(result);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("encapsed_and_whitespace", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1028,7 +1052,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
                 break;
             }
 
-            *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setText(result);
+            *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("encapsed_and_whitespace", result);
             return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1088,7 +1112,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
                 }
                 break;
         }
-        *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setText(result);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("encapsed_and_whitespace", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1130,7 +1154,7 @@ NEWLINE ("\r"|"\n"|"\r\n")
                 }
                 break;
         }
-        *astNode = CREATE_AST_NODE("encapsed_and_whitespace")->setText(result);
+        *astNode = LEX_CREATE_AST_NODE_WITH_TEXT("encapsed_and_whitespace", result);
         return T_ENCAPSED_AND_WHITESPACE;
 }
 
@@ -1237,25 +1261,26 @@ bool scanForHereDocEnd(yyscan_t yyscanner)
 }
 
 namespace IonPhp {
-        void phpParser::init_scanner()
+        void PhpParser::init_scanner()
         {
            yylex_init(&__scanner);
            yyset_extra(this, __scanner);
         }
 
-        void phpParser::destroy_scanner()
+        void PhpParser::destroy_scanner()
         {
            yylex_destroy(__scanner);
         }
 
-        void *phpParser::setBuf(const char* data)
+        void *PhpParser::setBuf(const char* data)
         {
             YY_BUFFER_STATE b = _impl_ionPhp__scan_string(data, __scanner);
             b->yy_fill_buffer = 0;
-            this->__col = this->__line = this->__posCol = this->__posLine = 0;
+            this->__line = this->__posLine = 1;
+            this->__col = this->__posCol = 0;
             return b;
         }
-        void phpParser::delBuf(void *buf)
+        void PhpParser::delBuf(void *buf)
         {
             _impl_ionPhp__delete_buffer((yy_buffer_state *)buf, __scanner);
         }

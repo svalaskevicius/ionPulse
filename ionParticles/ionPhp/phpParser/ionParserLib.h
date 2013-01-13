@@ -20,49 +20,104 @@
 #include <ionCore/shared.h>
 #include <ionParticles/ionDbXml/dbxmlapi.h>
 
-#define YYSTYPE pASTNode
+#define YYSTYPE IonDbXml::XmlNode*
 
 namespace IonPhp {
 namespace Private {
 
 class ASTNode;
-typedef ASTNode *pASTNode;
 
 class ASTNode : public IonDbXml::XmlNode {
 private:
-    QVector<XmlNode*> children;
+    QList<IonDbXml::XmlNode*> children;
     AttributesMap attributes;
     QString text;
     QString name;
-    int lineNr, columnNr;
 public:
     ASTNode(QString name);
-    ~ASTNode();
-    pASTNode setPosition(int lineNr, int columnNr);
-    int getLine() const;
-    int getColumn() const;
-    pASTNode addChild(pASTNode child);
-    pASTNode setData(QString name, QString data);
-    pASTNode setText(QString data);
-    QString getData(QString name);
+    IonDbXml::XmlNode* setStartPosition(int lineNr, int columnNr);
+    IonDbXml::XmlNode* setEndPosition(int lineNr, int columnNr);
+    int getStartLine();
+    int getEndLine();
+    int getStartCol();
+    int getEndCol();
+
+    IonDbXml::XmlNode* addChild(IonDbXml::XmlNode* child);
+    IonDbXml::XmlNode* setData(QString name, QVariant data);
+    IonDbXml::XmlNode* setText(QString data);
+    QVariant getData(QString name);
 
     QString getName();
     QString getText();
-    AttributesMap &getAttributes() { return attributes;}
-    QVector<XmlNode*> &getChildren() {return children;}
 
-    static pASTNode create(QString name);
-    static void destroy(pASTNode node);
+    AttributesMap &getAttributes() { return attributes;}
+    QList<IonDbXml::XmlNode*> &getChildren() {return children;}
+
+    QString toString();
+
+    static IonDbXml::XmlNode* create(QString name);
+    static void destroy(IonDbXml::XmlNode* node);
 };
 
-class ASTRoot {
-protected:
-    pASTNode rootNode;
+
+class ParserError : public QObject {
+    Q_OBJECT
 public:
-    ASTRoot(pASTNode rootNode);
-    ~ASTRoot();
-    pASTNode getRootNode() {
-        return rootNode;
+    QString message;
+    int lineFrom, colFrom, lineTo, colTo;
+    int repeatedTimes;
+
+    ParserError() {repeatedTimes = 0;}
+    ParserError(const ParserError& src)
+        : message(src.message),
+          lineFrom(src.lineFrom), colFrom(src.colFrom),
+          lineTo(src.lineTo), colTo(src.colTo), repeatedTimes(src.repeatedTimes)
+    {}
+
+    Q_INVOKABLE QString getMessage() {
+        return message;
+    }
+    Q_INVOKABLE int getLineFrom() {
+        return lineFrom;
+    }
+    Q_INVOKABLE int getColFrom() {
+        return colFrom;
+    }
+    Q_INVOKABLE int getLineTo() {
+        return lineTo;
+    }
+    Q_INVOKABLE int getColTo() {
+        return colTo;
+    }
+    bool operator==(const ParserError &other) {
+        return (lineFrom == other.lineFrom)
+            && (colFrom == other.colFrom)
+            && (lineTo == other.lineTo)
+            && (colTo == other.colTo)
+            && (message == other.message)
+        ;
+    }
+};
+
+class ParserResult : public QObject {
+    Q_OBJECT
+private:
+    IonDbXml::XmlNode* root;
+public:
+    bool success;
+    QList<ParserError> errors;
+
+    Q_INVOKABLE void setRoot(IonDbXml::XmlNode* newRoot) {
+        root = newRoot;
+        if (root) {
+            root->setParent(this);
+        }
+    }
+    Q_INVOKABLE IonDbXml::XmlNode* getRoot() {
+        return root;
+    }
+    Q_INVOKABLE bool getSuccess() {
+        return success;
     }
 };
 

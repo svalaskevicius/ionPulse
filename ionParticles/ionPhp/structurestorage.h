@@ -25,7 +25,7 @@ class StructureStorage
 public:
     StructureStorage(IonDbXml::DataStorage * dataStorage);
 
-    void addFile(QString path, int timestamp, ASTRoot &astRoot);
+    void addFile(QString path, int timestamp, IonDbXml::XmlNode* astRoot);
     void removeFile(QString path);
     uint getTimeStamp(QString path);
     IonDbXml::DataQueryResults *getFileClasses(QString path);
