@@ -123,6 +123,9 @@ function findAstParent(node, filter) {
     } while (node);
     return null;
 }
+
+
+
 function iterateDbResults(query, callback)
 {
     var results = dbxml.getStorage().query(query);
@@ -146,6 +149,10 @@ function retrieveClassInheritanceList(className) {
     } while (className);
     return ret;
 }
+
+
+
+
 Suggestions = function(editor)
 {
     QListWidget.call(this, editor);
@@ -254,25 +261,38 @@ Suggestions.prototype.retrievePropertiesAndMethodsForClass = function(className)
     return _.uniq(ret, true);
 }
 
+Suggestions.prototype.retrieveClassNames = function() {
+    var ret = [];
+    iterateDbResults(
+        'collection("dbxml:/files")//class_declaration/string[starts-with(., "'+this.currentWord+'")]/text()',
+        function(node) {
+            ret.push(node.toString());
+        }
+    );
+    return ret;
+}
+
 Suggestions.prototype.retrieveSuggestions = function() {
     var precedingContext = getPrecedingContextForTheCurrentWord(this.editor.textCursor(), this.currentWord);
     var ast = null;
+    var className = null;
     if (/^\$/.test(this.currentWord)) {
         if (!precedingContext) {
             ast = phpPlugin.createParser().parseString(this.editor.plainText);
             return this.retrieveVariables(this.getCurrentContext(ast));
         } else if (precedingContext.separator === "::") {
-            //static property or method, check this.classHierarchy(this.retrieveClassName(precedingContext.context)) contents
-            console.log("not implemented yet: static properties for autocomplete");
+            ast = phpPlugin.createParser().parseString(this.editor.plainText);
+            className = this.retrieveClassName(precedingContext.context, this.getCurrentContext(ast));
+            if (className) {
+                return this.retrievePropertiesAndMethodsForClass(className);
+            }
         }
     } else {
         if (!precedingContext) {
-            //this might be a class name
-            console.log("not implemented yet: class names for autocomplete");
+            return this.retrieveClassNames();
         } else if (precedingContext.separator === "->") {
             ast = phpPlugin.createParser().parseString(this.editor.plainText);
-            var className = this.retrieveClassName(precedingContext.context, this.getCurrentContext(ast));
-            console.log(className);
+            className = this.retrieveClassName(precedingContext.context, this.getCurrentContext(ast));
             if (className) {
                 return this.retrievePropertiesAndMethodsForClass(className);
             }
