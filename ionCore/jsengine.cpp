@@ -20,7 +20,7 @@ namespace Private {
 
 
 
-bool loadFile(QString fileName, QScriptEngine *engine)
+bool loadFile(QString fileName, QJSEngine *engine)
 {
     // avoid loading files more than once
     static QSet<QString> loadedFiles;
@@ -51,16 +51,15 @@ bool loadFile(QString fileName, QScriptEngine *engine)
         }
 
         // set qt.script.absoluteFilePath
-        QScriptValue script = engine->globalObject().property("qs").property("script");
-        QScriptValue oldFilePathValue = script.property("absoluteFilePath");
-        QScriptValue oldPathValue = script.property("absolutePath");
+        QJSValue script = engine->globalObject().property("qs").property("script");
+        QJSValue oldFilePathValue = script.property("absoluteFilePath");
+        QJSValue oldPathValue = script.property("absolutePath");
         script.setProperty("absoluteFilePath", engine->toScriptValue(absoluteFileName));
         script.setProperty("absolutePath", engine->toScriptValue(absolutePath));
 
-        QScriptValue r = engine->evaluate(contents, fileName, lineNumber);
-        if (engine->hasUncaughtException()) {
-            QStringList backtrace = engine->uncaughtExceptionBacktrace();
-            qDebug() << QString("    %1\n%2\n\n").arg(r.toString()).arg(backtrace.join("\n"));
+        QJSValue r = engine->evaluate(contents, fileName, lineNumber);
+        if (r.isError()) {
+            qDebug() << QString("    %1\n\n").arg(r.toString());
             return true;
         }
         script.setProperty("absoluteFilePath", oldFilePathValue); // if we come from includeScript(), or whereever
@@ -71,22 +70,34 @@ bool loadFile(QString fileName, QScriptEngine *engine)
     return true;
 }
 
-QScriptValue includeScript(QScriptContext *context, QScriptEngine *engine)
+JsEngine::JsEngine()
 {
-    QString importFile = context->argument(0).toString();
+    global = scriptEngine.globalObject();
+    // add the qt object
+    global.setProperty("qs", scriptEngine.newObject());
+    // add a 'script' object
+    script = scriptEngine.newObject();
+    global.property("qs").setProperty("script", script);
+    // add a 'system' object
+    system = scriptEngine.newObject();
+    global.property("qs").setProperty("system", system);
+
+    initialiseJsFramework();
+}
+
+
+bool JsEngine::includeScript(QString importFile)
+{
     QFileInfo importInfo(importFile);
     if (importInfo.isRelative()) {
-        QString currentFileName = engine->globalObject().property("qs").property("script").property("absoluteFilePath").toString();
+        QString currentFileName = scriptEngine.globalObject().property("qs").property("script").property("absoluteFilePath").toString();
         QFileInfo currentFileInfo(currentFileName);
         QString path = currentFileInfo.path();
         importFile =  path + "/" + importInfo.filePath();
     }
-    if (!loadFile(importFile, engine)) {
-        return context->throwError(QString("Failed to resolve include: %1").arg(importFile));
-    }
-    return engine->toScriptValue(true);
+    return this->loadFile(importFile);
 }
-
+/*
 QScriptValue importExtension(QScriptContext *context, QScriptEngine *engine)
 {
     return engine->importExtension(context->argument(0).toString());
@@ -131,27 +142,10 @@ QScriptValue setTextEditExtraSelectionFormat(QScriptContext *context, QScriptEng
    qscriptvalue_cast<QTextEdit::ExtraSelection*>(context->argument(0))->format = qscriptvalue_cast<QTextCharFormat>(context->argument(1));
    return engine->nullValue();
 }
-
-JsEngine::JsEngine()
+*/
+bool JsEngine::loadFile(QString file)
 {
-    global = scriptEngine.globalObject();
-    // add the qt object
-    global.setProperty("qs", scriptEngine.newObject());
-    // add a 'script' object
-    script = scriptEngine.newObject();
-    global.property("qs").setProperty("script", script);
-    // add a 'system' object
-    system = scriptEngine.newObject();
-    global.property("qs").setProperty("system", system);
-
-    global.setProperty("debug", scriptEngine.newFunction(IonCore::Private::jsDebug));
-
-    initialiseJsFramework();
-}
-
-void JsEngine::loadFile(QString file)
-{
-    IonCore::Private::loadFile(file, &scriptEngine);
+    return IonCore::Private::loadFile(file, &scriptEngine);
 }
 
 
@@ -167,10 +161,16 @@ void JsEngine::initialiseJsFramework()
         else
             envMap.insert(keyVal.at(0), keyVal.at(1));
     }
-
-    system.setProperty("installAppShortcut", scriptEngine.newFunction(IonCore::Private::installAppShortcut));
     system.setProperty("env", scriptEngine.toScriptValue(envMap));
 
+    global.setProperty("engine", scriptEngine.newQObject(this));
+
+    /*
+    global.setProperty("debug", scriptEngine.newFunction(IonCore::Private::jsDebug));
+
+    system.setProperty("installAppShortcut", scriptEngine.newFunction(IonCore::Private::installAppShortcut));
+
+    global.setProperty("debug", scriptEngine.newFunction(IonCore::Private::jsDebug));
     // add the include functionality to qt.script.include
     script.setProperty("include", scriptEngine.newFunction(IonCore::Private::includeScript));
     // add the importExtension functionality to qt.script.importExtension
@@ -179,6 +179,7 @@ void JsEngine::initialiseJsFramework()
     system.setProperty("setTextEditExtraSelectionCursor", scriptEngine.newFunction(IonCore::Private::setTextEditExtraSelectionCursor));
     system.setProperty("getTextEditExtraSelectionFormat", scriptEngine.newFunction(IonCore::Private::getTextEditExtraSelectionFormat));
     system.setProperty("setTextEditExtraSelectionFormat", scriptEngine.newFunction(IonCore::Private::setTextEditExtraSelectionFormat));
+    */
 }
 
 

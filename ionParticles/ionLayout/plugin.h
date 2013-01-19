@@ -33,7 +33,7 @@ public:
         return IonLayout::LayoutPlugin::name();
     }
     virtual LayoutManager *getLayoutManager();
-    virtual void registerJsApi(QScriptEngine & jsEngine);
+    virtual void registerJsApi(QJSEngine & jsEngine);
 private:
     LayoutManager *layoutManager;
 signals:

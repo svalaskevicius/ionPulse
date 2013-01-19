@@ -47,7 +47,7 @@ public:
     virtual QSharedPointer<TreeItemFactory> createTreeItemFactory();
     virtual const boost::function<QSharedPointer<TreeModelSource> (QString dirname)> &getTreeModelSourceFactory();
     virtual void setTreeModelSourceFactory(boost::function<QSharedPointer<TreeModelSource> (QString dirname)> factory);
-    virtual void registerJsApi(QScriptEngine &jsEngine);
+    virtual void registerJsApi(QJSEngine &jsEngine);
 
 private:
     struct _defaultTreeModelSourceFactory {

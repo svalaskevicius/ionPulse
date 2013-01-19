@@ -1,22 +1,25 @@
 #ifndef JSENGINE_H
 #define JSENGINE_H
 
-#include <QtScript/QScriptEngine>
+#include <QJSEngine>
 
 namespace IonCore {
 
 namespace Private {
 
-class JsEngine
+class JsEngine : public QObject
 {
+    Q_OBJECT
 protected:
-    QScriptEngine scriptEngine;
-    QScriptValue global, script, system;
+    QJSEngine scriptEngine;
+    QJSValue global, script, system;
     void initialiseJsFramework();
 public:
     JsEngine();
-    void loadFile(QString);
-    QScriptEngine &getScriptEngine() {return scriptEngine;}
+    bool loadFile(QString);
+    QJSEngine &getScriptEngine() {return scriptEngine;}
+
+    Q_INVOKABLE bool includeScript(QString importFile);
 };
 
 

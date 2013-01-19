@@ -10,7 +10,7 @@ TEMPLATE = lib
 CONFIG += core plugin
 VERSION = 0.1.0
 
-QT       += core script
+QT       += core qml
 TARGET = ionDbXml
 INCLUDEPATH += ../.. /Users/Shared/dev/dbxml/patched/dbxml-2.5.16/install/include
 LIBS += -L/Users/Shared/dev/dbxml/patched/dbxml-2.5.16/install/lib -ldbxml -ldb-4.8 -lxqilla -lxerces-c

@@ -45,7 +45,7 @@ public:
         return ret;
     }
     virtual void addParent(BasicPlugin *parent);
-    virtual void registerJsApi(QScriptEngine & jsEngine);
+    virtual void registerJsApi(QJSEngine & jsEngine);
 protected:
     struct phpTreeModelSourceDecoratorFactory {
     private:

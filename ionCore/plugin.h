@@ -11,7 +11,7 @@
 
 #include <QtCore/QList>
 #include <QtWidgets/QMainWindow>
-#include <QtScript/QScriptEngine>
+#include <QtQml/QJSEngine>
 
 /**
  * \brief Holds the bare window creation and plugin management functionality.
@@ -122,7 +122,7 @@ public:
      *
      * Each plugin can extend JS API by setting properties on the provided QScriptEngine instance.
      */
-    virtual void registerJsApi(QScriptEngine & /* jsEngine */) {}
+    virtual void registerJsApi(QJSEngine & /* jsEngine */) {}
 };
 
 }

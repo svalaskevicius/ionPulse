@@ -52,7 +52,7 @@ private:
     Editor *_focusedEditor;
     SearchPanel *_searchPanel;
 public:
-    virtual void registerJsApi(QScriptEngine & jsEngine);
+    virtual void registerJsApi(QJSEngine & jsEngine);
     Editor *getCurrentEditor();
     QMap<QString, Editor *> getOpenedFiles();
 
@@ -82,12 +82,12 @@ class JsSyntaxHighlighter : public QSyntaxHighlighter
     Q_PROPERTY(QTextBlock currentBlock READ currentBlock)
     Q_PROPERTY(IonEditor::Editor *editor READ getEditor)
 private:
-    QScriptEngine *engine;
-    QScriptValue function;
+    QJSEngine *engine;
+    QJSValue function;
     IonEditor::Editor *editor;
 
 public:
-    JsSyntaxHighlighter(IonEditor::Editor *editor, QScriptEngine *engine, QScriptValue function)
+    JsSyntaxHighlighter(IonEditor::Editor *editor, QJSEngine *engine, QJSValue function)
         : QSyntaxHighlighter(editor->document()), engine(engine), function(function), editor(editor)
     {
     }
@@ -95,8 +95,7 @@ public:
     virtual void highlightBlock(const QString & text)
     {
         function.call(
-            function,
-            QScriptValueList() << engine->toScriptValue(this) << engine->toScriptValue(text)
+            QJSValueList() << engine->toScriptValue(this) << engine->toScriptValue(text)
         );
     }
 
@@ -120,7 +119,7 @@ public:
 class JsTextBlockUserData : public QTextBlockUserData
 {
 public:
-    QScriptValue value;
+    QJSValue value;
 };
 
 }

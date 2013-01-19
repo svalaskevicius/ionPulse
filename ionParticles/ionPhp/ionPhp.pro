@@ -10,7 +10,7 @@ TEMPLATE = lib
 CONFIG += core plugin
 VERSION = 0.1.0
 
-QT       += core widgets script
+QT       += core widgets qml
 TARGET = ionPhp
 INCLUDEPATH += ../..
 LIBS += -L../ionDbXml \

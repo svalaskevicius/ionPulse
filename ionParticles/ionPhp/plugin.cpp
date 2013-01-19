@@ -65,14 +65,13 @@ void Plugin::addParent(BasicPlugin *parent) {
 
 
 
-void Plugin::registerJsApi(QScriptEngine & jsEngine)
+void Plugin::registerJsApi(QJSEngine & jsEngine)
 {
-    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::PhpParser>, qObjectPtrFromScriptValue<IonPhp::Private::PhpParser>);
-    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserResult>, qObjectPtrFromScriptValue<IonPhp::Private::ParserResult>);
-    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserError>, qObjectPtrFromScriptValue<IonPhp::Private::ParserError>);
+//    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::PhpParser>, qObjectPtrFromScriptValue<IonPhp::Private::PhpParser>);
+//    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserResult>, qObjectPtrFromScriptValue<IonPhp::Private::ParserResult>);
+//    qScriptRegisterMetaType(&jsEngine, qObjectPtrToScriptValue<IonPhp::Private::ParserError>, qObjectPtrFromScriptValue<IonPhp::Private::ParserError>);
 
-    QScriptValue phpPlugin = jsEngine.newQObject(this);
-    jsEngine.globalObject().setProperty("phpPlugin", phpPlugin);
+    jsEngine.globalObject().setProperty("phpPlugin", jsEngine.newQObject(this));
 }
 
 }

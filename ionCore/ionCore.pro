@@ -5,7 +5,7 @@
 #-------------------------------------------------
 include (../ionPulse.pri)
 
-QT       += core gui widgets script scripttools
+QT       += core gui widgets qml
 
 TARGET = $${APPLICATION_NAME}
 TEMPLATE = app

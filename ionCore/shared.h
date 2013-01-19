@@ -14,7 +14,7 @@
 
 #include <stdexcept>
 #include <QSharedPointer>
-#include <QScriptEngine>
+#include <QJSEngine>
 
 /**
  * \brief Helper code to apply the correct code to different loaded plugin dependencies.
@@ -42,13 +42,13 @@
 #define DEBUG_MSG(str) { qDebug() << str; }
 
 template <typename type>
-QScriptValue qObjectPtrToScriptValue(QScriptEngine *engine, type* const &in)
+QJSValue qObjectPtrToScriptValue(QJSEngine *engine, type* const &in)
 {
-    return engine->newQObject(in, QScriptEngine::AutoOwnership);
+    return engine->newQObject(in);
 }
 
 template <typename type>
-void qObjectPtrFromScriptValue(const QScriptValue &object, type* &out)
+void qObjectPtrFromScriptValue(const QJSValue &object, type* &out)
 {
     out = qobject_cast<type*>(object.toQObject());
 }

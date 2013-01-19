@@ -33,7 +33,7 @@ public:
     void preLoad();
     Q_INVOKABLE virtual IonDbXml::DataStorage *getStorage() { return structureStorage; }
 
-    void registerJsApi(QScriptEngine & jsEngine);
+    void registerJsApi(QJSEngine & jsEngine);
 protected:
     DataStorage* structureStorage;
 signals:

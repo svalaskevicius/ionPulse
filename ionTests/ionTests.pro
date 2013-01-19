@@ -5,7 +5,7 @@
 #-------------------------------------------------
 include (../ionPulse.pri)
 
-QT       += testlib widgets sql script
+QT       += testlib widgets sql qml
 
 TARGET = tst_iontest
 CONFIG   += console

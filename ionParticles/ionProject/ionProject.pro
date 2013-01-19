@@ -10,7 +10,7 @@ TEMPLATE = lib
 CONFIG += core plugin
 VERSION = 0.1.0
 
-QT       += core widgets script
+QT       += core widgets qml
 TARGET = ionProject
 INCLUDEPATH +=  ../..
 
@@ -34,7 +34,7 @@ SOURCES += \
     treeviewpanel.cpp
 
 LIBS += \
-    -l../ionEditor/libionEditor.dylib
+    ../ionEditor/libionEditor.dylib
 
 
 
