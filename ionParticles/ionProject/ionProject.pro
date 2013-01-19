@@ -34,7 +34,7 @@ SOURCES += \
     treeviewpanel.cpp
 
 LIBS += \
-    -l../ionEditor/libionEditor.dylib
+    ../ionEditor/libionEditor.dylib
 
 
 
