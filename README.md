@@ -1,3 +1,10 @@
+Deprecation warning
+===================
+
+ionPulse IDE has given me great insights of what I want from an IDE. The main point of ionPulse was to be "a developer's friendly" IDE. However, with majority of code being compiled from C++ its not flexible enough to be truly friendly.
+
+I'm currently in a process of using [cpgf](http://www.cpgf.org/) to bind all the required Qt 5 elements to Javascript (V8), joining Qt bindings with [node.js](http://nodejs.org/) and plucking what I can from this project to [pulse](https://github.com/svalaskevicius/pulse) - a new reincarnation of the idea. So head there and check it out!
+
 ionPulse IDE
 ============
 
